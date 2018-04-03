@@ -1,5 +1,5 @@
 TN:
-SF:/Users/frankbatista/sites/spynejs/src/tests/index.test.js
+SF:/Users/frankbatista/sites/spyne/src/tests/index.test.js
 FN:1,webpackUniversalModuleDefinition
 FN:10,(anonymous_2)
 FN:11,(anonymous_3)
@@ -85,7 +85,7 @@ BRF:18
 BRH:7
 end_of_record
 TN:
-SF:/Users/frankbatista/sites/spynejs/src/tests/channels/channel-dom.test.js
+SF:/Users/frankbatista/sites/spyne/src/tests/channels/channel-dom.test.js
 FN:1,webpackUniversalModuleDefinition
 FN:10,(anonymous_2)
 FN:11,(anonymous_3)
@@ -198,7 +198,7 @@ BRF:18
 BRH:8
 end_of_record
 TN:
-SF:/Users/frankbatista/sites/spynejs/src/tests/channels/channel-route.test.js
+SF:/Users/frankbatista/sites/spyne/src/tests/channels/channel-route.test.js
 FN:1,webpackUniversalModuleDefinition
 FN:10,(anonymous_2)
 FN:11,(anonymous_3)
@@ -320,7 +320,7 @@ BRF:18
 BRH:8
 end_of_record
 TN:
-SF:/Users/frankbatista/sites/spynejs/src/tests/channels/channel-stream-item.test.js
+SF:/Users/frankbatista/sites/spyne/src/tests/channels/channel-stream-item.test.js
 FN:1,webpackUniversalModuleDefinition
 FN:10,(anonymous_2)
 FN:11,(anonymous_3)
@@ -412,7 +412,7 @@ BRF:18
 BRH:7
 end_of_record
 TN:
-SF:/Users/frankbatista/sites/spynejs/src/tests/channels/channel-util-dom.test.js
+SF:/Users/frankbatista/sites/spyne/src/tests/channels/channel-util-dom.test.js
 FN:1,webpackUniversalModuleDefinition
 FN:10,(anonymous_2)
 FN:11,(anonymous_3)
@@ -525,7 +525,7 @@ BRF:18
 BRH:8
 end_of_record
 TN:
-SF:/Users/frankbatista/sites/spynejs/src/tests/channels/route-utils.test.js
+SF:/Users/frankbatista/sites/spyne/src/tests/channels/route-utils.test.js
 FN:1,webpackUniversalModuleDefinition
 FN:10,(anonymous_2)
 FN:11,(anonymous_3)
@@ -641,7 +641,7 @@ BRF:18
 BRH:8
 end_of_record
 TN:
-SF:/Users/frankbatista/sites/spynejs/src/tests/channels/url-utils.test.js
+SF:/Users/frankbatista/sites/spyne/src/tests/channels/url-utils.test.js
 FN:1,webpackUniversalModuleDefinition
 FN:10,(anonymous_2)
 FN:11,(anonymous_3)
@@ -736,7 +736,7 @@ BRF:18
 BRH:7
 end_of_record
 TN:
-SF:/Users/frankbatista/sites/spynejs/src/tests/channels/view-stream-broadcaster.test.js
+SF:/Users/frankbatista/sites/spyne/src/tests/channels/view-stream-broadcaster.test.js
 FN:1,webpackUniversalModuleDefinition
 FN:10,(anonymous_2)
 FN:11,(anonymous_3)
@@ -825,7 +825,7 @@ BRF:18
 BRH:7
 end_of_record
 TN:
-SF:/Users/frankbatista/sites/spynejs/src/tests/utils/frp-tools.test.js
+SF:/Users/frankbatista/sites/spyne/src/tests/utils/frp-tools.test.js
 FN:1,webpackUniversalModuleDefinition
 FN:10,(anonymous_2)
 FN:11,(anonymous_3)
@@ -917,7 +917,7 @@ BRF:18
 BRH:8
 end_of_record
 TN:
-SF:/Users/frankbatista/sites/spynejs/src/tests/views/dom-item.test.js
+SF:/Users/frankbatista/sites/spyne/src/tests/views/dom-item.test.js
 FN:1,webpackUniversalModuleDefinition
 FN:10,(anonymous_2)
 FN:11,(anonymous_3)
@@ -1018,7 +1018,7 @@ BRF:18
 BRH:8
 end_of_record
 TN:
-SF:/Users/frankbatista/sites/spynejs/src/tests/views/template-renderer.test.js
+SF:/Users/frankbatista/sites/spyne/src/tests/views/template-renderer.test.js
 FN:1,webpackUniversalModuleDefinition
 FN:10,(anonymous_2)
 FN:11,(anonymous_3)
@@ -1113,7 +1113,7 @@ BRF:18
 BRH:7
 end_of_record
 TN:
-SF:/Users/frankbatista/sites/spynejs/src/tests/views/view-stream-enhancer-loader.test.js
+SF:/Users/frankbatista/sites/spyne/src/tests/views/view-stream-enhancer-loader.test.js
 FN:1,webpackUniversalModuleDefinition
 FN:10,(anonymous_2)
 FN:11,(anonymous_3)
@@ -1211,7 +1211,7 @@ BRF:18
 BRH:8
 end_of_record
 TN:
-SF:/Users/frankbatista/sites/spynejs/src/tests/views/view-stream-enhancer.test.js
+SF:/Users/frankbatista/sites/spyne/src/tests/views/view-stream-enhancer.test.js
 FN:1,webpackUniversalModuleDefinition
 FN:10,(anonymous_2)
 FN:11,(anonymous_3)
@@ -1306,7 +1306,7 @@ BRF:18
 BRH:8
 end_of_record
 TN:
-SF:/Users/frankbatista/sites/spynejs/src/tests/views/view-stream.test.js
+SF:/Users/frankbatista/sites/spyne/src/tests/views/view-stream.test.js
 FN:1,webpackUniversalModuleDefinition
 FN:10,(anonymous_2)
 FN:11,(anonymous_3)
