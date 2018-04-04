@@ -37,15 +37,16 @@ export class ViewStreamBroadcaster {
     };
     // spread operator to select variables from arrays
     let [selector, event, local] = args;
-
     //console.log('args is ',args);
     // btn query
     // let query = this.props.el.querySelectorAll(selector);
     let channel; // hoist channel and later check if chnl exists
     let query = this.props.el.querySelectorAll(selector);
+
     let isLocalEvent = local!==undefined;
     let addObservable = (q) => {
       // the  btn observable
+
       let observable = event !== 'dblClick'
         ? Rx.Observable.fromEvent(q, event)
         : this.addDblClickEvt(q);
@@ -70,10 +71,10 @@ export class ViewStreamBroadcaster {
       // run payload
       channelPayload(observable, data);
     };
-
     if (query === undefined || query.length <= 0) {
-      query = this.props.el;
-      addObservable(query, event);
+      console.warn(`Spyne Warning: The item ${selector}, does not appear to exist!`);
+      //query = this.props.el;
+     // addObservable(query, event);
     } else {
       query.forEach = Array.prototype.forEach;
       query.forEach(addObservable);
