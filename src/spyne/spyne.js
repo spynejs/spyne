@@ -3,6 +3,7 @@ import {DomItem} from './views/dom-item';
 import {ViewToDomMediator} from './views/view-to-dom-mediator';
 import {ViewStream} from './views/view-stream';
 import {ViewStreamBroadcaster} from './views/view-stream-broadcaster';
+import {ViewStreamEnhancer} from './views/view-stream-enhancer';
 import {ChannelsPayload} from './channels/channels-payload';
 import {ChannelsBase} from './channels/channels-base';
 import {ChannelsBaseData} from './channels/channels-base-data';
@@ -88,5 +89,6 @@ export {
   DomItem,
   ViewStream,
   ViewStreamBroadcaster,
+    ViewStreamEnhancer,
   SpyneApp
 };
