@@ -13,6 +13,8 @@ export class ChannelsBaseController {
   constructor(obs$) {
     this.addMixins();
     this.map = new Map();
+
+    console.log('Rx is ',Rx);
     // console.log('RX IS ', Rx.Subject);
     this.map.set('DISPATCHER', new Rx.Subject());
   }

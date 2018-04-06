@@ -1,6 +1,6 @@
 // import {AppView} from "../app/app-view";
 // const AppView = require("../app/app-view");
-
+console.log('loaded tests');
 import {createElement} from '../spyne/utils/viewstream-dom-utils';
 // console.log('tester 2 ', it);
 

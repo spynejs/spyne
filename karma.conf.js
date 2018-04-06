@@ -33,10 +33,10 @@ module.exports = function(config) {
         {pattern: './node_modules/rxjs/bundles/Rx.js', watched:false},
 
 
-	    {pattern: './src/tests/*.test.js', watched: true},
-	    {pattern: './src/tests/channels/*.test.js', watched: true},
-	    {pattern: './src/tests/utils/*.test.js', watched: true},
-	    {pattern: './src/tests/views/*.test.js', watched: true}
+	    {pattern: './src/tests/*.test.js', watched: true}/*,
+	    {pattern: './src/tests/channels/!*.test.js', watched: true}*/,
+	    {pattern: './src/tests/utils/!*.test.js', watched: true},
+	    {pattern: './src/tests/views/!*.test.js', watched: true}
     ],
 
 
@@ -51,10 +51,10 @@ module.exports = function(config) {
     // preprocess matching files before serving them to the browser
     // available preprocessors: https://npmjs.org/browse/keyword/karma-preprocessor
     preprocessors: {
-	    './src/tests/*.test.js' : ['webpack', 'coverage'],
-	    './src/tests/channels/*.test.js' : ['webpack', 'coverage'],
-	    './src/tests/utils/*.test.js' : ['webpack', 'coverage'],
-	    './src/tests/views/*.test.js' : ['webpack', 'coverage']
+	    './src/tests/*.test.js' : ['webpack', 'coverage']/*,
+	    './src/tests/channels/!*.test.js' : ['webpack', 'coverage']*/,
+	    './src/tests/utils/!*.test.js' : ['webpack', 'coverage'],
+	    './src/tests/views/!*.test.js' : ['webpack', 'coverage']
     },
 
     webpack: webpackConfig,

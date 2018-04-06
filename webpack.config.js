@@ -57,7 +57,7 @@ const config = {
   entry: path.join(__dirname, '/src/spyne/spyne.js'),
 
 
-  devtool: devToolValue,
+  devtool: '',
   output: {
     path: path.join(__dirname, '/lib'),
     filename: outputFile,
