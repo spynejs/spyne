@@ -11,7 +11,7 @@ const getConstructorName = (obj) =>{
   if (obj.constructor.name!==undefined){
     return obj.constructor.name;
   }
-  const re = /^(function\s)(\w+)(\(.*)$/s;
+  const re = /^(function\s)(\w+)(\(.*)$/;
   let str = obj.toString();
   return  R.defaultTo(String(str).substr(0,12), R.match(re, str)[2])
 };
