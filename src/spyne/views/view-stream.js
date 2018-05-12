@@ -614,6 +614,16 @@ export class ViewStream {
     this.exchangeViewsWithChild(v, this.setAttachData('prependChild', query));
   }
 
+
+  /**
+   *  Appends a ViewStream object that are not rendered to the #spyne-null-views div.
+   */
+  appendToNull() {
+    let node = document.getElementById('spyne-null-views');
+    this.renderViewAndAttachToDom(node, 'dom', 'appendChild');
+  }
+
+
   onRendered(payload) {
     // console.log('RENDER: ', this.props.name, payload);
     if (payload.from$ === 'internal') {

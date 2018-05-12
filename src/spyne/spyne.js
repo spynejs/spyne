@@ -13,7 +13,7 @@ import {deepMerge} from './utils/deep-merge';
 class SpyneApp {
   constructor(config = {}) {
     this.channels = new ChannelsBaseController();
-    this.VERSION = '0.7.19-b1';
+    this.VERSION = '0.8.0';
     this.ViewStream = ViewStream;
     this.BasicView = ViewToDomMediator;
     this.DomItem = DomItem;
@@ -59,6 +59,9 @@ class SpyneApp {
     this.getChannelActions = (str) => window.Spyne.channels.getChannelActions(str);
     this.registerChannel = (str, val) => this.channels.registerStream(str, val);
     this.registerDataChannel = (obs$) => this.channels.registerStream(obs$.props.name, obs$);
+    let nullHolder = new ViewStream({id:'spyne-null-views'});
+    nullHolder.appendToDom(document.body);
+    nullHolder.props.el.style.cssText='display:none; opacity:0; pointer-events:none;';
     this.channels.init();
 
     // window.Spyne.channels.init();
