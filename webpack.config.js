@@ -98,9 +98,7 @@ const config = {
 
               },
               "modules": false,
-              "loose": true,
-              exclude: ['babel-plugin-transform-classes']
-
+              "loose": true
             }]
           ]
         },
