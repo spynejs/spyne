@@ -42,6 +42,11 @@ export class ViewStreamBroadcaster {
     // let query = this.props.el.querySelectorAll(selector);
     let channel; // hoist channel and later check if chnl exists
     let query = this.props.el.querySelectorAll(selector);
+    if (query.length<=0){
+      if (this.props.el.tagName === String(selector).toUpperCase()){
+        query = this.props.el;
+      }
+    }
 
     let isLocalEvent = local!==undefined;
     let addObservable = (q) => {

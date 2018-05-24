@@ -91,8 +91,10 @@ export class ViewStream {
     //this.props = Object.assign({}, this.defaults(), props);
     this.props = deepMerge(this.defaults(), props);
     //window.Spyne['config'] = deepMerge(defaultConfig, config);// Object.assign({}, defaultConfig, config);// config !== undefined ? config : defaultConfig;
+    let attributesArr = ['id', 'class', 'dataset'];
+    const addToAttributes = (arr) => attributesArr.concat(arr);
 
-    this.props['domAttributes'] = R.pick(['id', 'class', 'dataset'],
+    this.props['domAttributes'] = R.pick(attributesArr,
       this.props);
     this.loadEnhancers();
     this.loadAllMethods();
