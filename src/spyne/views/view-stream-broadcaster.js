@@ -42,16 +42,29 @@ export class ViewStreamBroadcaster {
     // let query = this.props.el.querySelectorAll(selector);
     let channel; // hoist channel and later check if chnl exists
     let query = this.props.el.querySelectorAll(selector);
+
     if (query.length<=0){
-      if (this.props.el.tagName === String(selector).toUpperCase()){
-        query = this.props.el;
-      }
+      let el = this.props.el;
+      const checkParentEls = (element)=>{
+        if (element === el){
+          query=[element];
+        }
+      };
+
+      const pluckElFromParent = () => {
+        let elParent = el.parentElement;
+        let elSelected = elParent.querySelectorAll(selector);
+        elSelected.forEach = Array.prototype.forEach;
+        elSelected.forEach(checkParentEls);
+      };
+
+      pluckElFromParent();
+
     }
 
     let isLocalEvent = local!==undefined;
     let addObservable = (q) => {
       // the  btn observable
-
       let observable = event !== 'dblClick'
         ? Rx.Observable.fromEvent(q, event)
         : this.addDblClickEvt(q);
