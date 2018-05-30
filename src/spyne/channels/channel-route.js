@@ -204,7 +204,7 @@ export class ChannelRoute extends ChannelsBase {
     const hashNameIsEmptyBool = isEmpty === true && isHash === true;
     const hashNameBool = isEmpty === false && isHash === true;
 
-    console.log('ROUTE STR CHECK ', {str, isHash});
+    //console.log('ROUTE STR CHECK ', {str, isHash});
     if (pathNameIsEmptyBool === true || hashNameIsEmptyBool === true) {
       return '/';
     } else if (hashNameBool === true) {
@@ -218,7 +218,7 @@ export class ChannelRoute extends ChannelsBase {
     routeValue = this.checkEmptyRouteStr(routeValue, isHash);
     if (isHash === true) {
       // window.location.hash = routeValue;
-      console.log('ROUTE STR FOR HASH ', routeValue);
+     // console.log('ROUTE STR FOR HASH ', routeValue);
       window.history.pushState({}, '', routeValue);
     } else {
       // routeValue =  R.when(R.isEmpty, R.always('/'))(routeValue);
