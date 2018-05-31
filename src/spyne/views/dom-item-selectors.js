@@ -24,8 +24,16 @@ export class DomItemSelectors {
   }
 
   createMethods() {
-    const mapAddClass = (item, s) => item.classList.add(s);
-    const mapRemoveClass = (item, s) => item.classList.remove(s);
+    const mapAddClass = (item, s) => {
+      if (item!==undefined) {
+        item.classList.add(s);
+      }
+    }
+    const mapRemoveClass = (item, s) => {
+      if (item!==undefined) {
+        item.classList.remove(s)
+      }
+    };
     const mapSetClass = (item, s) => {
       item.classList.value = s;
       return item;
@@ -86,10 +94,14 @@ export class DomItemSelectors {
     const filterForActive = item => item === activeEl;
     // const onActive = bool => bool === true ? item.addClass(str) : item.removeClass(str);
     const adder = (item) => {
-      item.classList.add(str);
+      if (item!==undefined) {
+        item.classList.add(str);
+      }
     };
     const remover = (item) => {
-      item.classList.remove(str);
+      if(item!==undefined) {
+        item.classList.remove(str);
+      }
     };
     const mapTheActive = R.ifElse(
       filterForActive,
