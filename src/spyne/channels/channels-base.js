@@ -61,7 +61,27 @@ export class ChannelsBase {
    // MAKES ALL CHANNEL BASE AND DATA STREAMS CONSISTENT
     let channelStreamItem = new ChannelStreamItem(this.props.name, action,
       payload, srcElement, event);
-    obs$.next(Object.freeze(channelStreamItem));
+    //console.log("CHANNEL STREEM ITEM ",channelStreamItem);
+      let obj = channelStreamItem;
+    Object.freezeV2 = function( obj ) {
+      var props = Object.getOwnPropertyNames( obj );
+
+      for ( var i = 0; i < props.length; i++ ) {
+        var desc = Object.getOwnPropertyDescriptor( obj, props[i] );
+
+        if ( "value" in desc ) {
+          desc.writable = false;
+        }
+
+        desc.configurable = false;
+        Object.defineProperty( obj, props[i], desc );
+      }
+
+      return Object.preventExtensions( obj );
+    };
+
+
+    obs$.next(Object.freezeV2(channelStreamItem));
   }
 
   getChannel(channel) {
