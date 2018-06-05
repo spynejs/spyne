@@ -212,11 +212,17 @@ export class ChannelRoute extends ChannelsBase {
     }
     return str;
   }
+  static removeLastSlash(str){
+    let re = /^(.*)(\/)$/;
+    return str.replace(re, '$1');
+  }
 
   setWindowLocation(channelPayload) {
     let {isHash, routeValue} = channelPayload;
     routeValue = this.checkEmptyRouteStr(routeValue, isHash);
     if (isHash === true) {
+      let pathName = ChannelRoute.removeLastSlash(window.location.pathname);
+      routeValue = pathName+routeValue;
       // window.location.hash = routeValue;
      // console.log('ROUTE STR FOR HASH ', routeValue);
       window.history.pushState({}, '', routeValue);
