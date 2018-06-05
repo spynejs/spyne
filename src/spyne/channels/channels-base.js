@@ -21,7 +21,16 @@ export class ChannelsBase {
     dispatcherStream$.subscribe((val) => this.onIncomingObservable(val));
   }
 
+
+  //  OVERRIDE INITIALIZATION METHOD
+  onStreamInitialized(){
+
+  }
+
+
+  // DO NOT OVERRIDE THIS METHOD
   initializeStream(){
+    this.onStreamInitialized();
   }
 
   setTrace(bool) {
@@ -59,9 +68,9 @@ export class ChannelsBase {
 
   sendStreamItem(action, payload, srcElement, event, obs$ = this.observer$) {
    // MAKES ALL CHANNEL BASE AND DATA STREAMS CONSISTENT
-    let channelStreamItem = new ChannelStreamItem(this.props.name, action,
-      payload, srcElement, event);
+    let channelStreamItem = new ChannelStreamItem(this.props.name, action, payload, srcElement, event);
     //console.log("CHANNEL STREEM ITEM ",channelStreamItem);
+/*
       let obj = channelStreamItem;
     Object.freezeV2 = function( obj ) {
       var props = Object.getOwnPropertyNames( obj );
@@ -79,9 +88,10 @@ export class ChannelsBase {
 
       return Object.preventExtensions( obj );
     };
+*/
 
 
-    obs$.next(Object.freezeV2(channelStreamItem));
+    obs$.next(channelStreamItem);
   }
 
   getChannel(channel) {

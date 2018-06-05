@@ -25,12 +25,12 @@ export class DomItemSelectors {
 
   createMethods() {
     const mapAddClass = (item, s) => {
-      if (item!==undefined) {
+      if (item!==undefined && item.classList !== undefined && s!==undefined) {
         item.classList.add(s);
       }
     }
     const mapRemoveClass = (item, s) => {
-      if (item!==undefined) {
+      if (item!==undefined && item.classList !== undefined && s!==undefined) {
         item.classList.remove(s)
       }
     };
