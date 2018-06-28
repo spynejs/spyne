@@ -73,7 +73,7 @@ export class ViewToDomMediator {
   setAnimateIn(d) {
     if (d.animateIn === true) {
       let el = d.el !== undefined ? d.el : this.domItem.el;
-      this.animateInTween(el, d.animateOutTime);
+      this.animateInTween(el, d.animateInTime);
     }
   }
 
