@@ -107,7 +107,7 @@ export class ViewStream {
     this._rawSource$ = this.view.getSourceStream();
     this._rawSource$['viewName'] = this.props.name;
     this.sendEventsDownStream = this.sendEventsDownStreamFn;
-    this.init();
+    this.initViewStream();
     this.checkIfElementAlreadyExists();
   }
 
@@ -178,7 +178,7 @@ export class ViewStream {
 
   //  =====================================================================
   // ====================== MAIN STREAM METHODS ==========================
-  init() {
+  initViewStream() {
     this._source$ = this._rawSource$.map(
       (payload) => this.onMapViewSource(payload)).takeWhile(this.notGCSTATE);
 
