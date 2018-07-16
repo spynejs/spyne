@@ -30,13 +30,15 @@ module.exports = function(config) {
     files: [
 
         {pattern: './node_modules/ramda/dist/ramda.min.js', watched:false},
-        {pattern: './node_modules/rxjs/bundles/Rx.js', watched:false},
 
+      {pattern: './node_modules/rxjs/bundles/rxjs.umd.min.js', included: false, watched:false},
 
-	    {pattern: './src/tests/*.test.js', watched: true},
-	    {pattern: './src/tests/channels/!*.test.js', watched: true},
-	    {pattern: './src/tests/utils/!*.test.js', watched: true},
-	    {pattern: './src/tests/views/!*.test.js', watched: true}
+      {pattern: './node_modules/rxjs-compat/Rx.js', included: false, watched:false},
+
+	    {pattern: './src/tests/*.git test.js', watched: true},
+	    {pattern: './src/tests/channels/*.test.js', watched: true},
+	    {pattern: './src/tests/utils/*.test.js', watched: true},
+	    {pattern: './src/tests/views/*.test.js', watched: true}
     ],
 
 
@@ -52,9 +54,9 @@ module.exports = function(config) {
     // available preprocessors: https://npmjs.org/browse/keyword/karma-preprocessor
     preprocessors: {
 	    './src/tests/*.test.js' : ['webpack', 'coverage'],
-	    './src/tests/channels/!*.test.js' : ['webpack', 'coverage'],
-	    './src/tests/utils/!*.test.js' : ['webpack', 'coverage'],
-	    './src/tests/views/!*.test.js' : ['webpack', 'coverage']
+	    './src/tests/channels/*.test.js' : ['webpack', 'coverage'],
+	    './src/tests/utils/*.test.js' : ['webpack', 'coverage'],
+	    './src/tests/views/*.test.js' : ['webpack', 'coverage']
     },
 
     webpack: webpackConfig,
@@ -98,7 +100,7 @@ module.exports = function(config) {
 
     // level of logging
     // possible values: config.LOG_DISABLE || config.LOG_ERROR || config.LOG_WARN || config.LOG_INFO || config.LOG_DEBUG
-    logLevel: config.LOG_INFO,
+    logLevel: config.LOG_DEBUG,
 
 
     // enable / disable watching file and executing tests whenever any file changes
