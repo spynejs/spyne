@@ -1,7 +1,8 @@
 import {ChannelsBase} from '../channels/channels-base';
 import {URLUtils} from '../utils/channel-util-urls';
 import {RouteUtils} from '../utils/channel-util-route';
-const Rx = require('rxjs');
+import * as Rx from "rxjs-compat";
+
 const R = require('ramda');
 
 export class ChannelRoute extends ChannelsBase {

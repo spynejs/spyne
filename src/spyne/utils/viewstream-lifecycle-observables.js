@@ -1,4 +1,5 @@
-const Rx = require('rxjs');
+import * as Rx from "rxjs-compat";
+
 const R = require('ramda');
 export class LifecyleObservables {
   constructor(props) {

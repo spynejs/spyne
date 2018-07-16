@@ -2,7 +2,8 @@
 import {arrFromMapKeys} from '../utils/frp-tools';
 
 const R = require('ramda');
-const Rx = require('rxjs');
+import * as Rx from "rxjs-compat";
+
 //console.log('channels config loaded ',R,Rx);
 let registeredStreamNames = () => ({
   includes:  () => window.Spyne !== undefined ? arrFromMapKeys(window.Spyne.channels.map) : ['ROUTE', 'UI', 'WINDOW', 'DISPATCHER']

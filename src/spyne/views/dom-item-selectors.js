@@ -1,5 +1,6 @@
 const R = require('ramda');
-// const Rx = require('rxjs');
+// import * as Rx from "rxjs-compat";
+
 
 export class DomItemSelectors {
   constructor(cxt, str) {

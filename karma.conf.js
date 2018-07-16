@@ -34,9 +34,9 @@ module.exports = function(config) {
 
 
 	    {pattern: './src/tests/*.test.js', watched: true},
-	    {pattern: './src/tests/channels/*.test.js', watched: true},
-	    {pattern: './src/tests/utils/*.test.js', watched: true},
-	    {pattern: './src/tests/views/*.test.js', watched: true}
+	    {pattern: './src/tests/channels/!*.test.js', watched: true},
+	    {pattern: './src/tests/utils/!*.test.js', watched: true},
+	    {pattern: './src/tests/views/!*.test.js', watched: true}
     ],
 
 
@@ -52,9 +52,9 @@ module.exports = function(config) {
     // available preprocessors: https://npmjs.org/browse/keyword/karma-preprocessor
     preprocessors: {
 	    './src/tests/*.test.js' : ['webpack', 'coverage'],
-	    './src/tests/channels/*.test.js' : ['webpack', 'coverage'],
-	    './src/tests/utils/*.test.js' : ['webpack', 'coverage'],
-	    './src/tests/views/*.test.js' : ['webpack', 'coverage']
+	    './src/tests/channels/!*.test.js' : ['webpack', 'coverage'],
+	    './src/tests/utils/!*.test.js' : ['webpack', 'coverage'],
+	    './src/tests/views/!*.test.js' : ['webpack', 'coverage']
     },
 
     webpack: webpackConfig,

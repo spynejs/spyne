@@ -2,7 +2,8 @@ import {ChannelsBase} from '../channels/channels-base';
 import {checkIfObjIsNotEmptyOrNil} from '../utils/frp-tools';
 import {ChannelUtilsDom} from '../utils/channel-util-dom';
 const R = require('ramda');
-const Rx = require('rxjs');
+import * as Rx from "rxjs-compat";
+
 
 export class ChannelWindow extends ChannelsBase {
   constructor() {

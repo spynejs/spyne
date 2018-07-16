@@ -1,7 +1,8 @@
 import {baseStreamsMixins} from '../utils/mixins/base-streams-mixins';
 import {ifNilThenUpdate, convertDomStringMapToObj} from '../utils/frp-tools';
 
-const Rx = require('rxjs');
+import * as Rx from "rxjs-compat";
+
 const R = require('ramda');
 
 export class ViewStreamBroadcaster {

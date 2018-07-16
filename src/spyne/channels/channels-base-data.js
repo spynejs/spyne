@@ -1,4 +1,5 @@
-import Rx from 'rxjs';
+import * as Rx from "rxjs-compat";
+
 import {ChannelsBase} from './channels-base';
 import {ChannelStreamItem} from './channel-stream-item';
 import  'whatwg-fetch';

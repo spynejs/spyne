@@ -4,7 +4,8 @@ import {validate} from '../utils/channel-config-validator';
 import {gc} from '../utils/gc';
 // import {Right, Left, findInObj} from '../utils/frp-tools';
 import {findInObj} from '../utils/frp-tools';
-// const Rx = require('rxjs');
+// import * as Rx from "rxjs-compat";
+
 // const R = require('ramda');
 export class LifestreamPayload {
   constructor(name, STEP, type, viewId, data = {}, debug = true) {
