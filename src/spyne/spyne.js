@@ -13,7 +13,7 @@ import {deepMerge} from './utils/deep-merge';
 class SpyneApp {
   constructor(config = {}) {
     this.channels = new ChannelsBaseController();
-    this.VERSION = '0.8.12';
+    this.VERSION = '0.8.13';
     this.ViewStream = ViewStream;
     this.BasicView = ViewToDomMediator;
     this.DomItem = DomItem;

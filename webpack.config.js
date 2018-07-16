@@ -69,6 +69,12 @@ const config = {
 
 
   externals: {
+    "rxjs-compat": {
+      commonjs: 'rxjs-compat',
+      commonjs2: 'rxjs-compat',
+      amd: 'rxjs-compat',
+      root: 'Rx'
+    },
     rxjs: {
       commonjs: 'rxjs',
       commonjs2: 'rxjs',
