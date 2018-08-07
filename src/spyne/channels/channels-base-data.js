@@ -1,4 +1,4 @@
-import * as Rx from "rxjs-compat";
+import * as Rx from "rxjs";
 
 import {ChannelsBase} from './channels-base';
 import {ChannelStreamItem} from './channel-stream-item';

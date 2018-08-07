@@ -1,7 +1,7 @@
 import {ChannelsPayload} from '../../channels/channels-payload';
 import {LifestreamPayload} from '../../channels/lifestream-payload';
 const R = require('ramda');
-import * as Rx from "rxjs-compat";
+import * as Rx from "rxjs";
 
 
 export function baseStreamsMixins() {

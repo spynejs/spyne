@@ -1,7 +1,7 @@
 import {ChannelsBase} from '../channels/channels-base';
 import {URLUtils} from '../utils/channel-util-urls';
 import {RouteUtils} from '../utils/channel-util-route';
-import * as Rx from "rxjs-compat";
+import * as Rx from "rxjs";
 
 const R = require('ramda');
 

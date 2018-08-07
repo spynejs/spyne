@@ -1,7 +1,7 @@
 import {baseStreamsMixins} from '../utils/mixins/base-streams-mixins';
 import {ifNilThenUpdate, convertDomStringMapToObj} from '../utils/frp-tools';
 
-import * as Rx from "rxjs-compat";
+import * as Rx from "rxjs";
 
 const R = require('ramda');
 

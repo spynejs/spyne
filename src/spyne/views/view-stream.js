@@ -16,7 +16,7 @@ import {ChannelsPayload} from '../channels/channels-payload';
 import {LifecyleObservables} from '../utils/viewstream-lifecycle-observables';
 import {DomItemSelectors} from './dom-item-selectors';
 
-import * as Rx from "rxjs-compat";
+import * as Rx from "rxjs";
 
 const R = require('ramda');
 

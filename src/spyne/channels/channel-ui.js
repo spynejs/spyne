@@ -1,6 +1,6 @@
 import {ChannelsBase} from '../channels/channels-base';
 const R = require('ramda');
-import * as Rx from "rxjs-compat";
+import * as Rx from "rxjs";
 
 
 export class ChannelUI extends ChannelsBase {
