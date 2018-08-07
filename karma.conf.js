@@ -31,11 +31,16 @@ module.exports = function(config) {
 
         {pattern: './node_modules/ramda/dist/ramda.min.js', watched:false},
 
-      {pattern: './node_modules/rxjs/bundles/rxjs.umd.min.js', included: false, watched:false},
+      { pattern: './node_modules/rxjs/**/*.js', included: false, watched: false },
+      { pattern: './node_modules/rxjs/*.js', included: false, watched: false },
+      { pattern: './node_modules/rxjs-compat/**/*.js', included: false, watched: false },
+      { pattern: './node_modules/rxjs-compat/*.js', included: false, watched: false },
 
+/*
       {pattern: './node_modules/rxjs-compat/Rx.js', included: false, watched:false},
+*/
 
-	    {pattern: './src/tests/*.git test.js', watched: true},
+	    {pattern: './src/tests/*.test.js', watched: true},
 	    {pattern: './src/tests/channels/*.test.js', watched: true},
 	    {pattern: './src/tests/utils/*.test.js', watched: true},
 	    {pattern: './src/tests/views/*.test.js', watched: true}
