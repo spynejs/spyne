@@ -5,7 +5,7 @@ import {ChannelUI} from './channel-ui';
 import {ChannelWindow} from './channel-window';
 import {validate} from '../utils/channel-config-validator';
 
-import * as Rx from "rxjs";
+import * as Rx from "rxjs-compat";
 
 
 // const R = require('ramda');

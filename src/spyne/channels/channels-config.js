@@ -2,7 +2,7 @@
 import {arrFromMapKeys} from '../utils/frp-tools';
 
 const R = require('ramda');
-import * as Rx from "rxjs";
+import * as Rx from "rxjs-compat";
 
 //console.log('channels config loaded ',R,Rx);
 let registeredStreamNames = () => ({

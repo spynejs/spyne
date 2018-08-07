@@ -5,7 +5,7 @@ import {fadein, fadeout} from '../utils/viewstream-animations';
 import {LifecyleObservables} from '../utils/viewstream-lifecycle-observables';
 import {deepMerge} from '../utils/deep-merge';
 
-import * as Rx from "rxjs";
+import * as Rx from "rxjs-compat";
 
 const R = require('ramda');
 

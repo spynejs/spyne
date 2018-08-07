@@ -3,7 +3,7 @@ import {ChannelStreamItem} from './channel-stream-item';
 import {deepMerge} from '../utils/deep-merge';
 // import {baseCoreMixins}    from '../utils/mixins/base-core-mixins';
 // import {BaseStreamsMixins} from '../utils/mixins/base-streams-mixins';
-import * as Rx from "rxjs";
+import * as Rx from "rxjs-compat";
 
 const R = require('ramda');
 
