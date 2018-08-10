@@ -40,10 +40,10 @@ module.exports = function(config) {
       {pattern: './node_modules/rxjs-compat/Rx.js', included: false, watched:false},
 */
 
-	    {pattern: './src/tests/*.test.js', watched: true},
-	    {pattern: './src/tests/channels/*.test.js', watched: true},
-	    {pattern: './src/tests/utils/*.test.js', watched: true},
-	    {pattern: './src/tests/views/*.test.js', watched: true}
+	    {pattern: './src/tests/*.test.js', included:true, watched: true},
+	    {pattern: './src/tests/channels/*.test.js', included:true, watched: true},
+	    {pattern: './src/tests/utils/*.test.js', included:true, watched: true},
+	    {pattern: './src/tests/views/*.test.js', included:true, watched: true}
     ],
 
 

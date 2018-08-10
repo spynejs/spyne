@@ -16,8 +16,9 @@ import {ChannelsPayload} from '../channels/channels-payload';
 import {LifecyleObservables} from '../utils/viewstream-lifecycle-observables';
 import {DomItemSelectors} from './dom-item-selectors';
 
-import * as Rx from "rxjs-compat";
-
+//import * as Rx from "rxjs-compat";
+import {Subject, Observable} from "rxjs";
+//import {merge, map} from "rxjs/operators";
 const R = require('ramda');
 
 export class ViewStream {
@@ -100,7 +101,7 @@ export class ViewStream {
     this.loadEnhancers();
     this.loadAllMethods();
     this.props.action = 'LOADED';
-    this.sink$ = new Rx.Subject();
+    this.sink$ = new Subject();
     const ViewClass = this.props.viewClass;
     this.view = new ViewClass(this.sink$, {}, this.props.cid,
       this.constructor.name);// new this.props.viewClass(this.sink$);
@@ -291,7 +292,7 @@ export class ViewStream {
     //  =====================================================================
     // ======================== INIT STREAM METHODS ========================
     let obsCount = 0;
-    this.uberSource$ = new Rx.Subject();
+    this.uberSource$ = new Subject();
     // ======================= COMPOSED RXJS OBSERVABLE ======================
     let incrementObservablesThatCloses = () => { obsCount += 1; };
     this.autoMergeSubject$ = this.uberSource$.mergeMap((obsData) => {
@@ -789,7 +790,7 @@ export class ViewStream {
     data.srcElement['cid'] = this.props.id;
     data.srcElement['isLocalEvent'] = false;
     data.srcElement['viewName'] = this.props.name;
-    let obs$ = Rx.Observable.of(data);
+    let obs$ = Observable.of(data);
     return new ChannelsPayload(channelName, obs$, data);
   }
 

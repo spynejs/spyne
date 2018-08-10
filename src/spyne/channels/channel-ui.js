@@ -1,6 +1,8 @@
 import {ChannelsBase} from '../channels/channels-base';
 const R = require('ramda');
-import * as Rx from "rxjs-compat";
+//import * as Rx from "rxjs-compat";
+import {Observable} from "rxjs";
+//import {fromEvent} from "rxjs/operators";
 
 
 export class ChannelUI extends ChannelsBase {
@@ -39,7 +41,7 @@ export class ChannelUI extends ChannelsBase {
   }
 
   loadKeyStream() {
-    let keyUps = Rx.Observable.fromEvent(document, 'keyup');
+    let keyUps = Observable.fromEvent(document, 'keyup');
     let filterKeys = e => this.keyCodeArr.indexOf(e.keyCode) >= 0;
     this.keyPresses$ = keyUps.groupBy(e => e.keyCode)
       .mergeAll()

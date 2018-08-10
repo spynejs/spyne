@@ -1,6 +1,6 @@
 const R = require('ramda');
-import * as Rx from "rxjs-compat";
-
+//import * as Rx from "rxjs-compat";
+import {Observable} from "rxjs";
 
 export class RouteUtils {
   constructor() {
@@ -14,7 +14,7 @@ export class RouteUtils {
     let removeHandler = function() {
       window.onpopstate = function() {};
     };
-    let popupObs$ = Rx.Observable.fromEventPattern(addHandler, removeHandler);
+    let popupObs$ = Observable.fromEventPattern(addHandler, removeHandler);
 
     popupObs$.subscribe(subscribeFn);
   }

@@ -1,7 +1,7 @@
 {
   "name": "spyne",
   "sideEffects": false,
-  "version": "0.8.15",
+  "version": "0.8.17",
   "description": "Modern, and efficient javascript frontend framework",
   "main": "lib/spyne.min.js",
   "module": "src/spyne/spyne.js",
@@ -116,7 +116,7 @@
   },
   "config": {
     "ghooks": {
-      "pre-commit": "npm run test:single"
+      "pre-commit1": "npm run test:single"
     }
   },
   "dependencies": {

@@ -1,26 +1,44 @@
 const path = require('path');
 const webpack = require('webpack');
+const PACKAGE = require('./package');
 //const UglifyJsPlugin = webpack.optimize.UglifyJsPlugin;
  const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
 const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 const env = require('yargs').argv.env; // use --env with webpack 2
 const libraryName = 'spyne';
 let devToolValue = 'eval-source-map';
-let plugins = [];
 let outputFile;
 let viewStreamFile = path.join(__dirname, '/src/spyne/views/view-stream.js');
 let optimizeFile = path.join(__dirname, '/src/spyne/utils/optimize-class.js');
 let channelStreamItemFile = path.join(__dirname, '/src/spyne/channels/channel-stream-item.js');
 
-plugins.push( new webpack.LoaderOptionsPlugin({ options: {
-      test: /(\.js)$/,
-          loader: 'eslint-loader',
-        exclude: [/node_modules/,/(src\/tests)/],
-        options: {
+const loaderOptionsPlugin = new webpack.LoaderOptionsPlugin({ options: {
+    test: /(\.js)$/,
+    loader: 'eslint-loader',
+    exclude: [/node_modules/,/(src\/tests)/],
+    options: {
       fix: true
     }
   }
-}));
+});
+
+/*
+let ubuObj = {
+  UBU : JSON.stringify("THE UBU VAL"),
+  VERSION: JSON.stringify(PACKAGE.version)
+};
+
+const definePlugin = new webpack.DefinePlugin(ubuObj);
+console.log("ADRESS: ",ubuObj,PACKAGE);
+*/
+
+
+/*const dotEnv = new Dotenv({
+  path: './.env', // Path to .env file (this is the default)
+  safe: true // load .env.example (defaults to "false" which does not use dotenv-safe)
+});;*/
+
+let spynePlugins = [loaderOptionsPlugin];
 
 if (env === 'build') {
   /*plugins.push( new UglifyJsPlugin({
@@ -125,7 +143,7 @@ const config = {
     modules: [path.resolve('./node_modules')],
     extensions: ['.json', '.js']
   },
-  plugins: plugins
+  plugins: spynePlugins
 };
 
 module.exports = config;

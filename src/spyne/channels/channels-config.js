@@ -2,7 +2,8 @@
 import {arrFromMapKeys} from '../utils/frp-tools';
 
 const R = require('ramda');
-import * as Rx from "rxjs-compat";
+//import * as Rx from "rxjs-compat";
+import {Subject, Observable} from "rxjs";
 
 //console.log('channels config loaded ',R,Rx);
 let registeredStreamNames = () => ({
@@ -27,7 +28,7 @@ let baseValidations= [], viewInfoValidations= [], uiValidations = [],
 
 
 
-if (R!== undefined && Rx!==undefined) {
+if (R!== undefined && Observable!==undefined) {
 
 //  ===========================================================================
 // ALL VALIDATIONS ADD THE BASE VALIDATIONS THROUGH CONCATENATION
@@ -39,7 +40,7 @@ if (R!== undefined && Rx!==undefined) {
     },
 
     {
-      error: `param 'observable' must contain a valid Rx.Observable`,
+      error: `param 'observable' must contain a valid Observable`,
       // predicate: payload => registeredStreamTypes.includes(getObservableType(payload.observable))
       predicate: payload => confirmObservable(payload.observable)
     },
@@ -158,7 +159,7 @@ if (R!== undefined && Rx!==undefined) {
         predicate: payload => registeredStreamNames().includes(payload.name)
       },
       {
-        error: `param 'observable' must contain a valid Rx.Observable`,
+        error: `param 'observable' must contain a valid Observable`,
         predicate: payload => registeredStreamTypes.includes(
             getRxType(payload.observable))
       },
@@ -174,12 +175,12 @@ if (R!== undefined && Rx!==undefined) {
         {
           init: {
             name: 'DISPATCHER',
-            observable: () => new Rx.Subject(),
+            observable: () => new Subject(),
             action: 'subscribe'
           },
           structure: {
             type: String,
-            observable: Rx.Observable || Rx.Subject,
+            observable: Observable || Subject,
             action: String
           },
           validations: streamValidations
@@ -187,12 +188,12 @@ if (R!== undefined && Rx!==undefined) {
         {
           init: {
             name: 'UBU',
-            observable: () => new Rx.Subject(),
+            observable: () => new Subject(),
             action: 'subscribe'
           },
           structure: {
             type: String,
-            observable: Rx.Observable || Rx.Subject,
+            observable: Observable || Subject,
             action: String
           },
           validations: streamValidations
