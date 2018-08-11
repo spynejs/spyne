@@ -3,7 +3,8 @@ import {arrFromMapKeys} from '../utils/frp-tools';
 
 const R = require('ramda');
 //import * as Rx from "rxjs-compat";
-import {Subject, Observable} from "rxjs";
+const Observable = require("rxjs");
+const Subject = require("rxjs");
 
 //console.log('channels config loaded ',R,Rx);
 let registeredStreamNames = () => ({
@@ -23,7 +24,6 @@ let confirmObservable = (obs) => obs.subscribe !== undefined;
 let baseValidations= [], viewInfoValidations= [], uiValidations = [],
     lifestreamValidations = [], stepValidations= [], stepDisposeValidations= [], stepUpdateValidations = [],
     routeValidations= [], StreamsConfig = [];
-
 
 
 

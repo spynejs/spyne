@@ -1,5 +1,5 @@
 // creation and utility methods
-import {Observable} from 'rxjs';
+const Observable = require("rxjs");
 // operators all come from `rxjs/operators`
 import { map, takeUntil, tap } from 'rxjs/operators';
 
