@@ -1,7 +1,7 @@
 {
   "name": "spyne",
   "sideEffects": false,
-  "version": "0.8.19",
+  "version": "0.8.20",
   "description": "Modern, and efficient javascript frontend framework",
   "main": "lib/spyne.min.js",
   "module": "src/spyne/spyne.js",
@@ -108,7 +108,6 @@
     "webpack-node-externals": "^1.7.2",
     "webpack-shell-plugin": "^0.5.0",
     "webpack-validator": "^3.0.1",
-    "whatwg-fetch": "^2.0.4",
     "yargs": "7.1.0"
   },
   "czConfig": {

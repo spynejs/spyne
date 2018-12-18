@@ -2,7 +2,7 @@
 
 import {ChannelsBase} from './channels-base';
 import {ChannelStreamItem} from './channel-stream-item';
-import  'whatwg-fetch';
+//import  'whatwg-fetch';
 // const R = require('ramda');
 import {AsyncSubject, Observable} from "rxjs";
 //import {flatMap, map} from "rxjs/operators";

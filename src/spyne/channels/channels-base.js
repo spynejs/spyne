@@ -19,10 +19,12 @@ export class ChannelsBase {
     let observer$ = new Subject();
    // this.props = Object.assign({}, defaultName, props);
     this.props = deepMerge(defaultName, props);
+    this.createChannelActionMethods();
+
     this.observer$ = this.props['observer'] = observer$;
     this.streamsController = window.Spyne.channels;// getGlobalParam('streamsController');
     let dispatcherStream$ = this.streamsController.getStream('DISPATCHER');
-    dispatcherStream$.subscribe((val) => this.onIncomingObservable(val));
+    dispatcherStream$.subscribe((val) => this.onReceivedObservable(val));
   }
 
 
@@ -40,12 +42,46 @@ export class ChannelsBase {
   setTrace(bool) {
   }
 
+
   createChannelActionsObj() {
-    let arr = this.addRegisteredActions();
+    const getActionVal = R.ifElse(R.is(String), R.identity, R.head);
+    let arr =R.map(getActionVal, this.addRegisteredActions());
+    //console.log("ARR IS ",arr);
     const converter = str => R.objOf(str, str);
     let obj = R.mergeAll(R.chain(converter, arr));
     this.channelActions = obj;
   }
+
+  createChannelActionMethods(){
+    const defaultFn = 'onIncomingObserverableData';
+    const getActionVal = R.ifElse(R.is(String), R.identity, R.head);
+    const getCustomMethod = val => {
+      const methodStr = R.view(R.lensIndex(1), val);
+      const hasMethod = typeof(this[methodStr]) === 'function';
+      if (hasMethod === true){
+        this[methodStr].bind(this);
+      } else {
+        console.warn(`"${this.props.name}", REQUIRES THE FOLLOWING METHOD ${methodStr} FOR ACTION, ${val[0]}`);
+      }
+
+      return methodStr;
+    };
+
+    const  getArrMethod =  R.ifElse(R.is(String), R.always(defaultFn),getCustomMethod);
+
+    const createObj = val => {
+     let key = getActionVal(val);
+     let method =  getArrMethod(val);
+      return [key, method];
+    };
+
+    this.channelActionMethods =  R.fromPairs(R.map(createObj, this.addRegisteredActions()));
+
+    //console.log('the channel action methods ',this.channelActionMethods);
+
+
+  }
+
 
   addRegisteredActions() {
     return [];
@@ -55,6 +91,37 @@ export class ChannelsBase {
     return this.observer$;
   }
 
+  onReceivedObservable(obj){
+    let action = obj.action;
+
+   // console.log("BASE ACTION IS ",obj);
+    this.onIncomingObservable(obj);
+
+
+  }
+
+  getActionMethodForObservable(obj){
+
+    const defaultFn = this.onIncomingObserverableData.bind(this);
+
+    let methodStr = R.path(['data', 'action'], obj);
+    const methodVal = R.prop(methodStr, this.channelActionMethods);
+   // console.log('getting obj is METHOD STR ',{methodStr,methodExists,methodVal}, this[methodVal]);;
+
+
+    let fn = defaultFn;//.defaultTo(this[methodVal], defaultFn);
+
+    if (methodVal !== undefined && methodVal!=='onIncomingObserverableData') {
+      const methodExists = typeof(this[methodVal]) === 'function';
+      if (methodExists === true) {
+        fn = this[methodVal];
+        console.log("METHOD EXISTS ", methodVal, fn);
+      }
+    }
+
+    return fn;
+  }
+
   onIncomingObservable(obj) {
     let eqsName = R.equals(obj.name, this.props.name);
     let dataObj = obsVal => ({
@@ -62,7 +129,7 @@ export class ChannelsBase {
       observableEvent: obsVal
     });
     let onSuccess = (obj) => obj.observable.map(dataObj)
-      .subscribe(this.onIncomingObserverableData.bind(this));
+      .subscribe(this.getActionMethodForObservable(obj));
     let onError = () => {};
     return eqsName === true ? onSuccess(obj) : onError();
   }
@@ -73,7 +140,7 @@ export class ChannelsBase {
   sendStreamItem(action, payload, srcElement, event, obs$ = this.observer$) {
    // MAKES ALL CHANNEL BASE AND DATA STREAMS CONSISTENT
     let channelStreamItem = new ChannelStreamItem(this.props.name, action, payload, srcElement, event);
-    //console.log("CHANNEL STREEM ITEM ",channelStreamItem);
+   // console.log("CHANNEL STREEM ITEM ",channelStreamItem);
 /*
       let obj = channelStreamItem;
     Object.freezeV2 = function( obj ) {
