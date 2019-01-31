@@ -18,7 +18,7 @@ import {DomItemSelectors} from './dom-item-selectors';
 
 //import * as Rx from "rxjs-compat";
 import {Subject, Observable} from "rxjs";
-//import {merge, map} from "rxjs/operators";
+import {merge, mergeMap, map,takeWhile,filter} from "rxjs/operators";
 const R = require('ramda');
 
 export class ViewStream {
@@ -295,15 +295,15 @@ export class ViewStream {
     this.uberSource$ = new Subject();
     // ======================= COMPOSED RXJS OBSERVABLE ======================
     let incrementObservablesThatCloses = () => { obsCount += 1; };
-    this.autoMergeSubject$ = this.uberSource$.mergeMap((obsData) => {
-      let branchObservable$ = obsData.observable.filter(
-        (p) => p !== undefined && p.action !== undefined).map(p => {
+    this.autoMergeSubject$ = this.uberSource$.pipe(mergeMap((obsData) => {
+      let branchObservable$ = obsData.observable.pipe(filter(
+        (p) => p !== undefined && p.action !== undefined), map(p => {
         // console.log('PAYLOAD IS ', p, this.constructor.name)
         let payload = deepMerge({},p);
         payload.action = p.action;// addRelationToState(obsData.rel, p.action);
         this.tracer('autoMergeSubject$', payload);
         return payload;
-      });
+      }));
 
       if (obsData.autoClosesBool === false) {
         return branchObservable$;
@@ -311,11 +311,11 @@ export class ViewStream {
         incrementObservablesThatCloses();
         return branchObservable$.finally(decrementOnObservableClosed);
       }
-    });
+    }));
     // ============================= SUBSCRIBER ==============================
     this.autoSubscriber$ = this.autoMergeSubject$
     // .do((p) => console.log('SINK DATA ', this.constructor.name, p))
-      .filter((p) => p !== undefined && p.action !== undefined)
+      .pipe(filter((p) => p !== undefined && p.action !== undefined))
       .subscribe(subscriber);
   }
 
@@ -713,7 +713,7 @@ export class ViewStream {
     let startSubscribe = (c) => {
       return window.Spyne.channels.getStream(c)
         .observer
-        .takeWhile(p => this.deleted !== true);
+      .pipe(takeWhile(p => this.deleted !== true));
     };// getGlobalParam('streamsController').getStream(c).observer;
 
     let fn = R.ifElse(isValidChannel, startSubscribe, error);
@@ -768,7 +768,7 @@ export class ViewStream {
 
 
 
-    let channel$ = this.getChannel(str).map(mapDirection).filter(cidMatches);
+    let channel$ = this.getChannel(str).pipe(map(mapDirection), filter(cidMatches));
     this.updateSourceSubscription(channel$, false);
   }
 

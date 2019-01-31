@@ -1,9 +1,9 @@
 {
   "name": "spyne",
   "sideEffects": false,
-  "version": "0.8.20",
+  "version": "0.8.21",
   "description": "Modern, and efficient javascript frontend framework",
-  "main": "lib/spyne.min.js",
+  "main": "lib/spyne.js",
   "module": "src/spyne/spyne.js",
   "scripts": {
     "report-coverage": "nyc report --reporter=text-lcov > coverage.lcov && codecov",
