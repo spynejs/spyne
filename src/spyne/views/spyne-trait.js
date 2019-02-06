@@ -1,18 +1,22 @@
 import {getAllMethodNames} from '../utils/frp-tools';
 const R = require('ramda');
 
-export class ViewStreamEnhancer {
-  constructor(parentViewStream) {
+export class SpyneTrait {
+  constructor(parentViewStream, autoInit=true) {
     this.parentViewStream = parentViewStream;
     this.omittedMethods = [
       'autoBinder',
       'initAutoBinder',
       'getEnhancerMethods',
       'bindParentViewStream'];
+
+    if (autoInit === true){
+      this.autoBinder();
+    }
   }
 
   initAutoBinder() {
-    this.autoBinder();
+    //this.autoBinder();
   }
 
   getEnhancerMethods() {

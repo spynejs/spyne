@@ -1,6 +1,6 @@
-import {ViewStreamEnhancer} from '../../spyne/views/view-stream-enhancer';
+import {SpyneTrait} from '../../spyne/views/spyne-trait';
 
-export class Enhancer extends ViewStreamEnhancer {
+export class Enhancer extends SpyneTrait {
   constructor(context) {
     super(context);
     this.name = 'TEST';

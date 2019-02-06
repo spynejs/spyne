@@ -42872,7 +42872,7 @@ FN:453,addEnhancerMethods
 FN:473,(anonymous_90)
 FN:477,(anonymous_91)
 FN:485,(anonymous_92)
-FN:486,ViewStreamEnhancer
+FN:486,SpyneTrait
 FN:493,initAutoBinder
 FN:497,getEnhancerMethods
 FN:501,bindParentViewStream
@@ -42991,7 +42991,7 @@ FNDA:1,addEnhancerMethods
 FNDA:1,(anonymous_90)
 FNDA:1,(anonymous_91)
 FNDA:1,(anonymous_92)
-FNDA:1,ViewStreamEnhancer
+FNDA:1,SpyneTrait
 FNDA:0,initAutoBinder
 FNDA:1,getEnhancerMethods
 FNDA:1,bindParentViewStream
@@ -43488,7 +43488,7 @@ FN:368,pullTranslateYFromHeader
 FN:381,(anonymous_77)
 FN:385,(anonymous_78)
 FN:393,(anonymous_79)
-FN:394,ViewStreamEnhancer
+FN:394,SpyneTrait
 FN:401,initAutoBinder
 FN:405,getEnhancerMethods
 FN:409,bindParentViewStream
@@ -43594,7 +43594,7 @@ FNDA:0,pullTranslateYFromHeader
 FNDA:1,(anonymous_77)
 FNDA:1,(anonymous_78)
 FNDA:1,(anonymous_79)
-FNDA:1,ViewStreamEnhancer
+FNDA:1,SpyneTrait
 FNDA:1,initAutoBinder
 FNDA:1,getEnhancerMethods
 FNDA:1,bindParentViewStream
