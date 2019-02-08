@@ -49,12 +49,19 @@ export class DomItemSelectors {
       return item;
     };
 
+    const mapToggleEls = (item, s, el) => {
+      let bool = item === el;
+      item.classList.toggle(s, bool);
+      return item;
+    }
+
 
     this.addClass = this.mapToValue(mapAddClass);
     this.removeClass = this.mapToValue(mapRemoveClass);
     this.setClass = this.mapToValue(mapSetClass);
     this.inlineCss = this.mapToValue(mapInlineCss);
     this.toggleClass = this.mapToValue(mapToggleClass);
+    this.toggleEls = this.mapToValue(mapToggleEls);
   }
 
   mapMethod(fn) {

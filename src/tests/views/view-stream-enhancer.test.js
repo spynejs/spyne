@@ -1,6 +1,6 @@
 /*const R = require('ramda');
 const Rx = require('rxjs');
-import {ViewStreamEnhancer} from '../../spyne/views/view-stream-enhancer';
+import {SpyneTrait} from '../../spyne/views/view-stream-enhancer';
 */
 import {Enhancer} from '../mocks/enhancer.test';
 class MyClass {
@@ -23,7 +23,7 @@ class MyClass {
   }
 }
 
-describe('ViewStreamEnhancer Tests', () => {
+describe('SpyneTrait Tests', () => {
   let theClass = new MyClass();
 
   describe('should add enhancer methods to a class instance object', () => {

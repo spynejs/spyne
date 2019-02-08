@@ -1,8 +1,8 @@
 import {ChannelsPayload} from '../../channels/channels-payload';
 import {LifestreamPayload} from '../../channels/lifestream-payload';
 const R = require('ramda');
-import * as Rx from "rxjs-compat";
-
+//import * as Rx from "rxjs-compat";
+import {Observable} from "rxjs";
 
 export function baseStreamsMixins() {
   return {
@@ -27,7 +27,7 @@ export function baseStreamsMixins() {
         payload, channel, srcElement
       };
 
-      return new ChannelsPayload(channelName, new Rx.Observable.of(''), data,
+      return new ChannelsPayload(channelName, new Observable.of(''), data,
         'subscribe');
     },
     sendLifeStreamPayload: function(obs, data) {

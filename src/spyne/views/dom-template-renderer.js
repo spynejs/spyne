@@ -93,6 +93,9 @@ export class DomTemplateRenderer {
       }
       return d;
     };
+    if (R.isNil(elData)===true || R.isEmpty(elData)){
+      return '';
+    }
     return elData.map(mapStringData).join(' ');
   }
 }

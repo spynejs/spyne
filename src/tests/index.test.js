@@ -1,7 +1,8 @@
 // import {AppView} from "../app/app-view";
 // const AppView = require("../app/app-view");
-console.log('loaded tests');
-import {createElement} from '../spyne/utils/viewstream-dom-utils';
+
+
+//import {createElement} from '../spyne/utils/viewstream-dom-utils';
 // console.log('tester 2 ', it);
 
 // const assert = require('assert');
@@ -27,12 +28,12 @@ describe('createElement', ()=>{
 
 // expect(createElement().is('object'));
 
-describe('createElement', () => {
+/*describe('createElement', () => {
   it('should be a dom element ', () => {
     let el = createElement('div');
     assert.isFunction(el.click);
   });
-});
+});*/
 
 /* describe('CDN', ()=>{
     it('exists',()=>{

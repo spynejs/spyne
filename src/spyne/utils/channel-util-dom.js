@@ -1,5 +1,5 @@
-import * as Rx from "rxjs-compat";
-
+//import * as Rx from "rxjs-compat";
+import {Observable} from "rxjs";
 const R = require('ramda');
 
 export class ChannelUtilsDom {
@@ -13,7 +13,7 @@ export class ChannelUtilsDom {
       {passive: isPassive});
     let removeHandler = () => { window[eventName] = (p) => p; };
     mapFn = mapFn === undefined ? (p)=>p : mapFn;
-    return Rx.Observable.fromEventPattern(addHandler, removeHandler).map(mapFn);
+    return Observable.fromEventPattern(addHandler, removeHandler).map(mapFn);
   }
 
   // MEDIA QUERIES
@@ -48,7 +48,7 @@ export class ChannelUtilsDom {
       };
     };
     let mediaQueryHandler = handlers(query);
-    return new Rx.Observable.fromEventPattern(
+    return new Observable.fromEventPattern(
       mediaQueryHandler.addHandler,
       mediaQueryHandler.removeHandler)
       .map(mapKey);
@@ -65,7 +65,7 @@ export class ChannelUtilsDom {
     };
 
     R.mapObjIndexed(loopQueries, mediaQueriesObj);
-    // let obs$ = Rx.Observable.merge(...arr);
+    // let obs$ = Observable.merge(...arr);
     // console.log('arr is ',arr);
     return arr;
   }

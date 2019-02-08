@@ -29,21 +29,23 @@ module.exports = function(config) {
     // list of files / patterns to load in the browser
     files: [
 
-        {pattern: './node_modules/ramda/dist/ramda.min.js', watched:false},
+      {pattern: './node_modules/ramda/dist/ramda.min.js', watched:false},
 
       { pattern: './node_modules/rxjs/**/*.js', included: false, watched: false },
       { pattern: './node_modules/rxjs/*.js', included: false, watched: false },
-      { pattern: './node_modules/rxjs-compat/**/*.js', included: false, watched: false },
-      { pattern: './node_modules/rxjs-compat/*.js', included: false, watched: false },
-
 /*
-      {pattern: './node_modules/rxjs-compat/Rx.js', included: false, watched:false},
+      { pattern: './node_modules/rxjs-compat/!**!/!*.js', included: false, watched: false },
+      { pattern: './node_modules/rxjs-compat/!*.js', included: false, watched: false },
 */
 
-	    {pattern: './src/tests/*.test.js', watched: true},
-	    {pattern: './src/tests/channels/*.test.js', watched: true},
-	    {pattern: './src/tests/utils/*.test.js', watched: true},
-	    {pattern: './src/tests/views/*.test.js', watched: true}
+      /*
+            {pattern: './node_modules/rxjs-compat/Rx.js', included: false, watched:false},
+      */
+
+      {pattern: './src/tests/*.test.js', watched: true},
+      {pattern: './src/tests/channels/*.test.js', watched: true},
+      {pattern: './src/tests/utils/*.test.js', watched: true},
+      {pattern: './src/tests/views/*.test.js', watched: true}
     ],
 
 
@@ -58,10 +60,10 @@ module.exports = function(config) {
     // preprocess matching files before serving them to the browser
     // available preprocessors: https://npmjs.org/browse/keyword/karma-preprocessor
     preprocessors: {
-	    './src/tests/*.test.js' : ['webpack', 'coverage'],
-	    './src/tests/channels/*.test.js' : ['webpack', 'coverage'],
-	    './src/tests/utils/*.test.js' : ['webpack', 'coverage'],
-	    './src/tests/views/*.test.js' : ['webpack', 'coverage']
+      './src/tests/*.test.js' : ['webpack', 'coverage'],
+      './src/tests/channels/*.test.js' : ['webpack', 'coverage'],
+      './src/tests/utils/*.test.js' : ['webpack', 'coverage'],
+      './src/tests/views/*.test.js' : ['webpack', 'coverage']
     },
 
     webpack: webpackConfig,
@@ -74,16 +76,16 @@ module.exports = function(config) {
     // available reporters: https://npmjs.org/browse/keyword/karma-reporter
     reporters: ['coverage'],
 
-/*
-    coverageReporter: {
-      reporters: [
-          {type: 'lcov', dir: 'coverage/', subdir: '.'},
-          {type: 'text-summary'}
+    /*
+        coverageReporter: {
+          reporters: [
+              {type: 'lcov', dir: 'coverage/', subdir: '.'},
+              {type: 'text-summary'}
 
 
-      ]
-    },
-*/
+          ]
+        },
+    */
 
 
     coverageReporter: {
@@ -113,12 +115,12 @@ module.exports = function(config) {
 
 
 
-	  customLaunchers: {
-		  ChromeHeadlessNoSandbox: {
-			  base: 'ChromeHeadless',
-			  flags: ['--no-sandbox']
-		  }
-	  },
+    customLaunchers: {
+      ChromeHeadlessNoSandbox: {
+        base: 'ChromeHeadless',
+        flags: ['--no-sandbox']
+      }
+    },
 
 
 

@@ -2,14 +2,16 @@ import {ChannelsBase} from '../channels/channels-base';
 import {checkIfObjIsNotEmptyOrNil} from '../utils/frp-tools';
 import {ChannelUtilsDom} from '../utils/channel-util-dom';
 const R = require('ramda');
-import * as Rx from "rxjs-compat";
+//import * as Rx from "rxjs-compat";
+import {Observable, Subject} from "rxjs";
+//import {merge, map} from "rxjs/operators";
 
 
 export class ChannelWindow extends ChannelsBase {
   constructor() {
     super();
     this.bindStaticMethods();
-    this.observer$ = new Rx.Subject();
+    this.observer$ = new Subject();
     this.props.name = 'WINDOW';
   }
 
@@ -17,7 +19,7 @@ export class ChannelWindow extends ChannelsBase {
     this.domChannelConfig = window.Spyne.config.channels.WINDOW;
     this.currentScrollY = window.scrollY;
     let obs$Arr = this.getActiveObservables();
-    let dom$ = Rx.Observable.merge(...obs$Arr);
+    let dom$ = Observable.merge(...obs$Arr);
 
     dom$.subscribe(p => {
       let {action, channelPayload, srcElement, event} = p;
@@ -185,7 +187,7 @@ export class ChannelWindow extends ChannelsBase {
 
   getMediaQueryObservable(config) {
     let arr = this.createMergedObsFromObj(config);
-    return Rx.Observable.merge(...arr).map(this.getMediaQueryMapFn.bind(this));
+    return Observable.merge(...arr).map(this.getMediaQueryMapFn.bind(this));
   }
 
   addRegisteredActions() {
@@ -229,6 +231,7 @@ export class ChannelWindow extends ChannelsBase {
       'CHANNEL_WINDOW_FULLSCREENCHANGE_EVENT',
       'CHANNEL_WINDOW_FULLSCREENERROR_EVENT',
       'CHANNEL_WINDOW_CUT_EVENT',
+      'CHANNEL_WINDOW_WHEEL_EVENT',
       'CHANNEL_WINDOW_COPY_EVENT'
     ];
   }

@@ -1,7 +1,7 @@
 import {Enhancer} from '../mocks/enhancer.test';
 
 const R = require('ramda');
-import {ViewStreamEnhancer} from '../../spyne/views/view-stream-enhancer';
+import {SpyneTrait} from '../../spyne/views/spyne-trait';
 import {ViewStreamEnhancerLoader} from '../../spyne/views/view-stream-enhancer-loader';
 
 class MyClass {

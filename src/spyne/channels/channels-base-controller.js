@@ -5,7 +5,8 @@ import {ChannelUI} from './channel-ui';
 import {ChannelWindow} from './channel-window';
 import {validate} from '../utils/channel-config-validator';
 
-import * as Rx from "rxjs-compat";
+//import * as Rx from "rxjs-compat";
+import {Subject} from "rxjs";
 
 
 // const R = require('ramda');
@@ -16,8 +17,8 @@ export class ChannelsBaseController {
     this.map = new Map();
 
    // console.log('Rx is ',Rx);
-    // console.log('RX IS ', Rx.Subject);
-    this.map.set('DISPATCHER', new Rx.Subject());
+    // console.log('RX IS ', Subject);
+    this.map.set('DISPATCHER', new Subject());
   }
 
   init() {

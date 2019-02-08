@@ -5,8 +5,8 @@ import {fadein, fadeout} from '../utils/viewstream-animations';
 import {LifecyleObservables} from '../utils/viewstream-lifecycle-observables';
 import {deepMerge} from '../utils/deep-merge';
 
-import * as Rx from "rxjs-compat";
-
+//import * as Rx from "rxjs-compat";
+import {Subject, Observable} from "rxjs";
 const R = require('ramda');
 
 export class ViewToDomMediator {
@@ -32,8 +32,8 @@ export class ViewToDomMediator {
 
     this.$dirs = LifecyleObservables.createDirectionalFiltersObject();
     this.addDefaultDir = LifecyleObservables.addDefaultDir;
-    this.sourceStreams = LifecyleObservables.createDirectionalObservables(new Rx.Subject(), this.vsName, this.cid);
-    this._source$ = this.sourceStreams.toInternal$; //  new Rx.Subject();
+    this.sourceStreams = LifecyleObservables.createDirectionalObservables(new Subject(), this.vsName, this.cid);
+    this._source$ = this.sourceStreams.toInternal$; //  new Subject();
   }
   addActionListeners() {
     return [];
@@ -84,7 +84,7 @@ export class ViewToDomMediator {
       this.animateOutTween(el, d.animateOutTime, callback);
     };
 
-    let fadeOutObs = Rx.Observable.bindCallback(animateOut);
+    let fadeOutObs = Observable.bindCallback(animateOut);
     let onFadeoutCompleted = (e) => {
       // console.log('fade out completed ', e, d);
       this._source$.next({action:'READY_FOR_GC', $dir:this.$dirs.I});
@@ -113,7 +113,7 @@ export class ViewToDomMediator {
         this._source$.next(gcData);
       };
 
-      Rx.Observable.fromEvent(el, 'transitionend')
+      Observable.fromEvent(el, 'transitionend')
         .filter(e => e.target === el)
         .take(1)
         .subscribe(subscriber);

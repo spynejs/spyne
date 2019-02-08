@@ -1,4 +1,6 @@
-import * as Rx from "rxjs-compat";
+//import * as Rx from "rxjs-compat";
+import {Subject} from "rxjs";
+import { filter } from 'rxjs-compat';
 
 const R = require('ramda');
 export class LifecyleObservables {
@@ -39,7 +41,7 @@ export class LifecyleObservables {
     return this.addDefaultDir(p);
   }
 
-  static createDirectionalObservables(obs$ = new Rx.Subject(), viewName, cid) {
+  static createDirectionalObservables(obs$ = new Subject(), viewName, cid) {
     if (viewName!==undefined && cid !==undefined){
       obs$['viewName']=viewName;
       obs$['cid']=cid;
