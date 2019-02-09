@@ -1,7 +1,7 @@
 {
   "name": "spyne",
   "sideEffects": false,
-  "version": "0.8.22",
+  "version": "0.8.23",
   "description": "Modern, and efficient javascript frontend framework",
   "main": "lib/spyne.js",
   "module": "src/spyne/spyne.js",

@@ -107,6 +107,10 @@ export class DomItem {
     this.props.set('el', el);
   }
 
+  /**
+   * This method will render the DomElement
+   * @returns {*}
+   */
   render() {
     this.execute();
     return this.getProp('el');

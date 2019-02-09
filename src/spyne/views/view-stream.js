@@ -24,11 +24,11 @@ const R = require('ramda');
 export class ViewStream {
   /**
    * @module ViewStream
+   * @borrows DomItemSelectors as el$
    *
    * @desc
-   * The ViewStream object creates or references  a dom elment; the dom element can be as simple as a &#60;p&gt; tag, or the dom element can be a large dom chunk that is generated from data and an html template.
-   * <br><br>
-   * Generally, the idea is to extend the ViewStream class and add the custom values within the constructor function, but all of the values can be passed as parameters as well.
+   * The ViewStream is a special type of view that not only renders dom elements, but can be combined with other ViewStreams to create a 'smart' dom tree that automatically renders, change state and disposes of itself based on other ViewsStreams within its branch and based on subscribed channels.
+   *
    *
    * @example
    * // returns <h2>Hello World</h2>

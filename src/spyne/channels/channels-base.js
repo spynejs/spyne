@@ -11,6 +11,19 @@ import { Subject} from "rxjs";
 const R = require('ramda');
 
 export class ChannelsBase {
+  /**
+   * @module ChannelsBase
+   * @borrows UBU from YA
+   * @desc
+   * This is the Base of all Channels
+   *
+   *
+   * @constructorExamples ['new EXAMPLE1()', 'TESTING EXAMPLE 2']
+   *
+   * @constructor
+   * @param {object} props This json object takes in parameters to initialize the channel
+   *
+   */
   constructor(props = {}) {
     this.addMixins();
     this.addRegisteredActions.bind(this);
@@ -165,6 +178,12 @@ export class ChannelsBase {
     obs$.next(channelStreamItem);
   }
 
+
+  /**
+   *
+   * This method allows channels to subscribe to other channels.
+   * @param {String} channel The registered name of the requested channel.
+   */
   getChannel(channel) {
     let isValidChannel = c => registeredStreamNames().includes(c);
     let error = c => console.warn(
