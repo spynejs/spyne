@@ -2,7 +2,7 @@ import {baseStreamsMixins} from '../utils/mixins/base-streams-mixins';
 import {ifNilThenUpdate, convertDomStringMapToObj} from '../utils/frp-tools';
 
 //import * as Rx from "rxjs-compat";
-import {Observable} from "rxjs";
+import {Observable, fromEvent} from "rxjs";
 const R = require('ramda');
 
 export class ViewStreamBroadcaster {
@@ -67,7 +67,7 @@ export class ViewStreamBroadcaster {
     let addObservable = (q) => {
       // the  btn observable
       let observable = event !== 'dblClick'
-        ? Observable.fromEvent(q, event)
+        ? fromEvent(q, event)
         : this.addDblClickEvt(q);
       // select channel and data values from either the array or the element's dom Map
       channel =  q.dataset.channel;//ifNilThenUpdate(chnl, q.dataset.channel);

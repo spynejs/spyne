@@ -1,6 +1,6 @@
 //import * as Rx from "rxjs-compat";
 import {Subject} from "rxjs";
-import { filter } from 'rxjs-compat';
+import { filter, map } from 'rxjs/operators';
 
 const R = require('ramda');
 export class LifecyleObservables {
@@ -58,12 +58,12 @@ export class LifecyleObservables {
     const addChildfrom$ = addfrom$('parent');
 
     const raw$ =  obs$
-      .filter((payload) => payload !== undefined && payload.action !== undefined);
+      .pipe(filter((payload) => payload !== undefined && payload.action !== undefined));
     // .filter(p => p.$dir !== undefined)
     // .do(p => console.log('payload : ', p.$dir, p));
-    const toInternal$ = obs$.filter(filterInternal).map(addInternalfrom$);
-    const toParent$ = obs$.filter(filterParent).map(addParentfrom$);
-    const toChild$ = obs$.filter(filterChild).map(addChildfrom$);
+    const toInternal$ = obs$.pipe(filter(filterInternal), map(addInternalfrom$));
+    const toParent$ = obs$.pipe(filter(filterParent), map(addParentfrom$));
+    const toChild$ = obs$.pipe(filter(filterChild), map(addChildfrom$));
     // const upObs$ = obs$.do(p => console.log('UP: ', p));
     const streamObj = {
       parent: toParent$,

@@ -1,5 +1,6 @@
 //import * as Rx from "rxjs-compat";
-import {Observable} from "rxjs";
+import {Observable, fromEventPattern} from "rxjs";
+import {map} from "rxjs/operators";
 const R = require('ramda');
 
 export class ChannelUtilsDom {
@@ -13,7 +14,7 @@ export class ChannelUtilsDom {
       {passive: isPassive});
     let removeHandler = () => { window[eventName] = (p) => p; };
     mapFn = mapFn === undefined ? (p)=>p : mapFn;
-    return Observable.fromEventPattern(addHandler, removeHandler).map(mapFn);
+    return fromEventPattern(addHandler, removeHandler).pipe(map(mapFn));
   }
 
   // MEDIA QUERIES
@@ -48,10 +49,10 @@ export class ChannelUtilsDom {
       };
     };
     let mediaQueryHandler = handlers(query);
-    return new Observable.fromEventPattern(
+    return new fromEventPattern(
       mediaQueryHandler.addHandler,
       mediaQueryHandler.removeHandler)
-      .map(mapKey);
+      .pipe(map(mapKey));
   }
 
   static createMergedObsFromObj(config) {

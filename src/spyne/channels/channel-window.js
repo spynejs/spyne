@@ -3,8 +3,8 @@ import {checkIfObjIsNotEmptyOrNil} from '../utils/frp-tools';
 import {ChannelUtilsDom} from '../utils/channel-util-dom';
 const R = require('ramda');
 //import * as Rx from "rxjs-compat";
-import {Observable, Subject} from "rxjs";
-//import {merge, map} from "rxjs/operators";
+import {Observable, Subject, merge} from "rxjs";
+import {mergeMap, map, debounceTime, skipWhile} from "rxjs/operators";
 
 
 export class ChannelWindow extends ChannelsBase {
@@ -19,7 +19,7 @@ export class ChannelWindow extends ChannelsBase {
     this.domChannelConfig = window.Spyne.config.channels.WINDOW;
     this.currentScrollY = window.scrollY;
     let obs$Arr = this.getActiveObservables();
-    let dom$ = Observable.merge(...obs$Arr);
+    let dom$ = merge(...obs$Arr);
 
     dom$.subscribe(p => {
       let {action, channelPayload, srcElement, event} = p;
@@ -98,11 +98,13 @@ export class ChannelWindow extends ChannelsBase {
 
   createScrollObservable(config) {
     const skipWhenDirIsMissing = evt => evt.scrollDistance === 0;
-    const debounceTime = config.debounceMSTimeForScroll;
+    const dTime = config.debounceMSTimeForScroll;
     return ChannelUtilsDom.createDomObservableFromEvent('scroll',
       ChannelWindow.getScrollMapFn.bind(this))
-      .debounceTime(debounceTime)
-      .skipWhile(skipWhenDirIsMissing);
+      .pipe(
+          debounceTime(dTime),
+          skipWhile(skipWhenDirIsMissing)
+      );
   }
 
   createOrientationObservable(config) {
@@ -112,11 +114,11 @@ export class ChannelWindow extends ChannelsBase {
   }
 
   createResizeObservable(config) {
-    const debounceTime = config.debounceMSTimeForResize;
+    const dTime = config.debounceMSTimeForResize;
     // console.log('resize this ', this);
 
     return ChannelUtilsDom.createDomObservableFromEvent('resize',
-      ChannelWindow.getResizeMapFn.bind(this)).debounceTime(debounceTime);
+      ChannelWindow.getResizeMapFn.bind(this)).pipe(debounceTime(dTime));
   }
 
   getEventsFromConfig(config = this.domChannelConfig){
@@ -187,7 +189,8 @@ export class ChannelWindow extends ChannelsBase {
 
   getMediaQueryObservable(config) {
     let arr = this.createMergedObsFromObj(config);
-    return Observable.merge(...arr).map(this.getMediaQueryMapFn.bind(this));
+    let obs$ = merge(arr[0], arr[1]);
+    return obs$.pipe(map(this.getMediaQueryMapFn.bind(this)));
   }
 
   addRegisteredActions() {

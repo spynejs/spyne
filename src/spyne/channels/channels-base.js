@@ -4,7 +4,7 @@ import {deepMerge} from '../utils/deep-merge';
 // import {baseCoreMixins}    from '../utils/mixins/base-core-mixins';
 // import {BaseStreamsMixins} from '../utils/mixins/base-streams-mixins';
 import { Subject} from "rxjs";
-//import {merge, map} from "rxjs/operators";
+import {map} from "rxjs/operators";
 
 //import * as Rx from "rxjs-compat";
 
@@ -141,7 +141,7 @@ export class ChannelsBase {
       observableData: obj.data,
       observableEvent: obsVal
     });
-    let onSuccess = (obj) => obj.observable.map(dataObj)
+    let onSuccess = (obj) => obj.observable.pipe(map(dataObj))
       .subscribe(this.getActionMethodForObservable(obj));
     let onError = () => {};
     return eqsName === true ? onSuccess(obj) : onError();

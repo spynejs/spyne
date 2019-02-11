@@ -2,8 +2,8 @@ import {ChannelsBase} from '../channels/channels-base';
 import {URLUtils} from '../utils/channel-util-urls';
 import {RouteUtils} from '../utils/channel-util-route';
 //import * as Rx from "rxjs-compat";
-import {BehaviorSubject, Observable, of} from "rxjs";
-import {merge, map} from "rxjs/operators";
+import {BehaviorSubject, Observable, of, merge} from "rxjs";
+import {map} from "rxjs/operators";
 
 
 const R = require('ramda');
@@ -16,7 +16,7 @@ export class ChannelRoute extends ChannelsBase {
     this.routeConfigJson = this.getRouteConfig();
     this.bindStaticMethods();
     this.navToStream$ = new BehaviorSubject();
-    this.observer$ = this.navToStream$.map(info => this.onMapNext(info));
+    this.observer$ = this.navToStream$.pipe(map(info => this.onMapNext(info)));
 
   }
 
@@ -56,7 +56,7 @@ export class ChannelRoute extends ChannelsBase {
         '' + 'CHANNEL_ROUTE_DEEPLINK_EVENT'));
     RouteUtils.createPopStateStream(this.onIncomingDomEvent.bind(this));
 
-    this.observer$ = Observable.merge(this.firstLoadStream$,
+    this.observer$ = merge(this.firstLoadStream$,
       this.navToStream$);
   }
 

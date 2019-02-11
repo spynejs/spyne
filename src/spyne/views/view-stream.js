@@ -17,8 +17,8 @@ import {LifecyleObservables} from '../utils/viewstream-lifecycle-observables';
 import {DomItemSelectors} from './dom-item-selectors';
 
 //import * as Rx from "rxjs-compat";
-import {Subject, Observable} from "rxjs";
-import {merge, mergeMap, map,takeWhile,filter} from "rxjs/operators";
+import {Subject, Observable, merge} from "rxjs";
+import {mergeMap, map,takeWhile,filter, tap, finalize} from "rxjs/operators";
 const R = require('ramda');
 
 export class ViewStream {
@@ -181,8 +181,8 @@ export class ViewStream {
   //  =====================================================================
   // ====================== MAIN STREAM METHODS ==========================
   initViewStream() {
-    this._source$ = this._rawSource$.map(
-      (payload) => this.onMapViewSource(payload)).takeWhile(this.notGCSTATE);
+    this._source$ = this._rawSource$.pipe(map(
+      (payload) => this.onMapViewSource(payload)), takeWhile(this.notGCSTATE));
 
     this.initAutoMergeSourceStreams();
     this.updateSourceSubscription(this._source$, true);
@@ -221,9 +221,10 @@ export class ViewStream {
       return data;
     };
 
-    this.parent$ = obs.filter(filterOutNullData)
-      .map(checkIfDisposeOrFadeout)
-      .takeWhile(this.notGCCOMPLETE);
+    this.parent$ = obs.pipe(
+        filter(filterOutNullData),
+      map(checkIfDisposeOrFadeout),
+      takeWhile(this.notGCCOMPLETE));
     this.updateSourceSubscription(this.parent$, false, 'PARENT');
     this.renderAndAttachToParent(attachData);
   }
@@ -231,13 +232,13 @@ export class ViewStream {
   addChildStream(obs$) {
     let filterOutNullData = (data) => data !== undefined && data.action !==
         undefined;
-    let child$ = obs$.filter(filterOutNullData)
-      .do(p => this.tracer('addChildStraem do ', p))
-      .map((p) => {
+    let child$ = obs$.pipe(
+        filter(filterOutNullData),
+      tap(p => this.tracer('addChildStraem do ', p)),
+      map((p) => {
         return p;
-      })
-      // .takeWhile(this.notGCSTATE)
-      .finally(p => this.onChildCompleted(child$.source));
+      }),
+      finalize(p => this.onChildCompleted(child$.source)));
     this.updateSourceSubscription(child$, true, 'CHILD');
   }
 
@@ -309,7 +310,7 @@ export class ViewStream {
         return branchObservable$;
       } else {
         incrementObservablesThatCloses();
-        return branchObservable$.finally(decrementOnObservableClosed);
+        return branchObservable$.pipe(finalize(decrementOnObservableClosed));
       }
     }));
     // ============================= SUBSCRIBER ==============================
@@ -711,9 +712,8 @@ export class ViewStream {
     let error = c => console.warn(
       `channel name ${c} is not within ${registeredStreamNames}`);
     let startSubscribe = (c) => {
-      return window.Spyne.channels.getStream(c)
-        .observer
-      .pipe(takeWhile(p => this.deleted !== true));
+      let obs$ = window.Spyne.channels.getStream(c).observer;
+      return obs$.pipe(takeWhile(p => this.deleted !== true));
     };// getGlobalParam('streamsController').getStream(c).observer;
 
     let fn = R.ifElse(isValidChannel, startSubscribe, error);

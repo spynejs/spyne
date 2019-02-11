@@ -2,7 +2,7 @@ import {ChannelsBase} from '../channels/channels-base';
 const R = require('ramda');
 //import * as Rx from "rxjs-compat";
 import {Observable} from "rxjs";
-//import {fromEvent} from "rxjs/operators";
+import {map} from "rxjs/operators";
 
 
 export class ChannelUI extends ChannelsBase {
@@ -69,7 +69,7 @@ export class ChannelUI extends ChannelsBase {
   onIncomingObservable(obj) {
     let eqsName = R.equals(obj.name, this.props.name);
     let dataObj = obsVal => ({observableData: obj.data, uiEvent: obsVal});
-    let onSuccess = (obj) => obj.observable.map(dataObj)
+    let onSuccess = (obj) => obj.observable.pipe(map(dataObj))
       .subscribe(this.onUIEvent.bind(this));
     let onError = () => {};
     return eqsName === true ? onSuccess(obj) : onError();

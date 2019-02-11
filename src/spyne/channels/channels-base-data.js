@@ -4,8 +4,8 @@ import {ChannelsBase} from './channels-base';
 import {ChannelStreamItem} from './channel-stream-item';
 //import  'whatwg-fetch';
 // const R = require('ramda');
-import {AsyncSubject, Observable} from "rxjs";
-//import {flatMap, map} from "rxjs/operators";
+import {AsyncSubject, Observable, from} from "rxjs";
+import {flatMap, map, multicast} from "rxjs/operators";
 
 export class ChannelsBaseData extends ChannelsBase {
   constructor(props = {}) {
@@ -32,11 +32,11 @@ export class ChannelsBaseData extends ChannelsBase {
       return new ChannelStreamItem(this.props.name, action, payload);
     };
 
-    let response$ = Observable.fromPromise(window.fetch(this.props.dataUrl))
-      .flatMap(r => Observable.fromPromise(r.json()))
-      .map(mapFn)
-      .map(createChannelStreamItem)
-      .multicast(this.observer$);
+    let response$ = from(window.fetch(this.props.dataUrl))
+      .pipe(flatMap(r => from(r.json())),
+      map(mapFn),
+      map(createChannelStreamItem),
+      multicast(this.observer$));
 
     response$.connect();
   }
