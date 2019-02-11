@@ -4,9 +4,10 @@ const webpackEnv = {test:true};
 //const webpackConfig = require("./webpack.config")(webpackEnv);
 const webpackConfig = require("./webpack.config");
 webpackConfig.mode = 'development';
+webpackConfig.output.filename='[name].[hash:8].js';
 const fileGlob =  './src/tests/index.test.js';
 process.env.BABEL_ENV = 'test';
-
+//const rxjs = require("rxjs");
 
 
 module.exports = function(config) {
@@ -21,6 +22,10 @@ module.exports = function(config) {
     basePath: '',
 
 
+    output:{
+
+    },
+
     // frameworks to use
     // available frameworks: https://npmjs.org/browse/keyword/karma-adapter
     frameworks: ['mocha', 'chai'],
@@ -31,11 +36,13 @@ module.exports = function(config) {
 
       {pattern: './node_modules/ramda/dist/ramda.min.js', watched:false},
 
-      { pattern: './node_modules/rxjs/**/*.js', included: false, watched: false },
-      { pattern: './node_modules/rxjs/*.js', included: false, watched: false },
-/*
-      { pattern: './node_modules/rxjs-compat/!**!/!*.js', included: false, watched: false },
-      { pattern: './node_modules/rxjs-compat/!*.js', included: false, watched: false },
+      { pattern: './node_modules/rxjs/*.js', included:false,   watched: false },
+      { pattern: './node_modules/rxjs/**/*.js', included:false,    watched: false },
+
+
+
+ /*     { pattern: './node_modules/rxjs-compat/!**!/!*.js', included: true, watched: false },
+      { pattern: './node_modules/rxjs-compat/!*.js', included: true, watched: false },
 */
 
       /*
@@ -43,7 +50,9 @@ module.exports = function(config) {
       */
 
       {pattern: './src/tests/*.test.js', watched: true},
+
       {pattern: './src/tests/channels/*.test.js', watched: true},
+
       {pattern: './src/tests/utils/*.test.js', watched: true},
       {pattern: './src/tests/views/*.test.js', watched: true}
     ],
@@ -60,7 +69,7 @@ module.exports = function(config) {
     // preprocess matching files before serving them to the browser
     // available preprocessors: https://npmjs.org/browse/keyword/karma-preprocessor
     preprocessors: {
-      './src/tests/*.test.js' : ['webpack', 'coverage'],
+     './src/tests/*.test.js' : ['webpack', 'coverage'],
       './src/tests/channels/*.test.js' : ['webpack', 'coverage'],
       './src/tests/utils/*.test.js' : ['webpack', 'coverage'],
       './src/tests/views/*.test.js' : ['webpack', 'coverage']

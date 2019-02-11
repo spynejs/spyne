@@ -8,9 +8,11 @@ const env = require('yargs').argv.env; // use --env with webpack 2
 const libraryName = 'spyne';
 let devToolValue = 'eval-source-map';
 let outputFile;
+let externalsArr =[];
 let viewStreamFile = path.join(__dirname, '/src/spyne/views/view-stream.js');
 let optimizeFile = path.join(__dirname, '/src/spyne/utils/optimize-class.js');
 let channelStreamItemFile = path.join(__dirname, '/src/spyne/channels/channel-stream-item.js');
+const WebpackRxjsExternals = require('webpack-rxjs-externals');
 
 const loaderOptionsPlugin = new webpack.LoaderOptionsPlugin({ options: {
     test: /(\.js)$/,
@@ -64,6 +66,15 @@ if (env === 'build') {
  //plugins.push(  new BundleAnalyzerPlugin());
   outputFile = libraryName + '.min.js';
   devToolValue = 'none';
+  externalsArr = [
+    WebpackRxjsExternals(),
+    {ramda : {
+        commonjs: 'ramda',
+        commonjs2: 'ramda',
+        amd: 'ramda',
+        root: 'R'
+      }}
+  ];
 } else {
   outputFile = libraryName + '.js';
 }
@@ -86,20 +97,7 @@ const config = {
   },
 
 
-  externals: {
-    rxjs: {
-      commonjs: 'rxjs',
-      commonjs2: 'rxjs',
-      amd: 'rxjs',
-      root: 'Rx'
-    },
-    ramda : {
-      commonjs: 'ramda',
-      commonjs2: 'ramda',
-      amd: 'ramda',
-      root: 'R'
-    }
-     },
+  externals: externalsArr,
 
   module: {
     rules: [
