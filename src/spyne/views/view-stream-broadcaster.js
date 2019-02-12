@@ -3,6 +3,7 @@ import {ifNilThenUpdate, convertDomStringMapToObj} from '../utils/frp-tools';
 
 //import * as Rx from "rxjs-compat";
 import {Observable, fromEvent} from "rxjs";
+import {filter, map, buffer,debounceTime} from "rxjs/operators";
 const R = require('ramda');
 
 export class ViewStreamBroadcaster {
@@ -14,16 +15,17 @@ export class ViewStreamBroadcaster {
   }
 
   addDblClickEvt(q) {
-    let dblclick$ = Observable.fromEvent(q, 'click');
+    let dblclick$ = fromEvent(q, 'click');
     // console.log('ADDING DBL CLICK ', q);
-    let stream$ = dblclick$.buffer(dblclick$.debounceTime(250))
-      .filter(p => p.length === 2)
-      .map(p => {
+    let stream$ = dblclick$.pipe(
+        buffer(dblclick$.pipe(debounceTime(250))),
+      filter(p => p.length === 2),
+      map(p => {
         let data = R.clone(p[0]);
         // ADD DOUBLECLICK TO UI EVENTS
         data['typeOverRide'] = 'dblclick';
         return data;
-      });
+      }));
     return stream$;
   }
 
