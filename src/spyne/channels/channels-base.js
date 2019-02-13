@@ -13,15 +13,15 @@ const R = require('ramda');
 export class ChannelsBase {
   /**
    * @module ChannelsBase
-   * @borrows UBU from YA
    * @desc
-   * This is the Base of all Channels
+   * This class is extended when creating a new Channel.
    *
    *
    * @constructorExamples ['new EXAMPLE1()', 'TESTING EXAMPLE 2']
    *
    * @constructor
    * @param {object} props This json object takes in parameters to initialize the channel
+   * @property {Subject} this.observer$ = new Subject(); Depending on required behavior, this can be a Subject, BehaviorSubject or AsynSubject.
    *
    */
   constructor(props = {}) {
@@ -182,7 +182,8 @@ export class ChannelsBase {
   /**
    *
    * This method allows channels to subscribe to other channels.
-   * @param {String} channel The registered name of the requested channel.
+   * @property {String} channel The registered name of the requested channel.
+   * @returns {Subject} This will return the observer$ Subject variable.
    */
   getChannel(channel) {
     let isValidChannel = c => registeredStreamNames().includes(c);

@@ -40,7 +40,7 @@ export class ViewStream {
    *    <li>lastName: Doe<li>
    *    <li>Age: 23<li>
    * </ul>
-   *
+   *R.map(updateProperties),
    * let myTemplate = '<li>firstName: {{fName}}<li>lastName: {{lName}}<li>Age: {{age}}';
    * let myData = {fName: Jane, lName: Doe, age:23};
    * new ViewStream({tagName:'ul', data:myData, template:myTemplate});
@@ -49,16 +49,16 @@ export class ViewStream {
    *
    * @constructor
    * @param {object} props This json object takes in parameters to generate or reference the dom element
-   * @property {string} props.tagName  - 'div'  This can be any dom tag
-   * @property {domItem} props.el undefined, if defined, ViewStream will connect to that element
-   * @property {string|object} props.data undefined, // string for innerText or Json object for html template
-   * @property {boolean} props.animateIn - false, animates in View
-   * @property {number} props.animateInTime - .5
-   * @property {boolean} props.animateOut false, animates in View
-   * @property {number} props.animateOutTime .5
-   * @property {string} props.id - undefined, generates a random id if left undefined
-   * @property {boolean} props.debug false
-   * @property {template} props.template undefined, // html template
+   * @property {string} props.tagName - = 'div'; This can be any dom tag
+   * @property {domItem} props.el - = undefined; if defined, ViewStream will connect to that element
+   * @property {string|object} props.data - = undefined;  string for innerText or Json object for html template
+   * @property {boolean} props.animateIn - = false; animates in View
+   * @property {number} props.animateInTime - = .5;
+   * @property {boolean} props.animateOut - = false; animates in View
+   * @property {number} props.animateOutTime - = .5;
+   * @property {string} props.id - = undefined; generates a random id if left undefined
+   * @property {boolean} props.debug - = false;
+   * @property {template} props.template - = undefined; html template
    *
    */
   constructor(props = {}) {
@@ -491,8 +491,8 @@ export class ViewStream {
   }
 
   /**
-   *  Appends a ViewStream object to an existing dom element.
-   *  @param {dom} node the ViewStream child that is to be attached.
+   * Appends a ViewStream object to an existing dom element.
+   * @property {dom} node the ViewStream child that is to be attached.
    * @example
    * //  returns
    * <body>
@@ -509,7 +509,7 @@ export class ViewStream {
 
   /**
    * Prepends the current ViewStream object to an existing dom element.
-   * @param {dom} node the ViewStream child that is to be attached.
+   * @property {dom} node the ViewStream child that is to be attached.
    *
    * @example
    * this.prependToDom(document.body);
@@ -522,8 +522,8 @@ export class ViewStream {
 
   /**
    * This method appends a child ViewStream object. <br>After the attachment, rxjs observables are exchanged between the parent and child ViewStream objects.<br><br>
-   * @param {ViewStream} v the ViewStream child that is to be attached.
-   * @param {string} query a querySelector within this ViewStream.
+   * @property {ViewStream} v the ViewStream child that is to be attached.
+   * @property {string} query a querySelector within this ViewStream.
    *
    * @example
    * //  returns
@@ -547,9 +547,9 @@ export class ViewStream {
 
   /**
    * This method appends a child ViewStream object to a parent ViewStream object.
-   * @param {ViewStream} v the ViewStream parent.
-   * @param {string} query a querySelector within this ViewStream.
-   * @param {level} this parameters can attach the viewStream's dom element up the dom tree while still maintaining the parent-child relationship of the ViewStream objects.
+   * @property {ViewStream} v the ViewStream parent.
+   * @property {string} query a querySelector within this ViewStream.
+   * @property {level} this parameters can attach the viewStream's dom element up the dom tree while still maintaining the parent-child relationship of the ViewStream objects.
    *
    * @example
    * //  returns
@@ -575,9 +575,9 @@ export class ViewStream {
 
   /**
    * This method prepends a child ViewStream object to a parent ViewStream object.
-   * @param {ViewStream} v the ViewStream parent.
-   * @param {string} query a querySelector within this ViewStream.
-   * @param {number} level this parameter can attach the viewStream's dom element up the dom tree while still maintaining the parent-child relationship of the ViewStream objects.
+   * @property {ViewStream} v the ViewStream parent.
+   * @property {string} query a querySelector within this ViewStream.
+   * @property {number} level this parameter can attach the viewStream's dom element up the dom tree while still maintaining the parent-child relationship of the ViewStream objects.
    *
    * @example
    * let parentView = new ViewStream('main');
@@ -596,8 +596,8 @@ export class ViewStream {
    *
    *
    * This method prepends a child ViewStream object to the current ViewStream object. <br>After the attachment, rxjs observables are exchanged between the parent and child ViewStream objects.<br><br>
-   * @param {ViewStream} v the ViewStream child that is to be attached.
-   * @param {string} query a querySelector within this ViewStream.
+   * @property {ViewStream} v the ViewStream child that is to be attached.
+   * @property {string} query a querySelector within this ViewStream.
    *
    * @example
    * //  returns
@@ -727,9 +727,9 @@ export class ViewStream {
    *
    * Add Channel will automatically unsubscribe to the channel, whereas the getChannel method requires the developer to manually unsubscribe.
    *
-   * @param {string} str The name of the registered Channel that was added to the Channels Controller.
-   * @param {boolean} bool false, add true if the View should wait for this channel to unsubscribe before removing itself.
-   * @param {sendDownStream} bool The direction where the stream is allowed to travel.
+   * @property {string} str The name of the registered Channel that was added to the Channels Controller.
+   * @property {boolean} bool false, add true if the View should wait for this channel to unsubscribe before removing itself.
+   * @property {sendDownStream} bool The direction where the stream is allowed to travel.
    *
    * @example
    *
@@ -774,9 +774,9 @@ export class ViewStream {
 
   /**
    * Method to send data to any registered channel.
-   * @param {string} channelName The name of the registered Channel that was added to the Channels Controller.
-   * @param {string} action The event type that listeners can point to.
-   * @param {object} payload {}, The main data to send to the channel.
+   * @property {string} channelName The name of the registered Channel that was added to the Channels Controller.
+   * @property {string} action The event type that listeners can point to.
+   * @property {object} payload {}, The main data to send to the channel.
    * @example
    * let payload = {'location' : 'about'};
    * let action = 'PAGE_CHANGE_EVENT';

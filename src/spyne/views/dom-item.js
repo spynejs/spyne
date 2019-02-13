@@ -18,6 +18,11 @@ export class DomItem {
    * @param {object} attributes any domElement attribute (except for class )
    * @param {string|object} content string for text tags and json for templates
    * @param {template} template
+   * @property {String} props.tagName = 'div'; Default for tagName.
+   * @property {Object} props.attributes = {};
+   * @property {String|Object} props.content = undefined; This is either a String for an element or JSON data object for a template.
+   * @property {String|HTML} props.template = undefined; If a template is defined, the DomItem will use it.
+   *
    */
 
   constructor(tagName = 'div', attributes = {}, content = undefined, template = undefined) {
@@ -108,8 +113,8 @@ export class DomItem {
   }
 
   /**
-   * This method will render the DomElement
-   * @returns {*}
+   * This method will render the HTML Element
+   * @returns {HTML} el - The HTML element.
    */
   render() {
     this.execute();
