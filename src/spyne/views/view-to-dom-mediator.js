@@ -6,7 +6,8 @@ import {LifecyleObservables} from '../utils/viewstream-lifecycle-observables';
 import {deepMerge} from '../utils/deep-merge';
 
 //import * as Rx from "rxjs-compat";
-import {Subject, Observable} from "rxjs";
+import {Subject, Observable, bindCallback} from "rxjs";
+
 const R = require('ramda');
 
 export class ViewToDomMediator {
@@ -78,16 +79,20 @@ export class ViewToDomMediator {
     }
   }
 
-  disposeMethodOld(d) {
+  disposeMethod(d) {
+    let el = d.el.el !== undefined ? d.el.el : d.el; // DOM ITEMS HAVE THEIR EL ITEMS NESTED
+
+    const gcData = {action:'READY_FOR_GC', $dir:this.$dirs.PI, el};
+
+
     let animateOut = (d, callback) => {
-      let el = d.el.el !== undefined ? d.el.el : d.el; // DOM ITEMS HAVE THEIR EL ITEMS NESTED
       this.animateOutTween(el, d.animateOutTime, callback);
     };
 
-    let fadeOutObs = Observable.bindCallback(animateOut);
+    let fadeOutObs = bindCallback(animateOut);
     let onFadeoutCompleted = (e) => {
       // console.log('fade out completed ', e, d);
-      this._source$.next({action:'READY_FOR_GC', $dir:this.$dirs.I});
+      this._source$.next(gcData);
     };
 
     let onFadeoutObs = (d) => {
@@ -95,12 +100,12 @@ export class ViewToDomMediator {
         .subscribe(onFadeoutCompleted);
       return {action:'DISPOSING', $dir:this.$dirs.CI};
     };
-    let onEmptyObs = () => ({action:'DISPOSE_AND_READY_FOR_GC', $dir:this.$dirs.PCI});
+    let onEmptyObs = () => ({action:'DISPOSE_AND_READY_FOR_GC', $dir:this.$dirs.CI});
     let fn = d.animateOut === true ? onFadeoutObs : onEmptyObs;
     return fn(d);
   }
 
-  disposeMethod(d) {
+  disposeMethod1(d) {
     let onFadeoutObs = () => {
       let el = d.el.el !== undefined ? d.el.el : d.el; // DOM ITEMS HAVE THEIR EL ITEMS NESTED
       const gcData = {action:'READY_FOR_GC', $dir:this.$dirs.PI, el};
