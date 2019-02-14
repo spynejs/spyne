@@ -13,8 +13,8 @@ export class ChannelViewStreamLifecycle extends ChannelsBase {
 
   addRegisteredActions() {
     return [
-      'VIEWSTREAM_RENDERED',
-      'VIEWSTREAM_DISPOSED'
+      'CHANNEL_VIEWSTREAM_LIFECYCLE_RENDERED_EVENT',
+      'CHANNEL_VIEWSTREAM_LIFECYCLE_REMOVED_EVENT'
     ];
   }
 
@@ -22,6 +22,7 @@ export class ChannelViewStreamLifecycle extends ChannelsBase {
     let data = obj.observableData;
     let action = data.action;
     let payload = R.prop('srcElement', data);
+    payload['action'] = action;
     this.onSendEvent(action, payload);
   }
 

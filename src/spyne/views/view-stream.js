@@ -821,9 +821,9 @@ export class ViewStream {
 
 
     if (isRendered === true){
-      this.sendChannelPayload('VIEWSTREAM_LIFECYCLE', {action:'VIEWSTREAM_RENDERED'}, 'VIEWSTREAM_RENDERED');
+      this.sendChannelPayload('VIEWSTREAM_LIFECYCLE', {action:'CHANNEL_VIEWSTREAM_LIFECYCLE_RENDERED_EVENT'}, 'CHANNEL_VIEWSTREAM_LIFECYCLE_RENDERED_EVENT');
     } else if (isDisposed === true){
-       this.sendChannelPayload('VIEWSTREAM_LIFECYCLE', {action:'VIEWSTREAM_DISPOSED'}, 'VIEWSTREAM_DISPOSED');
+       this.sendChannelPayload('VIEWSTREAM_LIFECYCLE', {action:'CHANNEL_VIEWSTREAM_LIFECYCLE_REMOVED_EVENT'}, 'CHANNEL_VIEWSTREAM_LIFECYCLE_REMOVED_EVENT');
     }
 
 
