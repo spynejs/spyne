@@ -17,7 +17,7 @@ import {LifecyleObservables} from '../utils/viewstream-lifecycle-observables';
 import {DomItemSelectors} from './dom-item-selectors';
 
 //import * as Rx from "rxjs-compat";
-import {Subject, Observable, merge} from "rxjs";
+import {Subject, Observable, merge, of} from "rxjs";
 import {mergeMap, map,takeWhile,filter, tap, finalize} from "rxjs/operators";
 const R = require('ramda');
 
@@ -56,8 +56,8 @@ export class ViewStream {
    * @property {number} props.animateInTime - = .5;
    * @property {boolean} props.animateOut - = false; animates in View
    * @property {number} props.animateOutTime - = .5;
+   * @property {boolean} props.sendLifecyleEvents = false; When set to true, the view will automatically send its rendering and disposing events to the VIEW_LIFECYCLE Channel.
    * @property {string} props.id - = undefined; generates a random id if left undefined
-   * @property {boolean} props.debug - = false;
    * @property {template} props.template - = undefined; html template
    *
    */
@@ -77,6 +77,7 @@ export class ViewStream {
         animateInTime: 0.5,
         animateOut: false,
         animateOutTime: 0.5,
+        sendLifecyleEvents: false,
         hashId: `#${id}`,
         viewClass: ViewToDomMediator,
         extendedSourcesHashMethods: {},
@@ -92,6 +93,7 @@ export class ViewStream {
     this.addDownInternalDir = LifecyleObservables.addDownInternalDir;
     //this.props = Object.assign({}, this.defaults(), props);
     this.props = deepMerge(this.defaults(), props);
+    this.sendLifecycleMethod = this.props.sendLifecyleEvents === true ? this.sendLifecycleMethodActive.bind(this) : this.sendLifecycleMethodInactive.bind(this);
     //window.Spyne['config'] = deepMerge(defaultConfig, config);// Object.assign({}, defaultConfig, config);// config !== undefined ? config : defaultConfig;
     let attributesArr = ['id', 'class', 'dataset'];
     const addToAttributes = (arr) => attributesArr.concat(arr);
@@ -787,16 +789,48 @@ export class ViewStream {
   sendChannelPayload(channelName, payload = {},  action="VIEWSTREAM_EVENT") {
     let data = {payload, action};
     data['srcElement'] = {};// R.pick(['cid','viewName'], data);
-    data.srcElement['cid'] = this.props.id;
+    data.srcElement['cid'] = R.path(['props','cid'],this);;
+    data.srcElement['id'] = R.path(['props','id'],this);;
     data.srcElement['isLocalEvent'] = false;
     data.srcElement['viewName'] = this.props.name;
-    let obs$ = Observable.of(data);
+    let obs$ = of(data);
     return new ChannelsPayload(channelName, obs$, data);
   }
 
-  tracer() {
+  tracer(...args) {
+
+    this.sendLifecycleMethod(...args);
+  }
+  sendLifecycleMethodInactive(){
+
 
   }
+
+  sendLifecycleMethodActive(val,p){
+    let id =  R.path(['props','cid'], this);
+    let action = R.prop('action', p);
+
+
+
+    let isRendered = R.where({
+      from$: R.equals('internal'),
+      action: R.equals('RENDERED_AND_ATTACHED_TO_PARENT')
+
+    }, p);
+    let isDisposed = p === 'GARBAGE_COLLECT';
+
+
+    if (isRendered === true){
+      this.sendChannelPayload('VIEWSTREAM_LIFECYCLE', {action:'VIEWSTREAM_RENDERED'}, 'VIEWSTREAM_RENDERED');
+    } else if (isDisposed === true){
+       this.sendChannelPayload('VIEWSTREAM_LIFECYCLE', {action:'VIEWSTREAM_DISPOSED'}, 'VIEWSTREAM_DISPOSED');
+    }
+
+
+
+
+  }
+
 
   isLocalEvent(channelStreamItem) {
     const itemEl = R.path(['srcElement', 'el'], channelStreamItem);

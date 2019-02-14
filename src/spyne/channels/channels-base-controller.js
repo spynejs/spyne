@@ -3,6 +3,7 @@
 import {ChannelRoute} from './channel-route';
 import {ChannelUI} from './channel-ui';
 import {ChannelWindow} from './channel-window';
+import {ChannelViewStreamLifecycle} from './channel-viewstream-lifecycle';
 import {validate} from '../utils/channel-config-validator';
 
 //import * as Rx from "rxjs-compat";
@@ -40,6 +41,10 @@ export class ChannelsBaseController {
 
     this.domStream = new ChannelWindow();
     this.map.set('WINDOW', this.domStream);
+
+    this.viewStreamLifecycle = new ChannelViewStreamLifecycle();
+    this.map.set('VIEWSTREAM_LIFECYCLE', this.viewStreamLifecycle);
+
     this.routeValueeam.initializeStream();
     this.domStream.initializeStream();
   }

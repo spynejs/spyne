@@ -56,7 +56,7 @@ if (R!== undefined && Observable!==undefined) {
   viewInfoValidations = [
     {
       error: 'needs cid number in srcElement',
-      predicate: R.compose(R.is(String), R.path(['data', 'srcElement', 'cid']))
+      predicate: R.compose(R.is(String), R.path(['data', 'srcElement',  'cid']))
     },
     {
       error: 'needs a viewName in srcElement',
