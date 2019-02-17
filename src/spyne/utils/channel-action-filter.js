@@ -10,8 +10,8 @@ export class ChannelActionFilter {
 
     const testRun = R.compose(R.not, R.isNil);
 
-     const addStringSelectorFilter =  R.is(String, selector) ? ChannelActionFilter.filterSelector(selector) : undefined;
-     const addArraySelectorFilter = R.is(Array, selector) ? ChannelActionFilter.filterSelectorArr(selector) : undefined;
+     const addStringSelectorFilter =  R.is(String, selector) ? ChannelActionFilter.filterSelector([selector]) : undefined;
+     const addArraySelectorFilter = R.is(Array, selector) ? ChannelActionFilter.filterSelector(selector) : undefined;
      const addDataFilter = R.is(Object, data) ? ChannelActionFilter.filterData(data) : undefined;
 
     const filterArr = R.reject(R.isNil, [addStringSelectorFilter, addArraySelectorFilter, addDataFilter]);
@@ -24,16 +24,10 @@ export class ChannelActionFilter {
 
   }
 
-  static checkPayloadSelector(str, payload){
+  static checkPayloadSelector(arr, payload){
     let el = R.path(['srcElement', 'el'], payload);
 
     const compareEls = (elCompare) => elCompare.isEqualNode(el);
-
-    const compareStrWithEl = (str) => {
-      let arr = R.flatten(document.querySelectorAll(str));
-
-
-    };
 
     const mapNodeArrWithEl = (sel) => {
       let nodeArr = R.flatten(document.querySelectorAll(sel));
@@ -46,6 +40,14 @@ export class ChannelActionFilter {
     };
 
 
+    const compareStrWithEl = (str) => {
+      let arr = R.flatten(document.querySelectorAll(str));
+
+
+    };
+
+
+
     //console.log("PAYLOAD EL IS ",el);
 
 
@@ -53,7 +55,7 @@ export class ChannelActionFilter {
       return false;
     }
 
-    let nodeArrResult = mapNodeArrWithEl(str);
+    let nodeArrResult = R.compose(R.flatten ,R.map(mapNodeArrWithEl))(arr);
     console.log("node arr resulst ",nodeArrResult);
     return  nodeArrResult;
 
@@ -63,9 +65,9 @@ export class ChannelActionFilter {
     return 'filtering array of selectors'+arr;
   }
 
-  static filterSelector(str){
+  static filterSelector(arr){
     let payloadCheck = R.curry(ChannelActionFilter.checkPayloadSelector);
-    return payloadCheck(str);
+    return payloadCheck(arr);
   }
 
   static filterData(obj){

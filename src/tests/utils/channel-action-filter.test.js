@@ -30,16 +30,18 @@ describe('channel action filter', () => {
     let payload = internalViewStreamPayload;
     payload.srcElement.el = document.querySelector('.has-svg.github');
     let elFromPayload = R.path(['srcElement', 'el'], payload);
-    let filter = new ChannelActionFilter('#header ul li:last-child');
+    let filter = new ChannelActionFilter('#header2 ul li:last-child');
     let el = document.querySelector('#header ul li:last-child');
     console.log(filter[0](payload)," JSON ",el.isEqualNode(payload.srcElement.el));
     return true;
-  })
+  });
 
   it('should filter an Array of selectors but no data', ()=>{
-    let filter = new ChannelActionFilter(['#header ul li:last-child','#header ul li:first-child' ]);
+    let payload = internalViewStreamPayload;
+    payload.srcElement.el = document.querySelector('.has-svg.github');
+    let filterArr = new ChannelActionFilter(['#header ul li:last-child','#header ul li:first-child' ]);
     //let el = document.querySelector('#header ul li:last-child');
-    //console.log("JSON ",el.isEqualNode(payload.srcElement.el));;
+    console.log("JSON ARRAY ",filterArr[0](payload));;
     return true;
   })
 
