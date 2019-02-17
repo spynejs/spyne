@@ -22,14 +22,17 @@ describe('channel action filter', () => {
   it('create a new channel action filter', () => {
     let filter = new ChannelActionFilter();
     let filterConstructor = filter.constructor.name;
-    return filterConstructor.should.equal('ChannelActionFilter');
+    return filterConstructor.should.equal('Array');
 
   });
 
   it('should filter a String selector but no data', ()=>{
+    let payload = internalViewStreamPayload;
+    payload.srcElement.el = document.querySelector('.has-svg.github');
+    let elFromPayload = R.path(['srcElement', 'el'], payload);
     let filter = new ChannelActionFilter('#header ul li:last-child');
     let el = document.querySelector('#header ul li:last-child');
-    console.log(typeof(el)," JSON ",el.isEqualNode(payload.srcElement.el));;
+    console.log(filter[0](payload)," JSON ",el.isEqualNode(payload.srcElement.el));
     return true;
   })
 

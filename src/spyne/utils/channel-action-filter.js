@@ -20,15 +20,42 @@ export class ChannelActionFilter {
     if (data === undefined){
      // return ChannelActionFilter.filterBySelector(selector);
     }
+    return filterArr;
 
   }
 
   static checkPayloadSelector(str, payload){
     let el = R.path(['srcElement', 'el'], payload);
+
+    const compareEls = (elCompare) => elCompare.isEqualNode(el);
+
+    const compareStrWithEl = (str) => {
+      let arr = R.flatten(document.querySelectorAll(str));
+
+
+    };
+
+    const mapNodeArrWithEl = (sel) => {
+      let nodeArr = R.flatten(document.querySelectorAll(sel));
+      if (R.isEmpty(nodeArr)){
+        return false;
+      }
+
+      return R.map(compareEls, nodeArr);
+
+    };
+
+
+    //console.log("PAYLOAD EL IS ",el);
+
+
     if (typeof(el)!=="object"){
       return false;
     }
 
+    let nodeArrResult = mapNodeArrWithEl(str);
+    console.log("node arr resulst ",nodeArrResult);
+    return  nodeArrResult;
 
   }
 
@@ -37,7 +64,8 @@ export class ChannelActionFilter {
   }
 
   static filterSelector(str){
-    return 'filtering a string selector '+str;
+    let payloadCheck = R.curry(ChannelActionFilter.checkPayloadSelector);
+    return payloadCheck(str);
   }
 
   static filterData(obj){
