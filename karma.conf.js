@@ -33,7 +33,6 @@ module.exports = function(config) {
 
     // list of files / patterns to load in the browser
     files: [
-
       {pattern: './node_modules/ramda/dist/ramda.min.js', watched:false},
 
       { pattern: './node_modules/rxjs/*.js', included:false,   watched: false },
@@ -48,6 +47,11 @@ module.exports = function(config) {
       /*
             {pattern: './node_modules/rxjs-compat/Rx.js', included: false, watched:false},
       */
+
+/*
+      {pattern: './src/tests/mocks/spyne-docs.mocks.js',type:'dom'},
+*/
+
 
       {pattern: './src/tests/*.test.js', watched: true},
 

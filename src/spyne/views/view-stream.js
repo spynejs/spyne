@@ -156,6 +156,8 @@ export class ViewStream {
       this.sourceStreams.raw$.next(obj);
     }
 
+    console.log("METHOD CALL ",{str,p,enhancer});
+
     const methodsArr = this.props.enhancersMap.get(enhancer);
     if (R.contains(str, methodsArr) === false) {
       console.warn(
