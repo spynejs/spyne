@@ -3,90 +3,95 @@ const R = require('ramda');
 export class ChannelActionFilter {
 
   constructor(selector, data) {
-    const obj = {selector, data};
 
-
-
-
-    const testRun = R.compose(R.not, R.isNil);
 
      const addStringSelectorFilter =  R.is(String, selector) ? ChannelActionFilter.filterSelector([selector]) : undefined;
      const addArraySelectorFilter = R.is(Array, selector) ? ChannelActionFilter.filterSelector(selector) : undefined;
      const addDataFilter = R.is(Object, data) ? ChannelActionFilter.filterData(data) : undefined;
 
     const filterArr = R.reject(R.isNil, [addStringSelectorFilter, addArraySelectorFilter, addDataFilter]);
-    console.log(filterArr,' checking filters ');
+    //console.log(filterArr,' checking filters ');
 
-    if (data === undefined){
-     // return ChannelActionFilter.filterBySelector(selector);
-    }
     return filterArr;
 
   }
 
+  static filterData(filterJson){
+    let compareData = () => {
+
+      // DO NOT ALLOW AN EMPTY OBJECT TO RETURN TRUE
+      if (R.isEmpty(filterJson)){
+        return R.always(false);
+      }
+      //  CHECKS ALL VALUES IN JSON TO DETERMINE IF THERE ARE FILTERING METHODS
+
+      let typeArrFn = R.compose(R.values, R.map(R.type));
+      let filterValsArr = typeArrFn(filterJson);
+
+      let sendMalFormedWarning = R.uniq(filterValsArr).length>1 ;
+      if (sendMalFormedWarning === true){
+        console.warn('Spyne Warningd: The data values in ChannelActionFilters needs to be either all methods or all static values.  DATA: ',filterJson);
+      }
+
+
+
+      console.log("FILTER JSON: ",filterJson);
+      const isAllMethods  = R.all(R.equals('Function'), filterValsArr);
+
+      // PULL OUT THE CHANNEL PAYLOAD OBJECT IN THE MAIN PAYLOAD
+     // let payload = R.prop('channelPayload', eventData)
+
+      // IF THERE ARE METHODS IN THE FILTERING JSON, THEN USE R.where or R.whereEq if Basic JSON
+      let fMethod = isAllMethods === true ? R.where(filterJson): R.whereEq(filterJson);
+
+      return  R.compose(fMethod, R.defaultTo({}), R.path(['channelPayload']))
+    };
+
+
+
+    return compareData();
+  }
+
+
+
   static checkPayloadSelector(arr, payload){
+    // ELEMENT FROM PAYLOAD
     let el = R.path(['srcElement', 'el'], payload);
 
+    // RETURN BOOLEAN MATCH WITH PAYLOAD EL
     const compareEls = (elCompare) => elCompare.isEqualNode(el);
 
+    // LOOP THROUGH NODES IN querySelectorAll()
     const mapNodeArrWithEl = (sel) => {
+      // convert nodelist to array of els
       let nodeArr = R.flatten(document.querySelectorAll(sel));
       if (R.isEmpty(nodeArr)){
         return false;
       }
-
+      // els array to boolean array
       return R.map(compareEls, nodeArr);
 
     };
 
 
-    const compareStrWithEl = (str) => {
-      let arr = R.flatten(document.querySelectorAll(str));
-
-
-    };
-
-
-
-    //console.log("PAYLOAD EL IS ",el);
-
-
+    // CHECK IF PAYLOAD EL EXISTS
     if (typeof(el)!=="object"){
       return false;
     }
 
+    // LOOP THROUGH ALL SELECTORS IN MAIN ARRAY
     let nodeArrResult = R.compose(R.flatten ,R.map(mapNodeArrWithEl))(arr);
-    console.log("node arr resulst ",nodeArrResult);
+   // console.log("node arr resulst ",nodeArrResult);
     return  nodeArrResult;
 
   }
 
-  static filterSelectorArr(arr){
-    return 'filtering array of selectors'+arr;
-  }
 
   static filterSelector(arr){
     let payloadCheck = R.curry(ChannelActionFilter.checkPayloadSelector);
     return payloadCheck(arr);
   }
 
-  static filterData(obj){
-    return 'filtering data '+obj;
-  }
-
-  static filterBySelector(selector){
-
-    const filterSelector = R.curry((selector, el) => {
-      let selectorEl = document.querySelector(selector);
-      return selectorEl!==null && selectorEl.isEqualNode(el);
-    });
-
-    return filterSelector(selector);
-
-
-    // NEED TO TEST THAT THE EL OBJECT IS NODE
-
-  }
 
 
 
