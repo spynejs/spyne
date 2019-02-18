@@ -9,10 +9,9 @@ export class ChannelActionFilter {
      const addArraySelectorFilter = R.is(Array, selector) ? ChannelActionFilter.filterSelector(selector) : undefined;
      const addDataFilter = R.is(Object, data) ? ChannelActionFilter.filterData(data) : undefined;
 
-    const filterArr = R.reject(R.isNil, [addStringSelectorFilter, addArraySelectorFilter, addDataFilter]);
-    //console.log(filterArr,' checking filters ');
+    const filtersArr = R.reject(R.isNil, [addStringSelectorFilter, addArraySelectorFilter, addDataFilter]);
 
-    return filterArr;
+    return R.allPass(filtersArr);
 
   }
 
@@ -28,14 +27,14 @@ export class ChannelActionFilter {
       let typeArrFn = R.compose(R.values, R.map(R.type));
       let filterValsArr = typeArrFn(filterJson);
 
-      let sendMalFormedWarning = R.uniq(filterValsArr).length>1 ;
-      if (sendMalFormedWarning === true){
+      let sendMalFormedWarningBool = R.uniq(filterValsArr).length>1 ;
+      if (sendMalFormedWarningBool === true){
         console.warn('Spyne Warningd: The data values in ChannelActionFilters needs to be either all methods or all static values.  DATA: ',filterJson);
       }
 
 
 
-      console.log("FILTER JSON: ",filterJson);
+     // console.log("FILTER JSON: ",filterJson);
       const isAllMethods  = R.all(R.equals('Function'), filterValsArr);
 
       // PULL OUT THE CHANNEL PAYLOAD OBJECT IN THE MAIN PAYLOAD
@@ -59,20 +58,16 @@ export class ChannelActionFilter {
     let el = R.path(['srcElement', 'el'], payload);
 
     // RETURN BOOLEAN MATCH WITH PAYLOAD EL
-    const compareEls = (elCompare) => elCompare.isEqualNode(el);
+    const compareEls = (elCompare) => elCompare.isEqualNode((el));
+
 
     // LOOP THROUGH NODES IN querySelectorAll()
     const mapNodeArrWithEl = (sel) => {
       // convert nodelist to array of els
       let nodeArr = R.flatten(document.querySelectorAll(sel));
-      if (R.isEmpty(nodeArr)){
-        return false;
-      }
       // els array to boolean array
       return R.map(compareEls, nodeArr);
-
     };
-
 
     // CHECK IF PAYLOAD EL EXISTS
     if (typeof(el)!=="object"){
@@ -81,13 +76,17 @@ export class ChannelActionFilter {
 
     // LOOP THROUGH ALL SELECTORS IN MAIN ARRAY
     let nodeArrResult = R.compose(R.flatten ,R.map(mapNodeArrWithEl))(arr);
-   // console.log("node arr resulst ",nodeArrResult);
-    return  nodeArrResult;
+     if (R.isEmpty(nodeArrResult) === true){
+       return false;
+     }
+
+    return  R.any(R.equals(true), nodeArrResult);
 
   }
 
 
-  static filterSelector(arr){
+  static filterSelector(selectorArr){
+    let arr = R.reject(R.isEmpty, selectorArr);
     let payloadCheck = R.curry(ChannelActionFilter.checkPayloadSelector);
     return payloadCheck(arr);
   }

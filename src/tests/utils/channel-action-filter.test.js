@@ -20,22 +20,21 @@ describe('channel action filter', () => {
   it('Create a new ChannelActionFilter', () => {
     let filter = new ChannelActionFilter();
     let filterConstructor = filter.constructor.name;
-    return filterConstructor.should.equal('Array');
+    return filterConstructor.should.equal('Function');
 
   });
 
-  it('String selector match but no data', ()=>{
+  it('String selector only with no data', ()=>{
     let filter = new ChannelActionFilter('#header ul li:last-child');
-    let filterVal = filter[0](payload);
+    let filterVal = filter(payload);
     console.log(filterVal, 'filter val string');
-    return true;
+    expect(filterVal).to.eq(true);
   });
 
-  it('selectors array contains match but no data', ()=>{
-    let filterArr = new ChannelActionFilter(['#header ul li:last-child','#header ul li:first-child' ]);
-    let filterVal = filterArr[0](payload);
-    console.log(filterVal, 'filter val array ');
-    return true;
+  it('Selectors array contains match but no data', ()=>{
+    let filter = new ChannelActionFilter(['#header ul li:last-child','#header ul li:first-child' ]);
+    let filterVal = filter(payload);
+    expect(filterVal).to.eq(true);
   });
 
   it('Static Data and String Selector returns true', ()=>{
@@ -45,13 +44,10 @@ describe('channel action filter', () => {
       linkType:  'external'
     };
     let filter = new ChannelActionFilter(str,data);;
-    let filterStrVal = filter[0](payload);
-    let filterDataVal = filter[1];
+    let filterVal = filter(payload);
 
-    console.log({filterStrVal, filterDataVal}, 'filter string data1 ',filterDataVal(payload));
-
-    return true;
-  })
+    expect(filterVal).to.eq(true);
+  });
 
   it('Dynamic Data and String Selector returns true', ()=>{
     let str = '#header ul li:last-child';
@@ -59,14 +55,59 @@ describe('channel action filter', () => {
       type: (str)=>str==='link',
       linkType:  R.test(/ext.*nal/)
     };
-    let filter = new ChannelActionFilter(str,{});;
-    let filterStrVal = filter[0](payload);
-    let filterDataVal = filter[1];
+    let filter = new ChannelActionFilter(str,data);;
+    let filterVal = filter(payload);
 
-    console.log({filterStrVal, filterDataVal}, 'DYNAMIC string data1 ',filterDataVal(payload));
+    expect(filterVal).to.eq(true);
+  });
 
-    return true;
-  })
+  it('Dynamic Data with no selector returns true', ()=>{
+    let str = '#header ul li:last-child';
+    let data = {
+      type: (str)=>str==='link',
+      linkType:  R.test(/ext.*nal/)
+    };
+    let filter = new ChannelActionFilter(undefined,data);
+    let filterVal = filter(payload);
+
+    expect(filterVal).to.eq(true);
+  });
+
+
+  it('Empty String selector with no data', ()=>{
+    let filter = new ChannelActionFilter('');
+    let filterVal = filter(payload);
+    expect(filterVal).to.eq(false);
+  });
+
+  it('Empty Arrays of selectors with no data', ()=>{
+    let filter = new ChannelActionFilter(['', "#header ul li:first-child"]);
+    let filterVal = filter(payload);
+    expect(filterVal).to.eq(false);
+  });
+
+  it('Dynamic Data with no selector returns false', ()=>{
+    let str = '#header ul li:last-child';
+    let data = {
+      type: (str)=>str==='Incorrect',
+      linkType:  R.test(/ext.*nal/)
+    };
+    let filter = new ChannelActionFilter(undefined,data);
+    let filterVal = filter(payload);
+    expect(filterVal).to.eq(false);
+  });
+
+  it('False array and false dynamic data', ()=>{
+    let str = '#header ul li:last-child';
+    let data = {
+      type: (str)=>str==='Incorrect',
+      linkType:  R.test(/ext.*nal/)
+    };
+    let filter = new ChannelActionFilter(['', "#header ul li:first-child"], data);
+    let filterVal = filter(payload);
+
+    expect(filterVal).to.eq(false);
+  });
 
 
 });
