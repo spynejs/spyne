@@ -171,8 +171,8 @@ export class ViewStream {
   setSourceHashMethods(extendedSourcesHashMethods = {}) {
     let hashSourceKeys = {
       'DISPOSING': (p) => this.checkParentDispose(p),
-      'DISPOSE': (p) => this.onDispose(p),
-      // 'CHILD_DISPOSE'                    : (p) => this.onDispose(p),
+      'DISPOSE': (p) => this.disposeViewStreamChain(p),
+      // 'CHILD_DISPOSE'                    : (p) => this.disposeViewStreamChain(p),
       'RENDERED': (p) => this.onRendered(p),
       'RENDERED_AND_ATTACHED_TO_DOM': (p) => this.onRendered(p),
       'RENDERED_AND_ATTACHED_TO_PARENT': (p) => this.onRendered(p),
@@ -220,7 +220,7 @@ export class ViewStream {
       let data = deepMerge({}, d);
 
       if (data.action === 'DISPOSE_AND_READY_FOR_GC') {
-        this.onDispose(data);
+        this.disposeViewStreamChain(data);
         data.action = 'READY_FOR_GC';
       }
       return data;
@@ -406,7 +406,7 @@ export class ViewStream {
   // ===================================== DISPOSE METHODS =================================
   checkParentDispose(p) {
     if (p.from$ === 'parent') {
-      this.onDispose(p);
+      this.disposeViewStreamChain(p);
     }
   }
 
@@ -414,7 +414,7 @@ export class ViewStream {
 
   }
 
-  onDispose(p) {
+  disposeViewStreamChain(p) {
     // console.log('DISPOSER VS onDispose ', this.constructor.name);
     this.onBeforeDispose();
     this.openSpigot('DISPOSE');
