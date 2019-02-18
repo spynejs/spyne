@@ -13,6 +13,7 @@ import {ViewStreamEnhancerLoader} from './view-stream-enhancer-loader';
 import {registeredStreamNames} from '../channels/channels-config';
 import {ViewStreamBroadcaster} from './view-stream-broadcaster';
 import {ChannelsPayload} from '../channels/channels-payload';
+import {ChannelActionFilter} from '../utils/channel-action-filter';
 import {LifecyleObservables} from '../utils/viewstream-lifecycle-observables';
 import {DomItemSelectors} from './dom-item-selectors';
 
@@ -134,10 +135,12 @@ export class ViewStream {
   loadAllMethods() {
     const channelFn = R.curry(this.onChannelMethodCall.bind(this));
     let createExtraStatesMethod = (arr) => {
-      let [action, funcStr, enhancer] = arr;
-      let defaultEnhancer = R.defaultTo('LOCAL');
+      let [action, funcStr, actionFilter] = arr;
+       if(R.is(String, actionFilter)){
+         actionFilter = ChannelActionFilter(actionFilter);
+       }
       this.props.extendedSourcesHashMethods[action] = channelFn(funcStr,
-        defaultEnhancer(enhancer));
+          actionFilter);
     };
     this.addActionListeners().forEach(createExtraStatesMethod);
     this.props.hashSourceMethods = this.setSourceHashMethods(
@@ -148,7 +151,7 @@ export class ViewStream {
     return [];
   }
 
-  onChannelMethodCall(str, enhancer, p) {
+  onChannelMethodCall(str, actionFilter, p) {
     if (p.$dir !== undefined && p.$dir.includes('child') &&
         this.deleted !== true) {
       let obj = deepMerge({},p);// Object.assign({}, p);
@@ -156,15 +159,13 @@ export class ViewStream {
       this.sourceStreams.raw$.next(obj);
     }
 
-    console.log("METHOD CALL ",{str,p,enhancer});
+    let filterPayload =  R.defaultTo(R.always(true), actionFilter);
 
-    const methodsArr = this.props.enhancersMap.get(enhancer);
-    if (R.contains(str, methodsArr) === false) {
-      console.warn(
-        `Spyne Warning: The method, "${str}", does not appear to exist in ${enhancer} file! `);
-    } else {
+    if (filterPayload(p)===true){
       this[str](p);
     }
+
+
   }
 
   setSourceHashMethods(extendedSourcesHashMethods = {}) {
@@ -829,8 +830,10 @@ export class ViewStream {
     }
 
 
+  }
 
-
+  createActionFilter(selectors, data){
+    return new ChannelActionFilter(selectors, data);
   }
 
 
