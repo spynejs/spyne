@@ -2,20 +2,21 @@ import {ChannelsBase} from '../channels/channels-base';
 import {URLUtils} from '../utils/channel-util-urls';
 import {RouteUtils} from '../utils/channel-util-route';
 //import * as Rx from "rxjs-compat";
-import {BehaviorSubject, Observable, of, merge} from "rxjs";
+import {BehaviorSubject, ReplaySubject, Subject, Observable, of, merge} from "rxjs";
 import {map} from "rxjs/operators";
 
 
 const R = require('ramda');
 
 export class ChannelRoute extends ChannelsBase {
-  constructor() {
+  constructor(props={}) {
+    props.sendLastPayload = true;
     super();
     this.createChannelActionsObj();
     this.props.name = 'ROUTE';
     this.routeConfigJson = this.getRouteConfig();
     this.bindStaticMethods();
-    this.navToStream$ = new BehaviorSubject();
+    this.navToStream$ = new ReplaySubject(1);
     this.observer$ = this.navToStream$.pipe(map(info => this.onMapNext(info)));
 
   }

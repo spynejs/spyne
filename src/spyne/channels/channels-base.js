@@ -3,7 +3,7 @@ import {ChannelStreamItem} from './channel-stream-item';
 import {deepMerge} from '../utils/deep-merge';
 // import {baseCoreMixins}    from '../utils/mixins/base-core-mixins';
 // import {BaseStreamsMixins} from '../utils/mixins/base-streams-mixins';
-import { Subject} from "rxjs";
+import {ReplaySubject, Subject} from 'rxjs';
 import {map} from "rxjs/operators";
 
 //import * as Rx from "rxjs-compat";
@@ -29,16 +29,34 @@ export class ChannelsBase {
     this.addRegisteredActions.bind(this);
     this.createChannelActionsObj();
     const defaultName = {name: 'observer'};
-    let observer$ = new Subject();
+    /**
+     *
+     * TODO: CREATE OBSERVABLE FROM ChannelBaseSubject(name, showLastValue)
+     */
+
    // this.props = Object.assign({}, defaultName, props);
     this.props = deepMerge(defaultName, props);
+    this.props.isProxy = this.props.isProxy === undefined ? false : this.props.isProxy;
+    this.props.sendLastPayload = this.props.sendLastPayload === undefined ? false : this.props.sendLastPayload;
     this.createChannelActionMethods();
+    this.streamsController = window.Spyne.channels;// getGlobalParam('streamsController');
+    let observer$ = this.getMainObserver();;
 
     this.observer$ = this.props['observer'] = observer$;
-    this.streamsController = window.Spyne.channels;// getGlobalParam('streamsController');
     let dispatcherStream$ = this.streamsController.getStream('DISPATCHER');
     dispatcherStream$.subscribe((val) => this.onReceivedObservable(val));
   }
+
+  getMainObserver(){
+    let proxyExists = this.streamsController.testStream(this.props.name);
+    if (proxyExists === true){
+      return this.streamsController.getProxySubject(this.props.name, this.props.sendLastPayload);
+    } else {
+      return this.props.sendLastPayload === true ? new ReplaySubject(1) : new Subject();
+    }
+
+  }
+
 
 
   //  OVERRIDE INITIALIZATION METHOD
@@ -46,6 +64,17 @@ export class ChannelsBase {
 
   }
 
+  get isProxy(){
+    return this.props.isProxy;
+  }
+
+  get channelName(){
+    return this.props.name;
+  }
+
+  get observer() {
+    return this.observer$;
+  }
 
   // DO NOT OVERRIDE THIS METHOD
   initializeStream(){
@@ -100,9 +129,7 @@ export class ChannelsBase {
     return [];
   }
 
-  get observer() {
-    return this.observer$;
-  }
+
 
   onReceivedObservable(obj){
     let action = obj.action;

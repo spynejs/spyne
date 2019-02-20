@@ -11,7 +11,6 @@ export class ChannelWindow extends ChannelsBase {
   constructor() {
     super();
     this.bindStaticMethods();
-    this.observer$ = new Subject();
     this.props.name = 'WINDOW';
   }
 

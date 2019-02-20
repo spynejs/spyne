@@ -8,7 +8,6 @@ export class ChannelViewStreamLifecycle extends ChannelsBase {
 
     super(props);
     this.props.name = 'VIEWSTREAM_LIFECYCLE';
-    this.observer$ = new Subject();
   }
 
   addRegisteredActions() {

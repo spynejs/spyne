@@ -54,6 +54,15 @@ export class ChannelsBaseController {
   }
 
   registerStream(name, val) {
+
+    /**
+     * TODO: REMOVE NAME PARAM, GET NAME FROM val.name
+     */
+
+    /*TODO: Confirm that map val is undefined or isProxyChannel
+    *  IF ISPROXY CHANNEL, THEN
+    *
+    * */
     this.map.set(name, val);
     val.initializeStream();
   }
@@ -62,7 +71,18 @@ export class ChannelsBaseController {
     return this.map.get(str).addRegisteredActions();
   }
 
+  getProxySubject(name, isReplaySubject=false){
+    let subjectType = isReplaySubject === true ? 'replaySubject' : 'subject';
+
+    return this.map.get(name)[subjectType];
+  }
+
+  testStream(name){
+    return this.map.get(name) !== undefined;
+  }
+
   getStream(name) {
+    //TODO: ALWAYS RETURN this.map.get(name), but create ChannelProxy(name) on undefined
     if (this.map.get(name) === undefined) {
       console.warn(
         `Spyne Warning: The Channel named "${name}" does not appear to be registered!`);
