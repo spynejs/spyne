@@ -9,11 +9,10 @@ import {map} from "rxjs/operators";
 const R = require('ramda');
 
 export class ChannelRoute extends ChannelsBase {
-  constructor(props={}) {
+  constructor(name="ROUTE", props={}) {
     props.sendLastPayload = true;
-    super();
+    super("ROUTE", props);
     this.createChannelActionsObj();
-    this.props.name = 'ROUTE';
     this.routeConfigJson = this.getRouteConfig();
     this.bindStaticMethods();
     this.navToStream$ = new ReplaySubject(1);

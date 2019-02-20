@@ -8,6 +8,7 @@ import {validate} from '../utils/channel-config-validator';
 
 //import * as Rx from "rxjs-compat";
 import {Subject} from "rxjs";
+import {ChannelsBaseProxy} from './channels-base-proxy';
 
 
 // const R = require('ramda');
@@ -53,16 +54,8 @@ export class ChannelsBaseController {
     this.map.get('UI').addKeyEvent(key);
   }
 
-  registerStream(name, val) {
-
-    /**
-     * TODO: REMOVE NAME PARAM, GET NAME FROM val.name
-     */
-
-    /*TODO: Confirm that map val is undefined or isProxyChannel
-    *  IF ISPROXY CHANNEL, THEN
-    *
-    * */
+  registerStream(val) {
+    let name = val.channelName;
     this.map.set(name, val);
     val.initializeStream();
   }
@@ -82,13 +75,14 @@ export class ChannelsBaseController {
   }
 
   getStream(name) {
-    //TODO: ALWAYS RETURN this.map.get(name), but create ChannelProxy(name) on undefined
-    if (this.map.get(name) === undefined) {
-      console.warn(
-        `Spyne Warning: The Channel named "${name}" does not appear to be registered!`);
-    } else {
-      return this.map.get(name);
+
+    console.log("GETTING STREAM: ",name, this.testStream(name));
+    if (this.testStream(name) === false) {
+      this.map.set(name, new ChannelsBaseProxy(name))
     }
+
+      return this.map.get(name);
+
   }
 
   addMixins() {

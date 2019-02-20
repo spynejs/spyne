@@ -1,12 +1,12 @@
 import {ChannelsBase} from './channels-base';
 import {ChannelStreamItem} from './channel-stream-item';
-import {AsyncSubject, ReplaySubject, Observable, from} from "rxjs";
+import {Subject, ReplaySubject, merge, Observable, from} from "rxjs";
 import {flatMap, map, multicast} from "rxjs/operators";
 
 export class ChannelsBaseProxy extends ChannelsBase {
-  constructor(props = {}) {
+  constructor(name, props = {}) {
     props.isProxy = true;
-    super(props);
+    super(name, props);
     this.props = props;
     this.subject$ = new Subject();
     this.replaySub$ = new ReplaySubject(1);

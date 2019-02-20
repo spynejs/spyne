@@ -20,22 +20,19 @@ export class ChannelsBase {
    * @constructorExamples ['new EXAMPLE1()', 'TESTING EXAMPLE 2']
    *
    * @constructor
+   * @param {string} name This is the name that will be used to get the channel
    * @param {object} props This json object takes in parameters to initialize the channel
    * @property {Subject} this.observer$ = new Subject(); Depending on required behavior, this can be a Subject, BehaviorSubject or AsynSubject.
    *
    */
-  constructor(props = {}) {
+  constructor(name='observer', props = {}) {
     this.addMixins();
     this.addRegisteredActions.bind(this);
     this.createChannelActionsObj();
-    const defaultName = {name: 'observer'};
-    /**
-     *
-     * TODO: CREATE OBSERVABLE FROM ChannelBaseSubject(name, showLastValue)
-     */
-
+    const defaultName = {name};
+    props.name = name;
    // this.props = Object.assign({}, defaultName, props);
-    this.props = deepMerge(defaultName, props);
+    this.props =  props;
     this.props.isProxy = this.props.isProxy === undefined ? false : this.props.isProxy;
     this.props.sendLastPayload = this.props.sendLastPayload === undefined ? false : this.props.sendLastPayload;
     this.createChannelActionMethods();
@@ -49,6 +46,9 @@ export class ChannelsBase {
 
   getMainObserver(){
     let proxyExists = this.streamsController.testStream(this.props.name);
+
+    console.log("MAIN OBSERVER: ",this.props.name, {proxyExists}, this.props.sendLastPayload);
+
     if (proxyExists === true){
       return this.streamsController.getProxySubject(this.props.name, this.props.sendLastPayload);
     } else {

@@ -4,16 +4,20 @@ import {ChannelsBase} from './channels-base';
 import {ChannelStreamItem} from './channel-stream-item';
 //import  'whatwg-fetch';
 // const R = require('ramda');
-import {AsyncSubject, ReplaySubject, Observable, from} from "rxjs";
-import {flatMap, map, multicast} from "rxjs/operators";
+import {AsyncSubject, ReplaySubject, Subject, Observable, from} from "rxjs";
+import {flatMap, map, multicast,publish,refCount,share, tap} from "rxjs/operators";
 
 export class ChannelsBaseData extends ChannelsBase {
-  constructor(props = {}) {
-    super(props);
-    this.props = props;
-    this.observer$ = new ReplaySubject(1);
+  constructor(name, props = {}) {
+    props.sendLastPayload = true;
+    super(name, props);
+    this.initialized = false;
+  }
+
+  onStreamInitialized(){
     this.fetchData();
   }
+
   get observer() {
     return this.observer$;
   }
@@ -24,9 +28,11 @@ export class ChannelsBaseData extends ChannelsBase {
     ];
   }
 
-  fetchData() {
-    const mapFn = this.props.map !== undefined ? this.props.map : (p) => p;
 
+  fetchData() {
+
+    const mapFn = this.props.map !== undefined ? this.props.map : (p) => p;
+    console.log("FETCH DATA ",this.props);
     const createChannelStreamItem = (payload) => {
       let action = 'CHANNEL_DATA_EVENT';
       return new ChannelStreamItem(this.props.name, action, payload);

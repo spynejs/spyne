@@ -6,10 +6,9 @@ import {map} from "rxjs/operators";
 
 
 export class ChannelUI extends ChannelsBase {
-  constructor(props={}) {
+  constructor(name="UI", props={}) {
     props.sendLastPayload = false;
-    super();
-    this.props.name = 'UI';
+    super(name, props);
     this.keyEventsLoaded = false;
     this.keyCodeArr = [];
     // this.addKeyEvent(13);

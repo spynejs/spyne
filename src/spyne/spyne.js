@@ -57,8 +57,8 @@ class SpyneApp {
       // console.log("CONFIG IS ",{defaultConfig, config},window.Spyne.config)
     }
     this.getChannelActions = (str) => window.Spyne.channels.getChannelActions(str);
-    this.registerChannel = (str, val) => this.channels.registerStream(str, val);
-    this.registerDataChannel = (obs$) => this.channels.registerStream(obs$.props.name, obs$);
+    this.registerChannel = (val) => this.channels.registerStream(val);
+    this.registerDataChannel = (obs$) => this.channels.registerStream(obs$);
     let nullHolder = new ViewStream({id:'spyne-null-views'});
     nullHolder.appendToDom(document.body);
     nullHolder.props.el.style.cssText='display:none; opacity:0; pointer-events:none;';
@@ -71,15 +71,11 @@ class SpyneApp {
     return window.Spyne.channels.getChannelActions(str);
   }
 
-  /**
-   *TODO: REMOVE STR PARAM AND VAL IS JUST THE ACTUAL CHANNELBASE
-   */
-
-  static registerChannel(str, val) {
+  static registerChannel(val) {
     if (window.Spyne === undefined) {
       console.warn('Spyne has not been initialized');
     } else {
-      return window.Spyne.channels.registerStream(str, val);
+      return window.Spyne.channels.registerStream(val);
     }
   }
 }

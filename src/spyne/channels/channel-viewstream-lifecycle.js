@@ -5,9 +5,7 @@ import {ChannelsBase} from '../channels/channels-base';
 export class ChannelViewStreamLifecycle extends ChannelsBase {
 
   constructor(props = {}) {
-
-    super(props);
-    this.props.name = 'VIEWSTREAM_LIFECYCLE';
+    super('VIEWSTREAM_LIFECYCLE', props);
   }
 
   addRegisteredActions() {
