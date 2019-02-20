@@ -75,8 +75,6 @@ export class ChannelsBaseController {
   }
 
   getStream(name) {
-
-    console.log("GETTING STREAM: ",name, this.testStream(name));
     if (this.testStream(name) === false) {
       this.map.set(name, new ChannelsBaseProxy(name))
     }

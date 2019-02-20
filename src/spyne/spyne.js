@@ -93,5 +93,6 @@ export {
   ViewStream,
   ViewStreamBroadcaster,
     SpyneTrait,
-  SpyneApp
+  SpyneApp,
+    deepMerge
 };

@@ -32,7 +32,6 @@ export class ChannelsBaseData extends ChannelsBase {
   fetchData() {
 
     const mapFn = this.props.map !== undefined ? this.props.map : (p) => p;
-    console.log("FETCH DATA ",this.props);
     const createChannelStreamItem = (payload) => {
       let action = 'CHANNEL_DATA_EVENT';
       return new ChannelStreamItem(this.props.name, action, payload);

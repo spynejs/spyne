@@ -46,9 +46,6 @@ export class ChannelsBase {
 
   getMainObserver(){
     let proxyExists = this.streamsController.testStream(this.props.name);
-
-    console.log("MAIN OBSERVER: ",this.props.name, {proxyExists}, this.props.sendLastPayload);
-
     if (proxyExists === true){
       return this.streamsController.getProxySubject(this.props.name, this.props.sendLastPayload);
     } else {
