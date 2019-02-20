@@ -153,7 +153,6 @@ export class ChannelsBase {
       const methodExists = typeof(this[methodVal]) === 'function';
       if (methodExists === true) {
         fn = this[methodVal].bind(this);
-        console.log("METHOD EXISTS ", methodVal, fn);
       }
     }
 

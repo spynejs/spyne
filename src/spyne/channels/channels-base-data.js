@@ -30,12 +30,18 @@ export class ChannelsBaseData extends ChannelsBase {
   }
 
   onUpdateData(p){
-    let url = R.path(['observableData', 'payload', 'dataUrl'], p)
-    this.props.dataUrl = url;
+    let url = R.path(['observableData', 'payload', 'dataUrl'], p);
 
-    console.log('update data ',this);
+    if (url === undefined){
+      console.warn("SPYNE Warning: dataUrl parameter is required to update data", url);
+    } else {
+      this.props.dataUrl = url;
+      this.fetchData();
+    }
+  }
 
-    this.fetchData();
+  onDataFetched(streamItem){
+    this.observer$.next(streamItem);
   }
 
 
@@ -47,13 +53,16 @@ export class ChannelsBaseData extends ChannelsBase {
       return new ChannelStreamItem(this.props.name, action, payload);
     };
 
+
     let response$ = from(window.fetch(this.props.dataUrl))
       .pipe(flatMap(r => from(r.json())),
       map(mapFn),
       map(createChannelStreamItem),
-      tap(tapLog),
-      multicast(this.observer$));
+     // tap(tapLog),
+      publish());
 
     response$.connect();
+
+    response$.subscribe(this.onDataFetched.bind(this))
   }
 }
