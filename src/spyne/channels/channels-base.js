@@ -46,6 +46,7 @@ export class ChannelsBase {
 
   getMainObserver(){
     let proxyExists = this.streamsController.testStream(this.props.name);
+
     if (proxyExists === true){
       return this.streamsController.getProxySubject(this.props.name, this.props.sendLastPayload);
     } else {
@@ -151,7 +152,7 @@ export class ChannelsBase {
     if (methodVal !== undefined && methodVal!=='onIncomingObserverableData') {
       const methodExists = typeof(this[methodVal]) === 'function';
       if (methodExists === true) {
-        fn = this[methodVal];
+        fn = this[methodVal].bind(this);
         console.log("METHOD EXISTS ", methodVal, fn);
       }
     }

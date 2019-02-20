@@ -24,13 +24,23 @@ export class ChannelsBaseData extends ChannelsBase {
 
   addRegisteredActions() {
     return [
-      'CHANNEL_DATA_EVENT'
+      'CHANNEL_DATA_EVENT',
+        ['CHANNEL_UPDATE_DATA_EVENT', 'onUpdateData']
     ];
+  }
+
+  onUpdateData(p){
+    let url = R.path(['observableData', 'payload', 'dataUrl'], p)
+    this.props.dataUrl = url;
+
+    console.log('update data ',this);
+
+    this.fetchData();
   }
 
 
   fetchData() {
-
+    const tapLog = p => console.log('data returned :',this.props.name, p);
     const mapFn = this.props.map !== undefined ? this.props.map : (p) => p;
     const createChannelStreamItem = (payload) => {
       let action = 'CHANNEL_DATA_EVENT';
@@ -41,6 +51,7 @@ export class ChannelsBaseData extends ChannelsBase {
       .pipe(flatMap(r => from(r.json())),
       map(mapFn),
       map(createChannelStreamItem),
+      tap(tapLog),
       multicast(this.observer$));
 
     response$.connect();
