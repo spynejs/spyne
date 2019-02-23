@@ -129,6 +129,7 @@ export class DomItemSelectors {
       const id = this.el.getAttribute('id');
       console.warn(`Spyne Warning: the element, "${str}" does not exist in this element, "${id}"!`);
     }
+    return {el:undefined};
 
   }
 
