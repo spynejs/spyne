@@ -21,6 +21,31 @@ export class ChannelsBaseController {
    // console.log('Rx is ',Rx);
     // console.log('RX IS ', Subject);
     this.map.set('DISPATCHER', new Subject());
+    window.setTimeout(this.checkForMissingChannels.bind(this), 3000);
+  }
+
+  checkForMissingChannels(){
+    const proxyMapFn =  (k,v) => {
+      let key = k[0];
+      let val=k[1].constructor.name;
+      return {key,val};
+    }
+    let proxyMap = Array.from(this.map, proxyMapFn);
+
+    let filterProxyFn = R.filter(R.propEq('val', 'ChannelsBaseProxy'));
+    let filterProxyArr = filterProxyFn(proxyMap);
+
+    if (filterProxyArr.length>=1){
+      let channelStr = filterProxyArr.length === 1 ? 'Channel has' : 'Channels have';
+      let channels = R.compose(R.join(', '), R.map(R.prop('key')))(filterProxyArr)
+      let filterPrefixWarning = `Spyne Warning: The following ${channelStr} not been initialized: ${channels}`;
+      console.warn(filterPrefixWarning);
+      console.log("FILTER PROXY WARNING ",filterProxyArr);
+    }
+
+    //console.log(filterProxy(proxyMap),' proxyMap ', proxyMap);
+
+
   }
 
   init() {
