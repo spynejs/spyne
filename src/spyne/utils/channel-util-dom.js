@@ -1,6 +1,6 @@
 //import * as Rx from "rxjs-compat";
 import {Observable, fromEventPattern} from "rxjs";
-import {map} from "rxjs/operators";
+import {map,tap} from "rxjs/operators";
 const R = require('ramda');
 
 export class ChannelUtilsDom {
@@ -21,6 +21,9 @@ export class ChannelUtilsDom {
   static createMediaQuery(str) {
     const mq = window.matchMedia(str);
     this.checkIfValidMediaQuery(mq, str);
+
+    console.log("MQ IS ",mq,str, this.checkIfValidMediaQuery(mq,str));;
+
     return mq;
   }
 
@@ -44,7 +47,7 @@ export class ChannelUtilsDom {
 
     let handlers = (q) => {
       return {
-        addHandler: (handler) => { q.onchange = handler; },
+        addHandler: (handler) => { q.addListener(handler); },
         removeHandler: (handler) => { q.onchange = () => {}; }
       };
     };
@@ -52,7 +55,7 @@ export class ChannelUtilsDom {
     return new fromEventPattern(
       mediaQueryHandler.addHandler,
       mediaQueryHandler.removeHandler)
-      .pipe(map(mapKey));
+      .pipe(tap(p=>console.log("MQ",p)), map(mapKey));
   }
 
   static createMergedObsFromObj(config) {

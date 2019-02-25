@@ -12,20 +12,20 @@ describe('channel dom util tests', () => {
       expect(mq.constructor.name).to.equal('MediaQueryList');
     });
 
-/*    it('should create media query observable', () => {
+    it('should create media query observable', () => {
       let queryStr = domData.mediqQueries.test;
       let mq = ChannelUtilsDom.createMediaQuery(queryStr);
       let obs$ = ChannelUtilsDom.createMediaQueryHandler(mq, 'test');
       return true;
-    });*/
+    });
 
- /*   it('should return obs$ arr based on config ', () => {
+    it('should return obs$ arr based on config ', () => {
       let obs$Arr = ChannelUtilsDom.createMergedObsFromObj(domData);
       expect(obs$Arr.length).to.equal(2);
-    });*/
+    });
   });
 
-/*  describe('channel dom create window event', () => {
+  describe('channel dom create window event', () => {
     it('it should create a window event', () => {
       const onUnload = e => localStorage.setItem('ubu', window.document.body.outerHTML);
       let obs$ = ChannelUtilsDom.createDomObservableFromEvent('beforeunload');
@@ -33,7 +33,7 @@ describe('channel dom util tests', () => {
       expect(obs$.constructor.name).to.equal('Observable');
 
     });
-  });*/
+  });
 
   describe('channel dom window resize', () => {
     it('add resize screenItem from config', () => {
