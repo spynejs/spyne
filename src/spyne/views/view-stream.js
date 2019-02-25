@@ -789,6 +789,15 @@ export class ViewStream {
    *
    * */
 
+  checkIfChannelExists(channelName){
+    let channelExists = window.Spyne.channels.map.get(channelName)!==undefined;
+    if (channelExists !== true){
+      console.warn(`SPYNE WARNING: The ChannelPayload from ${this.props.name}, has been sent to a channel, ${channelName}, that has not been registered!`);
+
+    }
+    return channelExists;
+  }
+
   sendChannelPayload(channelName, payload = {},  action="VIEWSTREAM_EVENT") {
     let data = {payload, action};
     data['srcElement'] = {};// R.pick(['cid','viewName'], data);
@@ -796,8 +805,10 @@ export class ViewStream {
     data.srcElement['id'] = R.path(['props','id'],this);;
     data.srcElement['isLocalEvent'] = false;
     data.srcElement['viewName'] = this.props.name;
-    let obs$ = of(data);
-    return new ChannelsPayload(channelName, obs$, data);
+    if (this.checkIfChannelExists(channelName) === true) {
+      let obs$ = of(data);
+      return new ChannelsPayload(channelName, obs$, data);
+    }
   }
 
   tracer(...args) {
