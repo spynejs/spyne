@@ -21,16 +21,13 @@ export class ChannelUtilsDom {
   static createMediaQuery(str) {
     const mq = window.matchMedia(str);
     this.checkIfValidMediaQuery(mq, str);
-
-    console.log("MQ IS ",mq,str, this.checkIfValidMediaQuery(mq,str));;
-
     return mq;
   }
 
   static checkIfValidMediaQuery(mq, str) {
     const noSpaces = str => str.replace(/\s+/gm, '');
     const isValidBool = mq.constructor.name === 'MediaQueryList' && noSpaces(mq.media) === noSpaces(str);
-    const warnMsg = str => console.warn(`Spyne Warning: the following query string, "${str}", does not match "${mq.media}" and may not be a valid Media Query item!`);
+    const warnMsg = str => console.warn(`Spyne Info: the following query string, "${str}", has been optimized to "${mq.media}" by the browser and may not be a valid Media Query item!`);
     if (isValidBool === false) {
       warnMsg(str);
     }
@@ -55,7 +52,7 @@ export class ChannelUtilsDom {
     return new fromEventPattern(
       mediaQueryHandler.addHandler,
       mediaQueryHandler.removeHandler)
-      .pipe(tap(p=>console.log("MQ",p)), map(mapKey));
+      .pipe(map(mapKey));
   }
 
   static createMergedObsFromObj(config) {
