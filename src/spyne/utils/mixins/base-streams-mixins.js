@@ -10,10 +10,10 @@ export function baseStreamsMixins() {
       console.log('stream mixin is ', str);
     },
     sendRoutePayload: function(obs, data) {
-      return new ChannelsPayload('ROUTE', obs, data, 'subscribe');
+      return new ChannelsPayload('CHANNEL_ROUTE', obs, data, 'subscribe');
     },
     sendUIPayload: function(obs, data) {
-      return new ChannelsPayload('UI', obs, data, 'subscribe');
+      return new ChannelsPayload('CHANNEL_UI', obs, data, 'subscribe');
     },
     sendChannelPayload: function(channelName, payload) {
       const getProp = str => R.prop(str, this.props);

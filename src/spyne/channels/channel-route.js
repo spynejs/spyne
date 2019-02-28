@@ -9,9 +9,9 @@ import {map} from "rxjs/operators";
 const R = require('ramda');
 
 export class ChannelRoute extends ChannelsBase {
-  constructor(name="ROUTE", props={}) {
+  constructor(name="CHANNEL_ROUTE", props={}) {
     props.sendLastPayload = true;
-    super("ROUTE", props);
+    super("CHANNEL_ROUTE", props);
     this.createChannelActionsObj();
     this.routeConfigJson = this.getRouteConfig();
     this.bindStaticMethods();

@@ -13,7 +13,7 @@ export class ChannelStreamItem {
 
     ChannelStreamItem.validateAction(action, channel, channelActionsArr);
 
-    if (channel === 'ROUTE') {
+    if (channel === 'CHANNEL_ROUTE') {
       channelStreamItemObj['location'] = ChannelStreamItem.getLocationData();
     }
 

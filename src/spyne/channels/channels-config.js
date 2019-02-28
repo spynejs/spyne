@@ -8,7 +8,7 @@ const Subject = require("rxjs");
 
 //console.log('channels config loaded ',R,Rx);
 let registeredStreamNames = () => ({
-  includes:  () => window.Spyne !== undefined ? arrFromMapKeys(window.Spyne.channels.map) : ['ROUTE', 'UI', 'WINDOW', 'DISPATCHER']
+  includes:  () => window.Spyne !== undefined ? arrFromMapKeys(window.Spyne.channels.map) : ['CHANNEL_ROUTE', 'CHANNEL_UI', 'CHANNEL_WINDOW', 'DISPATCHER']
 
 });
 

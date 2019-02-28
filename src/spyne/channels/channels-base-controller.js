@@ -61,16 +61,16 @@ export class ChannelsBaseController {
 
   createMainStreams() {
     this.routeValueeam = new ChannelRoute();
-    this.map.set('ROUTE', this.routeValueeam);
+    this.map.set('CHANNEL_ROUTE', this.routeValueeam);
 
     this.uiStream = new ChannelUI();
-    this.map.set('UI', this.uiStream);
+    this.map.set('CHANNEL_UI', this.uiStream);
 
     this.domStream = new ChannelWindow();
-    this.map.set('WINDOW', this.domStream);
+    this.map.set('CHANNEL_WINDOW', this.domStream);
 
     this.viewStreamLifecycle = new ChannelViewStreamLifecycle();
-    this.map.set('VIEWSTREAM_LIFECYCLE', this.viewStreamLifecycle);
+    this.map.set('CHANNEL_VIEWSTREAM_LIFECYCLE', this.viewStreamLifecycle);
 
     this.routeValueeam.initializeStream();
     this.domStream.initializeStream();

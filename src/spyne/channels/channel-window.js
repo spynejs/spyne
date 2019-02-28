@@ -9,7 +9,7 @@ import {mergeMap, map, debounceTime, skipWhile} from "rxjs/operators";
 
 export class ChannelWindow extends ChannelsBase {
   constructor() {
-    super("WINDOW");
+    super("CHANNEL_WINDOW");
     this.bindStaticMethods();
    // this.props.name = 'WINDOW';
   }
