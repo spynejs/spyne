@@ -1,6 +1,7 @@
 import {Subject} from 'rxjs';
 import {filter} from 'rxjs/operators';
 import {ChannelsBase} from '../channels/channels-base';
+const R = require('ramda');
 
 export class ChannelViewStreamLifecycle extends ChannelsBase {
 

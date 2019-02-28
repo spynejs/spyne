@@ -69,7 +69,7 @@ export class ViewStreamBroadcaster {
     let addObservable = (q) => {
       // the  btn observable
       let observable = event !== 'dblClick'
-        ? fromEvent(q, event)
+        ? fromEvent(q, event, {preventDefault: ()=>true})
         : this.addDblClickEvt(q);
       // select channel and data values from either the array or the element's dom Map
       channel =  q.dataset.channel;//ifNilThenUpdate(chnl, q.dataset.channel);

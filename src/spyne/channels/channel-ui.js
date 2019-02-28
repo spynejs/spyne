@@ -84,7 +84,21 @@ export class ChannelUI extends ChannelsBase {
     return type !== undefined ? `${mainAction}_${type}_EVENT` : mainAction;
   }
 
+  static checkToPreventDefaultEvent(obs){
+    const checkDataForPreventDefault = R.pathEq(['observableData', 'payload', 'eventPreventDefault'], "true");
+    const setPreventDefault = function(evt){ if (evt!==undefined) evt.preventDefault()};
+    const selectEvtAndPreventDefault = R.compose( setPreventDefault,   R.prop('uiEvent'));
+    const checkForPreventDefault = R.when(checkDataForPreventDefault, selectEvtAndPreventDefault);
+    checkForPreventDefault(obs);
+
+  }
+
   onUIEvent(obs) {
+    //obs.uiEvent.preventDefault();
+    //console.log("UI EVENT ",obs);
+
+    ChannelUI.checkToPreventDefaultEvent(obs);
+
     obs['action'] = this.getActionState(obs);
     const action = obs.action;// this.getActionState(obs);
     const {payload, srcElement} = obs.observableData;

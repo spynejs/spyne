@@ -9,6 +9,7 @@ import {validate} from '../utils/channel-config-validator';
 //import * as Rx from "rxjs-compat";
 import {Subject} from "rxjs";
 import {ChannelsBaseProxy} from './channels-base-proxy';
+const R = require('ramda');
 
 
 // const R = require('ramda');
