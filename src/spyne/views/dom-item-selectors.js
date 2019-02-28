@@ -4,19 +4,35 @@ const R = require('ramda');
 
 export class DomItemSelectors {
   constructor(cxt, str) {
-    this.el = str !== undefined ? cxt.querySelectorAll(str) : cxt;
+
+    this.mainEl = typeof(cxt) === 'string' ?  document.querySelectorAll(cxt) : cxt;
     this.queryStr = str;
-    if (this.el.length === 1) {
-      this.el = R.head(this.el);
-    } else if (this.el.constructor.name === 'NodeList') {
-      this.el = DomItemSelectors.createArrayFromNodeList(this.el);
+    if (this.mainEl.length === 1) {
+      this.mainEl = R.head(this.mainEl);
+    } else if (this.mainEl.constructor.name === 'NodeList') {
+      this.mainEl = DomItemSelectors.createArrayFromNodeList(this.mainEl);
     }
-    this.cList = this.el.classList;
 
+    let selectorStringIsEmptyBool = R.either(R.isNil, R.isEmpty)(str);
+    this._el = selectorStringIsEmptyBool ? this.mainEl :  this.getElFromQuery(this.mainEl, str);
+    if (this._el.length === 1) {
+      this._el = R.head(this._el);
+    } else if (this.el.constructor.name === 'NodeList') {
+      this._el = DomItemSelectors.createArrayFromNodeList(this._el);
+    }
 
-    this.elProps = new Map();
 
     this.createMethods();
+
+
+    //this.query(str);
+   // this.cList = this._el.classList;
+
+
+   // this._elProps = new Map();
+     // console.log("CXT STR ",cxt,str, document.querySelectorAll(cxt));
+   // this.createMethods();
+
   }
 
   static createArrayFromNodeList(nList){
@@ -120,13 +136,28 @@ export class DomItemSelectors {
     this.elArr.map(mapTheActive);
   }
 
-  query(str) {
-    const elementExists = this.el.querySelector(str);
-    //console.log('query is ',this.el,str, elementExists);
+  getElFromQuery(el, str){
+    //  console.log("DOM ITEM QUERY ",el,str);
+
+    const elementExists =el.querySelector(str);
+    //console.log('query is ',this._el,str, elementExists);
     if (elementExists!==null){
-      return new DomItemSelectors(this.el, str);
+      return el.querySelectorAll(str);
     } else {
-      const id = this.el.getAttribute('id');
+      const id = this._el.getAttribute('id');
+      console.warn(`Spyne Warning: the element, "${str}" does not exist in this element, "${id}"!`);
+    }
+    return {el:undefined};
+
+  }
+
+  query(str) {
+    const elementExists = this._el.querySelector(str);
+    //console.log('query is ',this._el,str, elementExists);
+    if (elementExists!==null){
+      return new DomItemSelectors(this._el, str);
+    } else {
+      const id = this._el.getAttribute('id');
       console.warn(`Spyne Warning: the element, "${str}" does not exist in this element, "${id}"!`);
     }
     return {el:undefined};
@@ -134,26 +165,32 @@ export class DomItemSelectors {
   }
 
   getEl() {
-    return this.el;
+    return this._el;
   }
 
+  get el(){
+    return this._el;
+  }
+  
+  
+
   get elArr() {
-    if (this.el.constructor.name === 'NodeList') {
-      return DomItemSelectors.createArrayFromNodeList(this.el);
+    if (this._el.constructor.name === 'NodeList') {
+      return DomItemSelectors.createArrayFromNodeList(this._el);
     } else {
-      return [].concat(this.el);
+      return [].concat(this._el);
     }
   }
 
 /*
   getBoxEl() {
-    console.log('getbox el ',this.el);
-    return [].concat(this.el);
+    console.log('getbox el ',this._el);
+    return [].concat(this._el);
   }
 */
 
   unmount() {
-    this.el = undefined;
+    this._el = undefined;
     this.cList = undefined;
     this.inline = undefined;
   }

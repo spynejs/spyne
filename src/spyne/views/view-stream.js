@@ -281,7 +281,7 @@ export class ViewStream {
     //  =====================================================================
     // ========== METHODS TO CHECK FOR WHEN TO COMPLETE THE STREAM =========
     let completeAll = () => {
-      this.props.el$.unmount();
+      this.props.el$ = undefined;
       this.uberSource$.complete();
       this.autoSubscriber$.complete();
       this.sink$.complete();
@@ -652,8 +652,18 @@ export class ViewStream {
   }
 
   beforeAfterRender() {
-    this.props.el$ = new DomItemSelectors(this.props.el);
+    let dm2 = function(el){
 
+      return function(str=''){
+        let theStr = str === undefined ? '' : str;
+        return new DomItemSelectors(el,str)
+
+      }
+
+    };
+
+
+    this.props.el$ = dm2(this.props.el);
     // console.log('EL IS ', this.props.el$.elArr);
     // window.theEl$ = this.props.el$;
   }
