@@ -4,8 +4,8 @@ import {ChannelsBase} from './channels-base';
 import {ChannelStreamItem} from './channel-stream-item';
 //import  'whatwg-fetch';
 // const R = require('ramda');
-import {AsyncSubject, ReplaySubject, Subject, Observable, from} from "rxjs";
-import {flatMap, map, multicast,publish,refCount,share, tap} from "rxjs/operators";
+import {from} from "rxjs";
+import {flatMap, map,publish,tap} from "rxjs/operators";
 
 export class ChannelsBaseData extends ChannelsBase {
   constructor(name, props = {}) {
