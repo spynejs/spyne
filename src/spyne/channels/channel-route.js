@@ -46,6 +46,7 @@ export class ChannelRoute extends ChannelsBase {
     }
 
     let arr = RouteUtils.flattenConfigObject(routeConfig.routes);
+    //console.log("FLATTENED CONFIG ",arr);
     routeConfig['paramsArr'] = arr;
     return routeConfig;
   }

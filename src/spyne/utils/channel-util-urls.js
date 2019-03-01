@@ -86,12 +86,23 @@ export class URLUtils {
   }
 
   static createSlashString(arr) {
-    const arrClear = R.reject(R.isNil);
+
+    const removeRegex = str => str.replace(/^(\W*)(.*?)(\W*)$/g, "$2");
+    const cleanVals = R.map(removeRegex, R.values);
+
+    /**
+     * TODO: CREATE ARRAYS OR REGEX OPTIONS FOR PARSING PARAMS INTO ROUTE STRING
+     *
+     */
+
+
+    const arrClear = R.reject(R   .isNil);
     const notUndefined = R.when(R.complement(R.isNil, R.__), R.join('/'));
 
     const joiner = R.compose(notUndefined, arrClear, R.flatten,
       R.map(R.values));
 
+    let joinerArr = joiner(arr);
     return joiner(arr);
   }
 
@@ -146,17 +157,78 @@ export class URLUtils {
   static checkIfValueShouldMapToParam(obj, str) {
     let invertedObj = R.invert(obj);
 
-    let checkIfValMapsToParam = R.compose(R.is(String), R.head, R.defaultTo([]),
-      R.prop(str));
-    let getParam = R.compose(R.head, R.prop(str));
+    let checkIfValMapsToParam = R.compose(R.is(String), R.head, R.defaultTo([]), R.prop(str));
+    const reFn = s => new RegExp(s);
+    let pred = R.test(reFn(R.__), str);
+      //console.log('str is ',str);
+      let testStr  = R.test(R.__, str);
 
-    let strCheck = R.ifElse(
-      checkIfValMapsToParam,
-      getParam,
-      R.always(str)
+      // GO THROUGH KEYS AND CHECK IF REGEX MATCHES
+
+    // CHECKS IF STRING IS EMPTY AS IN FOR HOME PAGE
+    let checkForEmpty =  R.replace(/^$/, '^$');
+    //const getKeyIfObject = R.ifElse(R.filter(R.is(Object)), R.key)
+
+    // GO THROUGH ROUTE CONFIG TO FIGURE OUT IF VAL OR KEY SHOULD BE COMPARED
+    const getValCompareArr = R.compose( R.map(R.last), R.map(R.filter(R.is(String))),  R.toPairs);
+
+    // CREATE THE ARRAY OF EITHER VALS OR KEYS
+    let paramsArr = getValCompareArr(obj);
+
+    //const testKeyMatch = s => R.test(reFn(`^${s}$`), str);
+   // const returnStrIfMatch = R.ifElse(testKeyMatch, R.identity, R.always(str));
+
+
+    // SEE IF CURRENT ROUTE STRING MATCHES ANY OF THE VALUES OR KEYS
+    let checkForParamsMatch = R.compose(  R.findLastIndex(R.equals(true)), R.map(testStr),  R.map(reFn), R.map(checkForEmpty));
+    //R.findIndex(R.equals(true), temp1)
+
+    // RESULTS FROM PARAM CHECK
+    let paramIndex = checkForParamsMatch(paramsArr);
+
+    // DEFAULT VAL FOR STRING
+    let paramStr = str;
+
+    // LEGACY METHOD -- TURN OFF
+    // =========================================
+    let getParam = R.compose(R.head, R.prop(str));
+    const strCheck = R.ifElse(
+        checkIfValMapsToParam,
+        getParam,
+        R.always(str)
     );
 
-    return strCheck(invertedObj);
+    let origParam = strCheck(invertedObj);
+
+    // ===============================================
+
+    if (paramIndex>=0){
+      let param = paramsArr[paramIndex];
+
+      // PULL INVERTED OBJECT TO SEE IF STR MATCHES
+      let getParamInverted = R.compose(R.head, R.defaultTo([]), R.prop(param));
+      let paramInverted = getParamInverted(invertedObj);
+      let re =  /^(\w*)$/;
+      let keyMatch =  re.test(paramInverted);;
+
+
+      if (keyMatch === true && R.is(String, paramInverted)===true){
+        paramStr = paramInverted;
+      }
+
+    }
+
+
+    //console.log("PARAM IS NOW ",{paramStr,origParam,invertedObj,obj,str});
+
+
+
+
+    //console.log("C2: ",{paramIndex,paramStr, paramsArr},strCheck(invertedObj));
+
+    //console.log({paramIndex,str},obj," C2 IS ", strCheck(invertedObj));
+    //console.log("CHECK PARAM ",{invertedObj, c2,str},strCheck(invertedObj));
+    return paramStr;// strCheck(invertedObj);
   }
 
   static createArrFromSlashStr(str) {
