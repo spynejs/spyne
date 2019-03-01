@@ -1,11 +1,12 @@
 import {ChannelActionFilter} from '../../spyne/utils/channel-action-filter';
-import {internalViewStreamPayload} from '../mocks/viewstream-internal-payload.mocks';
+import {internalViewStreamPayload,internvalRouteChannelPayload} from '../mocks/viewstream-internal-payload.mocks';
 import {spyneDocsDomStr} from '../mocks/spyne-docs.mocks';
 internalViewStreamPayload.srcElement.el = document.querySelector('.has-svg.github');
 
 const R = require('ramda');
 describe('channel action filter', () => {
   let payload = internalViewStreamPayload;
+  let payloadRoute = internvalRouteChannelPayload
 
   beforeEach(function(){
      document.body.insertAdjacentHTML('afterbegin', spyneDocsDomStr);
