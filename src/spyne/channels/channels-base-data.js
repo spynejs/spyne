@@ -15,29 +15,30 @@ export class ChannelsBaseData extends ChannelsBase {
 
 
   onStreamInitialized(){
-    this.fetchData();
+    this.startFetch();
   }
 
-  get observer() {
-    return this.observer$;
-  }
 
   addRegisteredActions() {
     return [
       'CHANNEL_DATA_EVENT',
-        ['CHANNEL_UPDATE_DATA_EVENT', 'onUpdateData']
+        ['CHANNEL_UPDATE_DATA_EVENT', 'onFetchUpdate']
     ];
   }
 
-  onUpdateData(p){
-    let dataObj = R.path(['observableData', 'payload'], p);
-    let propsOptions = R.pick(["mapFn", "url", "header", "body","mode","method", "responseType", "debug"], dataObj);
-    this.fetchData("", propsOptions);
+
+  startFetch(options={}, subscriber=this.onFetchReturned.bind(this)){
+    let fetchProps = this.consolidateAllFetchProps(options);
+    new ChannelFetchUtil(fetchProps, subscriber);
+  }
+
+  onFetchUpdate(evt){
+    let propsOptions = this.getPropsForFetch(evt);
+    this.startFetch(propsOptions);
 
   }
 
-  onDataFetched(streamItem){
-    console.log("DATA FETCHED ",streamItem);
+  onFetchReturned(streamItem){
     let payload = this.createChannelStreamItem(streamItem);
     this.observer$.next(payload);
   }
@@ -46,18 +47,22 @@ export class ChannelsBaseData extends ChannelsBase {
     return new ChannelStreamItem(this.props.name, action, payload);
   }
 
-   getFetchProps(url, options, props=this.props){
-    let currentOptions = R.merge({url}, options);
+  getPropsForFetch(evt){
+    let dataObj = R.path(['observableData', 'payload'], evt);
+    return R.pick(["mapFn", "url", "header", "body","mode","method", "responseType", "debug"], dataObj);
+  }
+
+   consolidateAllFetchProps(options, props=this.props){
+    //let currentOptions = R.merge({url}, options);
     let propsOptions = R.pick(["mapFn", "url", "header", "body","mode","method", "responseType", "debug"], props);
     const mergeOptions = (o1,o2) => R.mergeDeepRight(o1,o2);
     const filterOutUndefined = R.reject(R.isNil);
-    return R.compose(filterOutUndefined, mergeOptions)(propsOptions, currentOptions);
+    return R.compose(filterOutUndefined, mergeOptions)(propsOptions, options);
   }
 
-  fetchData(url=this.props.url, options={}, subscriber=this.onDataFetched.bind(this)){
-      let fetchProps = this.getFetchProps(url, options);
-      new ChannelFetchUtil(fetchProps, subscriber);
-    // mapFn, url, {header,body,mode,method}, responseType, debug
+  get observer() {
+    return this.observer$;
   }
+
 
 }

@@ -24,7 +24,34 @@ export class RouteUtils {
     return getLastParam(arr);
   }
 
+  static getUpdatedKeys(obj){
+    this.compareObj = this.compareObj!== undefined ? this.compareObj : {};
+
+    return {
+
+      function(obj){
+
+
+
+
+        this.compareObj = obj;
+
+
+
+      }
+
+
+
+
+    }
+
+
+
+  }
+
   static getRouteArrData(routeArr, paramsArr) {
+
+    console.log("ROUTE DATA ",routeArr, paramsArr);
     let routeKeywordsArr =  R.filter(R.contains(R.__, routeArr), paramsArr);
     const routeKeyword = RouteUtils.getLastArrVal(routeKeywordsArr);
     // console.log('arr and keyword ',{routeKeywordsArr, routeKeyword});

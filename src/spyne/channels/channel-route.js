@@ -195,12 +195,18 @@ export class ChannelRoute extends ChannelsBase {
 
   static getRouteStrFromParams(paramsData, routeConfig, t) {
     const type = t !== undefined ? t : routeConfig.type;
-    return URLUtils.convertParamsToRoute(paramsData, routeConfig, type);
+    let obj= URLUtils.convertParamsToRoute(paramsData, routeConfig, type);
+
+    console.log("ROUTE getRouteStrFromParams ",paramsData,obj);
+    return obj;
+
   }
 
   static getParamsFromRouteStr(str, routeConfig, t) {
     const type = t !== undefined ? t : routeConfig.type;
-    return URLUtils.convertRouteToParams(str, routeConfig, type);
+    let obj = URLUtils.convertRouteToParams(str, routeConfig, type);
+      console.log("ROUTE getParamsFromRouteStr ",obj);
+    return obj;
   }
 
   checkEmptyRouteStr(str, isHash = false) {

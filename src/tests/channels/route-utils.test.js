@@ -29,3 +29,20 @@ describe('Route Utils', () => {
     expect(routeObj.routeKeywordsArr).to.deep.equal(routedArr);
   });
 });
+
+describe('it should compare two objects for updated keys', ()=>{
+  let obj1 = {
+    "pageId": "guide",
+    "section": "reference"
+  };
+
+
+  it('should compare the two objs', ()=>{
+      console.log('comparing');
+
+    return true;
+  })
+
+
+
+})

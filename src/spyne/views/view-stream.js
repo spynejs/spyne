@@ -159,7 +159,6 @@ export class ViewStream {
       this.sourceStreams.raw$.next(obj);
     }
     let filterPayload =  R.defaultTo(R.always(true), actionFilter);
-    console.log('payload ',filterPayload(p.props()),filterPayload(p.channelPayload),p.props());
     if (filterPayload(p.props())===true){
       this[str](p);
     }
