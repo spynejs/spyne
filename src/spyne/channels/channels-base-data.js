@@ -30,12 +30,12 @@ export class ChannelsBaseData extends ChannelsBase {
   }
 
   onUpdateData(p){
-    let url = R.path(['observableData', 'payload', 'dataUrl'], p);
+    let url = R.path(['observableData', 'payload', 'url'], p);
 
     if (url === undefined){
-      console.warn("SPYNE Warning: dataUrl parameter is required to update data", url);
+      console.warn("SPYNE Warning: url parameter is required to update data", url);
     } else {
-      this.props.dataUrl = url;
+      this.props.url = url;
       this.fetchData();
     }
   }
@@ -46,6 +46,15 @@ export class ChannelsBaseData extends ChannelsBase {
 
 
   fetchData() {
+    let options =  {
+      method: "GET",
+      headers: {
+        "Content-type": "application/json; charset=UTF-8"
+      },
+      responseType: 'json'
+    };
+
+
     const tapLog = p => console.log('data returned :',this.props.name, p);
     const mapFn = this.props.map !== undefined ? this.props.map : (p) => p;
     const createChannelStreamItem = (payload) => {
@@ -54,11 +63,10 @@ export class ChannelsBaseData extends ChannelsBase {
     };
 
 
-    let response$ = from(window.fetch(this.props.dataUrl))
-      .pipe(flatMap(r => from(r.json())),
-      map(mapFn),
+    let response$ = from(window.fetch(this.props.url, options))
+      .pipe(tap(tapLog), flatMap(r => from(r[options.responseType]())),
+        map(mapFn),
       map(createChannelStreamItem),
-     // tap(tapLog),
       publish());
 
     response$.connect();
