@@ -3,7 +3,7 @@ import {ChannelFetchUtil} from '../../spyne/utils/channel-fetch-util';
 describe('ChannelFetchUtil Tests', () => {
 
   const mapFn = (p)=>{
-    console.log('mapping fetch data ',p);
+    console.log('mapping fetched data ',p);
     return p;
   };
 
@@ -80,14 +80,13 @@ describe('ChannelFetchUtil Tests', () => {
     let p = R.clone(props);
     //p.responseType = 'text';
 
-    console.log("PROPS P",p);
+    //console.log("PROPS P",p);
 
-    let channelFetchUtil = new ChannelFetchUtil(p, subscriber);
-    describe('return vals from fetch util',()=>{
+    let channelFetchUtil = new ChannelFetchUtil(p, subscriber, true);
 
       it('should return correct server option', ()=>{
         let serverOptions = R.omit(['mapFn'], channelFetchUtil.serverOptions);
-        expect(serverOptions).to.deep.equal(baseServerOptions);
+         expect(serverOptions).to.deep.equal(baseServerOptions);
       });
 
 
@@ -96,16 +95,43 @@ describe('ChannelFetchUtil Tests', () => {
       });
 
       it('should return correct url', ()=>{
-        console.log("REPONSE URL ",channelFetchUtil.url);
         expect(channelFetchUtil.url).to.equal(url);
       });
 
+  });
 
+  describe('fetch util updates method to POST from GET when body exists', () => {
+    let subscriber = (data)=>console.log('data retruned ',data);
+    let p = R.omit(['method', 'mapFn'], props);;
+    p.responseType = 'text';
+    p.body = {foo:'bar'};
 
+    let channelFetchUtil = new ChannelFetchUtil(p, subscriber, true);
+
+    it('should return correct server option', ()=>{
+      let serverOptions = R.omit(['mapFn'], channelFetchUtil.serverOptions);
+      return true;
     });
 
 
+    it('should return correct response type', ()=>{
+      expect(channelFetchUtil.responseType).to.equal('text');
+    });
+
+    it('should return correct url', ()=>{
+      expect(channelFetchUtil.url).to.equal(url);
+    });
+
+    it('should return default mapFn', ()=>{
+      expect(channelFetchUtil.mapFn).to.be.a('function');
+    });
 
   });
+
+
+
+
+
+
 
 });

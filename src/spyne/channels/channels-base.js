@@ -31,9 +31,7 @@ export class ChannelsBase {
     this.createChannelActionsObj();
     const defaultName = {name};
     props.name = name;
-
-    console.log("PROPS CHANEL ",props.name, this.constructor.name);
-   // this.props = Object.assign({}, defaultName, props);
+    // this.props = Object.assign({}, defaultName, props);
     this.props =  props;
     this.props.isProxy = this.props.isProxy === undefined ? false : this.props.isProxy;
     this.props.sendLastPayload = this.props.sendLastPayload === undefined ? false : this.props.sendLastPayload;
