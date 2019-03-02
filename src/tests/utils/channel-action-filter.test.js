@@ -6,11 +6,15 @@ internalViewStreamPayload.srcElement.el = document.querySelector('.has-svg.githu
 const R = require('ramda');
 describe('channel action filter', () => {
   let payload = internalViewStreamPayload;
+  let obj = R.clone(payload);
+  payload= R.mergeDeepRight(obj.channelPayload,obj.srcElement, {channel:obj.channel}, {event:obj.event});
+  payload['action'] = obj.action;
+
   let payloadRoute = internvalRouteChannelPayload
 
   beforeEach(function(){
      document.body.insertAdjacentHTML('afterbegin', spyneDocsDomStr);
-     payload.srcElement.el = document.querySelector('.has-svg.github');
+     payload.el = document.querySelector('.has-svg.github');
    }
   );
 

@@ -158,10 +158,9 @@ export class ViewStream {
       obj['$dir'] = this.$dirs.C;
       this.sourceStreams.raw$.next(obj);
     }
-
     let filterPayload =  R.defaultTo(R.always(true), actionFilter);
-
-    if (filterPayload(p)===true){
+    console.log('payload ',filterPayload(p.props()),filterPayload(p.channelPayload),p.props());
+    if (filterPayload(p.props())===true){
       this[str](p);
     }
 

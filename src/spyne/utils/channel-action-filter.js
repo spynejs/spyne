@@ -18,7 +18,7 @@ export class ChannelActionFilter {
   static filterData(filterJson){
     let compareData = () => {
 
-      // DO NOT ALLOW AN EMPTY OBJECT TO RETURN TRUE
+      // DO NOT ALLOW AN EMPTY OBJECT TO RETURN TRUEs
       if (R.isEmpty(filterJson)){
         return R.always(false);
       }
@@ -43,7 +43,7 @@ export class ChannelActionFilter {
       // IF THERE ARE METHODS IN THE FILTERING JSON, THEN USE R.where or R.whereEq if Basic JSON
       let fMethod = isAllMethods === true ? R.where(filterJson): R.whereEq(filterJson);
 
-      return  R.compose(fMethod, R.defaultTo({}), R.path(['channelPayload']))
+      return  R.compose(fMethod, R.defaultTo({}))
     };
 
 
@@ -55,7 +55,7 @@ export class ChannelActionFilter {
 
   static checkPayloadSelector(arr, payload){
     // ELEMENT FROM PAYLOAD
-    let el = R.path(['srcElement', 'el'], payload);
+    let el = R.path(['el'], payload);
 
     // RETURN BOOLEAN MATCH WITH PAYLOAD EL
     const compareEls = (elCompare) => elCompare.isEqualNode((el));
