@@ -134,8 +134,11 @@ export class ChannelRoute extends ChannelsBase {
     let routeValue = this.getRouteStrFromParams(keywords, config);
 
     // WINDOW LOCATION HASN'T BEEN CHANGED YET, SO WILL GET STR PARAMS
+    const getPropFromConfig = (prp, defalt) => R.defaultTo(defalt, R.prop(prp, config));
+    let typeForStr = getPropFromConfig('type', 'slash');
+    let isHashForStr = getPropFromConfig('isHash', false);
     let nextWindowLoc = URLUtils.formatStrAsWindowLocation(routeValue);
-    let dataFromStr = this.getDataFromLocationStr('slash', this.routeConfigJson.isHash, nextWindowLoc);
+    let dataFromStr = this.getDataFromLocationStr(typeForStr, isHashForStr, nextWindowLoc);
 
     console.log(" DATA FROM STRING ",dataFromStr);
     let {routeKeyword, routeKeywordsArr} = dataFromStr;
