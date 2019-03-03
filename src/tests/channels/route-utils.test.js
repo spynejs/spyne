@@ -36,11 +36,43 @@ describe('it should compare two objects for updated keys', ()=>{
     "section": "reference"
   };
 
+  let obj2 = {
+      "pageId": "guide",
+      "section": "overview",
+      "menuItem": "intro-sending-channel-payloads",
+      "type": "menuItem",
+      "isManualScroll": true
+  };
 
-  it('should compare the two objs', ()=>{
-      console.log('comparing');
 
-    return true;
+  let obj3 = {
+     ya: 1,
+    ubu:3,
+    lsd:4,
+    aesf:"sadfsd",
+    a23rff: 23,
+    aasdsf: 234,
+  };
+
+
+  let routeKeywordsArr = [
+    "pageId",
+    "section",
+    "menuItem"
+  ];
+
+  let checkUpdatedKeys = RouteUtils.compareRouteKeywords();;
+
+
+  it('first comparison should be done against empty obj', ()=>{
+    let compareStart = checkUpdatedKeys.compare(obj1);
+    expect(compareStart.keywordsChanged).to.deep.equal(['pageId', 'section']);
+  });
+
+
+  it('should compare second obj against first', ()=>{
+    let compare2 = checkUpdatedKeys.compare(obj2, routeKeywordsArr);
+    expect(compare2.keywordsChanged).to.deep.equal(['section', 'menuItem']);
   })
 
 

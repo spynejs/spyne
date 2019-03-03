@@ -24,22 +24,40 @@ export class RouteUtils {
     return getLastParam(arr);
   }
 
-  static getUpdatedKeys(obj){
-    this.compareObj = this.compareObj!== undefined ? this.compareObj : {};
-
+  static compareRouteKeywords(obj={}, arr){
+    const pickValues = (o, a)=>a!==undefined ? R.pick(a,o) : o;
+    let obj1 = pickValues(obj, arr);
     return {
+      pickValues,
+      compare: (obj={}, arr)=>{
+        let obj2 = pickValues(obj,arr);
+        const compareProps = p => {
+          let p1 = R.prop(p, obj1);
+          let p2 = R.prop(p, obj2);
+         let same = R.equals(p1,p2);
+         let previousExists = p1 !== undefined;
+         let nextExists = p2 !== undefined;
+         let changed = !same;
+         let added = previousExists === false && nextExists === true;
+         let removed = previousExists === true && nextExists === false;
+         //console.log("P: ",p,{same, previousExists, nextExists});
+         let obj = {};
+         obj[p] = {same,changed, added,removed, previousExists, nextExists};
+           return obj;
+        };
 
-      function(obj){
+        const createPred = p =>  R.compose(R.keys, R.filter(R.propEq(p, true)));
 
+        const getPropsState = R.compose(R.map(compareProps), R.uniq, R.chain(R.keys))([obj1,obj2]);
+        let keywordsChanged = R.chain(createPred('changed'), getPropsState);
+        let keywordsAdded = R.chain(createPred('added'), getPropsState);
+        let keywordsRemoved = R.chain(createPred('removed'), getPropsState);
+       // console.log("GET KEYS ", keywordsChanged);
+        obj1 = obj2;
+        return {keywordsAdded, keywordsRemoved, keywordsChanged};
+      },
 
-
-
-        this.compareObj = obj;
-
-
-
-      }
-
+      getComparer: ()=>obj1
 
 
 
@@ -47,11 +65,13 @@ export class RouteUtils {
 
 
 
+
+
+
+
   }
 
   static getRouteArrData(routeArr, paramsArr) {
-
-    console.log("ROUTE DATA ",routeArr, paramsArr);
     let routeKeywordsArr =  R.filter(R.contains(R.__, routeArr), paramsArr);
     const routeKeyword = RouteUtils.getLastArrVal(routeKeywordsArr);
     // console.log('arr and keyword ',{routeKeywordsArr, routeKeyword});

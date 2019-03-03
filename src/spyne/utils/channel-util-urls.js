@@ -24,7 +24,15 @@ export class URLUtils {
     return routeObj;
   }
 
-  static getLocationStrByType(t, isHash = false) {
+  static formatStrAsWindowLocation(str){
+    const hash = str;
+    const search = str;
+    const pathname = str;
+    return {hash,search,pathname};
+
+  }
+
+  static getLocationStrByType(t, isHash = false, loc=window.location) {
     const type = isHash === true ? 'hash' : t;
 
     const typeMap = {
@@ -33,8 +41,9 @@ export class URLUtils {
       'hash': 'hash'
     };
     const prop = typeMap[type];
-    let str  = R.prop(prop, window.location);
+    let str  = R.prop(prop, loc);
     let checkForSlashAndHash = /^(\/)?(#)?(\/)?(.*)$/;
+    console.log("DATA LOC STR ",{str, loc, prop, type,isHash});
     return str.replace(checkForSlashAndHash, '$4');
   }
 

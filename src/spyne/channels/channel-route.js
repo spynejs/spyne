@@ -17,6 +17,8 @@ export class ChannelRoute extends ChannelsBase {
     this.bindStaticMethods();
     this.navToStream$ = new ReplaySubject(1);
     this.observer$ = this.navToStream$.pipe(map(info => this.onMapNext(info)));
+   // let compareKeysFn = RouteUtils.compareRouteKeywords.bind(this);
+    this.compareRouteKeywords = RouteUtils.compareRouteKeywords();
 
   }
 
@@ -72,6 +74,9 @@ export class ChannelRoute extends ChannelsBase {
       : this.channelActions.CHANNEL_ROUTE_CHANGE_EVENT;
     let payload = this.getDataFromString(config);
     // console.log('route dom ',action, payload);
+    let keywordArrs = this.compareRouteKeywords.compare(payload.keywords, payload.routeKeywordsArr);
+    payload = R.merge(payload, keywordArrs);
+    console.log("SEND STREAM onIncomingDomEvent", payload, keywordArrs);;
     this.sendStreamItem(action, payload, undefined, undefined,
       this.navToStream$);
   }
@@ -82,7 +87,11 @@ export class ChannelRoute extends ChannelsBase {
     let srcElement = R.path(['observableData', 'srcElement'], pl);
     let uiEvent = pl.observableEvent;
     let changeLocationBool = !payload.isHidden;
+    let keywordArrs = this.compareRouteKeywords.compare(payload.keywords, payload.routeKeywordsArr);
+    payload = R.merge(payload, keywordArrs);
     this.sendRouteStream(payload, changeLocationBool);
+    console.log("SEND STREAM onIncomingObserverableData", payload);
+
     this.sendStreamItem(action, payload, srcElement, uiEvent,
       this.navToStream$);
   }
@@ -124,7 +133,11 @@ export class ChannelRoute extends ChannelsBase {
 
     let routeValue = this.getRouteStrFromParams(keywords, config);
 
-    let dataFromStr = this.getDataFromLocationStr();
+    // WINDOW LOCATION HASN'T BEEN CHANGED YET, SO WILL GET STR PARAMS
+    let nextWindowLoc = URLUtils.formatStrAsWindowLocation(routeValue);
+    let dataFromStr = this.getDataFromLocationStr('slash', this.routeConfigJson.isHash, nextWindowLoc);
+
+    console.log(" DATA FROM STRING ",dataFromStr);
     let {routeKeyword, routeKeywordsArr} = dataFromStr;
 
     keywords = R.merge(dataFromStr.keywords, keywords);
@@ -168,11 +181,14 @@ export class ChannelRoute extends ChannelsBase {
     return obj;
   }
 
-  static getDataFromLocationStr(t = 'slash') {
+  static getDataFromLocationStr(t = 'slash', isHash=this.routeConfigJson.isHash, loc=window.location) {
     const type = this.routeConfigJson !== undefined
       ? this.routeConfigJson.type
       : t;
-    const str = URLUtils.getLocationStrByType(type);
+
+
+    console.log("DATA CHECK STRING ",loc);
+    const str = URLUtils.getLocationStrByType(type, isHash, loc);
     let {routeKeywordsArr, routeKeyword, keywords, routeValue} = this.getParamsFromRouteStr(
       str, this.routeConfigJson, type);
     const action = this.getRouteState();
