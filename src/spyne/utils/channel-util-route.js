@@ -78,6 +78,30 @@ export class RouteUtils {
     return {routeKeywordsArr, routeKeyword};
   }
 
+
+  static translateRouteParameter(routeStr, routeConfig, tokensArr){
+    const parseRouteParamRegex = (str)=>{
+      const regex = /\"{2}|(\^\$)|([\w\-]+?(\.html)|[\w\-]+)/gm;
+
+      console.log("run regex");
+    };
+
+    const checkIfRegexTokenExists=()=>{
+
+    };
+
+    /**
+     *
+     * TODO static method to find either a regex token in routeConfig or pullout string from the regex
+     * NOT SURE IF IT MAKES SENSE TO MEMOIZE LAST URL VAL FOR PARAMETER
+     *
+     *
+     *
+     */
+
+
+  }
+
   static flattenConfigObject(obj) {
     const go = obj_ => R.chain(([k, v]) => {
       if (Object.prototype.toString.call(v) === '[object Object]') {
