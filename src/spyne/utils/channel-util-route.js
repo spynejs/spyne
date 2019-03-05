@@ -73,9 +73,9 @@ export class RouteUtils {
 
   static getRouteArrData(routeArr, paramsArr) {
     let paths =  R.filter(R.contains(R.__, routeArr), paramsArr);
-    const routeKeyword = RouteUtils.getLastArrVal(paths);
-    // console.log('arr and routeName ',{paths, routeKeyword});
-    return {paths, routeKeyword};
+    const pathInnermost = RouteUtils.getLastArrVal(paths);
+    // console.log('arr and routeName ',{paths, pathInnermost});
+    return {paths, pathInnermost};
   }
 
 

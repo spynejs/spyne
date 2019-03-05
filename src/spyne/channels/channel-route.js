@@ -74,7 +74,7 @@ export class ChannelRoute extends ChannelsBase {
       : this.channelActions.CHANNEL_ROUTE_CHANGE_EVENT;
     let payload = this.getDataFromString(config);
     // console.log('route dom ',action, payload);
-    let keywordArrs = this.compareRouteKeywords.compare(payload.keywords, payload.paths);
+    let keywordArrs = this.compareRouteKeywords.compare(payload.routeData, payload.paths);
     payload = R.merge(payload, keywordArrs);
     console.log("SEND STREAM onIncomingDomEvent", payload, keywordArrs);;
     this.sendStreamItem(action, payload, undefined, undefined,
@@ -87,7 +87,7 @@ export class ChannelRoute extends ChannelsBase {
     let srcElement = R.path(['observableData', 'srcElement'], pl);
     let uiEvent = pl.observableEvent;
     let changeLocationBool = !payload.isHidden;
-    let keywordArrs = this.compareRouteKeywords.compare(payload.keywords, payload.paths);
+    let keywordArrs = this.compareRouteKeywords.compare(payload.routeData, payload.paths);
     payload = R.merge(payload, keywordArrs);
     this.sendRouteStream(payload, changeLocationBool);
     console.log("SEND STREAM onIncomingObserverableData", payload);
@@ -129,9 +129,9 @@ export class ChannelRoute extends ChannelsBase {
   }
 
   static getDataFromParams(pl, config = this.routeConfigJson) {
-    let keywords = R.path(['observableData', 'payload'], pl);
+    let routeData = R.path(['observableData', 'payload'], pl);
 
-    let routeValue = this.getRouteStrFromParams(keywords, config);
+    let routeValue = this.getRouteStrFromParams(routeData, config);
 
     // WINDOW LOCATION HASN'T BEEN CHANGED YET, SO WILL GET STR PARAMS
     const getPropFromConfig = (prp, defalt) => R.defaultTo(defalt, R.prop(prp, config));
@@ -141,18 +141,18 @@ export class ChannelRoute extends ChannelsBase {
     let dataFromStr = this.getDataFromLocationStr(typeForStr, isHashForStr, nextWindowLoc);
 
     console.log(" DATA FROM STRING ",dataFromStr);
-    let {routeKeyword, paths} = dataFromStr;
+    let {pathInnermost, paths} = dataFromStr;
 
-    keywords = R.merge(dataFromStr.keywords, keywords);
+    routeData = R.merge(dataFromStr.routeData, routeData);
 
     let {routeCount, isDeepLink, isHash, isHidden, routeType} = this.getExtraPayloadParams(
       config);
     return {
       isDeepLink,
       routeCount,
-      routeKeyword,
+      pathInnermost,
       paths,
-      keywords,
+      routeData,
       routeValue,
       isHash,
       isHidden,
@@ -165,7 +165,7 @@ export class ChannelRoute extends ChannelsBase {
     const hashIsTrue = config.isHash === true;
     //type = config.isHash === true ? ''
     const str = URLUtils.getLocationStrByType(type, hashIsTrue);
-    let {paths, routeKeyword, keywords, routeValue} = ChannelRoute.getParamsFromRouteStr(
+    let {paths, pathInnermost, routeData, routeValue} = ChannelRoute.getParamsFromRouteStr(
       str, config, type);
     let {routeCount, isDeepLink, isHash, routeType, isHidden} = this.getExtraPayloadParams(
       config);
@@ -173,9 +173,9 @@ export class ChannelRoute extends ChannelsBase {
     let obj = {
       isDeepLink,
       routeCount,
-      routeKeyword,
+      pathInnermost,
       paths,
-      keywords,
+      routeData,
       routeValue,
       isHash,
       isHidden,
@@ -192,10 +192,10 @@ export class ChannelRoute extends ChannelsBase {
 
     console.log("DATA CHECK STRING ",loc);
     const str = URLUtils.getLocationStrByType(type, isHash, loc);
-    let {paths, routeKeyword, keywords, routeValue} = this.getParamsFromRouteStr(
+    let {paths, pathInnermost, routeData, routeValue} = this.getParamsFromRouteStr(
       str, this.routeConfigJson, type);
     const action = this.getRouteState();
-    return {paths, routeKeyword, keywords, routeValue, action};
+    return {paths, pathInnermost, routeData, routeValue, action};
   }
 
   static getLocationData() {

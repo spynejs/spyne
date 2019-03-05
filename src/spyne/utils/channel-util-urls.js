@@ -151,7 +151,7 @@ export class URLUtils {
     const isHash = r.isHash;
     let route = r.routes.routePath;
     let locationStr = locStr !== undefined ? locStr : this.getLocationStrByType(urlType, isHash);
-    let paramsFromCurrentLocation = this.convertRouteToParams(locationStr, r, urlType).keywords;
+    let paramsFromCurrentLocation = this.convertRouteToParams(locationStr, r, urlType).routeData;
 
     let urlArr = this.createRouteArrayFromParams(data, route, urlType, paramsFromCurrentLocation);
     // THIS CREATES A QUERY PATH STR
@@ -273,9 +273,9 @@ export class URLUtils {
     };
 
     R.reduce(createParamsFromStr, 0, valuesArr);
-    let keywords = R.zipObj(paths, routedValuesArr);
-    const routeKeyword = this.getLastArrVal(paths);
-    return {paths, routeKeyword, keywords, routeValue};
+    let routeData = R.zipObj(paths, routedValuesArr);
+    const pathInnermost = this.getLastArrVal(paths);
+    return {paths, pathInnermost, routeData, routeValue};
   }
 
   static getLastArrVal(arr) {
@@ -296,17 +296,17 @@ export class URLUtils {
     let strArr = str.replace(queryRe, '$2');
     let convertToParams = R.compose(R.map(R.split('=')), R.split('&'));
     let paramsArr = convertToParams(strArr);
-    let keywords = R.fromPairs(paramsArr);
+    let routeData = R.fromPairs(paramsArr);
 
     let paths = R.map(R.head, paramsArr);
 
     if (R.isEmpty(str) === true) {
-      keywords = this.createDefaultParamFromEmptyStr(topLevelRoute, str);
-      paths = R.keys(keywords);
+      routeData = this.createDefaultParamFromEmptyStr(topLevelRoute, str);
+      paths = R.keys(routeData);
     }
-    let routeKeyword = this.getLastArrVal(paths);
+    let pathInnermost = this.getLastArrVal(paths);
 
-    return {paths, routeKeyword, keywords, routeValue};
+    return {paths, pathInnermost, routeData, routeValue};
   }
 
   static convertRouteToParams(str, routeConfig, t) {

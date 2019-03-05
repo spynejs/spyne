@@ -58,14 +58,14 @@ describe('Channel Route', () => {
     let data = RouteDataForTests.multiple.data;
     let queryStr = RouteDataForTests.multiple.slash;
     let paramsFromRoute = ChannelRoute.getParamsFromRouteStr(queryStr, routeConfig);
-    expect(ObjtoStr(paramsFromRoute.keywords)).to.equal(ObjtoStr(data));
+    expect(ObjtoStr(paramsFromRoute.routeData)).to.equal(ObjtoStr(data));
   });
 
   it('should return params object from query string', () => {
     let data = RouteDataForTests.multiple.data;
     let queryStr = RouteDataForTests.multiple.query;
     let paramsFromRoute = ChannelRoute.getParamsFromRouteStr(queryStr, routeConfig, 'query');
-    expect(ObjtoStr(paramsFromRoute.keywords)).to.equal(ObjtoStr(data));
+    expect(ObjtoStr(paramsFromRoute.routeData)).to.equal(ObjtoStr(data));
   });
 
   it('return route str by config type', () => {

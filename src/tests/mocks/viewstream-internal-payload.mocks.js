@@ -28,7 +28,7 @@ const internvalRouteChannelPayload = {
     "routeKeywordsArr": [
       "pageId"
     ],
-    "keywords": {
+    "routeData": {
       "pageId": "guide",
       "section": "reference",
       "menuItem": ""
