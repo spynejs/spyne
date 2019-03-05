@@ -110,7 +110,7 @@ describe('URL Utils - Params To Route', () => {
       let data = RouteDataForTests.multipleRegex.data;
       let correctRouteQuery = RouteDataForTests.multipleRegex.slash;
       let routeVal = URLUtils.convertParamsToRoute(data, routeConfig, 'slash');
-      // console.log('data query multiple 1',data, correctRouteQuery, routeVal);
+      console.log('data query multiple 1',data, correctRouteQuery, routeVal);
       expect(correctRouteQuery).to.equal(routeVal);
     });
 

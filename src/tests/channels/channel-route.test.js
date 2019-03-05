@@ -74,4 +74,17 @@ describe('Channel Route', () => {
 
     return true;
   });
+
+  it('should combine any regex tokens into the route string', ()=>{
+    let str =  'test/ubu/^$|index.html';
+    let tokenObj =   {
+          "^$|index.html" : ""
+        };
+
+        let strTokenCheck = ChannelRoute.checkAndConvertStrWithRegexTokens(str, tokenObj);
+        console.log("STR TOKEN ",strTokenCheck);
+
+  });
+
+
 });

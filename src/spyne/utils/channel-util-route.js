@@ -111,6 +111,8 @@ export class RouteUtils {
       }
     }, R.toPairs(obj_));
 
+    console.log("FLATTEN: ",R.values(R.fromPairs(go(obj))));
+
     /**
      * TODO: PARSE PAIRS TO ALLOW FOR ARRAYS OR REGEX IN ROUTE CONFIG
      *

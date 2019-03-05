@@ -89,11 +89,22 @@ export class ChannelRoute extends ChannelsBase {
     let changeLocationBool = !payload.isHidden;
     let keywordArrs = this.compareRouteKeywords.compare(payload.routeData, payload.paths);
     payload = R.merge(payload, keywordArrs);
+    console.log("PAYLOAD ",{payload},this.getRouteConfig());
     this.sendRouteStream(payload, changeLocationBool);
     //console.log("SEND STREAM onIncomingObserverableData", payload);
 
     this.sendStreamItem(action, payload, srcElement, uiEvent,
       this.navToStream$);
+  }
+
+
+
+  static checkAndConvertStrWithRegexTokens(routeValue, regexTokenObj){
+    let tokenKeysArr = R.keys(regexTokenObj);
+
+
+    return tokenKeysArr;
+
   }
 
   sendRouteStream(payload, changeWindowLoc = true) {
@@ -216,7 +227,7 @@ export class ChannelRoute extends ChannelsBase {
     const type = t !== undefined ? t : routeConfig.type;
     let obj= URLUtils.convertParamsToRoute(paramsData, routeConfig, type);
 
-    //console.log("ROUTE getRouteStrFromParams ",paramsData,obj);
+    console.log("ROUTE getRouteStrFromParams ",paramsData,obj);
     return obj;
 
   }
@@ -250,11 +261,12 @@ export class ChannelRoute extends ChannelsBase {
   setWindowLocation(channelPayload) {
     let {isHash, routeValue} = channelPayload;
     routeValue = this.checkEmptyRouteStr(routeValue, isHash);
+    console.log("SET WINDOW LOCATION ",routeValue, channelPayload);
     if (isHash === true) {
       let pathName = ChannelRoute.removeLastSlash(window.location.pathname);
       routeValue = pathName+routeValue;
       // window.location.hash = routeValue;
-     // console.log('ROUTE STR FOR HASH ', routeValue);
+      console.log('ROUTE STR FOR HASH ', routeValue);
       window.history.pushState({}, '', routeValue);
     } else {
       // routeValue =  R.when(R.isEmpty, R.always('/'))(routeValue);
