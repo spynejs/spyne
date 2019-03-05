@@ -66,13 +66,13 @@ describe('it should compare two objects for updated keys', ()=>{
 
   it('first comparison should be done against empty obj', ()=>{
     let compareStart = checkUpdatedKeys.compare(obj1);
-    expect(compareStart.keywordsChanged).to.deep.equal(['pageId', 'section']);
+    expect(compareStart.pathsChanged).to.deep.equal(['pageId', 'section']);
   });
 
 
   it('should compare second obj against first', ()=>{
     let compare2 = checkUpdatedKeys.compare(obj2, routeKeywordsArr);
-    expect(compare2.keywordsChanged).to.deep.equal(['section', 'menuItem']);
+    expect(compare2.pathsChanged).to.deep.equal(['section', 'menuItem']);
   })
 
 

@@ -18,25 +18,25 @@ const SpyneConfigData = {
       isHash: false,
       isHidden: true,
       routes: {
-        'route': {
-          'keyword': 'pageId',
+        'routePath': {
+          'routeName': 'pageId',
           'home': '',
           'page-one': {
-            'route': {
-              'keyword': 'imageNum',
-              'route': {
-                'keyword': 'author'
+            'routePath': {
+              'routeName': 'imageNum',
+              'routePath': {
+                'routeName': 'author'
               }
             }
           },
           'page-two': {
-            'route': {
-              'keyword': 'photogNum'
+            'routePath': {
+              'routeName': 'photogNum'
             }
           },
           'page-.*': {
-            'route': {
-              'keyword': 'randomNum'
+            'routePath': {
+              'routeName': 'randomNum'
             }
           }
         }

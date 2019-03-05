@@ -49,12 +49,12 @@ export class RouteUtils {
         const createPred = p =>  R.compose(R.keys, R.filter(R.propEq(p, true)));
 
         const getPropsState = R.compose(R.map(compareProps), R.uniq, R.chain(R.keys))([obj1,obj2]);
-        let keywordsChanged = R.chain(createPred('changed'), getPropsState);
-        let keywordsAdded = R.chain(createPred('added'), getPropsState);
-        let keywordsRemoved = R.chain(createPred('removed'), getPropsState);
-       // console.log("GET KEYS ", keywordsChanged);
+        let pathsChanged = R.chain(createPred('changed'), getPropsState);
+        let pathsAdded = R.chain(createPred('added'), getPropsState);
+        let pathsRemoved = R.chain(createPred('removed'), getPropsState);
+       // console.log("GET KEYS ", pathsChanged);
         obj1 = obj2;
-        return {keywordsAdded, keywordsRemoved, keywordsChanged};
+        return {pathsAdded, pathsRemoved, pathsChanged};
       },
 
       getComparer: ()=>obj1
@@ -74,7 +74,7 @@ export class RouteUtils {
   static getRouteArrData(routeArr, paramsArr) {
     let routeKeywordsArr =  R.filter(R.contains(R.__, routeArr), paramsArr);
     const routeKeyword = RouteUtils.getLastArrVal(routeKeywordsArr);
-    // console.log('arr and keyword ',{routeKeywordsArr, routeKeyword});
+    // console.log('arr and routeName ',{routeKeywordsArr, routeKeyword});
     return {routeKeywordsArr, routeKeyword};
   }
 

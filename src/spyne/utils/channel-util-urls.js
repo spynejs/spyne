@@ -13,7 +13,7 @@ export class URLUtils {
   }
 
   static checkIfParamValueMatchesRegex(paramValue, routeObj) {
-    const rejectParamKey = R.reject(R.equals('keyword'));
+    const rejectParamKey = R.reject(R.equals('routeName'));
     const keysArr = R.compose(rejectParamKey, R.keys);
     const testForRegexMatch = str => R.test(new RegExp(str), paramValue);
     const checker = R.compose(R.find(testForRegexMatch), keysArr);
@@ -51,7 +51,7 @@ export class URLUtils {
     let urlArr = [];
     let loopThroughParam = (routeObj) => {
       let urlObj = {};
-      let keyword = routeObj.keyword; // PARAM FORM SPYNE CONFIG
+      let keyword = routeObj.routeName; // PARAM FORM SPYNE CONFIG
       let paramValFromData = data[keyword] !== undefined ? data[keyword] : R.prop(keyword, paramsFromLoc); // PULL VALUE FOR THIS PARAM FROM DATA
       const paramValType = typeof (routeObj[paramValFromData]);
       // console.log({routeObj, paramValType, paramValFromData, keyword})
@@ -75,17 +75,17 @@ export class URLUtils {
 
       const isObject = R.is(Object, routeObj);
       const objectParamExists = R.has(paramValFromData, routeObj);
-      const objectContainsRoute = R.has('route', routeObj);
+      const objectContainsRoute = R.has('routePath', routeObj);
       const recursivelyCallLoopBool = objectParamExists && isObject;
       // console.log("CHECKS ", {isObject, objectParamExists, objectContainsRoute, recursivelyCallLoopBool})
       if (recursivelyCallLoopBool === true) {
         let newObj = routeObj[paramValFromData];
         // console.log("NEW OBJ ",{paramValFromData, routeObj, newObj});
-        if (R.has('route', newObj)) {
-          loopThroughParam(newObj.route);
+        if (R.has('routePath', newObj)) {
+          loopThroughParam(newObj.routePath);
         }
       } else if (objectContainsRoute === true && paramValFromData !== undefined) {
-        loopThroughParam(routeObj.route);
+        loopThroughParam(routeObj.routePath);
       }
     };
 
@@ -149,7 +149,7 @@ export class URLUtils {
   static convertParamsToRoute(data, r = window.Spyne.config.channels.ROUTE, t, locStr) {
     const urlType = t !== undefined ? t : r.type;
     const isHash = r.isHash;
-    let route = r.routes.route;
+    let route = r.routes.routePath;
     let locationStr = locStr !== undefined ? locStr : this.getLocationStrByType(urlType, isHash);
     let paramsFromCurrentLocation = this.convertRouteToParams(locationStr, r, urlType).keywords;
 
@@ -257,11 +257,11 @@ export class URLUtils {
       latestObj = this.checkIfParamValueMatchesRegex(currentValue, latestObj);
 
       if (latestObj !== undefined) {
-        routeKeywordsArr.push(latestObj.keyword);
+        routeKeywordsArr.push(latestObj.routeName);
         routedValuesArr.push(routeValueStr);
       }
-      let strPath = [currentValue, 'route'];
-      let routeParamPath = ['route'];
+      let strPath = [currentValue, 'routePath'];
+      let routeParamPath = ['routePath'];
       let objectFromStr = R.path(strPath, latestObj);
       let objectFromRouteParam = R.path(routeParamPath, latestObj);
 
@@ -285,7 +285,7 @@ export class URLUtils {
 
   static createDefaultParamFromEmptyStr(topLevelRoute, str) {
     let obj = {};
-    let keyword = topLevelRoute.keyword;
+    let keyword = topLevelRoute.routeName;
     obj[keyword] = this.checkIfValueShouldMapToParam(topLevelRoute, str);
     return obj;
   }
@@ -314,7 +314,7 @@ export class URLUtils {
       return {};
     }
     const type = t !== undefined ? t : routeConfig.type;
-    let topLevelRoute = routeConfig.routes.route;
+    let topLevelRoute = routeConfig.routes.routePath;
 
     if (type === 'query') {
       return this.convertQueryStrToParams(topLevelRoute, str);

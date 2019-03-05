@@ -44,8 +44,8 @@ class SpyneApp {
           isHash: false,
           isHidden: false,
           routes: {
-            'route' : {
-              'keyword' : 'change'
+            'routePath' : {
+              'routeName' : 'change'
             }
           }
 
