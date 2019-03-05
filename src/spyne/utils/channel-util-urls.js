@@ -248,7 +248,7 @@ export class URLUtils {
   static convertSlashRouteStrToParamsObj(topLevelRoute, str) {
     const routeValue = str;
     let valuesArr = this.createArrFromSlashStr(str);
-    let routeKeywordsArr = [];
+    let paths = [];
     let routedValuesArr = [];
     let latestObj = topLevelRoute;
     let createParamsFromStr = (total, currentValue) => {
@@ -257,7 +257,7 @@ export class URLUtils {
       latestObj = this.checkIfParamValueMatchesRegex(currentValue, latestObj);
 
       if (latestObj !== undefined) {
-        routeKeywordsArr.push(latestObj.routeName);
+        paths.push(latestObj.routeName);
         routedValuesArr.push(routeValueStr);
       }
       let strPath = [currentValue, 'routePath'];
@@ -273,9 +273,9 @@ export class URLUtils {
     };
 
     R.reduce(createParamsFromStr, 0, valuesArr);
-    let keywords = R.zipObj(routeKeywordsArr, routedValuesArr);
-    const routeKeyword = this.getLastArrVal(routeKeywordsArr);
-    return {routeKeywordsArr, routeKeyword, keywords, routeValue};
+    let keywords = R.zipObj(paths, routedValuesArr);
+    const routeKeyword = this.getLastArrVal(paths);
+    return {paths, routeKeyword, keywords, routeValue};
   }
 
   static getLastArrVal(arr) {
@@ -298,15 +298,15 @@ export class URLUtils {
     let paramsArr = convertToParams(strArr);
     let keywords = R.fromPairs(paramsArr);
 
-    let routeKeywordsArr = R.map(R.head, paramsArr);
+    let paths = R.map(R.head, paramsArr);
 
     if (R.isEmpty(str) === true) {
       keywords = this.createDefaultParamFromEmptyStr(topLevelRoute, str);
-      routeKeywordsArr = R.keys(keywords);
+      paths = R.keys(keywords);
     }
-    let routeKeyword = this.getLastArrVal(routeKeywordsArr);
+    let routeKeyword = this.getLastArrVal(paths);
 
-    return {routeKeywordsArr, routeKeyword, keywords, routeValue};
+    return {paths, routeKeyword, keywords, routeValue};
   }
 
   static convertRouteToParams(str, routeConfig, t) {

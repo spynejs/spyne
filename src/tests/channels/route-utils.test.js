@@ -26,7 +26,7 @@ describe('Route Utils', () => {
     const arr = ['imageNum', 'pageId', 'author'];
     const routedArr = ['pageId', 'imageNum', 'author'];
     let routeObj = RouteUtils.getRouteArrData(arr, paramsArr);
-    expect(routeObj.routeKeywordsArr).to.deep.equal(routedArr);
+    expect(routeObj.paths).to.deep.equal(routedArr);
   });
 });
 

@@ -72,10 +72,10 @@ export class RouteUtils {
   }
 
   static getRouteArrData(routeArr, paramsArr) {
-    let routeKeywordsArr =  R.filter(R.contains(R.__, routeArr), paramsArr);
-    const routeKeyword = RouteUtils.getLastArrVal(routeKeywordsArr);
-    // console.log('arr and routeName ',{routeKeywordsArr, routeKeyword});
-    return {routeKeywordsArr, routeKeyword};
+    let paths =  R.filter(R.contains(R.__, routeArr), paramsArr);
+    const routeKeyword = RouteUtils.getLastArrVal(paths);
+    // console.log('arr and routeName ',{paths, routeKeyword});
+    return {paths, routeKeyword};
   }
 
 
