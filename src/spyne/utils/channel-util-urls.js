@@ -43,7 +43,7 @@ export class URLUtils {
     const prop = typeMap[type];
     let str  = R.prop(prop, loc);
     let checkForSlashAndHash = /^(\/)?(#)?(\/)?(.*)$/;
-    console.log("DATA LOC STR ",{str, loc, prop, type,isHash});
+    //console.log("DATA LOC STR ",{str, loc, prop, type,isHash});
     return str.replace(checkForSlashAndHash, '$4');
   }
 

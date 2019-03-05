@@ -76,7 +76,7 @@ export class ChannelRoute extends ChannelsBase {
     // console.log('route dom ',action, payload);
     let keywordArrs = this.compareRouteKeywords.compare(payload.routeData, payload.paths);
     payload = R.merge(payload, keywordArrs);
-    console.log("SEND STREAM onIncomingDomEvent", payload, keywordArrs);;
+    //console.log("SEND STREAM onIncomingDomEvent", payload, keywordArrs);;
     this.sendStreamItem(action, payload, undefined, undefined,
       this.navToStream$);
   }
@@ -90,7 +90,7 @@ export class ChannelRoute extends ChannelsBase {
     let keywordArrs = this.compareRouteKeywords.compare(payload.routeData, payload.paths);
     payload = R.merge(payload, keywordArrs);
     this.sendRouteStream(payload, changeLocationBool);
-    console.log("SEND STREAM onIncomingObserverableData", payload);
+    //console.log("SEND STREAM onIncomingObserverableData", payload);
 
     this.sendStreamItem(action, payload, srcElement, uiEvent,
       this.navToStream$);
@@ -140,7 +140,7 @@ export class ChannelRoute extends ChannelsBase {
     let nextWindowLoc = URLUtils.formatStrAsWindowLocation(routeValue);
     let dataFromStr = this.getDataFromLocationStr(typeForStr, isHashForStr, nextWindowLoc);
 
-    console.log(" DATA FROM STRING ",dataFromStr);
+    //console.log(" DATA FROM STRING ",dataFromStr);
     let {pathInnermost, paths} = dataFromStr;
 
     routeData = R.merge(dataFromStr.routeData, routeData);
@@ -190,7 +190,7 @@ export class ChannelRoute extends ChannelsBase {
       : t;
 
 
-    console.log("DATA CHECK STRING ",loc);
+    //console.log("DATA CHECK STRING ",loc);
     const str = URLUtils.getLocationStrByType(type, isHash, loc);
     let {paths, pathInnermost, routeData, routeValue} = this.getParamsFromRouteStr(
       str, this.routeConfigJson, type);
@@ -216,7 +216,7 @@ export class ChannelRoute extends ChannelsBase {
     const type = t !== undefined ? t : routeConfig.type;
     let obj= URLUtils.convertParamsToRoute(paramsData, routeConfig, type);
 
-    console.log("ROUTE getRouteStrFromParams ",paramsData,obj);
+    //console.log("ROUTE getRouteStrFromParams ",paramsData,obj);
     return obj;
 
   }
@@ -224,7 +224,7 @@ export class ChannelRoute extends ChannelsBase {
   static getParamsFromRouteStr(str, routeConfig, t) {
     const type = t !== undefined ? t : routeConfig.type;
     let obj = URLUtils.convertRouteToParams(str, routeConfig, type);
-      console.log("ROUTE getParamsFromRouteStr ",obj);
+      //console.log("ROUTE getParamsFromRouteStr ",obj);
     return obj;
   }
 
