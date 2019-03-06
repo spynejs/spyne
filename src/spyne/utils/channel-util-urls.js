@@ -99,12 +99,6 @@ export class URLUtils {
     const removeRegex = str => str.replace(/^(\W*)(.*?)(\W*)$/g, "$2");
     const cleanVals = R.map(removeRegex, R.values);
 
-    /**
-     * TODO: CREATE ARRAYS OR REGEX OPTIONS FOR PARSING PARAMS INTO ROUTE STRING
-     *
-     */
-
-
     const arrClear = R.reject(R   .isNil);
     const notUndefined = R.when(R.complement(R.isNil, R.__), R.join('/'));
 
@@ -157,7 +151,7 @@ export class URLUtils {
     const mapUrlProps = (prop)=>{
       let overrideVal = getOverrideVal(prop);
 
-      console.log("override val ",overrideVal, data);
+      //console.log("override val ",overrideVal, data);
       // if regex value is found
       if (overrideVal!==undefined){
         return R.assoc(R.compose(R.head,R.keys)(prop), overrideVal, prop);
@@ -178,22 +172,37 @@ export class URLUtils {
     let urlArr = this.createRouteArrayFromParams(data, route, urlType, paramsFromCurrentLocation);
 
     urlArr = URLUtils.checkPayloadForRegexOverrides(urlArr, data);
-    console.log("PARAMS TO ROUTE ",{data,r,urlArr,locationStr, paramsFromCurrentLocation});
+    //console.log("PARAMS TO ROUTE ",{data,r,urlArr,locationStr, paramsFromCurrentLocation});
 
     // THIS CREATES A QUERY PATH STR
     if (urlType === 'query') {
       return this.createQueryString(urlArr);
     }
 
-    //
-    //     /**
-    //      * TODO: CREATE ARRAYS OR REGEX OPTIONS FOR PARSING PARAMS INTO ROUTE STRING
-    //      *
-    //      */
-    //
-
     return this.createSlashString(urlArr);
   }
+
+
+  static findIndexOfMatchedStringOrRegex(mainStr, paramsArr){
+    const checkForEmpty =  R.replace(/^$/, '^$');
+    const createStrRegexTest = (str) => {
+      const reFn = s => new RegExp(s);
+      return {
+        str,
+        re: reFn(str)
+      }
+    };
+
+    const checkForEitherStrOrReMatch =  R.either(
+        R.propEq('str', mainStr), R.compose(R.test(R.__, mainStr), R.prop('re'))
+    );
+
+    const findMatchIndex = R.compose(R.findLastIndex(R.equals(true)), R.map(checkForEitherStrOrReMatch), R.map(createStrRegexTest), R.map(checkForEmpty));
+
+    return findMatchIndex(paramsArr);
+
+  }
+
 
   static checkIfValueShouldMapToParam(obj, str,regexTokens) {
     /**
@@ -228,7 +237,9 @@ export class URLUtils {
     let checkForParamsMatch = R.compose(  R.findLastIndex(R.equals(true)), R.map(testStr),  R.map(reFn), R.map(checkForEmpty));
 
     // RESULTS FROM PARAM CHECK
-    let paramIndex = checkForParamsMatch(paramsArr);
+    //let paramIndex = checkForParamsMatch(paramsArr);
+
+    let paramIndex = URLUtils.findIndexOfMatchedStringOrRegex(str, paramsArr);
 
     // DEFAULT VAL FOR STRING
     let paramStr = str;

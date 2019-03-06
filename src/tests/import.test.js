@@ -6,7 +6,7 @@ import { map, takeUntil, tap } from 'rxjs/operators';
 describe('importing tests import.test.js', () => {
   it('works', () => {
     // throw new Error('ya!')
-    console.log('loaded tests ',Observable);
+   // console.log('loaded tests ',Observable);
 
     expect(true).to.be.true;
   });

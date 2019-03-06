@@ -83,7 +83,7 @@ export class RouteUtils {
     const parseRouteParamRegex = (str)=>{
       const regex = /\"{2}|(\^\$)|([\w\-]+?(\.html)|[\w\-]+)/gm;
 
-      console.log("run regex");
+      //console.log("run regex");
     };
 
     const checkIfRegexTokenExists=()=>{
@@ -111,7 +111,7 @@ export class RouteUtils {
       }
     }, R.toPairs(obj_));
 
-    console.log("FLATTEN: ",R.values(R.fromPairs(go(obj))));
+    //console.log("FLATTEN: ",R.values(R.fromPairs(go(obj))));
 
     /**
      * TODO: PARSE PAIRS TO ALLOW FOR ARRAYS OR REGEX IN ROUTE CONFIG

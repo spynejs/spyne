@@ -78,7 +78,7 @@ describe('Channel Route', () => {
   it('should combine any regex tokens into the route string', ()=>{
 
         let payloadOverrideCheck = ChannelRoute.checkForRouteParamsOverrides(ChannelPayloadRouteDataRegexOverride);
-        console.log("override check ",payloadOverrideCheck);
+        //console.log("override check ",payloadOverrideCheck);
 
         return true;
 

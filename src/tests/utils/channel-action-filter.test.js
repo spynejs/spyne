@@ -32,7 +32,7 @@ describe('channel action filter', () => {
   it('String selector only with no data', ()=>{
     let filter = new ChannelActionFilter('#header ul li:last-child');
     let filterVal = filter(payload);
-    console.log(filterVal, 'filter val string');
+    //console.log(filterVal, 'filter val string');
     expect(filterVal).to.eq(true);
   });
 

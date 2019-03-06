@@ -82,7 +82,7 @@ export class ChannelRoute extends ChannelsBase {
   }
 
   static checkForRouteParamsOverrides(payload){
-    console.log("CHECK FOR OVERRIDES ",payload);
+    //console.log("CHECK FOR OVERRIDES ",payload);
 
     return payload;
   }
@@ -157,7 +157,7 @@ export class ChannelRoute extends ChannelsBase {
     let nextWindowLoc = URLUtils.formatStrAsWindowLocation(routeValue);
     let dataFromStr = this.getDataFromLocationStr(typeForStr, isHashForStr, nextWindowLoc);
 
-    console.log(" DATA FROM STRING ",{routeValue, pl, dataFromStr});
+    //console.log(" DATA FROM STRING ",{routeValue, pl, dataFromStr});
     let {pathInnermost, paths} = dataFromStr;
 
     routeData = R.merge(dataFromStr.routeData, routeData);
@@ -233,7 +233,7 @@ export class ChannelRoute extends ChannelsBase {
     const type = t !== undefined ? t : routeConfig.type;
     let obj= URLUtils.convertParamsToRoute(paramsData, routeConfig, type);
 
-    console.log("ROUTE getRouteStrFromParams ",paramsData,obj);
+    //console.log("ROUTE getRouteStrFromParams ",paramsData,obj);
     return obj;
 
   }
@@ -241,7 +241,7 @@ export class ChannelRoute extends ChannelsBase {
   static getParamsFromRouteStr(str, routeConfig, t) {
     const type = t !== undefined ? t : routeConfig.type;
     let obj = URLUtils.convertRouteToParams(str, routeConfig, type);
-      console.log("ROUTE getParamsFromRouteStr ",obj);
+      //console.log("ROUTE getParamsFromRouteStr ",obj);
     return obj;
   }
 
@@ -267,12 +267,12 @@ export class ChannelRoute extends ChannelsBase {
   setWindowLocation(channelPayload) {
     let {isHash, routeValue} = channelPayload;
     routeValue = this.checkEmptyRouteStr(routeValue, isHash);
-    console.log("SET WINDOW LOCATION ",routeValue, channelPayload);
+    //console.log("SET WINDOW LOCATION ",routeValue, channelPayload);
     if (isHash === true) {
       let pathName = ChannelRoute.removeLastSlash(window.location.pathname);
       routeValue = pathName+routeValue;
       // window.location.hash = routeValue;
-      console.log('ROUTE STR FOR HASH ', routeValue);
+      //console.log('ROUTE STR FOR HASH ', routeValue);
       window.history.pushState({}, '', routeValue);
     } else {
       // routeValue =  R.when(R.isEmpty, R.always('/'))(routeValue);
