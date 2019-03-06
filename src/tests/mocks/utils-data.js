@@ -48,6 +48,42 @@ const SpyneConfigData = {
 
 };
 
+
+const routeConfigWithRegexOverride = {
+  "type": "slash",
+  "isHash": false,
+  "isHidden": false,
+  "routes": {
+    "routePath": {
+      "404": ".*",
+      "routeName": "pageId",
+      "home": "^$|index.html",
+      "about": "about",
+      "guide": {
+        "routePath": {
+          "routeName": "section",
+          "overview|reference": {
+            "routePath": {
+              "routeName": "menuItem"
+            }
+          }
+        }
+      }
+    }
+  },
+  "regexTokens": {
+    "^$|index.html": ""
+  },
+  "paramsArr": [
+    ".*",
+    "pageId",
+    "^$|index.html",
+    "about",
+    "section",
+    "menuItem"
+  ]
+};
+
 const RouteDataForTests = {
 
   multiple: {
@@ -138,6 +174,20 @@ const RouteDataForTests = {
 
 };
 
+const payloadDataForUrlUtils = {
+  "pageId": "home",
+  "pageIdValue": "",
+  "section": "",
+  "menuItem": ""
+};
+
+const urlUtilsArr = [
+  {
+    "pageId": "^$|index.html"
+  }
+];
+
+
 const ViewStreamHashMethodsObj = {
   'DISPOSING':     () => {},
   'DISPOSE':     () => {},
@@ -153,4 +203,4 @@ const ViewStreamHashMethodsObj = {
   'UI_EVENT_DBLCLICK': () => {}
 };
 
-export {SpyneConfigData, RouteDataForTests, ViewStreamHashMethodsObj};
+export {SpyneConfigData, RouteDataForTests, ViewStreamHashMethodsObj, routeConfigWithRegexOverride, payloadDataForUrlUtils, urlUtilsArr};

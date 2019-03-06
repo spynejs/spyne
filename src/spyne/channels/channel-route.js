@@ -81,6 +81,12 @@ export class ChannelRoute extends ChannelsBase {
       this.navToStream$);
   }
 
+  static checkForRouteParamsOverrides(payload){
+    console.log("CHECK FOR OVERRIDES ",payload);
+
+    return payload;
+  }
+
   onIncomingObserverableData(pl) {
     let action = this.channelActions.CHANNEL_ROUTE_CHANGE_EVENT;
     let payload = this.getDataFromParams(pl);
@@ -89,7 +95,7 @@ export class ChannelRoute extends ChannelsBase {
     let changeLocationBool = !payload.isHidden;
     let keywordArrs = this.compareRouteKeywords.compare(payload.routeData, payload.paths);
     payload = R.merge(payload, keywordArrs);
-    console.log("PAYLOAD ",{payload},this.getRouteConfig());
+   // this.checkForRouteParamsOverrides(payload);
     this.sendRouteStream(payload, changeLocationBool);
     //console.log("SEND STREAM onIncomingObserverableData", payload);
 
@@ -151,7 +157,7 @@ export class ChannelRoute extends ChannelsBase {
     let nextWindowLoc = URLUtils.formatStrAsWindowLocation(routeValue);
     let dataFromStr = this.getDataFromLocationStr(typeForStr, isHashForStr, nextWindowLoc);
 
-    //console.log(" DATA FROM STRING ",dataFromStr);
+    console.log(" DATA FROM STRING ",{routeValue, pl, dataFromStr});
     let {pathInnermost, paths} = dataFromStr;
 
     routeData = R.merge(dataFromStr.routeData, routeData);
@@ -235,7 +241,7 @@ export class ChannelRoute extends ChannelsBase {
   static getParamsFromRouteStr(str, routeConfig, t) {
     const type = t !== undefined ? t : routeConfig.type;
     let obj = URLUtils.convertRouteToParams(str, routeConfig, type);
-      //console.log("ROUTE getParamsFromRouteStr ",obj);
+      console.log("ROUTE getParamsFromRouteStr ",obj);
     return obj;
   }
 

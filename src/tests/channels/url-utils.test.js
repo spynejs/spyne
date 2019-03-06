@@ -1,7 +1,7 @@
 // const assert = require('assert');
 
 import {URLUtils} from '../../spyne/utils/channel-util-urls';
-import {SpyneConfigData, RouteDataForTests} from '../mocks/utils-data';
+import {SpyneConfigData, RouteDataForTests, routeConfigWithRegexOverride,payloadDataForUrlUtils,urlUtilsArr} from '../mocks/utils-data';
 
 chai.use(require('chai-dom'));
 
@@ -212,4 +212,22 @@ describe('URL Utils - Params To Route', () => {
       expect(correctRouteQuery).to.equal(routeVal);
     });
   });
+
+  describe("Overrides to regex values are added", ()=>{
+    it('should override pageId home regex', ()=>{
+      let paramsToRouteVal = URLUtils.convertParamsToRoute(payloadDataForUrlUtils, routeConfigWithRegexOverride);
+      expect(paramsToRouteVal).to.equal('');
+    });
+
+
+    it('should replace regex with obj value from data', ()=>{
+      let arrUpdate = URLUtils.checkPayloadForRegexOverrides(urlUtilsArr, payloadDataForUrlUtils);
+      let pageIdStr = arrUpdate[0].pageId;
+      expect(pageIdStr).to.equal('');
+
+    })
+
+
+  })
+
 });

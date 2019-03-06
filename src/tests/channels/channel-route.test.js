@@ -1,7 +1,7 @@
 // const assert = require('assert');
 
 import {URLUtils} from '../../spyne/utils/channel-util-urls';
-import {ChannelPayloadRouteData} from '../mocks/channel-payload-data';
+import {ChannelPayloadRouteData, ChannelPayloadRouteDataRegexOverride} from '../mocks/channel-payload-data';
 
 import {
   SpyneConfigData,
@@ -76,13 +76,11 @@ describe('Channel Route', () => {
   });
 
   it('should combine any regex tokens into the route string', ()=>{
-    let str =  'test/ubu/^$|index.html';
-    let tokenObj =   {
-          "^$|index.html" : ""
-        };
 
-        let strTokenCheck = ChannelRoute.checkAndConvertStrWithRegexTokens(str, tokenObj);
-        console.log("STR TOKEN ",strTokenCheck);
+        let payloadOverrideCheck = ChannelRoute.checkForRouteParamsOverrides(ChannelPayloadRouteDataRegexOverride);
+        console.log("override check ",payloadOverrideCheck);
+
+        return true;
 
   });
 

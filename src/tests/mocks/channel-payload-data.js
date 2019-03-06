@@ -137,4 +137,30 @@ const ChannelPayloadRouteData = {
   }
 };
 
-export {ChannelPayloadUIData, ChannelPayloadRouteData, DeepLinkData};
+
+const ChannelPayloadRouteDataRegexOverride = {
+  "isDeepLink": false,
+  "routeCount": 1,
+  "pathInnermost": "pageId",
+  "paths": [
+    "pageId"
+  ],
+  "routeData": {
+    "pageId": "home",
+    "pageIdValue": "",
+    "section": "",
+    "menuItem": ""
+  },
+  "routeValue": "^$|index.html",
+  "isHash": false,
+  "isHidden": false,
+  "routeType": "slash",
+  "pathsAdded": [],
+  "pathsRemoved": [],
+  "pathsChanged": [
+    "pageId"
+  ]
+};
+
+
+export {ChannelPayloadUIData, ChannelPayloadRouteData, DeepLinkData,ChannelPayloadRouteDataRegexOverride};
