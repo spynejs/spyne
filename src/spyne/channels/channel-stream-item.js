@@ -7,7 +7,7 @@ export class ChannelStreamItem {
 
     let channelStreamItemObj = {channel, action, channelPayload, srcElement, event};
 
-    channelStreamItemObj['props'] = ()=>R.mergeAll([channelStreamItemObj.channelPayload, {channel}, {action: channelStreamItemObj.action}, channelStreamItemObj.srcElement, channelStreamItemObj.event]);
+    channelStreamItemObj['props'] = ()=>R.mergeAll([channelStreamItemObj.channelPayload, {channel},{event}, {action: channelStreamItemObj.action}, channelStreamItemObj.srcElement, channelStreamItemObj.event]);
     const channelActionsArr = window.Spyne.getChannelActions(channel);
 
     ChannelStreamItem.validateAction(action, channel, channelActionsArr);

@@ -85,7 +85,7 @@ export class ViewStreamBroadcaster {
       data.srcElement['cid'] = this.props.id;
       data.srcElement['isLocalEvent'] = isLocalEvent;
       data.srcElement['viewName'] = this.props.name;
-      data.srcElement['event'] = event;
+      data.srcElement['srcEvent'] = event;
       data.srcElement['el'] = q;
       // select the correct payload
       let channelPayload = channel !== undefined ? channelPayloads[channel] : channelPayloads['UI'];
