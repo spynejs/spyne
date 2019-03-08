@@ -28,7 +28,8 @@ export class ChannelViewStreamLifecycle extends ChannelsBase {
     const action = this.channelActions[actionStr];
     const srcElement = {};
     const event = undefined;
-    this.sendStreamItem(action, payload, srcElement, event);
+    const delayStream = ()=>this.sendStreamItem(action, payload, srcElement, event);
+    window.setTimeout(delayStream, 0);
   }
 
 }

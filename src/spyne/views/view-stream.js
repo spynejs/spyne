@@ -28,7 +28,9 @@ export class ViewStream {
    * @borrows DomItemSelectors as el$
    *
    * @desc
-   * The ViewStream is a special type of view that not only renders dom elements, but can be combined with other ViewStreams to create a 'smart' dom tree that automatically renders, change state and disposes of itself based on other ViewsStreams within its branch and based on subscribed channels.
+   * ViewStreams are views that reactively communicate render and remove states throughout appended ViewStream chains, They remain completely encapsulated with zero outside refernces.
+   *   <h4>How ViewStreams Communicate</h4>
+   * ViewStreams communicate globally while remaining completely encapsulated by using observables.
    *
    *
    * @example
@@ -53,13 +55,11 @@ export class ViewStream {
    * @property {string} props.tagName - = 'div'; This can be any dom tag
    * @property {domItem} props.el - = undefined; if defined, ViewStream will connect to that element
    * @property {string|object} props.data - = undefined;  string for innerText or Json object for html template
-   * @property {boolean} props.animateIn - = false; animates in View
-   * @property {number} props.animateInTime - = .5;
-   * @property {boolean} props.animateOut - = false; animates in View
-   * @property {number} props.animateOutTime - = .5;
    * @property {boolean} props.sendLifecyleEvents = false; When set to true, the view will automatically send its rendering and disposing events to the VIEW_LIFECYCLE Channel.
    * @property {string} props.id - = undefined; generates a random id if left undefined
    * @property {template} props.template - = undefined; html template
+   * @special {"name": "domItem", "desc": "renders templates and tags to create the element", "link":"dom-item"}
+   * @special {"name": "el$", "desc": "special selectors method", "link":"dom-item-selectors"}
    *
    */
   constructor(props = {}) {
@@ -116,12 +116,25 @@ export class ViewStream {
     this.checkIfElementAlreadyExists();
   }
 
+  updatePropsToMatchEl(){
+    const getTagName = R.compose(R.toLower, R.either(R.prop('tagName'), R.always('')) )
+      this.props.tagName = getTagName(this.props.el);
+  }
+
   checkIfElementAlreadyExists() {
-    const elIsDomElement = el => el !== undefined && el.tagName !== undefined;
-    const elIsRendered = el => document.body.contains(el);
+    //const elIsDomElement = el => el !== undefined && el.tagName !== undefined;
+    function elIsDomElement1(o)
+    {
+      return  R.compose( R.lte(0), R.defaultTo(-1), R.prop('nodeType'))(o);
+    }
+    const elIsDomElement = R.compose( R.lte(0), R.defaultTo(-1), R.prop('nodeType'));
+
+    const elIsRendered = el => document.contains(el);
     const elIsReadyBool = R.propSatisfies(
       R.allPass([elIsRendered, elIsDomElement]), 'el');
+
     if (elIsReadyBool(this.props)) {
+      this.updatePropsToMatchEl();
       this.postRender();
     }
   }

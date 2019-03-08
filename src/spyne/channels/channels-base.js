@@ -17,8 +17,6 @@ export class ChannelsBase {
    * This class is extended when creating a new Channel.
    *
    *
-   * @constructorExamples ['new EXAMPLE1()', 'TESTING EXAMPLE 2']
-   *
    * @constructor
    * @param {string} name This is the name that will be used to get the channel
    * @param {object} props This json object takes in parameters to initialize the channel
@@ -178,26 +176,6 @@ export class ChannelsBase {
    // MAKES ALL CHANNEL BASE AND DATA STREAMS CONSISTENT
     let channelStreamItem = new ChannelStreamItem(this.props.name, action, payload, srcElement, event);
    // console.log("CHANNEL STREEM ITEM ",channelStreamItem);
-/*
-      let obj = channelStreamItem;
-    Object.freezeV2 = function( obj ) {
-      var props = Object.getOwnPropertyNames( obj );
-
-      for ( var i = 0; i < props.length; i++ ) {
-        var desc = Object.getOwnPropertyDescriptor( obj, props[i] );
-
-        if ( "value" in desc ) {
-          desc.writable = false;
-        }
-
-        desc.configurable = false;
-        Object.defineProperty( obj, props[i], desc );
-      }
-
-      return Object.preventExtensions( obj );
-    };
-*/
-
 
     obs$.next(channelStreamItem);
   }

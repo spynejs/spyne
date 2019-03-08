@@ -15,13 +15,11 @@ export class ViewStreamBroadcaster {
   }
 
   addDblClickEvt(q) {
-    let dblclick$ = fromEvent(q, 'click');
+    let dblclick$ = fromEvent(q, 'dblclick');
     // console.log('ADDING DBL CLICK ', q);
     let stream$ = dblclick$.pipe(
-        buffer(dblclick$.pipe(debounceTime(250))),
-      filter(p => p.length === 2),
       map(p => {
-        let data = R.clone(p[0]);
+        let data = R.clone(p);
         // ADD DOUBLECLICK TO UI EVENTS
         data['typeOverRide'] = 'dblclick';
         return data;
@@ -55,7 +53,7 @@ export class ViewStreamBroadcaster {
       };
 
       const pluckElFromParent = () => {
-        let elParent = el.parentElement;
+        let elParent = el.parentElement !== null ? el.parentElement : document;;
         let elSelected = elParent.querySelectorAll(selector);
         elSelected.forEach = Array.prototype.forEach;
         elSelected.forEach(checkParentEls);

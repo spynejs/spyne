@@ -205,17 +205,17 @@ export class URLUtils {
 
 
   static checkIfValueShouldMapToParam(obj, str,regexTokens) {
-    /**
-     *
-     * THIS IS A VERY IMPORTANT METHOD
-     * IT COMPARES THE STRING TO BE MATCHED WITH THE ROUTE PATH OBJECT
-     * AND IT WILL RETURN ONE OF THREE THINGS
-     * 1. THE STRING ITSELF
-     * 2. A MATCHING KEY FROM THE CURRENT OBJECT
-     * 3. THE ROUTENAME
-     *
-     *
-     */
+//     
+//      
+//       THIS IS A VERY IMPORTANT METHOD
+//       IT COMPARES THE STRING TO BE MATCHED WITH THE ROUTE PATH OBJECT
+//       AND IT WILL RETURN ONE OF THREE THINGS
+//       1. THE STRING ITSELF
+//       2. A MATCHING KEY FROM THE CURRENT OBJECT
+//       3. THE ROUTENAME
+//      
+      
+      
 
     const reFn = s => new RegExp(s);
         let testStr  = R.test(R.__, str);
