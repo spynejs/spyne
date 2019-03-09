@@ -49,14 +49,14 @@ export class DomTemplateRenderer {
   }
 
   getTemplateNode() {
-    const html = this.finalArr.join(' ');
+    const html = this.finalArr.join('');
     const el = document.createRange().createContextualFragment(html);
     window.setTimeout(this.removeThis(), 10);
     return el;
   }
 
   getTemplateString() {
-    return this.finalArr.join(' ');
+    return this.finalArr.join('');
   }
 
   formatTemplate(template) {
@@ -96,6 +96,6 @@ export class DomTemplateRenderer {
     if (R.isNil(elData)===true || R.isEmpty(elData)){
       return '';
     }
-    return elData.map(mapStringData).join(' ');
+    return elData.map(mapStringData).join('');
   }
 }
