@@ -80,7 +80,8 @@ export class ViewStreamBroadcaster {
       // data['event'] = event;
       // data['el'] = q;
       data['srcElement'] = {};// R.pick(['cid','viewName'], data);
-      data.srcElement['cid'] = this.props.id;
+      data.srcElement['id'] = this.props.id;
+      data.srcElement['cid'] = this.props.cid;
       data.srcElement['isLocalEvent'] = isLocalEvent;
       data.srcElement['viewName'] = this.props.name;
       data.srcElement['srcEvent'] = event;

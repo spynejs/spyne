@@ -3,7 +3,7 @@ import {ChannelsBase} from './channels-base';
 import {ChannelStreamItem} from './channel-stream-item';
 import {ChannelFetchUtil} from '../utils/channel-fetch-util';
 //import  'whatwg-fetch';
-// const R = require('ramda');
+ const R = require('ramda');
 import {from} from "rxjs";
 import {flatMap, map,publish,tap} from "rxjs/operators";
 
