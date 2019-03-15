@@ -1,5 +1,5 @@
 import {ChannelsBase} from './channels-base';
-import {ChannelStreamItem} from './channel-stream-item';
+import {ChannelPayloadItem} from './channel-payload-item';
 import {Subject, ReplaySubject, merge, Observable, from} from "rxjs";
 import {flatMap, map, multicast} from "rxjs/operators";
 

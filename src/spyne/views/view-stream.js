@@ -869,10 +869,10 @@ export class ViewStream {
   }
 
 
-  isLocalEvent(channelStreamItem) {
-    const itemEl = R.path(['srcElement', 'el'], channelStreamItem);
+  isLocalEvent(channelPayloadItem) {
+    const itemEl = R.path(['srcElement', 'el'], channelPayloadItem);
     return itemEl !== undefined &&
-        this.props.el.contains(channelStreamItem.srcElement.el);
+        this.props.el.contains(channelPayloadItem.srcElement.el);
   }
 
   //  =======================================================================================

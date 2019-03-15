@@ -7,7 +7,7 @@ import {SpyneTrait} from './views/spyne-trait';
 import {ChannelsPayload} from './channels/channels-payload';
 import {ChannelsBase} from './channels/channels-base';
 import {ChannelsBaseData} from './channels/channels-base-data';
-import {ChannelStreamItem} from './channels/channel-stream-item';
+import {ChannelPayloadItem} from './channels/channel-payload-item';
 import {deepMerge} from './utils/deep-merge';
 
 class SpyneApp {
@@ -21,7 +21,7 @@ class SpyneApp {
     this.ChannelsPayload = ChannelsPayload;
     this.ChannelsBaseController = ChannelsBaseController;
     this.ChannelsBase = ChannelsBase;
-    this.ChannelStreamItem = ChannelStreamItem;
+    this.ChannelPayloadItem = ChannelPayloadItem;
     window.Spyne = this;
     let defaultConfig = {
       channels: {
@@ -88,7 +88,7 @@ export {
   ChannelsBaseData,
   ChannelsBaseController,
   ChannelsPayload,
-  ChannelStreamItem,
+  ChannelPayloadItem,
   DomItem,
   ViewStream,
   ViewStreamBroadcaster,

@@ -1,5 +1,5 @@
 import {registeredStreamNames} from './channels-config';
-import {ChannelStreamItem} from './channel-stream-item';
+import {ChannelPayloadItem} from './channel-payload-item';
 import {deepMerge} from '../utils/deep-merge';
 // import {baseCoreMixins}    from '../utils/mixins/base-core-mixins';
 // import {BaseStreamsMixins} from '../utils/mixins/base-streams-mixins';
@@ -174,10 +174,10 @@ export class ChannelsBase {
 
   sendChannelPayload(action, payload, srcElement, event, obs$ = this.observer$) {
    // MAKES ALL CHANNEL BASE AND DATA STREAMS CONSISTENT
-    let channelStreamItem = new ChannelStreamItem(this.props.name, action, payload, srcElement, event);
-   // console.log("CHANNEL STREEM ITEM ",channelStreamItem);
+    let channelPayloadItem = new ChannelPayloadItem(this.props.name, action, payload, srcElement, event);
+   // console.log("CHANNEL STREEM ITEM ",channelPayloadItem);
 
-    obs$.next(channelStreamItem);
+    obs$.next(channelPayloadItem);
   }
 
 

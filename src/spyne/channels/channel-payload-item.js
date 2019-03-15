@@ -1,22 +1,22 @@
 
 const R = require('ramda');
 
-export class ChannelStreamItem {
+export class ChannelPayloadItem {
   constructor(channelName, action, channelPayload, srcElement, event) {
     let channel = channelName;
 
-    let channelStreamItemObj = {channel, action, channelPayload, srcElement, event};
+    let channelPayloadItemObj = {channel, action, channelPayload, srcElement, event};
 
-    channelStreamItemObj['props'] = ()=>R.mergeAll([channelStreamItemObj.channelPayload, {channel},{event}, {action: channelStreamItemObj.action}, channelStreamItemObj.srcElement, channelStreamItemObj.event]);
+    channelPayloadItemObj['props'] = ()=>R.mergeAll([channelPayloadItemObj.channelPayload, {channel},{event}, {action: channelPayloadItemObj.action}, channelPayloadItemObj.srcElement, channelPayloadItemObj.event]);
     const channelActionsArr = window.Spyne.getChannelActions(channel);
 
-    ChannelStreamItem.validateAction(action, channel, channelActionsArr);
+    ChannelPayloadItem.validateAction(action, channel, channelActionsArr);
 
     if (channel === 'CHANNEL_ROUTE') {
-      channelStreamItemObj['location'] = ChannelStreamItem.getLocationData();
+      channelPayloadItemObj['location'] = ChannelPayloadItem.getLocationData();
     }
 
-    return channelStreamItemObj;
+    return channelPayloadItemObj;
   }
 
   static validateAction(action, channel, arr) {

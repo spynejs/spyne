@@ -1,6 +1,6 @@
 //import * as Rx from "rxjs-compat";
 import {ChannelsBase} from './channels-base';
-import {ChannelStreamItem} from './channel-stream-item';
+import {ChannelPayloadItem} from './channel-payload-item';
 import {ChannelFetchUtil} from '../utils/channel-fetch-util';
 //import  'whatwg-fetch';
  const R = require('ramda');
@@ -39,12 +39,12 @@ export class ChannelsBaseData extends ChannelsBase {
   }
 
   onFetchReturned(streamItem){
-    let payload = this.createChannelStreamItem(streamItem);
+    let payload = this.createChannelPayloadItem(streamItem);
     this.observer$.next(payload);
   }
 
-  createChannelStreamItem (payload, action='CHANNEL_DATA_EVENT') {
-    return new ChannelStreamItem(this.props.name, action, payload);
+  createChannelPayloadItem (payload, action='CHANNEL_DATA_EVENT') {
+    return new ChannelPayloadItem(this.props.name, action, payload);
   }
 
   getPropsForFetch(evt){
