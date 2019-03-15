@@ -6,13 +6,13 @@ const R = require('ramda');
 export class ChannelViewStreamLifecycle extends ChannelsBase {
 
   constructor(props = {}) {
-    super('CHANNEL_VIEWSTREAM_LIFECYCLE', props);
+    super('CHANNEL_LIFECYCLE', props);
   }
 
   addRegisteredActions() {
     return [
-      'CHANNEL_VIEWSTREAM_LIFECYCLE_RENDERED_EVENT',
-      'CHANNEL_VIEWSTREAM_LIFECYCLE_REMOVED_EVENT'
+      'CHANNEL_LIFECYCLE_RENDERED_EVENT',
+      'CHANNEL_LIFECYCLE_REMOVED_EVENT'
     ];
   }
 

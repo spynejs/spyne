@@ -70,7 +70,7 @@ export class ChannelsBaseController {
     this.map.set('CHANNEL_WINDOW', this.domStream);
 
     this.viewStreamLifecycle = new ChannelViewStreamLifecycle();
-    this.map.set('CHANNEL_VIEWSTREAM_LIFECYCLE', this.viewStreamLifecycle);
+    this.map.set('CHANNEL_LIFECYCLE', this.viewStreamLifecycle);
 
     this.routeValueeam.initializeStream();
     this.domStream.initializeStream();

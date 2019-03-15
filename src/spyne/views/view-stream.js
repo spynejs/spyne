@@ -182,8 +182,8 @@ export class ViewStream {
   setSourceHashMethods(extendedSourcesHashMethods = {}) {
     let hashSourceKeys = {
       'DISPOSING': (p) => this.checkParentDispose(p),
-      'DISPOSE': (p) => this.disposeViewStreamChain(p),
-      // 'CHILD_DISPOSE'                    : (p) => this.disposeViewStreamChain(p),
+      'DISPOSE': (p) => this.disposeViewStream(p),
+      // 'CHILD_DISPOSE'                    : (p) => this.disposeViewStream(p),
       'RENDERED': (p) => this.onRendered(p),
       'RENDERED_AND_ATTACHED_TO_DOM': (p) => this.onRendered(p),
       'RENDERED_AND_ATTACHED_TO_PARENT': (p) => this.onRendered(p),
@@ -231,7 +231,7 @@ export class ViewStream {
       let data = deepMerge({}, d);
 
       if (data.action === 'DISPOSE_AND_READY_FOR_GC') {
-        this.disposeViewStreamChain(data);
+        this.disposeViewStream(data);
         data.action = 'READY_FOR_GC';
       }
       return data;
@@ -417,7 +417,7 @@ export class ViewStream {
   // ===================================== DISPOSE METHODS =================================
   checkParentDispose(p) {
     if (p.from$ === 'parent') {
-      this.disposeViewStreamChain(p);
+      this.disposeViewStream(p);
     }
   }
 
@@ -425,7 +425,7 @@ export class ViewStream {
 
   }
 
-  disposeViewStreamChain(p) {
+  disposeViewStream(p) {
     // console.log('DISPOSER VS onDispose ', this.constructor.name);
     this.onBeforeDispose();
     this.openSpigot('DISPOSE');
@@ -856,9 +856,9 @@ export class ViewStream {
 
 
     if (isRendered === true){
-      this.sendChannelPayload('CHANNEL_VIEWSTREAM_LIFECYCLE', {action:'CHANNEL_VIEWSTREAM_LIFECYCLE_RENDERED_EVENT'}, 'CHANNEL_VIEWSTREAM_LIFECYCLE_RENDERED_EVENT');
+      this.sendChannelPayload('CHANNEL_LIFECYCLE', {action:'CHANNEL_LIFECYCLE_RENDERED_EVENT'}, 'CHANNEL_LIFECYCLE_RENDERED_EVENT');
     } else if (isDisposed === true){
-       this.sendChannelPayload('CHANNEL_VIEWSTREAM_LIFECYCLE', {action:'CHANNEL_VIEWSTREAM_LIFECYCLE_REMOVED_EVENT'}, 'CHANNEL_VIEWSTREAM_LIFECYCLE_REMOVED_EVENT');
+       this.sendChannelPayload('CHANNEL_LIFECYCLE', {action:'CHANNEL_LIFECYCLE_REMOVED_EVENT'}, 'CHANNEL_LIFECYCLE_REMOVED_EVENT');
     }
 
 
