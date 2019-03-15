@@ -77,7 +77,7 @@ export class ChannelRoute extends ChannelsBase {
     let keywordArrs = this.compareRouteKeywords.compare(payload.routeData, payload.paths);
     payload = R.merge(payload, keywordArrs);
     //console.log("SEND STREAM onIncomingDomEvent", payload, keywordArrs);;
-    this.sendStreamItem(action, payload, undefined, undefined,
+    this.sendChannelPayload(action, payload, undefined, undefined,
       this.navToStream$);
   }
 
@@ -87,7 +87,7 @@ export class ChannelRoute extends ChannelsBase {
     return payload;
   }
 
-  onIncomingObserverableData(pl) {
+  onIncomingViewStreamData(pl) {
     let action = this.channelActions.CHANNEL_ROUTE_CHANGE_EVENT;
     let payload = this.getDataFromParams(pl);
     let srcElement = R.path(['observableData', 'srcElement'], pl);
@@ -97,9 +97,9 @@ export class ChannelRoute extends ChannelsBase {
     payload = R.merge(payload, keywordArrs);
    // this.checkForRouteParamsOverrides(payload);
     this.sendRouteStream(payload, changeLocationBool);
-    //console.log("SEND STREAM onIncomingObserverableData", payload);
+    //console.log("SEND STREAM onIncomingViewStreamData", payload);
 
-    this.sendStreamItem(action, payload, srcElement, uiEvent,
+    this.sendChannelPayload(action, payload, srcElement, uiEvent,
       this.navToStream$);
   }
 

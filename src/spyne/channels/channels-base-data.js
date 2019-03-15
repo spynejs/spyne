@@ -14,7 +14,7 @@ export class ChannelsBaseData extends ChannelsBase {
   }
 
 
-  onStreamInitialized(){
+  onChannelInitialized(){
     this.startFetch();
   }
 

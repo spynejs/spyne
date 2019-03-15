@@ -56,7 +56,7 @@ export class ChannelsBase {
 
 
   //  OVERRIDE INITIALIZATION METHOD
-  onStreamInitialized(){
+  onChannelInitialized(){
 
   }
 
@@ -74,7 +74,7 @@ export class ChannelsBase {
 
   // DO NOT OVERRIDE THIS METHOD
   initializeStream(){
-    this.onStreamInitialized();
+    this.onChannelInitialized();
   }
 
   setTrace(bool) {
@@ -91,7 +91,7 @@ export class ChannelsBase {
   }
 
   createChannelActionMethods(){
-    const defaultFn = 'onIncomingObserverableData';
+    const defaultFn = 'onIncomingViewStreamData';
     const getActionVal = R.ifElse(R.is(String), R.identity, R.head);
     const getCustomMethod = val => {
       const methodStr = R.view(R.lensIndex(1), val);
@@ -138,7 +138,7 @@ export class ChannelsBase {
 
   getActionMethodForObservable(obj){
 
-    const defaultFn = this.onIncomingObserverableData.bind(this);
+    const defaultFn = this.onIncomingViewStreamData.bind(this);
 
     let methodStr = R.path(['data', 'action'], obj);
     const methodVal = R.prop(methodStr, this.channelActionMethods);
@@ -147,7 +147,7 @@ export class ChannelsBase {
 
     let fn = defaultFn;//.defaultTo(this[methodVal], defaultFn);
 
-    if (methodVal !== undefined && methodVal!=='onIncomingObserverableData') {
+    if (methodVal !== undefined && methodVal!=='onIncomingViewStreamData') {
       const methodExists = typeof(this[methodVal]) === 'function';
       if (methodExists === true) {
         fn = this[methodVal].bind(this);
@@ -169,10 +169,10 @@ export class ChannelsBase {
     return eqsName === true ? onSuccess(obj) : onError();
   }
 
-  onIncomingObserverableData(obj) {
+  onIncomingViewStreamData(obj) {
   }
 
-  sendStreamItem(action, payload, srcElement, event, obs$ = this.observer$) {
+  sendChannelPayload(action, payload, srcElement, event, obs$ = this.observer$) {
    // MAKES ALL CHANNEL BASE AND DATA STREAMS CONSISTENT
     let channelStreamItem = new ChannelStreamItem(this.props.name, action, payload, srcElement, event);
    // console.log("CHANNEL STREEM ITEM ",channelStreamItem);

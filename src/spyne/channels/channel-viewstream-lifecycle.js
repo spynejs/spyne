@@ -16,7 +16,7 @@ export class ChannelViewStreamLifecycle extends ChannelsBase {
     ];
   }
 
-  onIncomingObserverableData(obj) {
+  onIncomingViewStreamData(obj) {
     let data = obj.observableData;
     let action = data.action;
     let payload = R.prop('srcElement', data);
@@ -28,7 +28,7 @@ export class ChannelViewStreamLifecycle extends ChannelsBase {
     const action = this.channelActions[actionStr];
     const srcElement = {};
     const event = undefined;
-    const delayStream = ()=>this.sendStreamItem(action, payload, srcElement, event);
+    const delayStream = ()=>this.sendChannelPayload(action, payload, srcElement, event);
     window.setTimeout(delayStream, 0);
   }
 

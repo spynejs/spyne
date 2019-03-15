@@ -22,7 +22,7 @@ export class ChannelWindow extends ChannelsBase {
 
     dom$.subscribe(p => {
       let {action, channelPayload, srcElement, event} = p;
-      this.sendStreamItem(action, channelPayload, srcElement, event);
+      this.sendChannelPayload(action, channelPayload, srcElement, event);
     });
   }
 
@@ -176,7 +176,7 @@ export class ChannelWindow extends ChannelsBase {
   checkForMediaQueries(bool) {
     const sendMQStream = p => {
       let {action, channelPayload, srcElement, event} = p;
-      this.sendStreamItem(action, channelPayload, srcElement, event,
+      this.sendChannelPayload(action, channelPayload, srcElement, event,
         this.observer$);
     };
 

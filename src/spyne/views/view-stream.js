@@ -806,7 +806,7 @@ export class ViewStream {
    * @example
    * let payload = {'location' : 'about'};
    * let action = 'PAGE_CHANGE_EVENT';
-   * this.sendChannelPayload('ROUTE', paylaod, action);
+   * this.sendDataToChannel('ROUTE', paylaod, action);
    *
    * */
 
@@ -819,7 +819,7 @@ export class ViewStream {
     return channelExists;
   }
 
-  sendChannelPayload(channelName, payload = {},  action="VIEWSTREAM_EVENT") {
+  sendDataToChannel(channelName, payload = {},  action="VIEWSTREAM_EVENT") {
     let data = {payload, action};
     data['srcElement'] = {};// R.pick(['cid','viewName'], data);
     data.srcElement['cid'] = R.path(['props','cid'],this);;
@@ -856,9 +856,9 @@ export class ViewStream {
 
 
     if (isRendered === true){
-      this.sendChannelPayload('CHANNEL_LIFECYCLE', {action:'CHANNEL_LIFECYCLE_RENDERED_EVENT'}, 'CHANNEL_LIFECYCLE_RENDERED_EVENT');
+      this.sendDataToChannel('CHANNEL_LIFECYCLE', {action:'CHANNEL_LIFECYCLE_RENDERED_EVENT'}, 'CHANNEL_LIFECYCLE_RENDERED_EVENT');
     } else if (isDisposed === true){
-       this.sendChannelPayload('CHANNEL_LIFECYCLE', {action:'CHANNEL_LIFECYCLE_REMOVED_EVENT'}, 'CHANNEL_LIFECYCLE_REMOVED_EVENT');
+       this.sendDataToChannel('CHANNEL_LIFECYCLE', {action:'CHANNEL_LIFECYCLE_REMOVED_EVENT'}, 'CHANNEL_LIFECYCLE_REMOVED_EVENT');
     }
 
 

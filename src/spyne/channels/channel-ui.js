@@ -103,6 +103,6 @@ export class ChannelUI extends ChannelsBase {
     const action = obs.action;// this.getActionState(obs);
     const {payload, srcElement} = obs.observableData;
     const event = obs.uiEvent;
-    this.sendStreamItem(action, payload, srcElement, event);
+    this.sendChannelPayload(action, payload, srcElement, event);
   }
 }
