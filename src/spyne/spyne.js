@@ -59,12 +59,17 @@ class SpyneApp {
     this.getChannelActions = (str) => window.Spyne.channels.getChannelActions(str);
     this.registerChannel = (val) => this.channels.registerStream(val);
     this.registerDataChannel = (obs$) => this.channels.registerStream(obs$);
+    this.listChannels = ()=>Array.from(window.Spyne.channels.map.keys());
     let nullHolder = new ViewStream({id:'spyne-null-views'});
     nullHolder.appendToDom(document.body);
     nullHolder.props.el.style.cssText='display:none; opacity:0; pointer-events:none;';
     this.channels.init();
 
     // window.Spyne.channels.init();
+  }
+
+  static listChannels(){
+    return Array.from(window.Spyne.channels.map.keys());
   }
 
   static getChannelActions(str) {

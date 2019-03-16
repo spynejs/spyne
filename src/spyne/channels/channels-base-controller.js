@@ -22,17 +22,35 @@ export class ChannelsBaseController {
    // console.log('Rx is ',Rx);
     // console.log('RX IS ', Subject);
     this.map.set('DISPATCHER', new Subject());
+    this.listRegisteredChannels = ChannelsBaseController.listRegisteredChannels.bind(this);
+    this.getChannelsList = ChannelsBaseController.getChannelsList.bind(this);
     window.setTimeout(this.checkForMissingChannels.bind(this), 3000);
   }
 
-  checkForMissingChannels(){
+  static getChannelsList(){
     const proxyMapFn =  (k,v) => {
       let key = k[0];
       let val=k[1].constructor.name;
       return {key,val};
-    }
-    let proxyMap = Array.from(this.map, proxyMapFn);
+    };
+    return Array.from(window.Spyne.channels.map, proxyMapFn);
+  }
 
+  static listRegisteredChannels(showOnlyProxies=false){
+    let proxyMap = this.getChannelsList();
+    let rejectProxyFn = R.reject(R.propEq('val', 'ChannelsBaseProxy'));
+    let filterProxyFn = R.filter(R.propEq('val', 'ChannelsBaseProxy'));
+    let fn = showOnlyProxies === true ? filterProxyFn : rejectProxyFn;
+    let removedProxyArr = fn(proxyMap);
+    return R.pluck(['key'], removedProxyArr);
+  }
+  listProxyChannels(){
+    return this.listRegisteredChannels(true);
+  }
+
+
+  checkForMissingChannels(){
+    let proxyMap = this.getChannelsList();
     let filterProxyFn = R.filter(R.propEq('val', 'ChannelsBaseProxy'));
     let filterProxyArr = filterProxyFn(proxyMap);
 
@@ -41,7 +59,7 @@ export class ChannelsBaseController {
       let channels = R.compose(R.join(', '), R.map(R.prop('key')))(filterProxyArr)
       let filterPrefixWarning = `Spyne Warning: The following ${channelStr} not been initialized: ${channels}`;
       console.warn(filterPrefixWarning);
-      console.log("FILTER PROXY WARNING ",filterProxyArr);
+      //console.log("FILTER PROXY WARNING ",filterProxyArr);
     }
 
     //console.log(filterProxy(proxyMap),' proxyMap ', proxyMap);
