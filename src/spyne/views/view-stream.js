@@ -95,12 +95,9 @@ export class ViewStream {
     //this.props = Object.assign({}, this.defaults(), props);
     this.props = deepMerge(this.defaults(), props);
     this.sendLifecycleMethod = this.props.sendLifecyleEvents === true ? this.sendLifecycleMethodActive.bind(this) : this.sendLifecycleMethodInactive.bind(this);
-    //window.Spyne['config'] = deepMerge(defaultConfig, config);// Object.assign({}, defaultConfig, config);// config !== undefined ? config : defaultConfig;
-    let attributesArr = ['id', 'class', 'dataset'];
-    const addToAttributes = (arr) => attributesArr.concat(arr);
-
-    this.props['domAttributes'] = R.pick(attributesArr,
-      this.props);
+    let attributesArr = this.attributesArray;
+    //let attributesArr = ['id', 'class', 'dataset'];
+    this.props['domAttributes'] = R.pick(attributesArr, this.props);
     this.loadEnhancers();
     this.loadAllMethods();
     this.props.action = 'LOADED';
@@ -874,6 +871,137 @@ export class ViewStream {
     return itemEl !== undefined &&
         this.props.el.contains(channelPayloadItem.srcElement.el);
   }
+
+  get attributesArray(){
+    return [
+      "accept",
+      "accept-charset",
+      "accesskey",
+      "action",
+      "align",
+      "allow",
+      "alt",
+      "async",
+      "autocapitalize",
+      "autocomplete",
+      "autofocus",
+      "autoplay",
+      "bgcolor",
+      "border",
+      "buffered",
+      "challenge",
+      "charset",
+      "checked",
+      "cite",
+      "class",
+      "code",
+      "codebase",
+      "color",
+      "cols",
+      "colspan",
+      "content",
+      "contenteditable",
+      "contextmenu",
+      "controls",
+      "coords",
+      "crossorigin",
+      "csp",
+      "dataset",
+      "datetime",
+      "decoding",
+      "default",
+      "defer",
+      "dir",
+      "dirname",
+      "disabled",
+      "download",
+      "draggable",
+      "dropzone",
+      "enctype",
+      "for",
+      "form",
+      "formaction",
+      "headers",
+      "height",
+      "hidden",
+      "high",
+      "href",
+      "hreflang",
+      "http-equiv",
+      "icon",
+      "id",
+      "importance",
+      "integrity",
+      "ismap",
+      "itemprop",
+      "keytype",
+      "kind",
+      "label",
+      "lang",
+      "language",
+      "lazyload",
+      "list",
+      "loop",
+      "low",
+      "manifest",
+      "max",
+      "maxlength",
+      "minlength",
+      "media",
+      "method",
+      "min",
+      "multiple",
+      "muted",
+      "name",
+      "novalidate",
+      "open",
+      "optimum",
+      "pattern",
+      "ping",
+      "placeholder",
+      "poster",
+      "preload",
+      "radiogroup",
+      "readonly",
+      "referrerpolicy",
+      "rel",
+      "required",
+      "reversed",
+      "rows",
+      "rowspan",
+      "sandbox",
+      "scope",
+      "scoped",
+      "selected",
+      "shape",
+      "size",
+      "sizes",
+      "slot",
+      "span",
+      "spellcheck",
+      "src",
+      "srcdoc",
+      "srclang",
+      "srcset",
+      "start",
+      "step",
+      "style",
+      "summary",
+      "tabindex",
+      "target",
+      "title",
+      "translate",
+      "type",
+      "usemap",
+      "value",
+      "width",
+      "wrap"
+    ]
+
+
+
+  }
+
 
   //  =======================================================================================
   addMixins() {
