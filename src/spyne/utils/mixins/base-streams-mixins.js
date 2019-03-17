@@ -1,4 +1,4 @@
-import {ChannelsPayload} from '../../channels/channels-payload';
+import {ViewStreamPayload} from '../../views/view-stream-payload';
 import {LifestreamPayload} from '../../channels/lifestream-payload';
 const R = require('ramda');
 //import * as Rx from "rxjs-compat";
@@ -10,10 +10,10 @@ export function baseStreamsMixins() {
       console.log('stream mixin is ', str);
     },
     sendRoutePayload: function(obs, data) {
-      return new ChannelsPayload('CHANNEL_ROUTE', obs, data, 'subscribe');
+      return new ViewStreamPayload('CHANNEL_ROUTE', obs, data, 'subscribe');
     },
     sendUIPayload: function(obs, data) {
-      return new ChannelsPayload('CHANNEL_UI', obs, data, 'subscribe');
+      return new ViewStreamPayload('CHANNEL_UI', obs, data, 'subscribe');
     },
     sendViewStreamInfo: function(channelName, payload) {
       const getProp = str => R.prop(str, this.props);
@@ -27,11 +27,11 @@ export function baseStreamsMixins() {
         payload, channel, srcElement
       };
 
-      return new ChannelsPayload(channelName, new Observable.of(''), data,
+      return new ViewStreamPayload(channelName, new Observable.of(''), data,
         'subscribe');
     },
     sendLifeStreamPayload: function(obs, data) {
-      return new ChannelsPayload('LIFESTREAM', obs, data, 'subscribe');
+      return new ViewStreamPayload('LIFESTREAM', obs, data, 'subscribe');
     },
 
     createLifeStreamPayload: function(STEP, data = {}, type = 'parent') {

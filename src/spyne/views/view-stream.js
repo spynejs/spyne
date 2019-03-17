@@ -12,7 +12,7 @@ import {ViewToDomMediator} from './view-to-dom-mediator';
 import {ViewStreamEnhancerLoader} from './view-stream-enhancer-loader';
 import {registeredStreamNames} from '../channels/channels-config';
 import {ViewStreamBroadcaster} from './view-stream-broadcaster';
-import {ChannelsPayload} from '../channels/channels-payload';
+import {ViewStreamPayload} from './view-stream-payload';
 import {ChannelActionFilter} from '../utils/channel-action-filter';
 import {LifecyleObservables} from '../utils/viewstream-lifecycle-observables';
 import {DomItemSelectors} from './dom-item-selectors';
@@ -825,7 +825,7 @@ export class ViewStream {
     data.srcElement['viewName'] = this.props.name;
     if (this.checkIfChannelExists(channelName) === true) {
       let obs$ = of(data);
-      return new ChannelsPayload(channelName, obs$, data);
+      return new ViewStreamPayload(channelName, obs$, data);
     }
   }
 

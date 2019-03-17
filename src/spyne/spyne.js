@@ -4,7 +4,7 @@ import {ViewToDomMediator} from './views/view-to-dom-mediator';
 import {ViewStream} from './views/view-stream';
 import {ViewStreamBroadcaster} from './views/view-stream-broadcaster';
 import {SpyneTrait} from './views/spyne-trait';
-import {ChannelsPayload} from './channels/channels-payload';
+import {ViewStreamPayload} from './views/view-stream-payload';
 import {ChannelsBase} from './channels/channels-base';
 import {ChannelsBaseData} from './channels/channels-base-data';
 import {ChannelPayloadItem} from './channels/channel-payload-item';
@@ -18,7 +18,7 @@ class SpyneApp {
     this.BasicView = ViewToDomMediator;
     this.DomItem = DomItem;
     this.ViewStreamBroadcaster = ViewStreamBroadcaster;
-    this.ChannelsPayload = ChannelsPayload;
+    this.ChannelsPayload = ViewStreamPayload;
     this.ChannelsBaseController = ChannelsBaseController;
     this.ChannelsBase = ChannelsBase;
     this.ChannelPayloadItem = ChannelPayloadItem;
@@ -85,14 +85,14 @@ class SpyneApp {
   }
 }
 
-// let Spyne = {ViewToDomMediator, ChannelsBase, ChannelsBaseController, ChannelsPayload, DomItem, ViewStream, ViewStreamBroadcaster, registerChannel};
+// let Spyne = {ViewToDomMediator, ChannelsBase, ChannelsBaseController, ViewStreamPayload, DomItem, ViewStream, ViewStreamBroadcaster, registerChannel};
 window['Spyne'] = SpyneApp;
 export {
   ViewToDomMediator,
   ChannelsBase,
   ChannelsBaseData,
   ChannelsBaseController,
-  ChannelsPayload,
+  ViewStreamPayload,
   ChannelPayloadItem,
   DomItem,
   ViewStream,

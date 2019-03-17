@@ -159,13 +159,9 @@ export class ChannelsBase {
 
   onIncomingObservable(obj) {
     let eqsName = R.equals(obj.name, this.props.name);
-    /**TODO FIX INFO METHOD
-     *
-     *
-     */
-    //var m1 =[R.__, {action: R.prop('action', R.__)}, R.prop('payload', R.__), R.prop('srcElement', R.__)])
+    const mergeProps = (d) => R.mergeAll([d, {action: R.prop('action', d)}, R.prop('payload', d), R.prop('srcElement', d)]);
     let dataObj = obsVal => ({
-      info: ()=>Object.assign({}, {action: obj.data.action}, {payload: obj.data.payload}, obj.data.payload, obj.data.srcElement),
+      props: ()=>mergeProps(obj.data),
       viewStreamInfo: obj.data,
       viewStreamEvent: obsVal
     });

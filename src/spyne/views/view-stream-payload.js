@@ -1,5 +1,5 @@
 // import {baseCoreMixins} from '../utils/mixins/base-core-mixins';
-import {uiValidations, routeValidations, lifestreamValidations} from './channels-config';
+import {uiValidations, routeValidations, lifestreamValidations} from '../channels/channels-config';
 import {validate} from '../utils/channel-config-validator';
 import {gc} from '../utils/gc';
 // import {Right, Left, findInObj} from '../utils/frp-tools';
@@ -7,7 +7,7 @@ import {findInObj} from '../utils/frp-tools';
 // import * as Rx from "rxjs-compat";
 
  const R = require('ramda');
-export class ChannelsPayload {
+export class ViewStreamPayload {
   constructor(name, observable, data, action = 'subscribe', debug = false) {
     this.addMixins();
     this.options = {

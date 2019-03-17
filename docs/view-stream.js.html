@@ -42,7 +42,7 @@ import {ifNilThenUpdate, convertDomStringMapToObj} from '../utils/frp-tools';
 import {ViewToDomMediator} from './basic-view';
 import {registeredStreamNames} from '../channels/channels-config';
 import {ViewStreamBroadcaster} from './view-stream-broadcaster';
-import {ChannelsPayload} from '../channels/channels-payload';
+import {ViewStreamPayload} from '../channels/channels-payload';
 import {LifecyleObservables} from '../utils/lifecycle-observables';
 
 const Rx = require('rxjs');
@@ -719,7 +719,7 @@ export class ViewStream {
     let viewName = this.props.name;
     let data = {cid, viewName, payload, action};
     let obs$ = Rx.Observable.of(data);
-    return new ChannelsPayload(channelName, obs$, data);
+    return new ViewStreamPayload(channelName, obs$, data);
   }
 
   //  =======================================================================================
