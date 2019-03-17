@@ -82,7 +82,7 @@ const ChannelPayloadUIData = {
 };
 
 const ChannelPayloadRouteData = {
-  'observableData': {
+  'viewStreamInfo': {
     'payload': {
       'routeVal': 'page-one',
       'pageId': 'page-one',
@@ -94,7 +94,7 @@ const ChannelPayloadRouteData = {
     'event': 'click',
     'el': 'h6.nav-btn'
   },
-  'observableEvent': {
+  'viewStreamEvent': {
     'altKey': false,
     'bubbles': true,
     'cancelBubble': false,

@@ -68,7 +68,7 @@ export class ChannelUI extends ChannelsBase {
 
   onIncomingObservable(obj) {
     let eqsName = R.equals(obj.name, this.props.name);
-    let dataObj = obsVal => ({observableData: obj.data, uiEvent: obsVal});
+    let dataObj = obsVal => ({viewStreamInfo: obj.data, uiEvent: obsVal});
     let onSuccess = (obj) => obj.observable.pipe(map(dataObj))
       .subscribe(this.onUIEvent.bind(this));
     let onError = () => {};
@@ -85,7 +85,7 @@ export class ChannelUI extends ChannelsBase {
   }
 
   static checkToPreventDefaultEvent(obs){
-    const checkDataForPreventDefault = R.pathEq(['observableData', 'payload', 'eventPreventDefault'], "true");
+    const checkDataForPreventDefault = R.pathEq(['viewStreamInfo', 'payload', 'eventPreventDefault'], "true");
     const setPreventDefault = function(evt){ if (evt!==undefined) evt.preventDefault()};
     const selectEvtAndPreventDefault = R.compose( setPreventDefault,   R.prop('uiEvent'));
     const checkForPreventDefault = R.when(checkDataForPreventDefault, selectEvtAndPreventDefault);
@@ -101,7 +101,7 @@ export class ChannelUI extends ChannelsBase {
 
     obs['action'] = this.getActionState(obs);
     const action = obs.action;// this.getActionState(obs);
-    const {payload, srcElement} = obs.observableData;
+    const {payload, srcElement} = obs.viewStreamInfo;
     const event = obs.uiEvent;
     this.sendChannelPayload(action, payload, srcElement, event);
   }

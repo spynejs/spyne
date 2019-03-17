@@ -91,7 +91,7 @@ export class ChannelsBase {
   }
 
   createChannelActionMethods(){
-    const defaultFn = 'onIncomingViewStreamData';
+    const defaultFn = 'onIncomingViewStreamInfo';
     const getActionVal = R.ifElse(R.is(String), R.identity, R.head);
     const getCustomMethod = val => {
       const methodStr = R.view(R.lensIndex(1), val);
@@ -138,7 +138,7 @@ export class ChannelsBase {
 
   getActionMethodForObservable(obj){
 
-    const defaultFn = this.onIncomingViewStreamData.bind(this);
+    const defaultFn = this.onIncomingViewStreamInfo.bind(this);
 
     let methodStr = R.path(['data', 'action'], obj);
     const methodVal = R.prop(methodStr, this.channelActionMethods);
@@ -147,7 +147,7 @@ export class ChannelsBase {
 
     let fn = defaultFn;//.defaultTo(this[methodVal], defaultFn);
 
-    if (methodVal !== undefined && methodVal!=='onIncomingViewStreamData') {
+    if (methodVal !== undefined && methodVal!=='onIncomingViewStreamInfo') {
       const methodExists = typeof(this[methodVal]) === 'function';
       if (methodExists === true) {
         fn = this[methodVal].bind(this);
@@ -159,9 +159,15 @@ export class ChannelsBase {
 
   onIncomingObservable(obj) {
     let eqsName = R.equals(obj.name, this.props.name);
+    /**TODO FIX INFO METHOD
+     *
+     *
+     */
+    //var m1 =[R.__, {action: R.prop('action', R.__)}, R.prop('payload', R.__), R.prop('srcElement', R.__)])
     let dataObj = obsVal => ({
-      observableData: obj.data,
-      observableEvent: obsVal
+      info: ()=>Object.assign({}, {action: obj.data.action}, {payload: obj.data.payload}, obj.data.payload, obj.data.srcElement),
+      viewStreamInfo: obj.data,
+      viewStreamEvent: obsVal
     });
     let onSuccess = (obj) => obj.observable.pipe(map(dataObj))
       .subscribe(this.getActionMethodForObservable(obj));
@@ -169,7 +175,7 @@ export class ChannelsBase {
     return eqsName === true ? onSuccess(obj) : onError();
   }
 
-  onIncomingViewStreamData(obj) {
+  onIncomingViewStreamInfo(obj) {
   }
 
   sendChannelPayload(action, payload, srcElement={}, event={}, obs$ = this.observer$) {

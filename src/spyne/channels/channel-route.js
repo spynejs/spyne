@@ -87,17 +87,17 @@ export class ChannelRoute extends ChannelsBase {
     return payload;
   }
 
-  onIncomingViewStreamData(pl) {
+  onIncomingViewStreamInfo(pl) {
     let action = this.channelActions.CHANNEL_ROUTE_CHANGE_EVENT;
     let payload = this.getDataFromParams(pl);
-    let srcElement = R.path(['observableData', 'srcElement'], pl);
-    let uiEvent = pl.observableEvent;
+    let srcElement = R.path(['viewStreamInfo', 'srcElement'], pl);
+    let uiEvent = pl.viewStreamEvent;
     let changeLocationBool = !payload.isHidden;
     let keywordArrs = this.compareRouteKeywords.compare(payload.routeData, payload.paths);
     payload = R.merge(payload, keywordArrs);
    // this.checkForRouteParamsOverrides(payload);
     this.sendRouteStream(payload, changeLocationBool);
-    //console.log("SEND STREAM onIncomingViewStreamData", payload);
+    //console.log("SEND STREAM onIncomingViewStreamInfo", payload);
 
     this.sendChannelPayload(action, payload, srcElement, uiEvent,
       this.navToStream$);
@@ -146,7 +146,7 @@ export class ChannelRoute extends ChannelsBase {
   }
 
   static getDataFromParams(pl, config = this.routeConfigJson) {
-    let routeData = R.path(['observableData', 'payload'], pl);
+    let routeData = R.path(['viewStreamInfo', 'payload'], pl);
 
     let routeValue = this.getRouteStrFromParams(routeData, config);
 

@@ -16,8 +16,8 @@ export class ChannelViewStreamLifecycle extends ChannelsBase {
     ];
   }
 
-  onIncomingViewStreamData(obj) {
-    let data = obj.observableData;
+  onIncomingViewStreamInfo(obj) {
+    let data = obj.viewStreamInfo;
     let action = data.action;
     let payload = R.prop('srcElement', data);
     payload['action'] = action;

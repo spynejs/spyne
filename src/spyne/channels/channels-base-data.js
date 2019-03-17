@@ -48,7 +48,7 @@ export class ChannelsBaseData extends ChannelsBase {
   }
 
   getPropsForFetch(evt){
-    let dataObj = R.path(['observableData', 'payload'], evt);
+    let dataObj = R.path(['viewStreamInfo', 'payload'], evt);
     return R.pick(["mapFn", "url", "header", "body","mode","method", "responseType", "debug"], dataObj);
   }
 
