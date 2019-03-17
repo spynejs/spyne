@@ -172,7 +172,7 @@ export class ChannelsBase {
   onIncomingViewStreamData(obj) {
   }
 
-  sendChannelPayload(action, payload, srcElement, event, obs$ = this.observer$) {
+  sendChannelPayload(action, payload, srcElement={}, event={}, obs$ = this.observer$) {
    // MAKES ALL CHANNEL BASE AND DATA STREAMS CONSISTENT
     let channelPayloadItem = new ChannelPayloadItem(this.props.name, action, payload, srcElement, event);
    // console.log("CHANNEL STREEM ITEM ",channelPayloadItem);
