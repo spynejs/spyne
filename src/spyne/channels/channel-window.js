@@ -53,7 +53,7 @@ export class ChannelWindow extends ChannelsBase {
   }
 
   static mapGenericEvent(actn, event){
-    console.log("map generic event ",actn);
+    //console.log("map generic event ",actn);
     let action = actn;
     let channelPayload = event;
     let srcElement = event.srcElement;
@@ -200,6 +200,8 @@ export class ChannelWindow extends ChannelsBase {
       'CHANNEL_WINDOW_RESIZE_EVENT',
       'CHANNEL_WINDOW_ORIENTATION_EVENT',
       'CHANNEL_WINDOW_CACHED_EVENT',
+      'CHANNEL_WINDOW_CHANGE_EVENT',
+      'CHANNEL_WINDOW_CLICK_EVENT',
       'CHANNEL_WINDOW_ERROR_EVENT',
       'CHANNEL_WINDOW_ABORT_EVENT',
       'CHANNEL_WINDOW_LOAD_EVENT',
