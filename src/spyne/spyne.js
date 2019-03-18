@@ -6,14 +6,14 @@ import {ViewStreamBroadcaster} from './views/view-stream-broadcaster';
 import {SpyneTrait} from './views/spyne-trait';
 import {ViewStreamPayload} from './views/view-stream-payload';
 import {ChannelsBase} from './channels/channels-base';
-import {ChannelsBaseData} from './channels/channels-base-data';
+import {ChannelsFetch} from './channels/channels-base-data';
 import {ChannelPayloadItem} from './channels/channel-payload-item';
 import {deepMerge} from './utils/deep-merge';
 
 class SpyneApp {
   constructor(config = {}) {
     this.channels = new ChannelsBaseController();
-    this.VERSION = '0.9.10';
+    this.VERSION = '0.9.11';
     this.ViewStream = ViewStream;
     this.BasicView = ViewToDomMediator;
     this.DomItem = DomItem;
@@ -90,7 +90,7 @@ window['Spyne'] = SpyneApp;
 export {
   ViewToDomMediator,
   ChannelsBase,
-  ChannelsBaseData,
+  ChannelsFetch,
   ChannelsBaseController,
   ViewStreamPayload,
   ChannelPayloadItem,

@@ -7,7 +7,7 @@ import {ChannelFetchUtil} from '../utils/channel-fetch-util';
 import {from} from "rxjs";
 import {flatMap, map,publish,tap} from "rxjs/operators";
 
-export class ChannelsBaseData extends ChannelsBase {
+export class ChannelsFetch extends ChannelsBase {
   constructor(name, props = {}) {
     props.sendLastPayload = true;
     super(name, props);
@@ -44,7 +44,8 @@ export class ChannelsBaseData extends ChannelsBase {
   }
 
   createChannelPayloadItem (payload, action='CHANNEL_DATA_EVENT') {
-    return new ChannelPayloadItem(this.props.name, action, payload);
+   // return new ChannelPayloadItem(this.props.name, action, payload);
+    this.sendChannelPayload(action, payload);
   }
 
   getPropsForFetch(evt){
