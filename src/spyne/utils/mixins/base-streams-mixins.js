@@ -15,7 +15,7 @@ export function baseStreamsMixins() {
     sendUIPayload: function(obs, data) {
       return new ViewStreamPayload('CHANNEL_UI', obs, data, 'subscribe');
     },
-    sendViewStreamInfo: function(channelName, payload) {
+    sendInfoToChannel: function(channelName, payload) {
       const getProp = str => R.prop(str, this.props);
       const channel = channelName;
       let srcElement = {
