@@ -6,7 +6,7 @@ import {ViewStreamBroadcaster} from './views/view-stream-broadcaster';
 import {SpyneTrait} from './utils/spyne-trait';
 import {ViewStreamPayload} from './views/view-stream-payload';
 import {ChannelsBase} from './channels/channels-base';
-import {ChannelsFetch} from './channels/channels-base-data';
+import {ChannelsFetch} from './channels/channels-base-fetch';
 import {ChannelPayloadItem} from './channels/channel-payload-item';
 import {deepMerge} from './utils/deep-merge';
 
