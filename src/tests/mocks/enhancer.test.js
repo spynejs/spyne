@@ -1,12 +1,12 @@
-import {SpyneTrait} from '../../spyne/views/spyne-trait';
+import {SpyneTrait} from '../../spyne/utils/spyne-trait';
 
 export class Enhancer extends SpyneTrait {
   constructor(context) {
-    super(context);
+    super(context, 'get');
     this.name = 'TEST';
   }
 
-  testDupeMethod1() {
+  getTestDupeMethod1() {
 
   }
 

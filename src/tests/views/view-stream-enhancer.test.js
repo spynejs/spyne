@@ -1,6 +1,6 @@
 /*const R = require('ramda');
 const Rx = require('rxjs');
-import {SpyneTrait} from '../../spyne/views/view-stream-enhancer';
+import {SpyneTrait} from '../../spyne/utils/view-stream-enhancer';
 */
 import {Enhancer} from '../mocks/enhancer.test';
 class MyClass {

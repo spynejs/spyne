@@ -3,7 +3,7 @@ import {DomItem} from './views/dom-item';
 import {ViewToDomMediator} from './views/view-to-dom-mediator';
 import {ViewStream} from './views/view-stream';
 import {ViewStreamBroadcaster} from './views/view-stream-broadcaster';
-import {SpyneTrait} from './views/spyne-trait';
+import {SpyneTrait} from './utils/spyne-trait';
 import {ViewStreamPayload} from './views/view-stream-payload';
 import {ChannelsBase} from './channels/channels-base';
 import {ChannelsFetch} from './channels/channels-base-data';
