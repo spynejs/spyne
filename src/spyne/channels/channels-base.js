@@ -2,7 +2,7 @@ import { registeredStreamNames } from './channels-config';
 import { ChannelPayloadItem } from './channel-payload-item';
 import { ReplaySubject, Subject } from 'rxjs';
 import { map } from 'rxjs/operators';
-const R = require('ramda');
+import * as R from 'ramda';
 
 export class ChannelsBase {
   /**

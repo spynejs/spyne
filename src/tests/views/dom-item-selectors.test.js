@@ -1,7 +1,7 @@
 import {spyneDocsDomStr} from '../mocks/spyne-docs.mocks';
 import {DomItemSelectors} from '../../spyne/views/dom-item-selectors';
 
-const R = require('ramda');
+import * as R from 'ramda';
 describe('channel action filter', () => {
 
   beforeEach(function(){

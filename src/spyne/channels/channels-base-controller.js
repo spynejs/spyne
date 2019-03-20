@@ -8,9 +8,9 @@ import { validate } from '../utils/channel-config-validator';
 
 import { Subject } from 'rxjs';
 import { ChannelsBaseProxy } from './channels-base-proxy';
-const R = require('ramda');
+import * as R from 'ramda';
 
-// const R = require('ramda');
+// import * as R from 'ramda';
 
 export class ChannelsBaseController {
   constructor(obs$) {

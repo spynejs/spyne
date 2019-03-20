@@ -3,7 +3,7 @@ import { checkIfObjIsNotEmptyOrNil } from '../utils/frp-tools';
 import { ChannelUtilsDom } from '../utils/channel-util-dom';
 import { merge } from 'rxjs';
 import { map, debounceTime, skipWhile } from 'rxjs/operators';
-const R = require('ramda');
+import * as R from 'ramda';
 
 export class ChannelWindow extends ChannelsBase {
   constructor() {

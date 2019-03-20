@@ -1,4 +1,4 @@
-/*const R = require('ramda');
+/*import * as R from 'ramda';
 const Rx = require('rxjs');
 import {SpyneTrait} from '../../spyne/utils/view-stream-enhancer';
 */

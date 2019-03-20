@@ -1,5 +1,5 @@
 import { fromEventPattern } from 'rxjs';
-const R = require('ramda');
+import * as R from 'ramda';
 
 export class RouteUtils {
   constructor() {

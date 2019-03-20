@@ -3,7 +3,7 @@ import {internalViewStreamPayload,internvalRouteChannelPayload} from '../mocks/v
 import {spyneDocsDomStr} from '../mocks/spyne-docs.mocks';
 internalViewStreamPayload.srcElement.el = document.querySelector('.has-svg.github');
 
-const R = require('ramda');
+import * as R from 'ramda';
 describe('channel action filter', () => {
   let payload = internalViewStreamPayload;
   let obj = R.clone(payload);

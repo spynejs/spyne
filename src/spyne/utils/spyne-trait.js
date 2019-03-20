@@ -1,5 +1,5 @@
 import { getAllMethodNames } from './frp-tools';
-const R = require('ramda');
+import * as R from 'ramda';
 
 export class SpyneTrait {
   constructor(parentViewStream, prefix = '', autoInit = true) {

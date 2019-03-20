@@ -1,5 +1,5 @@
 
-const R = require('ramda');
+import * as R from 'ramda';
 
 export class ChannelPayloadItem {
   constructor(channelName, action, channelPayload, srcElement, event) {

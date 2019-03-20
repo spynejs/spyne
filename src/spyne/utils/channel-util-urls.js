@@ -1,4 +1,4 @@
-const R = require('ramda');
+import * as R from 'ramda';
 
 export class URLUtils {
   constructor() {

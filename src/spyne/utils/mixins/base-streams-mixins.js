@@ -1,7 +1,7 @@
 import { ViewStreamPayload } from '../../views/view-stream-payload';
 import { LifestreamPayload } from '../../channels/lifestream-payload';
 import { of } from 'rxjs';
-const R = require('ramda');
+import * as R from 'ramda';
 
 export function baseStreamsMixins() {
   return {

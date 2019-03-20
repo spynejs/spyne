@@ -1,4 +1,4 @@
-const R = require('ramda');
+import * as R from 'ramda';
 import {findStrOrRegexMatchStr} from '../../spyne/utils/frp-tools';
 import {ViewStreamHashMethodsObj} from '../mocks/utils-data';
 

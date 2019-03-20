@@ -1,7 +1,7 @@
 import { ChannelsBase } from '../channels/channels-base';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-const R = require('ramda');
+import * as R from 'ramda';
 
 export class ChannelUI extends ChannelsBase {
   constructor(name = 'CHANNEL_UI', props = {}) {

@@ -19,7 +19,7 @@ import { DomItemSelectors } from './dom-item-selectors';
 
 import { Subject, of } from 'rxjs';
 import { mergeMap, map, takeWhile, filter, tap, finalize } from 'rxjs/operators';
-const R = require('ramda');
+import * as R from 'ramda';
 
 export class ViewStream {
   /**

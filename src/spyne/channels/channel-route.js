@@ -4,7 +4,7 @@ import { RouteUtils } from '../utils/channel-util-route';
 import { BehaviorSubject, ReplaySubject, merge } from 'rxjs';
 import { map } from 'rxjs/operators';
 
-const R = require('ramda');
+import * as R from 'ramda';
 
 export class ChannelRoute extends ChannelsBase {
   constructor(name = 'CHANNEL_ROUTE', props = {}) {

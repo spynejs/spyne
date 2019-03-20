@@ -5,7 +5,7 @@ import { gc } from '../utils/gc';
 // import {Right, Left, findInObj} from '../utils/frp-tools';
 import { findInObj } from '../utils/frp-tools';
 
-// const R = require('ramda');
+// import * as R from 'ramda';
 export class LifestreamPayload {
   constructor(name, STEP, type, viewId, data = {}, debug = true) {
     this.addMixins();

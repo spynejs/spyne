@@ -1,5 +1,5 @@
 // import {ViewStream} from '../../spyne/views/view-stream';
-// const R = require('ramda');
+// import * as R from 'ramda';
 
 describe('ViewStream Tests', () => {
   describe('should filter for local ui vents', () => {

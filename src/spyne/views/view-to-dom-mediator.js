@@ -4,10 +4,8 @@ import { ifNilThenUpdate, convertDomStringMapToObj } from '../utils/frp-tools';
 import { fadein, fadeout } from '../utils/viewstream-animations';
 import { LifecyleObservables } from '../utils/viewstream-lifecycle-observables';
 import { deepMerge } from '../utils/deep-merge';
-
 import { Subject, Observable, bindCallback } from 'rxjs';
-
-const R = require('ramda');
+import * as R from 'ramda';
 
 export class ViewToDomMediator {
   constructor(sink$, viewProps = {}, cid = '', vsName = 'theName') {

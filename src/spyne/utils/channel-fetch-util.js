@@ -1,6 +1,6 @@
 import { from } from 'rxjs';
 import { flatMap, map, publish, tap } from 'rxjs/operators';
-const R = require('ramda');
+import * as R from 'ramda';
 export class ChannelFetchUtil {
 // METHOD GET POST PUT PATCH DELETE
 

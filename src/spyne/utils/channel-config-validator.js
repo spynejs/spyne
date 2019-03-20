@@ -1,5 +1,5 @@
 import Validation from 'data.validation';
-const R = require('ramda');
+import * as R from 'ramda';
 // import { curry, curryN, reduce, length, always } from 'ramda';
 const success = Validation.Success;
 const failure = Validation.Failure;

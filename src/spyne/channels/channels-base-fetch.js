@@ -1,6 +1,6 @@
 import { ChannelsBase } from './channels-base';
 import { ChannelFetchUtil } from '../utils/channel-fetch-util';
-const R = require('ramda');
+import * as R from 'ramda';
 
 export class ChannelsFetch extends ChannelsBase {
   constructor(name, props = {}) {

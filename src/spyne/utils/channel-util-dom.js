@@ -1,6 +1,6 @@
 import { fromEventPattern } from 'rxjs';
 import { map } from 'rxjs/operators';
-const R = require('ramda');
+import * as R from 'ramda';
 
 export class ChannelUtilsDom {
   constructor() {

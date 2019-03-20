@@ -1,6 +1,6 @@
 import { getAllMethodNames } from '../utils/frp-tools';
 
-const R = require('ramda');
+import * as R from 'ramda';
 
 export class ViewStreamEnhancerLoader {
   constructor(parent, enhancersArr) {

@@ -1,4 +1,4 @@
-const R = require('ramda');
+import * as R from 'ramda';
 export function gc() {
   let cleanup = () => {
     let loopM = m => void 0;

@@ -1,7 +1,7 @@
 import { Subject } from 'rxjs';
 import { filter, map } from 'rxjs/operators';
 
-const R = require('ramda');
+import * as R from 'ramda';
 export class LifecyleObservables {
   constructor(props) {
     this.props.observableStreams = LifecyleObservables.createDirectionalObservables();

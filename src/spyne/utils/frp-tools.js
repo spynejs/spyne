@@ -1,4 +1,4 @@
-const R = require('ramda');
+import * as R from 'ramda';
 const isIOS = () => {
   let userAgent = window.navigator.userAgent.toLowerCase();
   // let safari = /safari/.test(userAgent);

@@ -4,7 +4,7 @@ import { DomTemplateRenderer } from './dom-template-renderer';
 import { deepMerge } from '../utils/deep-merge';
 // import {DomTemplateRenderer} from './template-renderer';
 
-const R = require('ramda');
+import * as R from 'ramda';
 
 export class DomItem {
   /**

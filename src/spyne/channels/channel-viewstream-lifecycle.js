@@ -1,5 +1,5 @@
 import { ChannelsBase } from '../channels/channels-base';
-const R = require('ramda');
+import * as R from 'ramda';
 
 export class ChannelViewStreamLifecycle extends ChannelsBase {
   constructor(props = {}) {
