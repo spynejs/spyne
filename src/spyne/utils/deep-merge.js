@@ -46,7 +46,7 @@ function mergeObject(target, source, optionsArgument) {
 
 function deepMerge(target, source, optionsArgument) {
   let array = Array.isArray(source);
-  let options = optionsArgument || {arrayMerge: defaultArrayMerge};
+  let options = optionsArgument || { arrayMerge: defaultArrayMerge };
   let arrayMerge = options.arrayMerge || defaultArrayMerge;
 
   if (array) {
@@ -70,4 +70,4 @@ deepMerge.all = function deepmergeAll(array, optionsArgument) {
   });
 };
 
-export {deepMerge};
+export { deepMerge };

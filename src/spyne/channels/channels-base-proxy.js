@@ -1,7 +1,5 @@
-import {ChannelsBase} from './channels-base';
-import {ChannelPayloadItem} from './channel-payload-item';
-import {Subject, ReplaySubject, merge, Observable, from} from "rxjs";
-import {flatMap, map, multicast} from "rxjs/operators";
+import { ChannelsBase } from './channels-base';
+import { Subject, ReplaySubject, merge } from 'rxjs';
 
 export class ChannelsBaseProxy extends ChannelsBase {
   constructor(name, props = {}) {
@@ -13,18 +11,15 @@ export class ChannelsBaseProxy extends ChannelsBase {
     this.observer$ = merge(this.subject$, this.replaySub$);
   }
 
-  getMergedSubject(peristData=false){
+  getMergedSubject(peristData = false) {
     return peristData === true ? this.replaySub$ : this.subject$;
   }
 
-  get replaySubject(){
+  get replaySubject() {
     return this.replaySub$;
   }
 
-  get subject(){
+  get subject() {
     return this.subject$;
   }
-
-
-
 }

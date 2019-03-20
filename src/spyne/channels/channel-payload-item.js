@@ -5,9 +5,9 @@ export class ChannelPayloadItem {
   constructor(channelName, action, channelPayload, srcElement, event) {
     let channel = channelName;
 
-    let channelPayloadItemObj = {channel, action, channelPayload, srcElement, event};
+    let channelPayloadItemObj = { channel, action, channelPayload, srcElement, event };
 
-    channelPayloadItemObj['props'] = ()=>R.mergeAll([channelPayloadItemObj.channelPayload, {channel},{event}, {action: channelPayloadItemObj.action}, channelPayloadItemObj.srcElement, channelPayloadItemObj.event]);
+    channelPayloadItemObj['props'] = () => R.mergeAll([channelPayloadItemObj.channelPayload, { channel }, { event }, { action: channelPayloadItemObj.action }, channelPayloadItemObj.srcElement, channelPayloadItemObj.event]);
     const channelActionsArr = window.Spyne.getChannelActions(channel);
 
     ChannelPayloadItem.validateAction(action, channel, channelActionsArr);

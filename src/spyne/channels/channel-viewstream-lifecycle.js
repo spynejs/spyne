@@ -1,10 +1,7 @@
-import {Subject} from 'rxjs';
-import {filter} from 'rxjs/operators';
-import {ChannelsBase} from '../channels/channels-base';
+import { ChannelsBase } from '../channels/channels-base';
 const R = require('ramda');
 
 export class ChannelViewStreamLifecycle extends ChannelsBase {
-
   constructor(props = {}) {
     super('CHANNEL_LIFECYCLE', props);
   }
@@ -28,8 +25,7 @@ export class ChannelViewStreamLifecycle extends ChannelsBase {
     const action = this.channelActions[actionStr];
     const srcElement = {};
     const event = undefined;
-    const delayStream = ()=>this.sendChannelPayload(action, payload, srcElement, event);
+    const delayStream = () => this.sendChannelPayload(action, payload, srcElement, event);
     window.setTimeout(delayStream, 0);
   }
-
 }

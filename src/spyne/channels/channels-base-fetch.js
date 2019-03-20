@@ -1,11 +1,6 @@
-//import * as Rx from "rxjs-compat";
-import {ChannelsBase} from './channels-base';
-import {ChannelPayloadItem} from './channel-payload-item';
-import {ChannelFetchUtil} from '../utils/channel-fetch-util';
-//import  'whatwg-fetch';
- const R = require('ramda');
-import {from} from "rxjs";
-import {flatMap, map,publish,tap} from "rxjs/operators";
+import { ChannelsBase } from './channels-base';
+import { ChannelFetchUtil } from '../utils/channel-fetch-util';
+const R = require('ramda');
 
 export class ChannelsFetch extends ChannelsBase {
   constructor(name, props = {}) {
@@ -13,50 +8,46 @@ export class ChannelsFetch extends ChannelsBase {
     super(name, props);
   }
 
-
-  onChannelInitialized(){
+  onChannelInitialized() {
     this.startFetch();
   }
-
 
   addRegisteredActions() {
     return [
       'CHANNEL_DATA_EVENT',
-        ['CHANNEL_UPDATE_DATA_EVENT', 'onFetchUpdate']
+      ['CHANNEL_UPDATE_DATA_EVENT', 'onFetchUpdate']
     ];
   }
 
-
-  startFetch(options={}, subscriber=this.onFetchReturned.bind(this)){
+  startFetch(options = {}, subscriber = this.onFetchReturned.bind(this)) {
     let fetchProps = this.consolidateAllFetchProps(options);
-    new ChannelFetchUtil(fetchProps, subscriber);
+    return new ChannelFetchUtil(fetchProps, subscriber);
   }
 
-  onFetchUpdate(evt){
+  onFetchUpdate(evt) {
     let propsOptions = this.getPropsForFetch(evt);
     this.startFetch(propsOptions);
-
   }
 
-  onFetchReturned(streamItem){
+  onFetchReturned(streamItem) {
     let payload = this.createChannelPayloadItem(streamItem);
     this.observer$.next(payload);
   }
 
-  createChannelPayloadItem (payload, action='CHANNEL_DATA_EVENT') {
-   // return new ChannelPayloadItem(this.props.name, action, payload);
+  createChannelPayloadItem(payload, action = 'CHANNEL_DATA_EVENT') {
+    // return new ChannelPayloadItem(this.props.name, action, payload);
     this.sendChannelPayload(action, payload);
   }
 
-  getPropsForFetch(evt){
+  getPropsForFetch(evt) {
     let dataObj = R.path(['viewStreamInfo', 'payload'], evt);
-    return R.pick(["mapFn", "url", "header", "body","mode","method", "responseType", "debug"], dataObj);
+    return R.pick(['mapFn', 'url', 'header', 'body', 'mode', 'method', 'responseType', 'debug'], dataObj);
   }
 
-   consolidateAllFetchProps(options, props=this.props){
-    //let currentOptions = R.merge({url}, options);
-    let propsOptions = R.pick(["mapFn", "url", "header", "body","mode","method", "responseType", "debug"], props);
-    const mergeOptions = (o1,o2) => R.mergeDeepRight(o1,o2);
+  consolidateAllFetchProps(options, props = this.props) {
+    // let currentOptions = R.merge({url}, options);
+    let propsOptions = R.pick(['mapFn', 'url', 'header', 'body', 'mode', 'method', 'responseType', 'debug'], props);
+    const mergeOptions = (o1, o2) => R.mergeDeepRight(o1, o2);
     const filterOutUndefined = R.reject(R.isNil);
     return R.compose(filterOutUndefined, mergeOptions)(propsOptions, options);
   }
@@ -64,6 +55,4 @@ export class ChannelsFetch extends ChannelsBase {
   get observer() {
     return this.observer$;
   }
-
-
 }

@@ -1,4 +1,4 @@
-import {getAllMethodNames} from '../utils/frp-tools';
+import { getAllMethodNames } from '../utils/frp-tools';
 
 const R = require('ramda');
 

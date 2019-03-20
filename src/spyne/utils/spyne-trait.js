@@ -1,8 +1,8 @@
-import {getAllMethodNames} from './frp-tools';
+import { getAllMethodNames } from './frp-tools';
 const R = require('ramda');
 
 export class SpyneTrait {
-  constructor(parentViewStream, prefix='', autoInit=true) {
+  constructor(parentViewStream, prefix = '', autoInit = true) {
     this.parentViewStream = parentViewStream;
     this.omittedMethods = [
       'autoBinder',
@@ -11,40 +11,35 @@ export class SpyneTrait {
       'checkForMalformedMethods',
       'bindParentViewStream'];
 
-    this.prefix=prefix;
+    this.prefix = prefix;
 
-
-    if (autoInit === true){
+    if (autoInit === true) {
       this.autoBinder();
     }
   }
 
   initAutoBinder() {
-    //this.autoBinder();
+    // this.autoBinder();
   }
 
   getEnhancerMethods() {
     return getAllMethodNames(this, this.omittedMethods);
   }
 
-  checkForMalformedMethods(methodsArr){
-    if (this.prefix===''){
+  checkForMalformedMethods(methodsArr) {
+    if (this.prefix === '') {
       console.warn(`SPYNE WARNING: The following SpyneTrait ${this.constructor.name} needs a prefix`);
       return;
     }
     let reStr = `^(${this.prefix})(.*)$`;
     let re = new RegExp(reStr);
 
-    let filtering = mStr => String(mStr).match(re);
-
-
     let malformedMethodsArr = R.reject(R.test(re), methodsArr);
-    if (malformedMethodsArr.length>=1){
-      let warningStr = `Spyne Warning: The following method(s) in ${this.constructor.name} require the prefix, "${this.prefix}": [${malformedMethodsArr.join(', ')}];`
+    if (malformedMethodsArr.length >= 1) {
+      let warningStr = `Spyne Warning: The following method(s) in ${this.constructor.name} require the prefix, "${this.prefix}": [${malformedMethodsArr.join(', ')}];`;
       console.warn(warningStr);
     }
   }
-
 
   bindParentViewStream(methodsObj, context) {
     this.checkForMalformedMethods(methodsObj.allMethods);

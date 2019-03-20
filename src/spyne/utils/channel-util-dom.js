@@ -1,6 +1,5 @@
-//import * as Rx from "rxjs-compat";
-import {Observable, fromEventPattern} from "rxjs";
-import {map,tap} from "rxjs/operators";
+import { fromEventPattern } from 'rxjs';
+import { map } from 'rxjs/operators';
 const R = require('ramda');
 
 export class ChannelUtilsDom {
@@ -11,9 +10,9 @@ export class ChannelUtilsDom {
 
   static createDomObservableFromEvent(eventName, mapFn, isPassive = true) {
     let addHandler = handler => window.addEventListener(eventName, handler,
-      {passive: isPassive});
+      { passive: isPassive });
     let removeHandler = () => { window[eventName] = (p) => p; };
-    mapFn = mapFn === undefined ? (p)=>p : mapFn;
+    mapFn = mapFn === undefined ? (p) => p : mapFn;
     return fromEventPattern(addHandler, removeHandler).pipe(map(mapFn));
   }
 
@@ -49,6 +48,7 @@ export class ChannelUtilsDom {
       };
     };
     let mediaQueryHandler = handlers(query);
+    /* eslint-disable new-cap */
     return new fromEventPattern(
       mediaQueryHandler.addHandler,
       mediaQueryHandler.removeHandler)

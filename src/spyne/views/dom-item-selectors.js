@@ -1,11 +1,8 @@
 const R = require('ramda');
-// import * as Rx from "rxjs-compat";
-
 
 export class DomItemSelectors {
   constructor(cxt, str) {
-
-    this.mainEl = typeof(cxt) === 'string' ?  document.querySelectorAll(cxt) : cxt;
+    this.mainEl = typeof (cxt) === 'string' ? document.querySelectorAll(cxt) : cxt;
     this.queryStr = str;
     if (this.mainEl.length === 1) {
       this.mainEl = R.head(this.mainEl);
@@ -14,41 +11,37 @@ export class DomItemSelectors {
     }
 
     let selectorStringIsEmptyBool = R.either(R.isNil, R.isEmpty)(str);
-    this._el = selectorStringIsEmptyBool ? this.mainEl :  this.getElFromQuery(this.mainEl, str);
+    this._el = selectorStringIsEmptyBool ? this.mainEl : this.getElFromQuery(this.mainEl, str);
     if (this._el.length === 1) {
       this._el = R.head(this._el);
     } else if (this.el.constructor.name === 'NodeList') {
       this._el = DomItemSelectors.createArrayFromNodeList(this._el);
     }
 
-
     this.createMethods();
 
+    // this.query(str);
+    // this.cList = this._el.classList;
 
-    //this.query(str);
-   // this.cList = this._el.classList;
-
-
-   // this._elProps = new Map();
-     // console.log("CXT STR ",cxt,str, document.querySelectorAll(cxt));
-   // this.createMethods();
-
+    // this._elProps = new Map();
+    // console.log("CXT STR ",cxt,str, document.querySelectorAll(cxt));
+    // this.createMethods();
   }
 
-  static createArrayFromNodeList(nList){
-    const reducer = (acc, item)=>{acc.push(item); return acc;};
-    return  R.reduce(reducer,[], nList);
+  static createArrayFromNodeList(nList) {
+    const reducer = (acc, item) => { acc.push(item); return acc; };
+    return R.reduce(reducer, [], nList);
   }
 
   createMethods() {
     const mapAddClass = (item, s) => {
-      if (item!==undefined && item.classList !== undefined && s!==undefined) {
+      if (item !== undefined && item.classList !== undefined && s !== undefined) {
         item.classList.add(s);
       }
-    }
+    };
     const mapRemoveClass = (item, s) => {
-      if (item!==undefined && item.classList !== undefined && s!==undefined) {
-        item.classList.remove(s)
+      if (item !== undefined && item.classList !== undefined && s !== undefined) {
+        item.classList.remove(s);
       }
     };
     const mapSetClass = (item, s) => {
@@ -60,7 +53,7 @@ export class DomItemSelectors {
       return item;
     };
 
-    const mapToggleClass = (item, s, bool=true) => {
+    const mapToggleClass = (item, s, bool = true) => {
       item.classList.toggle(s, bool);
       return item;
     };
@@ -69,8 +62,7 @@ export class DomItemSelectors {
       let bool = item === el;
       item.classList.toggle(s, bool);
       return item;
-    }
-
+    };
 
     this.addClass = this.mapToValue(mapAddClass);
     this.removeClass = this.mapToValue(mapRemoveClass);
@@ -118,12 +110,12 @@ export class DomItemSelectors {
     const filterForActive = item => item === activeEl;
     // const onActive = bool => bool === true ? item.addClass(str) : item.removeClass(str);
     const adder = (item) => {
-      if (item!==undefined) {
+      if (item !== undefined) {
         item.classList.add(str);
       }
     };
     const remover = (item) => {
-      if(item!==undefined) {
+      if (item !== undefined) {
         item.classList.remove(str);
       }
     };
@@ -136,43 +128,39 @@ export class DomItemSelectors {
     this.elArr.map(mapTheActive);
   }
 
-  getElFromQuery(el, str){
+  getElFromQuery(el, str) {
     //  console.log("DOM ITEM QUERY ",el,str);
 
-    const elementExists =el.querySelector(str);
-    //console.log('query is ',this._el,str, elementExists);
-    if (elementExists!==null){
+    const elementExists = el.querySelector(str);
+    // console.log('query is ',this._el,str, elementExists);
+    if (elementExists !== null) {
       return el.querySelectorAll(str);
     } else {
       const id = this._el.getAttribute('id');
       console.warn(`Spyne Warning: the element, "${str}" does not exist in this element, "${id}"!`);
     }
-    return {el:undefined};
-
+    return { el:undefined };
   }
 
   query(str) {
     const elementExists = this._el.querySelector(str);
-    //console.log('query is ',this._el,str, elementExists);
-    if (elementExists!==null){
+    // console.log('query is ',this._el,str, elementExists);
+    if (elementExists !== null) {
       return new DomItemSelectors(this._el, str);
     } else {
       const id = this._el.getAttribute('id');
       console.warn(`Spyne Warning: the element, "${str}" does not exist in this element, "${id}"!`);
     }
-    return {el:undefined};
-
+    return { el:undefined };
   }
 
   getEl() {
     return this._el;
   }
 
-  get el(){
+  get el() {
     return this._el;
   }
-  
-  
 
   get elArr() {
     if (this._el.constructor.name === 'NodeList') {
@@ -182,7 +170,7 @@ export class DomItemSelectors {
     }
   }
 
-/*
+  /*
   getBoxEl() {
     console.log('getbox el ',this._el);
     return [].concat(this._el);

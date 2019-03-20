@@ -1,17 +1,15 @@
-import {ChannelsBase} from '../channels/channels-base';
-import {checkIfObjIsNotEmptyOrNil} from '../utils/frp-tools';
-import {ChannelUtilsDom} from '../utils/channel-util-dom';
+import { ChannelsBase } from '../channels/channels-base';
+import { checkIfObjIsNotEmptyOrNil } from '../utils/frp-tools';
+import { ChannelUtilsDom } from '../utils/channel-util-dom';
+import { merge } from 'rxjs';
+import { map, debounceTime, skipWhile } from 'rxjs/operators';
 const R = require('ramda');
-//import * as Rx from "rxjs-compat";
-import {Observable, Subject, merge} from "rxjs";
-import {mergeMap, map, debounceTime, skipWhile} from "rxjs/operators";
-
 
 export class ChannelWindow extends ChannelsBase {
   constructor() {
-    super("CHANNEL_WINDOW");
+    super('CHANNEL_WINDOW');
     this.bindStaticMethods();
-   // this.props.name = 'WINDOW';
+    // this.props.name = 'WINDOW';
   }
 
   initializeStream() {
@@ -21,7 +19,7 @@ export class ChannelWindow extends ChannelsBase {
     let dom$ = merge(...obs$Arr);
 
     dom$.subscribe(p => {
-      let {action, channelPayload, srcElement, event} = p;
+      let { action, channelPayload, srcElement, event } = p;
       this.sendChannelPayload(action, channelPayload, srcElement, event);
     });
   }
@@ -32,32 +30,32 @@ export class ChannelWindow extends ChannelsBase {
     let scrollDistance = this.currentScrollY - scrollY;
     let scrollDir = scrollDistance >= 0 ? 'up' : 'down';
     this.currentScrollY = scrollY;
-    let channelPayload = {scrollY, scrollDistance, scrollDir};
+    let channelPayload = { scrollY, scrollDistance, scrollDir };
     let srcElement = event.srcElement;
-    return {action, channelPayload, srcElement, scrollDistance, event};
+    return { action, channelPayload, srcElement, scrollDistance, event };
   }
 
   static getMouseWheelMapFn(event) {
     let action = this.channelActions.CHANNEL_WINDOW_MOUSEWHEEL_EVENT;
     let scrollDir = event.deltaY <= 0 ? 'up' : 'down';
-    let {deltaX, deltaY, deltaZ} = event;
-    let channelPayload = {scrollDir, deltaX, deltaY, deltaZ};
+    let { deltaX, deltaY, deltaZ } = event;
+    let channelPayload = { scrollDir, deltaX, deltaY, deltaZ };
     let srcElement = event.srcElement;
-    return {action, channelPayload, srcElement, event};
+    return { action, channelPayload, srcElement, event };
   }
 
-  static createCurriedGenericEvent(actionStr){
+  static createCurriedGenericEvent(actionStr) {
     let action = `CHANNEL_WINDOW_${actionStr.toUpperCase()}_EVENT`;
     let curryFn = R.curry(ChannelWindow.mapGenericEvent);
-    return  curryFn(action);
+    return curryFn(action);
   }
 
-  static mapGenericEvent(actn, event){
-    //console.log("map generic event ",actn);
+  static mapGenericEvent(actn, event) {
+    // console.log("map generic event ",actn);
     let action = actn;
     let channelPayload = event;
     let srcElement = event.srcElement;
-    return {action, channelPayload, srcElement, event};
+    return { action, channelPayload, srcElement, event };
   }
 
   static getResizeMapFn(event) {
@@ -65,7 +63,7 @@ export class ChannelWindow extends ChannelsBase {
     let channelPayload = R.pick(
       ['innerWidth', 'innerHeight', 'outerWidth', 'outerHeight'], window);
     let srcElement = event.srcElement;
-    return {action, channelPayload, srcElement, event};
+    return { action, channelPayload, srcElement, event };
   }
 
   static getOrientationMapFn(event) {
@@ -78,14 +76,14 @@ export class ChannelWindow extends ChannelsBase {
       ? 'portrait'
       : 'landscape';
     let srcElement = event.srcElement;
-    return {action, channelPayload, srcElement, event};
+    return { action, channelPayload, srcElement, event };
   }
 
   getMediaQueryMapFn(event) {
     let action = this.channelActions.CHANNEL_WINDOW_MEDIA_QUERY_EVENT;
     let channelPayload = R.pick(['matches', 'media', 'mediaQueryName'], event);
     let srcElement = event.srcElement;
-    return {action, channelPayload, srcElement, event};
+    return { action, channelPayload, srcElement, event };
   }
 
   createMouseWheelObservable(config) {
@@ -101,8 +99,8 @@ export class ChannelWindow extends ChannelsBase {
     return ChannelUtilsDom.createDomObservableFromEvent('scroll',
       ChannelWindow.getScrollMapFn.bind(this))
       .pipe(
-          debounceTime(dTime),
-          skipWhile(skipWhenDirIsMissing)
+        debounceTime(dTime),
+        skipWhile(skipWhenDirIsMissing)
       );
   }
 
@@ -120,17 +118,15 @@ export class ChannelWindow extends ChannelsBase {
       ChannelWindow.getResizeMapFn.bind(this)).pipe(debounceTime(dTime));
   }
 
-  getEventsFromConfig(config = this.domChannelConfig){
+  getEventsFromConfig(config = this.domChannelConfig) {
     let obs$Arr = config.events;
 
-    const addWindowEventToArr = str =>{
+    const addWindowEventToArr = str => {
       let mapFn = ChannelWindow.createCurriedGenericEvent(str);
       return ChannelUtilsDom.createDomObservableFromEvent(str, mapFn);
     };
 
-
     return R.map(addWindowEventToArr, obs$Arr);
-
   }
 
   getActiveObservables(config = this.domChannelConfig) {
@@ -175,7 +171,7 @@ export class ChannelWindow extends ChannelsBase {
 
   checkForMediaQueries(bool) {
     const sendMQStream = p => {
-      let {action, channelPayload, srcElement, event} = p;
+      let { action, channelPayload, srcElement, event } = p;
       this.sendChannelPayload(action, channelPayload, srcElement, event,
         this.observer$);
     };

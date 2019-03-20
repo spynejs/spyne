@@ -6,19 +6,18 @@ const isIOS = () => {
   return ios === true;
 };
 
-
-const getConstructorName = (obj) =>{
-  if (obj.constructor.name!==undefined){
+const getConstructorName = (obj) => {
+  if (obj.constructor.name !== undefined) {
     return obj.constructor.name;
   }
   const re = /^(function\s)(\w+)(\(.*)$/;
   let str = obj.toString();
-  return  R.defaultTo(String(str).substr(0,12), R.match(re, str)[2])
+  return R.defaultTo(String(str).substr(0, 12), R.match(re, str)[2]);
 };
 
 const arrFromMapKeys = (map) => {
   let arr = [];
-  const addKeysToArr = (v,k,i) => arr.push(k);
+  const addKeysToArr = (v, k, i) => arr.push(k);
   R.forEach(addKeysToArr, map);
   return arr;
 };
@@ -112,7 +111,7 @@ const pullRouteInfo = () => {
   let str = pullHashAndSlashFromPath(window.location.hash);
   let routeId = pullMainRoute(str);
   let params = pullParams(str);
-  return {routeId, params};
+  return { routeId, params };
 };
 
 const getAllMethodNames = (_this = this, omittedMethods = []) => {
@@ -129,7 +128,7 @@ const getAllMethodNames = (_this = this, omittedMethods = []) => {
   let staticMethods = omitPropsFromArr(getPropNamesArr(_this.constructor));
   let allMethods = R.concat(methods, staticMethods);
 
-  return {methods, staticMethods, allMethods};
+  return { methods, staticMethods, allMethods };
   // return 'fn';
 };
 
@@ -143,4 +142,4 @@ const pullParams =    (str) => str.replace(routeRE, '$4');
 const pullTranslateX = str => str.replace(/^(matrix)(.*\d*,)(.*\d*,)(.*\d*,)(.*\d*,)(.*\d*)(,.*)/, '$6');
 const pullTranslateY = str => str.replace(/^(matrix)(.*\d*,)(.*\d*,)(.*\d*,)(.*\d*,)(.*\d*,)(.*\d)(.*)/, '$7');
 const pullTranslateYFromHeader = str => str.replace(/^(transform: matrix)(.*\d*,)(.*\d*,)(.*\d*,)(.*\d*,)(.*\d*)(\).*;)/, '$6');
-export {getConstructorName,arrFromMapKeys,getAllMethodNames, findStrOrRegexMatchStr, findStrFromRegexArr, checkIfObjIsNotEmptyOrNil, isIOS, pullRouteInfo, pullTranslateYFromHeader, pullSlashFromPath, pullHashAndSlashFromPath, closest, pullTranslateY, pullTranslateX, pullMainRoute, pullParams, right, left, fromNullable, findInObj, ifNilThenUpdate, removeSlashes, subscribeFn, convertDomStringMapToObj};
+export { getConstructorName, arrFromMapKeys, getAllMethodNames, findStrOrRegexMatchStr, findStrFromRegexArr, checkIfObjIsNotEmptyOrNil, isIOS, pullRouteInfo, pullTranslateYFromHeader, pullSlashFromPath, pullHashAndSlashFromPath, closest, pullTranslateY, pullTranslateX, pullMainRoute, pullParams, right, left, fromNullable, findInObj, ifNilThenUpdate, removeSlashes, subscribeFn, convertDomStringMapToObj };

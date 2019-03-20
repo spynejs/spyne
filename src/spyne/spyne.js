@@ -1,19 +1,19 @@
-import {ChannelsBaseController} from './channels/channels-base-controller';
-import {DomItem} from './views/dom-item';
-import {ViewToDomMediator} from './views/view-to-dom-mediator';
-import {ViewStream} from './views/view-stream';
-import {ViewStreamBroadcaster} from './views/view-stream-broadcaster';
-import {SpyneTrait} from './utils/spyne-trait';
-import {ViewStreamPayload} from './views/view-stream-payload';
-import {ChannelsBase} from './channels/channels-base';
-import {ChannelsFetch} from './channels/channels-base-fetch';
-import {ChannelPayloadItem} from './channels/channel-payload-item';
-import {deepMerge} from './utils/deep-merge';
+import { ChannelsBaseController } from './channels/channels-base-controller';
+import { DomItem } from './views/dom-item';
+import { ViewToDomMediator } from './views/view-to-dom-mediator';
+import { ViewStream } from './views/view-stream';
+import { ViewStreamBroadcaster } from './views/view-stream-broadcaster';
+import { SpyneTrait } from './utils/spyne-trait';
+import { ViewStreamPayload } from './views/view-stream-payload';
+import { ChannelsBase } from './channels/channels-base';
+import { ChannelsFetch } from './channels/channels-base-fetch';
+import { ChannelPayloadItem } from './channels/channel-payload-item';
+import { deepMerge } from './utils/deep-merge';
 
 class SpyneApp {
   constructor(config = {}) {
     this.channels = new ChannelsBaseController();
-    this.VERSION = '0.9.11';
+    this.VERSION = '0.9.12';
     this.ViewStream = ViewStream;
     this.BasicView = ViewToDomMediator;
     this.DomItem = DomItem;
@@ -28,7 +28,7 @@ class SpyneApp {
         WINDOW: {
           mediqQueries: {
           /*  'test': '(max-width: 500px)',
-            'newTest': '(max-width: 800px)'*/
+            'newTest': '(max-width: 800px)' */
           },
           events: [],
           listenForResize: true,
@@ -59,16 +59,16 @@ class SpyneApp {
     this.getChannelActions = (str) => window.Spyne.channels.getChannelActions(str);
     this.registerChannel = (val) => this.channels.registerStream(val);
     this.registerDataChannel = (obs$) => this.channels.registerStream(obs$);
-    this.listChannels = ()=>Array.from(window.Spyne.channels.map.keys());
-    let nullHolder = new ViewStream({id:'spyne-null-views'});
+    this.listChannels = () => Array.from(window.Spyne.channels.map.keys());
+    let nullHolder = new ViewStream({ id:'spyne-null-views' });
     nullHolder.appendToDom(document.body);
-    nullHolder.props.el.style.cssText='display:none; opacity:0; pointer-events:none;';
+    nullHolder.props.el.style.cssText = 'display:none; opacity:0; pointer-events:none;';
     this.channels.init();
 
     // window.Spyne.channels.init();
   }
 
-  static listChannels(){
+  static listChannels() {
     return Array.from(window.Spyne.channels.map.keys());
   }
 
@@ -97,7 +97,7 @@ export {
   DomItem,
   ViewStream,
   ViewStreamBroadcaster,
-    SpyneTrait,
+  SpyneTrait,
   SpyneApp,
-    deepMerge
+  deepMerge
 };

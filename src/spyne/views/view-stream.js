@@ -1,6 +1,6 @@
-import {baseCoreMixins} from '../utils/mixins/base-core-mixins';
-import {baseStreamsMixins} from '../utils/mixins/base-streams-mixins';
-import {deepMerge} from '../utils/deep-merge';
+import { baseCoreMixins } from '../utils/mixins/base-core-mixins';
+import { baseStreamsMixins } from '../utils/mixins/base-streams-mixins';
+import { deepMerge } from '../utils/deep-merge';
 import {
   ifNilThenUpdate,
   convertDomStringMapToObj,
@@ -8,18 +8,17 @@ import {
   getConstructorName
 } from '../utils/frp-tools';
 // import {gc} from '../utils/gc';
-import {ViewToDomMediator} from './view-to-dom-mediator';
-import {ViewStreamEnhancerLoader} from './view-stream-enhancer-loader';
-import {registeredStreamNames} from '../channels/channels-config';
-import {ViewStreamBroadcaster} from './view-stream-broadcaster';
-import {ViewStreamPayload} from './view-stream-payload';
-import {ChannelActionFilter} from '../utils/channel-action-filter';
-import {LifecyleObservables} from '../utils/viewstream-lifecycle-observables';
-import {DomItemSelectors} from './dom-item-selectors';
+import { ViewToDomMediator } from './view-to-dom-mediator';
+import { ViewStreamEnhancerLoader } from './view-stream-enhancer-loader';
+import { registeredStreamNames } from '../channels/channels-config';
+import { ViewStreamBroadcaster } from './view-stream-broadcaster';
+import { ViewStreamPayload } from './view-stream-payload';
+import { ChannelActionFilter } from '../utils/channel-action-filter';
+import { LifecyleObservables } from '../utils/viewstream-lifecycle-observables';
+import { DomItemSelectors } from './dom-item-selectors';
 
-//import * as Rx from "rxjs-compat";
-import {Subject, Observable, merge, of} from "rxjs";
-import {mergeMap, map,takeWhile,filter, tap, finalize} from "rxjs/operators";
+import { Subject, of } from 'rxjs';
+import { mergeMap, map, takeWhile, filter, tap, finalize } from 'rxjs/operators';
 const R = require('ramda');
 
 export class ViewStream {
@@ -92,11 +91,11 @@ export class ViewStream {
     this.$dirs = LifecyleObservables.createDirectionalFiltersObject();
     this.addDefaultDirection = LifecyleObservables.addDefaultDir;
     this.addDownInternalDir = LifecyleObservables.addDownInternalDir;
-    //this.props = Object.assign({}, this.defaults(), props);
+    // this.props = Object.assign({}, this.defaults(), props);
     this.props = deepMerge(this.defaults(), props);
     this.sendLifecycleMethod = this.props.sendLifecyleEvents === true ? this.sendLifecycleMethodActive.bind(this) : this.sendLifecycleMethodInactive.bind(this);
     let attributesArr = this.attributesArray;
-    //let attributesArr = ['id', 'class', 'dataset'];
+    // let attributesArr = ['id', 'class', 'dataset'];
     this.props['domAttributes'] = R.pick(attributesArr, this.props);
     this.loadEnhancers();
     this.loadAllMethods();
@@ -113,19 +112,13 @@ export class ViewStream {
     this.checkIfElementAlreadyExists();
   }
 
-  updatePropsToMatchEl(){
-    const getTagName = R.compose(R.toLower, R.either(R.prop('tagName'), R.always('')) )
-      this.props.tagName = getTagName(this.props.el);
+  updatePropsToMatchEl() {
+    const getTagName = R.compose(R.toLower, R.either(R.prop('tagName'), R.always('')));
+    this.props.tagName = getTagName(this.props.el);
   }
 
   checkIfElementAlreadyExists() {
-    //const elIsDomElement = el => el !== undefined && el.tagName !== undefined;
-    function elIsDomElement1(o)
-    {
-      return  R.compose( R.lte(0), R.defaultTo(-1), R.prop('nodeType'))(o);
-    }
-    const elIsDomElement = R.compose( R.lte(0), R.defaultTo(-1), R.prop('nodeType'));
-
+    const elIsDomElement = R.compose(R.lte(0), R.defaultTo(-1), R.prop('nodeType'));
     const elIsRendered = el => document.contains(el);
     const elIsReadyBool = R.propSatisfies(
       R.allPass([elIsRendered, elIsDomElement]), 'el');
@@ -146,11 +139,11 @@ export class ViewStream {
     const channelFn = R.curry(this.onChannelMethodCall.bind(this));
     let createExtraStatesMethod = (arr) => {
       let [action, funcStr, actionFilter] = arr;
-       if(R.is(String, actionFilter)){
-         actionFilter = ChannelActionFilter(actionFilter);
-       }
+      if (R.is(String, actionFilter)) {
+        actionFilter = ChannelActionFilter(actionFilter);
+      }
       this.props.extendedSourcesHashMethods[action] = channelFn(funcStr,
-          actionFilter);
+        actionFilter);
     };
     this.addActionListeners().forEach(createExtraStatesMethod);
     this.props.hashSourceMethods = this.setSourceHashMethods(
@@ -164,16 +157,14 @@ export class ViewStream {
   onChannelMethodCall(str, actionFilter, p) {
     if (p.$dir !== undefined && p.$dir.includes('child') &&
         this.deleted !== true) {
-      let obj = deepMerge({},p);// Object.assign({}, p);
+      let obj = deepMerge({}, p);// Object.assign({}, p);
       obj['$dir'] = this.$dirs.C;
       this.sourceStreams.raw$.next(obj);
     }
     let filterPayload =  R.defaultTo(R.always(true), actionFilter);
-    if (filterPayload(p.props())===true){
+    if (filterPayload(p.props()) === true) {
       this[str](p);
     }
-
-
   }
 
   setSourceHashMethods(extendedSourcesHashMethods = {}) {
@@ -235,7 +226,7 @@ export class ViewStream {
     };
 
     this.parent$ = obs.pipe(
-        filter(filterOutNullData),
+      filter(filterOutNullData),
       map(checkIfDisposeOrFadeout),
       takeWhile(this.notGCCOMPLETE));
     this.updateSourceSubscription(this.parent$, false, 'PARENT');
@@ -246,7 +237,7 @@ export class ViewStream {
     let filterOutNullData = (data) => data !== undefined && data.action !==
         undefined;
     let child$ = obs$.pipe(
-        filter(filterOutNullData),
+      filter(filterOutNullData),
       tap(p => this.tracer('addChildStraem do ', p)),
       map((p) => {
         return p;
@@ -255,7 +246,7 @@ export class ViewStream {
     this.updateSourceSubscription(child$, true, 'CHILD');
   }
 
-  onChildDisposed(p){
+  onChildDisposed(p) {
 
   }
 
@@ -269,9 +260,9 @@ export class ViewStream {
       };
       return R.pick(['viewName', 'cid'], finalDest(x));
     };
-    let childCompletedData= findName(p);
+    let childCompletedData = findName(p);
     this.tracer('onChildCompleted ', this.checker, p);
-    //console.log('obj is ',childCompletedName,obj,this.props);
+    // console.log('obj is ',childCompletedName,obj,this.props);
     this.onChildDisposed(childCompletedData, p);
     return childCompletedData;
   }
@@ -313,7 +304,7 @@ export class ViewStream {
       let branchObservable$ = obsData.observable.pipe(filter(
         (p) => p !== undefined && p.action !== undefined), map(p => {
         // console.log('PAYLOAD IS ', p, this.constructor.name)
-        let payload = deepMerge({},p);
+        let payload = deepMerge({}, p);
         payload.action = p.action;// addRelationToState(obsData.rel, p.action);
         this.tracer('autoMergeSubject$', payload);
         return payload;
@@ -364,7 +355,7 @@ export class ViewStream {
     // console.log(fn, payload, ' THE PAYLOAD FROM SUBSCRIBE IS ', ' ---- ', ' ---> ', this.props);
     // console.log('DISPOSER VS NEXT', this.constructor.name, payload);
 
-    this.tracer('onSubscribeToSourcesNext', {payload});
+    this.tracer('onSubscribeToSourcesNext', { payload });
   }
 
   onSubscribeToSourcesError(payload = '') {
@@ -401,8 +392,8 @@ export class ViewStream {
   }
 
   renderViewAndAttachToDom(node, type, attachType) {
-    let attachData = {node, type, attachType};
-    this.openSpigot('RENDER_AND_ATTACH_TO_DOM', {attachData});
+    let attachData = { node, type, attachType };
+    this.openSpigot('RENDER_AND_ATTACH_TO_DOM', { attachData });
   }
 
   attachChildToView(data) {
@@ -418,7 +409,7 @@ export class ViewStream {
     }
   }
 
-  onBeforeDispose(){
+  onBeforeDispose() {
 
   }
 
@@ -448,7 +439,7 @@ export class ViewStream {
 
   sendEventsDownStreamFn(o, action = {}) {
     // console.log('OBJ ACTION ', o, action);
-    let obj = deepMerge({action}, o);
+    let obj = deepMerge({ action }, o);
     // obj['action'] = action;
     obj['$dir'] = this.$dirs.C;
     // console.log('OBJ FINAL ', obj);
@@ -632,7 +623,6 @@ export class ViewStream {
     this.exchangeViewsWithChild(v, this.setAttachData('prependChild', query));
   }
 
-
   /**
    *  Appends a ViewStream object that are not rendered to the #spyne-null-views div.
    */
@@ -640,7 +630,6 @@ export class ViewStream {
     let node = document.getElementById('spyne-null-views');
     this.renderViewAndAttachToDom(node, 'dom', 'appendChild');
   }
-
 
   onRendered(payload) {
     // console.log('RENDER: ', this.props.name, payload);
@@ -660,16 +649,11 @@ export class ViewStream {
   }
 
   beforeAfterRender() {
-    let dm2 = function(el){
-
-      return function(str=''){
-        let theStr = str === undefined ? '' : str;
-        return new DomItemSelectors(el,str)
-
-      }
-
+    let dm2 = function(el) {
+      return function(str = '') {
+        return new DomItemSelectors(el, str);
+      };
     };
-
 
     this.props.el$ = dm2(this.props.el);
     // console.log('EL IS ', this.props.el$.elArr);
@@ -775,9 +759,9 @@ export class ViewStream {
     const directionArr = sendDownStream === true ? this.$dirs.CI : this.$dirs.I;
     const mapDirection = p => {
       let p2 = R.defaultTo({}, R.clone(p));
-      let dirObj = {$dir: directionArr};
+      let dirObj = { $dir: directionArr };
       return deepMerge(dirObj, p2);
-     // Object.assign({$dir: directionArr}, R.clone(p))
+      // Object.assign({$dir: directionArr}, R.clone(p))
     };
     const isLocalEventCheck = R.path(['srcElement', 'isLocalEvent']);
     const cidCheck = R.path(['srcElement', 'cid']);
@@ -785,11 +769,9 @@ export class ViewStream {
       let cid = cidCheck(p);
       let isLocalEvent = isLocalEventCheck(p);
       const filterEvent = isLocalEvent !== true || cid === this.props.cid;
-      //console.log("checks ",cid,this.props.cid, isLocalEvent,filterEvent);
+      // console.log("checks ",cid,this.props.cid, isLocalEvent,filterEvent);
       return filterEvent;
     };
-
-
 
     let channel$ = this.getChannel(str).pipe(map(mapDirection), filter(cidMatches));
     this.updateSourceSubscription(channel$, false);
@@ -807,20 +789,19 @@ export class ViewStream {
    *
    * */
 
-  checkIfChannelExists(channelName){
-    let channelExists = window.Spyne.channels.map.get(channelName)!==undefined;
-    if (channelExists !== true){
+  checkIfChannelExists(channelName) {
+    let channelExists = window.Spyne.channels.map.get(channelName) !== undefined;
+    if (channelExists !== true) {
       console.warn(`SPYNE WARNING: The ChannelPayload from ${this.props.name}, has been sent to a channel, ${channelName}, that has not been registered!`);
-
     }
     return channelExists;
   }
 
-  sendInfoToChannel(channelName, payload = {},  action="VIEWSTREAM_EVENT") {
-    let data = {payload, action};
+  sendInfoToChannel(channelName, payload = {}, action = 'VIEWSTREAM_EVENT') {
+    let data = { payload, action };
     data['srcElement'] = {};// R.pick(['cid','viewName'], data);
-    data.srcElement['cid'] = R.path(['props','cid'],this);;
-    data.srcElement['id'] = R.path(['props','id'],this);;
+    data.srcElement['cid'] = R.path(['props', 'cid'], this);
+    data.srcElement['id'] = R.path(['props', 'id'], this);
     data.srcElement['isLocalEvent'] = false;
     data.srcElement['viewName'] = this.props.name;
     if (this.checkIfChannelExists(channelName) === true) {
@@ -830,41 +811,28 @@ export class ViewStream {
   }
 
   tracer(...args) {
-
     this.sendLifecycleMethod(...args);
   }
-  sendLifecycleMethodInactive(){
-
+  sendLifecycleMethodInactive() {
 
   }
 
-  sendLifecycleMethodActive(val,p){
-    let id =  R.path(['props','cid'], this);
-    let action = R.prop('action', p);
-
-
-
+  sendLifecycleMethodActive(val, p) {
     let isRendered = R.where({
       from$: R.equals('internal'),
       action: R.equals('RENDERED_AND_ATTACHED_TO_PARENT')
-
     }, p);
     let isDisposed = p === 'GARBAGE_COLLECT';
-
-
-    if (isRendered === true){
-      this.sendInfoToChannel('CHANNEL_LIFECYCLE', {action:'CHANNEL_LIFECYCLE_RENDERED_EVENT'}, 'CHANNEL_LIFECYCLE_RENDERED_EVENT');
-    } else if (isDisposed === true){
-       this.sendInfoToChannel('CHANNEL_LIFECYCLE', {action:'CHANNEL_LIFECYCLE_REMOVED_EVENT'}, 'CHANNEL_LIFECYCLE_REMOVED_EVENT');
+    if (isRendered === true) {
+      this.sendInfoToChannel('CHANNEL_LIFECYCLE', { action:'CHANNEL_LIFECYCLE_RENDERED_EVENT' }, 'CHANNEL_LIFECYCLE_RENDERED_EVENT');
+    } else if (isDisposed === true) {
+      this.sendInfoToChannel('CHANNEL_LIFECYCLE', { action:'CHANNEL_LIFECYCLE_REMOVED_EVENT' }, 'CHANNEL_LIFECYCLE_REMOVED_EVENT');
     }
-
-
   }
 
-  createActionFilter(selectors, data){
+  createActionFilter(selectors, data) {
     return new ChannelActionFilter(selectors, data);
   }
-
 
   isLocalEvent(channelPayloadItem) {
     const itemEl = R.path(['srcElement', 'el'], channelPayloadItem);
@@ -872,136 +840,132 @@ export class ViewStream {
         this.props.el.contains(channelPayloadItem.srcElement.el);
   }
 
-  get attributesArray(){
+  get attributesArray() {
     return [
-      "accept",
-      "accept-charset",
-      "accesskey",
-      "action",
-      "align",
-      "allow",
-      "alt",
-      "async",
-      "autocapitalize",
-      "autocomplete",
-      "autofocus",
-      "autoplay",
-      "bgcolor",
-      "border",
-      "buffered",
-      "challenge",
-      "charset",
-      "checked",
-      "cite",
-      "class",
-      "code",
-      "codebase",
-      "color",
-      "cols",
-      "colspan",
-      "content",
-      "contenteditable",
-      "contextmenu",
-      "controls",
-      "coords",
-      "crossorigin",
-      "csp",
-      "dataset",
-      "datetime",
-      "decoding",
-      "default",
-      "defer",
-      "dir",
-      "dirname",
-      "disabled",
-      "download",
-      "draggable",
-      "dropzone",
-      "enctype",
-      "for",
-      "form",
-      "formaction",
-      "headers",
-      "height",
-      "hidden",
-      "high",
-      "href",
-      "hreflang",
-      "http-equiv",
-      "icon",
-      "id",
-      "importance",
-      "integrity",
-      "ismap",
-      "itemprop",
-      "keytype",
-      "kind",
-      "label",
-      "lang",
-      "language",
-      "lazyload",
-      "list",
-      "loop",
-      "low",
-      "manifest",
-      "max",
-      "maxlength",
-      "minlength",
-      "media",
-      "method",
-      "min",
-      "multiple",
-      "muted",
-      "name",
-      "novalidate",
-      "open",
-      "optimum",
-      "pattern",
-      "ping",
-      "placeholder",
-      "poster",
-      "preload",
-      "radiogroup",
-      "readonly",
-      "referrerpolicy",
-      "rel",
-      "required",
-      "reversed",
-      "rows",
-      "rowspan",
-      "sandbox",
-      "scope",
-      "scoped",
-      "selected",
-      "shape",
-      "size",
-      "sizes",
-      "slot",
-      "span",
-      "spellcheck",
-      "src",
-      "srcdoc",
-      "srclang",
-      "srcset",
-      "start",
-      "step",
-      "style",
-      "summary",
-      "tabindex",
-      "target",
-      "title",
-      "translate",
-      "type",
-      "usemap",
-      "value",
-      "width",
-      "wrap"
-    ]
-
-
-
+      'accept',
+      'accept-charset',
+      'accesskey',
+      'action',
+      'align',
+      'allow',
+      'alt',
+      'async',
+      'autocapitalize',
+      'autocomplete',
+      'autofocus',
+      'autoplay',
+      'bgcolor',
+      'border',
+      'buffered',
+      'challenge',
+      'charset',
+      'checked',
+      'cite',
+      'class',
+      'code',
+      'codebase',
+      'color',
+      'cols',
+      'colspan',
+      'content',
+      'contenteditable',
+      'contextmenu',
+      'controls',
+      'coords',
+      'crossorigin',
+      'csp',
+      'dataset',
+      'datetime',
+      'decoding',
+      'default',
+      'defer',
+      'dir',
+      'dirname',
+      'disabled',
+      'download',
+      'draggable',
+      'dropzone',
+      'enctype',
+      'for',
+      'form',
+      'formaction',
+      'headers',
+      'height',
+      'hidden',
+      'high',
+      'href',
+      'hreflang',
+      'http-equiv',
+      'icon',
+      'id',
+      'importance',
+      'integrity',
+      'ismap',
+      'itemprop',
+      'keytype',
+      'kind',
+      'label',
+      'lang',
+      'language',
+      'lazyload',
+      'list',
+      'loop',
+      'low',
+      'manifest',
+      'max',
+      'maxlength',
+      'minlength',
+      'media',
+      'method',
+      'min',
+      'multiple',
+      'muted',
+      'name',
+      'novalidate',
+      'open',
+      'optimum',
+      'pattern',
+      'ping',
+      'placeholder',
+      'poster',
+      'preload',
+      'radiogroup',
+      'readonly',
+      'referrerpolicy',
+      'rel',
+      'required',
+      'reversed',
+      'rows',
+      'rowspan',
+      'sandbox',
+      'scope',
+      'scoped',
+      'selected',
+      'shape',
+      'size',
+      'sizes',
+      'slot',
+      'span',
+      'spellcheck',
+      'src',
+      'srcdoc',
+      'srclang',
+      'srcset',
+      'start',
+      'step',
+      'style',
+      'summary',
+      'tabindex',
+      'target',
+      'title',
+      'translate',
+      'type',
+      'usemap',
+      'value',
+      'width',
+      'wrap'
+    ];
   }
-
 
   //  =======================================================================================
   addMixins() {

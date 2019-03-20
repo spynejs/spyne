@@ -1,5 +1,4 @@
-//import * as Rx from "rxjs-compat";
-import {Subject} from "rxjs";
+import { Subject } from 'rxjs';
 import { filter, map } from 'rxjs/operators';
 
 const R = require('ramda');
@@ -24,17 +23,17 @@ export class LifecyleObservables {
 
   static addDefaultDir(obj) {
     const defaults = R.flip(R.merge);
-    return defaults({$dir:['internal']}, R.clone(obj));
+    return defaults({ $dir:['internal'] }, R.clone(obj));
   }
 
   static addDownInternalDir(obj, arr = ['internal', 'down']) {
     const defaults = R.flip(R.merge);
-    return defaults(R.clone(obj), {$dir:arr});
+    return defaults(R.clone(obj), { $dir:arr });
   }
 
   static addChildAndInternalDir(obj, arr = ['child', 'down']) {
     const defaults = R.flip(R.merge);
-    return defaults(R.clone(obj), {$dir:arr});
+    return defaults(R.clone(obj), { $dir:arr });
   }
 
   static mapToDefaultDir(p) {
@@ -42,9 +41,9 @@ export class LifecyleObservables {
   }
 
   static createDirectionalObservables(obs$ = new Subject(), viewName, cid) {
-    if (viewName!==undefined && cid !==undefined){
-      obs$['viewName']=viewName;
-      obs$['cid']=cid;
+    if (viewName !== undefined && cid !== undefined) {
+      obs$['viewName'] = viewName;
+      obs$['cid'] = cid;
     }
 
     const filterStreams = val => R.propSatisfies(arrType => arrType.includes(val), '$dir');
@@ -52,7 +51,7 @@ export class LifecyleObservables {
     const filterChild = filterStreams('child');
     const filterInternal = filterStreams('internal');
 
-    const addfrom$ = relStr => R.merge({from$:relStr});
+    const addfrom$ = relStr => R.merge({ from$:relStr });
     const addParentfrom$ = addfrom$('child');
     const addInternalfrom$ = addfrom$('internal');
     const addChildfrom$ = addfrom$('parent');

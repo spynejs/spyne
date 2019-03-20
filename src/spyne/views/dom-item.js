@@ -1,7 +1,7 @@
 // import {createElement} from '../utils/dom-methods';
-import {baseCoreMixins} from '../utils/mixins/base-core-mixins';
+import { baseCoreMixins } from '../utils/mixins/base-core-mixins';
 import { DomTemplateRenderer } from './dom-template-renderer';
-import {deepMerge} from '../utils/deep-merge';
+import { deepMerge } from '../utils/deep-merge';
 // import {DomTemplateRenderer} from './template-renderer';
 
 const R = require('ramda');
@@ -124,7 +124,7 @@ export class DomItem {
   returnIfDefined(obj, val) {
     if (val !== undefined) {
       let isObj = typeof (val) === 'undefined';
-      isObj === false ? obj[val] = val : obj[val] = deepMerge(obj[va], val);// Object.assign(obj[val], val);
+      isObj === false ? obj[val] = val : obj[val] = deepMerge(obj[val], val);
     }
   }
 

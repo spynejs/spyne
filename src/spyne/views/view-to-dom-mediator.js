@@ -1,12 +1,11 @@
-import {baseCoreMixins} from '../utils/mixins/base-core-mixins';
-import {DomItem} from './dom-item';
-import {ifNilThenUpdate, convertDomStringMapToObj} from '../utils/frp-tools';
-import {fadein, fadeout} from '../utils/viewstream-animations';
-import {LifecyleObservables} from '../utils/viewstream-lifecycle-observables';
-import {deepMerge} from '../utils/deep-merge';
+import { baseCoreMixins } from '../utils/mixins/base-core-mixins';
+import { DomItem } from './dom-item';
+import { ifNilThenUpdate, convertDomStringMapToObj } from '../utils/frp-tools';
+import { fadein, fadeout } from '../utils/viewstream-animations';
+import { LifecyleObservables } from '../utils/viewstream-lifecycle-observables';
+import { deepMerge } from '../utils/deep-merge';
 
-//import * as Rx from "rxjs-compat";
-import {Subject, Observable, bindCallback} from "rxjs";
+import { Subject, Observable, bindCallback } from 'rxjs';
 
 const R = require('ramda');
 
@@ -82,8 +81,7 @@ export class ViewToDomMediator {
   disposeMethod(d) {
     let el = d.el.el !== undefined ? d.el.el : d.el; // DOM ITEMS HAVE THEIR EL ITEMS NESTED
 
-    const gcData = {action:'READY_FOR_GC', $dir:this.$dirs.PI, el};
-
+    const gcData = { action:'READY_FOR_GC', $dir:this.$dirs.PI, el };
 
     let animateOut = (d, callback) => {
       this.animateOutTween(el, d.animateOutTime, callback);
@@ -98,9 +96,9 @@ export class ViewToDomMediator {
     let onFadeoutObs = (d) => {
       fadeOutObs(d)
         .subscribe(onFadeoutCompleted);
-      return {action:'DISPOSING', $dir:this.$dirs.CI};
+      return { action:'DISPOSING', $dir:this.$dirs.CI };
     };
-    let onEmptyObs = () => ({action:'DISPOSE_AND_READY_FOR_GC', $dir:this.$dirs.CI});
+    let onEmptyObs = () => ({ action:'DISPOSE_AND_READY_FOR_GC', $dir:this.$dirs.CI });
     let fn = d.animateOut === true ? onFadeoutObs : onEmptyObs;
     return fn(d);
   }
@@ -108,7 +106,7 @@ export class ViewToDomMediator {
   disposeMethod1(d) {
     let onFadeoutObs = () => {
       let el = d.el.el !== undefined ? d.el.el : d.el; // DOM ITEMS HAVE THEIR EL ITEMS NESTED
-      const gcData = {action:'READY_FOR_GC', $dir:this.$dirs.PI, el};
+      const gcData = { action:'READY_FOR_GC', $dir:this.$dirs.PI, el };
 
       d.el$.setClass(d.animateOutClass);
       // console.log('DISPOSE FADE OUT ', el, this.$dirs, d.animateOutClass);
@@ -123,10 +121,10 @@ export class ViewToDomMediator {
         .take(1)
         .subscribe(subscriber);
     };
-    let onEmptyObs = () => ({action:'DISPOSE_AND_READY_FOR_GC', $dir:this.$dirs.CI});
+    let onEmptyObs = () => ({ action:'DISPOSE_AND_READY_FOR_GC', $dir:this.$dirs.CI });
     if (d.animateOutClass !== undefined) {
       onFadeoutObs();
-      return {action:'DISPOSING', $dir:this.$dirs.CI};
+      return { action:'DISPOSING', $dir:this.$dirs.CI };
     } else {
       return onEmptyObs();
     }

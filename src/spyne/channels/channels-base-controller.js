@@ -1,16 +1,14 @@
 // import {baseCoreMixins}    from '../utils/mixins/base-core-mixins';
 // import {BaseStreamsMixins} from '../utils/mixins/base-streams-mixins';
-import {ChannelRoute} from './channel-route';
-import {ChannelUI} from './channel-ui';
-import {ChannelWindow} from './channel-window';
-import {ChannelViewStreamLifecycle} from './channel-viewstream-lifecycle';
-import {validate} from '../utils/channel-config-validator';
+import { ChannelRoute } from './channel-route';
+import { ChannelUI } from './channel-ui';
+import { ChannelWindow } from './channel-window';
+import { ChannelViewStreamLifecycle } from './channel-viewstream-lifecycle';
+import { validate } from '../utils/channel-config-validator';
 
-//import * as Rx from "rxjs-compat";
-import {Subject} from "rxjs";
-import {ChannelsBaseProxy} from './channels-base-proxy';
+import { Subject } from 'rxjs';
+import { ChannelsBaseProxy } from './channels-base-proxy';
 const R = require('ramda');
-
 
 // const R = require('ramda');
 
@@ -19,7 +17,7 @@ export class ChannelsBaseController {
     this.addMixins();
     this.map = new Map();
 
-   // console.log('Rx is ',Rx);
+    // console.log('Rx is ',Rx);
     // console.log('RX IS ', Subject);
     this.map.set('DISPATCHER', new Subject());
     this.listRegisteredChannels = ChannelsBaseController.listRegisteredChannels.bind(this);
@@ -27,16 +25,16 @@ export class ChannelsBaseController {
     window.setTimeout(this.checkForMissingChannels.bind(this), 3000);
   }
 
-  static getChannelsList(){
-    const proxyMapFn =  (k,v) => {
+  static getChannelsList() {
+    const proxyMapFn =  (k, v) => {
       let key = k[0];
-      let val=k[1].constructor.name;
-      return {key,val};
+      let val = k[1].constructor.name;
+      return { key, val };
     };
     return Array.from(window.Spyne.channels.map, proxyMapFn);
   }
 
-  static listRegisteredChannels(showOnlyProxies=false){
+  static listRegisteredChannels(showOnlyProxies = false) {
     let proxyMap = this.getChannelsList();
     let rejectProxyFn = R.reject(R.propEq('val', 'ChannelsBaseProxy'));
     let filterProxyFn = R.filter(R.propEq('val', 'ChannelsBaseProxy'));
@@ -44,27 +42,24 @@ export class ChannelsBaseController {
     let removedProxyArr = fn(proxyMap);
     return R.pluck(['key'], removedProxyArr);
   }
-  listProxyChannels(){
+  listProxyChannels() {
     return this.listRegisteredChannels(true);
   }
 
-
-  checkForMissingChannels(){
+  checkForMissingChannels() {
     let proxyMap = this.getChannelsList();
     let filterProxyFn = R.filter(R.propEq('val', 'ChannelsBaseProxy'));
     let filterProxyArr = filterProxyFn(proxyMap);
 
-    if (filterProxyArr.length>=1){
+    if (filterProxyArr.length >= 1) {
       let channelStr = filterProxyArr.length === 1 ? 'Channel has' : 'Channels have';
-      let channels = R.compose(R.join(', '), R.map(R.prop('key')))(filterProxyArr)
+      let channels = R.compose(R.join(', '), R.map(R.prop('key')))(filterProxyArr);
       let filterPrefixWarning = `Spyne Warning: The following ${channelStr} not been initialized: ${channels}`;
       console.warn(filterPrefixWarning);
-      //console.log("FILTER PROXY WARNING ",filterProxyArr);
+      // console.log("FILTER PROXY WARNING ",filterProxyArr);
     }
 
-    //console.log(filterProxy(proxyMap),' proxyMap ', proxyMap);
-
-
+    // console.log(filterProxy(proxyMap),' proxyMap ', proxyMap);
   }
 
   init() {
@@ -108,23 +103,22 @@ export class ChannelsBaseController {
     return this.map.get(str).addRegisteredActions();
   }
 
-  getProxySubject(name, isReplaySubject=false){
+  getProxySubject(name, isReplaySubject = false) {
     let subjectType = isReplaySubject === true ? 'replaySubject' : 'subject';
 
     return this.map.get(name)[subjectType];
   }
 
-  testStream(name){
+  testStream(name) {
     return this.map.get(name) !== undefined;
   }
 
   getStream(name) {
     if (this.testStream(name) === false) {
-      this.map.set(name, new ChannelsBaseProxy(name))
+      this.map.set(name, new ChannelsBaseProxy(name));
     }
 
-      return this.map.get(name);
-
+    return this.map.get(name);
   }
 
   addMixins() {

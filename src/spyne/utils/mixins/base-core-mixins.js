@@ -2,7 +2,7 @@ export function baseCoreMixins() {
   return {
     createpropsMap: function() {
       let wm = new WeakMap();
-      let objKey = {cid: this.props.cid};
+      let objKey = { cid: this.props.cid };
       wm.set(objKey, this.props);
       return {
         key: objKey,

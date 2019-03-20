@@ -1,8 +1,7 @@
-import {ViewStreamPayload} from '../../views/view-stream-payload';
-import {LifestreamPayload} from '../../channels/lifestream-payload';
+import { ViewStreamPayload } from '../../views/view-stream-payload';
+import { LifestreamPayload } from '../../channels/lifestream-payload';
+import { of } from 'rxjs';
 const R = require('ramda');
-//import * as Rx from "rxjs-compat";
-import {Observable} from "rxjs";
 
 export function baseStreamsMixins() {
   return {
@@ -26,8 +25,8 @@ export function baseStreamsMixins() {
       let data = {
         payload, channel, srcElement
       };
-
-      return new ViewStreamPayload(channelName, new Observable.of(''), data,
+      /* eslint-disable new-cap */
+      return new ViewStreamPayload(channelName, new of(''), data,
         'subscribe');
     },
     sendLifeStreamPayload: function(obs, data) {

@@ -24,15 +24,14 @@ export class URLUtils {
     return routeObj;
   }
 
-  static formatStrAsWindowLocation(str){
+  static formatStrAsWindowLocation(str) {
     const hash = str;
     const search = str;
     const pathname = str;
-    return {hash,search,pathname};
-
+    return { hash, search, pathname };
   }
 
-  static getLocationStrByType(t, isHash = false, loc=window.location) {
+  static getLocationStrByType(t, isHash = false, loc = window.location) {
     const type = isHash === true ? 'hash' : t;
 
     const typeMap = {
@@ -43,7 +42,7 @@ export class URLUtils {
     const prop = typeMap[type];
     let str  = R.prop(prop, loc);
     let checkForSlashAndHash = /^(\/)?(#)?(\/)?(.*)$/;
-    //console.log("DATA LOC STR ",{str, loc, prop, type,isHash});
+    // console.log("DATA LOC STR ",{str, loc, prop, type,isHash});
     return str.replace(checkForSlashAndHash, '$4');
   }
 
@@ -95,17 +94,12 @@ export class URLUtils {
   }
 
   static createSlashString(arr) {
-
-    const removeRegex = str => str.replace(/^(\W*)(.*?)(\W*)$/g, "$2");
-    const cleanVals = R.map(removeRegex, R.values);
-
-    const arrClear = R.reject(R   .isNil);
+    const arrClear = R.reject(R.isNil);
     const notUndefined = R.when(R.complement(R.isNil, R.__), R.join('/'));
 
     const joiner = R.compose(notUndefined, arrClear, R.flatten,
       R.map(R.values));
 
-    let joinerArr = joiner(arr);
     return joiner(arr);
   }
 
@@ -140,27 +134,27 @@ export class URLUtils {
     return createQs(arr);
   }
 
-  static checkPayloadForRegexOverrides(urlsArr, data, parseString='Value'){
+  static checkPayloadForRegexOverrides(urlsArr, data, parseString = 'Value') {
     // CHECK IF PAYLOAD HAS ANY OVERRIDES
-    const getPropValOverride = (key)=>R.prop(`${key}${parseString}`, data);
+    const getPropValOverride = (key) => R.prop(`${key}${parseString}`, data);
 
     // GET ANY POSSIBLE VALUE USING THE CURRENT KEY
-    const getOverrideVal = R.compose(getPropValOverride, R.head,R.keys);
+    const getOverrideVal = R.compose(getPropValOverride, R.head, R.keys);
 
     // MAP ALL OBJECT VALS TO TEST FOR OVERRIDES
-    const mapUrlProps = (prop)=>{
+    const mapUrlProps = (prop) => {
       let overrideVal = getOverrideVal(prop);
 
-      //console.log("override val ",overrideVal, data);
+      // console.log("override val ",overrideVal, data);
       // if regex value is found
-      if (overrideVal!==undefined){
-        return R.assoc(R.compose(R.head,R.keys)(prop), overrideVal, prop);
+      if (overrideVal !== undefined) {
+        return R.assoc(R.compose(R.head, R.keys)(prop), overrideVal, prop);
       }
       // identity
       return prop;
     };
 
-    return R.map(mapUrlProps, urlsArr);;
+    return R.map(mapUrlProps, urlsArr);
   }
 
   static convertParamsToRoute(data, r = window.Spyne.config.channels.ROUTE, t, locStr) {
@@ -172,7 +166,7 @@ export class URLUtils {
     let urlArr = this.createRouteArrayFromParams(data, route, urlType, paramsFromCurrentLocation);
 
     urlArr = URLUtils.checkPayloadForRegexOverrides(urlArr, data);
-    //console.log("PARAMS TO ROUTE ",{data,r,urlArr,locationStr, paramsFromCurrentLocation});
+    // console.log("PARAMS TO ROUTE ",{data,r,urlArr,locationStr, paramsFromCurrentLocation});
 
     // THIS CREATES A QUERY PATH STR
     if (urlType === 'query') {
@@ -182,62 +176,47 @@ export class URLUtils {
     return this.createSlashString(urlArr);
   }
 
-
-  static findIndexOfMatchedStringOrRegex(mainStr, paramsArr){
+  static findIndexOfMatchedStringOrRegex(mainStr, paramsArr) {
     const checkForEmpty =  R.replace(/^$/, '^$');
     const createStrRegexTest = (str) => {
       const reFn = s => new RegExp(s);
       return {
         str,
         re: reFn(str)
-      }
+      };
     };
 
     const checkForEitherStrOrReMatch =  R.either(
-        R.propEq('str', mainStr), R.compose(R.test(R.__, mainStr), R.prop('re'))
+      R.propEq('str', mainStr), R.compose(R.test(R.__, mainStr), R.prop('re'))
     );
 
     const findMatchIndex = R.compose(R.findLastIndex(R.equals(true)), R.map(checkForEitherStrOrReMatch), R.map(createStrRegexTest), R.map(checkForEmpty));
 
     return findMatchIndex(paramsArr);
-
   }
 
+  static checkIfValueShouldMapToParam(obj, str, regexTokens) {
+    //
+    //
+    //       THIS IS A VERY IMPORTANT METHOD
+    //       IT COMPARES THE STRING TO BE MATCHED WITH THE ROUTE PATH OBJECT
+    //       AND IT WILL RETURN ONE OF THREE THINGS
+    //       1. THE STRING ITSELF
+    //       2. A MATCHING KEY FROM THE CURRENT OBJECT
+    //       3. THE ROUTENAME
+    //
 
-  static checkIfValueShouldMapToParam(obj, str,regexTokens) {
-//     
-//      
-//       THIS IS A VERY IMPORTANT METHOD
-//       IT COMPARES THE STRING TO BE MATCHED WITH THE ROUTE PATH OBJECT
-//       AND IT WILL RETURN ONE OF THREE THINGS
-//       1. THE STRING ITSELF
-//       2. A MATCHING KEY FROM THE CURRENT OBJECT
-//       3. THE ROUTENAME
-//      
-      
-      
-
-    const reFn = s => new RegExp(s);
-        let testStr  = R.test(R.__, str);
-
-      // GO THROUGH KEYS AND CHECK IF REGEX MATCHES
-
-    // CHECKS IF STRING IS EMPTY AS IN FOR HOME PAGE
-    let checkForEmpty =  R.replace(/^$/, '^$');
-    //const getKeyIfObject = R.ifElse(R.filter(R.is(Object)), R.key)
+    // GO THROUGH KEYS AND CHECK IF REGEX MATCHES
 
     // GO THROUGH ROUTE CONFIG TO FIGURE OUT IF VAL OR KEY SHOULD BE COMPARED
     // if the value is an object, choose the key of the route path to check against
-    const getValCompareArr = R.compose( R.map(R.last), R.map(R.filter(R.is(String))),  R.toPairs);
+    const getValCompareArr = R.compose(R.map(R.last), R.map(R.filter(R.is(String))), R.toPairs);
 
     // CREATE THE ARRAY OF EITHER VALS OR KEYS
     let paramsArr = getValCompareArr(obj);
 
-    // SEE IF CURRENT ROUTE STRING MATCHES ANY OF THE VALUES OR KEYS
-    let checkForParamsMatch = R.compose(  R.findLastIndex(R.equals(true)), R.map(testStr),  R.map(reFn), R.map(checkForEmpty));
-
     // RESULTS FROM PARAM CHECK
-    //let paramIndex = checkForParamsMatch(paramsArr);
+    // let paramIndex = checkForParamsMatch(paramsArr);
 
     let paramIndex = URLUtils.findIndexOfMatchedStringOrRegex(str, paramsArr);
 
@@ -246,7 +225,7 @@ export class URLUtils {
 
     // LEGACY METHOD -- TURN OFF
     // WHEN THERE IS A MATCH FROM THE CURRENT ROUTE PATH OBJECT
-    if (paramIndex>=0){
+    if (paramIndex >= 0) {
       let param = paramsArr[paramIndex];
       let invertedObj = R.invert(obj);
 
@@ -254,20 +233,14 @@ export class URLUtils {
       let getParamInverted = R.compose(R.head, R.defaultTo([]), R.prop(param));
       let paramInverted = getParamInverted(invertedObj);
       let re =  /^(\w*)$/;
-      let keyMatch =  re.test(paramInverted);;
+      let keyMatch =  re.test(paramInverted);
 
-      if (keyMatch === true && R.is(String, paramInverted)===true){
+      if (keyMatch === true && R.is(String, paramInverted) === true) {
         paramStr = paramInverted;
-        //paramStr = R.defaultTo(paramInverted, regexTokens[paramInverted]);
       }
-      //console.log("PARAM ",{str,paramStr, param, paramsArr, paramIndex, obj, regexTokens})
-
     }
 
-
-
-
-    return paramStr
+    return paramStr;
   }
 
   static createArrFromSlashStr(str) {
@@ -305,7 +278,7 @@ export class URLUtils {
     R.reduce(createParamsFromStr, 0, valuesArr);
     let routeData = R.zipObj(paths, routedValuesArr);
     const pathInnermost = this.getLastArrVal(paths);
-    return {paths, pathInnermost, routeData, routeValue};
+    return { paths, pathInnermost, routeData, routeValue };
   }
 
   static getLastArrVal(arr) {
@@ -331,12 +304,12 @@ export class URLUtils {
     let paths = R.map(R.head, paramsArr);
 
     if (R.isEmpty(str) === true) {
-      routeData = this.createDefaultParamFromEmptyStr(topLevelRoute, str,regexTokens);
+      routeData = this.createDefaultParamFromEmptyStr(topLevelRoute, str, regexTokens);
       paths = R.keys(routeData);
     }
     let pathInnermost = this.getLastArrVal(paths);
 
-    return {paths, pathInnermost, routeData, routeValue};
+    return { paths, pathInnermost, routeData, routeValue };
   }
 
   static convertRouteToParams(str, routeConfig, t) {

@@ -1,9 +1,8 @@
-import {baseStreamsMixins} from '../utils/mixins/base-streams-mixins';
-import {ifNilThenUpdate, convertDomStringMapToObj} from '../utils/frp-tools';
+import { baseStreamsMixins } from '../utils/mixins/base-streams-mixins';
+import { convertDomStringMapToObj } from '../utils/frp-tools';
 
-//import * as Rx from "rxjs-compat";
-import {Observable, fromEvent} from "rxjs";
-import {filter, map, buffer,debounceTime} from "rxjs/operators";
+import { fromEvent } from 'rxjs';
+import { map } from 'rxjs/operators';
 const R = require('ramda');
 
 export class ViewStreamBroadcaster {
@@ -38,40 +37,39 @@ export class ViewStreamBroadcaster {
     };
     // spread operator to select variables from arrays
     let [selector, event, local] = args;
-    //console.log('args is ',args);
+    // console.log('args is ',args);
     // btn query
     // let query = this.props.el.querySelectorAll(selector);
     let channel; // hoist channel and later check if chnl exists
     let query = this.props.el.querySelectorAll(selector);
 
-    if (query.length<=0){
+    if (query.length <= 0) {
       let el = this.props.el;
-      const checkParentEls = (element)=>{
-        if (element === el){
-          query=[element];
+      const checkParentEls = (element) => {
+        if (element === el) {
+          query = [element];
         }
       };
 
       const pluckElFromParent = () => {
-        let elParent = el.parentElement !== null ? el.parentElement : document;;
+        let elParent = el.parentElement !== null ? el.parentElement : document;
         let elSelected = elParent.querySelectorAll(selector);
         elSelected.forEach = Array.prototype.forEach;
         elSelected.forEach(checkParentEls);
       };
 
       pluckElFromParent();
-
     }
 
-    let isLocalEvent = local!==undefined;
+    let isLocalEvent = local !== undefined;
     let addObservable = (q) => {
       // the  btn observable
       let observable = event !== 'dblClick'
-        ? fromEvent(q, event, {preventDefault: ()=>true})
+        ? fromEvent(q, event, { preventDefault: () => true })
         : this.addDblClickEvt(q);
       // select channel and data values from either the array or the element's dom Map
-      channel =  q.dataset.channel;//ifNilThenUpdate(chnl, q.dataset.channel);
-     let data = {};// convertDomStringMapToObj(q.dataset);
+      channel = q.dataset.channel;// ifNilThenUpdate(chnl, q.dataset.channel);
+      let data = {};// convertDomStringMapToObj(q.dataset);
       data['payload'] = convertDomStringMapToObj(q.dataset);
       data.payload = R.omit(['channel'], data.payload);
       data['channel'] = channel;
@@ -93,8 +91,8 @@ export class ViewStreamBroadcaster {
     };
     if (query === undefined || query.length <= 0) {
       console.warn(`Spyne Warning: The item ${selector}, does not appear to exist!`);
-      //query = this.props.el;
-     // addObservable(query, event);
+      // query = this.props.el;
+      // addObservable(query, event);
     } else {
       query.forEach = Array.prototype.forEach;
       query.forEach(addObservable);

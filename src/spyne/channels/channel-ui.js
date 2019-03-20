@@ -1,12 +1,10 @@
-import {ChannelsBase} from '../channels/channels-base';
+import { ChannelsBase } from '../channels/channels-base';
+import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 const R = require('ramda');
-//import * as Rx from "rxjs-compat";
-import {Observable} from "rxjs";
-import {map} from "rxjs/operators";
-
 
 export class ChannelUI extends ChannelsBase {
-  constructor(name="CHANNEL_UI", props={}) {
+  constructor(name = 'CHANNEL_UI', props = {}) {
     props.sendLastPayload = false;
     super(name, props);
     this.keyEventsLoaded = false;
@@ -68,7 +66,7 @@ export class ChannelUI extends ChannelsBase {
 
   onIncomingObservable(obj) {
     let eqsName = R.equals(obj.name, this.props.name);
-    let dataObj = obsVal => ({viewStreamInfo: obj.data, uiEvent: obsVal});
+    let dataObj = obsVal => ({ viewStreamInfo: obj.data, uiEvent: obsVal });
     let onSuccess = (obj) => obj.observable.pipe(map(dataObj))
       .subscribe(this.onUIEvent.bind(this));
     let onError = () => {};
@@ -77,31 +75,30 @@ export class ChannelUI extends ChannelsBase {
 
   getActionState(val) {
     let typeVal = R.path(['uiEvent', 'type']);
-    let typeOverRideVal = R.path(['uiEvent','typeOverRide']);
+    let typeOverRideVal = R.path(['uiEvent', 'typeOverRide']);
     let eventType = R.compose(R.toUpper, R.either(typeOverRideVal, typeVal));
     let type = eventType(val);
     let mainAction = 'CHANNEL_UI';
     return type !== undefined ? `${mainAction}_${type}_EVENT` : mainAction;
   }
 
-  static checkToPreventDefaultEvent(obs){
-    const checkDataForPreventDefault = R.pathEq(['viewStreamInfo', 'payload', 'eventPreventDefault'], "true");
-    const setPreventDefault = function(evt){ if (evt!==undefined) evt.preventDefault()};
-    const selectEvtAndPreventDefault = R.compose( setPreventDefault,   R.prop('uiEvent'));
+  static checkToPreventDefaultEvent(obs) {
+    const checkDataForPreventDefault = R.pathEq(['viewStreamInfo', 'payload', 'eventPreventDefault'], 'true');
+    const setPreventDefault = function(evt) { if (evt !== undefined) evt.preventDefault(); };
+    const selectEvtAndPreventDefault = R.compose(setPreventDefault, R.prop('uiEvent'));
     const checkForPreventDefault = R.when(checkDataForPreventDefault, selectEvtAndPreventDefault);
     checkForPreventDefault(obs);
-
   }
 
   onUIEvent(obs) {
-    //obs.uiEvent.preventDefault();
-    //console.log("UI EVENT ",obs);
+    // obs.uiEvent.preventDefault();
+    // console.log("UI EVENT ",obs);
 
     ChannelUI.checkToPreventDefaultEvent(obs);
 
     obs['action'] = this.getActionState(obs);
     const action = obs.action;// this.getActionState(obs);
-    const {payload, srcElement} = obs.viewStreamInfo;
+    const { payload, srcElement } = obs.viewStreamInfo;
     const event = obs.uiEvent;
     this.sendChannelPayload(action, payload, srcElement, event);
   }
