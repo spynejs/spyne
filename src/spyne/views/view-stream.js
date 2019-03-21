@@ -54,9 +54,10 @@ export class ViewStream {
    * @property {string} props.tagName - = 'div'; This can be any dom tag
    * @property {domItem} props.el - = undefined; if defined, ViewStream will connect to that element
    * @property {string|object} props.data - = undefined;  string for innerText or Json object for html template
-   * @property {boolean} props.sendLifecyleEvents = false; When set to true, the view will automatically send its rendering and disposing events to the VIEW_LIFECYCLE Channel.
+   * @property {boolean} props.sendLifecyleEvents = false; When set to true, the view will automatically send its rendering and disposing events to the CHANNEL_LIFECYCLE.
    * @property {string} props.id - = undefined; generates a random id if left undefined
    * @property {template} props.template - = undefined; html template
+   * @property {DomItemSelectors} props.el$ This is an instance of the DomItemSelector that has special selector and class manipulation methods.
    * @special {"name": "DomItem", "desc": "ViewStreams uses the DomItem class to render html tags and templates.", "link":"dom-item"}
    * @special {"name": "DomItemSelector", "desc": "The <b>props.el$</b> property creates an instance of this class, used to query elements within the props.el element; also has methods to update css classes.", "link":"dom-item-selectors"}
    *
@@ -496,7 +497,7 @@ export class ViewStream {
 
   /**
    * Appends a ViewStream object to an existing dom element.
-   * @property {dom} node the ViewStream child that is to be attached.
+   * @property {HTMLElement} node the ViewStream child that is to be attached.
    * @example
    * //  returns
    * <body>
@@ -513,7 +514,7 @@ export class ViewStream {
 
   /**
    * Prepends the current ViewStream object to an existing dom element.
-   * @property {dom} node the ViewStream child that is to be attached.
+   * @property {HTMLElement} node the ViewStream child that is to be attached.
    *
    * @example
    * this.prependToDom(document.body);

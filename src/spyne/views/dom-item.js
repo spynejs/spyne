@@ -114,7 +114,7 @@ export class DomItem {
 
   /**
    * This method will render the HTML Element
-   * @returns {HTML} el - The HTML element.
+   * @returns {HTMLElement} HTMLElement
    */
   render() {
     this.execute();
