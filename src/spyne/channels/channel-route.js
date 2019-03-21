@@ -8,7 +8,7 @@ import * as R from 'ramda';
 
 export class ChannelRoute extends ChannelsBase {
   constructor(name = 'CHANNEL_ROUTE', props = {}) {
-    props.sendLastPayload = true;
+    props.sendCurrentPayload = true;
     super('CHANNEL_ROUTE', props);
     this.createChannelActionsObj();
     this.routeConfigJson = this.getRouteConfig();
@@ -84,7 +84,7 @@ export class ChannelRoute extends ChannelsBase {
     return payload;
   }
 
-  onIncomingViewStreamInfo(pl) {
+  onViewStreamInfo(pl) {
     let action = this.channelActions.CHANNEL_ROUTE_CHANGE_EVENT;
     let payload = this.getDataFromParams(pl);
     let srcElement = R.path(['viewStreamInfo', 'srcElement'], pl);
@@ -94,7 +94,7 @@ export class ChannelRoute extends ChannelsBase {
     payload = R.merge(payload, keywordArrs);
     // this.checkForRouteParamsOverrides(payload);
     this.sendRouteStream(payload, changeLocationBool);
-    // console.log("SEND STREAM onIncomingViewStreamInfo", payload);
+    // console.log("SEND STREAM onViewStreamInfo", payload);
 
     this.sendChannelPayload(action, payload, srcElement, uiEvent,
       this.navToStream$);

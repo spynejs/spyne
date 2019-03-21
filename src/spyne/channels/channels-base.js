@@ -23,7 +23,7 @@ export class ChannelsBase {
     props.name = name;
     this.props = props;
     this.props.isProxy = this.props.isProxy === undefined ? false : this.props.isProxy;
-    this.props.sendLastPayload = this.props.sendLastPayload === undefined ? false : this.props.sendLastPayload;
+    this.props.sendCurrentPayload = this.props.sendCurrentPayload === undefined ? false : this.props.sendCurrentPayload;
     this.createChannelActionMethods();
     this.streamsController = window.Spyne.channels;// getGlobalParam('streamsController');
     let observer$ = this.getMainObserver();
@@ -37,9 +37,9 @@ export class ChannelsBase {
     let proxyExists = this.streamsController.testStream(this.props.name);
 
     if (proxyExists === true) {
-      return this.streamsController.getProxySubject(this.props.name, this.props.sendLastPayload);
+      return this.streamsController.getProxySubject(this.props.name, this.props.sendCurrentPayload);
     } else {
-      return this.props.sendLastPayload === true ? new ReplaySubject(1) : new Subject();
+      return this.props.sendCurrentPayload === true ? new ReplaySubject(1) : new Subject();
     }
   }
 
@@ -78,7 +78,7 @@ export class ChannelsBase {
   }
 
   createChannelActionMethods() {
-    const defaultFn = 'onIncomingViewStreamInfo';
+    const defaultFn = 'onViewStreamInfo';
     const getActionVal = R.ifElse(R.is(String), R.identity, R.head);
     const getCustomMethod = val => {
       const methodStr = R.view(R.lensIndex(1), val);
@@ -114,14 +114,14 @@ export class ChannelsBase {
   }
 
   getActionMethodForObservable(obj) {
-    const defaultFn = this.onIncomingViewStreamInfo.bind(this);
+    const defaultFn = this.onViewStreamInfo.bind(this);
 
     let methodStr = R.path(['data', 'action'], obj);
     const methodVal = R.prop(methodStr, this.channelActionMethods);
 
     let fn = defaultFn;
 
-    if (methodVal !== undefined && methodVal !== 'onIncomingViewStreamInfo') {
+    if (methodVal !== undefined && methodVal !== 'onViewStreamInfo') {
       const methodExists = typeof (this[methodVal]) === 'function';
       if (methodExists === true) {
         fn = this[methodVal].bind(this);
@@ -145,7 +145,7 @@ export class ChannelsBase {
     return eqsName === true ? onSuccess(obj) : onError();
   }
 
-  onIncomingViewStreamInfo(obj) {
+  onViewStreamInfo(obj) {
   }
 
   sendChannelPayload(action, payload, srcElement = {}, event = {}, obs$ = this.observer$) {

@@ -5,7 +5,7 @@ import * as R from 'ramda';
 
 export class ChannelUI extends ChannelsBase {
   constructor(name = 'CHANNEL_UI', props = {}) {
-    props.sendLastPayload = false;
+    props.sendCurrentPayload = false;
     super(name, props);
     this.keyEventsLoaded = false;
     this.keyCodeArr = [];

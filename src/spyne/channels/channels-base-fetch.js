@@ -4,7 +4,7 @@ import * as R from 'ramda';
 
 export class ChannelsFetch extends ChannelsBase {
   constructor(name, props = {}) {
-    props.sendLastPayload = true;
+    props.sendCurrentPayload = true;
     super(name, props);
   }
 

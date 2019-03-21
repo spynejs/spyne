@@ -13,7 +13,7 @@ export class ChannelViewStreamLifecycle extends ChannelsBase {
     ];
   }
 
-  onIncomingViewStreamInfo(obj) {
+  onViewStreamInfo(obj) {
     let data = obj.viewStreamInfo;
     let action = data.action;
     let payload = R.prop('srcElement', data);
