@@ -4,11 +4,15 @@ export class DomItemSelectors {
   constructor(cxt, str) {
     this.mainEl = typeof (cxt) === 'string' ? document.querySelectorAll(cxt) : cxt;
     this.queryStr = str;
-    if (this.mainEl.length === 1) {
+/*    if (this.mainEl.length === 1) {
       this.mainEl = R.head(this.mainEl);
+      console.log("MAIN EL ",this.mainEl);
     } else if (this.mainEl.constructor.name === 'NodeList') {
+      console.log("NODELIST SELECORT ",cxt);
+
       this.mainEl = DomItemSelectors.createArrayFromNodeList(this.mainEl);
-    }
+    }*/
+    console.log("EL IS ",str);
 
     let selectorStringIsEmptyBool = R.either(R.isNil, R.isEmpty)(str);
     this._el = selectorStringIsEmptyBool ? this.mainEl : this.getElFromQuery(this.mainEl, str);
