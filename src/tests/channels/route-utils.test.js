@@ -1,13 +1,13 @@
 // const assert = require('assert');
 
-import {RouteUtils} from '../../spyne/utils/channel-util-route';
+import { RouteUtils } from '../../spyne/utils/channel-util-route';
 
 import {
   SpyneConfigData,
   RouteDataForTests,
   windowLocationData
 } from '../mocks/utils-data';
-import {ChannelRoute} from '../../spyne/channels/channel-route';
+import { ChannelRoute } from '../../spyne/channels/channel-route';
 
 const ObjtoStr = JSON.stringify;
 
@@ -30,51 +30,44 @@ describe('Route Utils', () => {
   });
 });
 
-describe('it should compare two objects for updated keys', ()=>{
+describe('it should compare two objects for updated keys', () => {
   let obj1 = {
-    "pageId": "guide",
-    "section": "reference"
+    'pageId': 'guide',
+    'section': 'reference'
   };
 
   let obj2 = {
-      "pageId": "guide",
-      "section": "overview",
-      "menuItem": "intro-sending-channel-payloads",
-      "type": "menuItem",
-      "isManualScroll": true
+    'pageId': 'guide',
+    'section': 'overview',
+    'menuItem': 'intro-sending-channel-payloads',
+    'type': 'menuItem',
+    'isManualScroll': true
   };
-
 
   let obj3 = {
-     ya: 1,
+    ya: 1,
     ubu:3,
     lsd:4,
-    aesf:"sadfsd",
+    aesf:'sadfsd',
     a23rff: 23,
-    aasdsf: 234,
+    aasdsf: 234
   };
 
-
   let routeKeywordsArr = [
-    "pageId",
-    "section",
-    "menuItem"
+    'pageId',
+    'section',
+    'menuItem'
   ];
 
-  let checkUpdatedKeys = RouteUtils.compareRouteKeywords();;
+  let checkUpdatedKeys = RouteUtils.compareRouteKeywords();
 
-
-  it('first comparison should be done against empty obj', ()=>{
+  it('first comparison should be done against empty obj', () => {
     let compareStart = checkUpdatedKeys.compare(obj1);
     expect(compareStart.pathsChanged).to.deep.equal(['pageId', 'section']);
   });
 
-
-  it('should compare second obj against first', ()=>{
+  it('should compare second obj against first', () => {
     let compare2 = checkUpdatedKeys.compare(obj2, routeKeywordsArr);
     expect(compare2.pathsChanged).to.deep.equal(['section', 'menuItem']);
-  })
-
-
-
-})
+  });
+});

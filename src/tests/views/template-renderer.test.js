@@ -1,5 +1,5 @@
-import {DomTemplateRenderer} from '../../spyne/views/dom-template-renderer';
-import {ScriptTemplate, StringTemplate, starWarsData} from '../mocks/template-renderer.mocks';
+import { DomTemplateRenderer } from '../../spyne/views/dom-template-renderer';
+import { ScriptTemplate, StringTemplate, starWarsData } from '../mocks/template-renderer.mocks';
 
 chai.use(require('chai-dom'));
 

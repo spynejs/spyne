@@ -1,8 +1,8 @@
-import {Enhancer} from '../mocks/enhancer.test';
+import { Enhancer } from '../mocks/enhancer.test';
 
 import * as R from 'ramda';
-import {SpyneTrait} from '../../spyne/utils/spyne-trait';
-import {ViewStreamEnhancerLoader} from '../../spyne/views/view-stream-enhancer-loader';
+import { SpyneTrait } from '../../spyne/utils/spyne-trait';
+import { ViewStreamEnhancerLoader } from '../../spyne/views/view-stream-enhancer-loader';
 
 class MyClass {
   constructor() {
@@ -40,7 +40,7 @@ describe('ViewStream Enhancer Loader', () => {
   describe('enhancer map should incorporate all methods', () => {
     let theMap = theClass.props.enhancersMap;
     // assert(theMap).to.equal('asdfasd');
-   // console.log('the Map is ', theMap.get('ALL'), theMap.get('TEST'), theMap.get('LOCAL'));
+    // console.log('the Map is ', theMap.get('ALL'), theMap.get('TEST'), theMap.get('LOCAL'));
     return true;
   });
 });

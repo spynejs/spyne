@@ -29,9 +29,9 @@ export class DomItemSelectors {
   }
 
   static createArrayFromNodeList(nList) {
-    const reducer = (acc, item) => { acc.push(item); return acc; };
-    return R.reduce(reducer, [], nList);
+   return Array.from(nList);
   }
+
 
   createMethods() {
     const mapAddClass = (item, s) => {
@@ -59,7 +59,7 @@ export class DomItemSelectors {
     };
 
     const mapToggleEls = (item, s, el) => {
-      let bool = item === el;
+      let bool = item.isEqualNode(el);
       item.classList.toggle(s, bool);
       return item;
     };
@@ -72,21 +72,6 @@ export class DomItemSelectors {
     this.toggleEls = this.mapToValue(mapToggleEls);
   }
 
-  mapMethod(fn) {
-    // Add a function to the class that will wait for a string param
-    return (str) => {
-      this.elArr.map(fn);
-      return this;
-    };
-  }
-
-  addAnimClass(str) {
-    const adder = () => this.addClass(str);
-    requestAnimationFrame(() => {
-      setTimeout(adder, 0);
-    });
-    return this;
-  }
 
   mapToValue(f) {
     return (str, ...args) => {
@@ -96,14 +81,6 @@ export class DomItemSelectors {
     };
   }
 
-  setClassOnBool(str = '', bool = true) {
-    if (bool) {
-      this.addClass(str);
-    } else {
-      this.removeClass(str);
-    }
-    return this;
-  }
 
   setActiveItem(query, str) {
     const activeEl = document.querySelector(this.queryStr + query);
@@ -142,21 +119,6 @@ export class DomItemSelectors {
     return { el:undefined };
   }
 
-  query(str) {
-    const elementExists = this._el.querySelector(str);
-    // console.log('query is ',this._el,str, elementExists);
-    if (elementExists !== null) {
-      return new DomItemSelectors(this._el, str);
-    } else {
-      const id = this._el.getAttribute('id');
-      console.warn(`Spyne Warning: the element, "${str}" does not exist in this element, "${id}"!`);
-    }
-    return { el:undefined };
-  }
-
-  getEl() {
-    return this._el;
-  }
 
   get el() {
     return this._el;
@@ -170,12 +132,6 @@ export class DomItemSelectors {
     }
   }
 
-  /*
-  getBoxEl() {
-    console.log('getbox el ',this._el);
-    return [].concat(this._el);
-  }
-*/
 
   unmount() {
     this._el = undefined;

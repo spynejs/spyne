@@ -1,4 +1,4 @@
-import {SpyneTrait} from '../../spyne/utils/spyne-trait';
+import { SpyneTrait } from '../../spyne/utils/spyne-trait';
 
 export class Enhancer extends SpyneTrait {
   constructor(context) {

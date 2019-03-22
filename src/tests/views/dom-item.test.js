@@ -1,4 +1,4 @@
-import {DomItem} from '../../spyne/views/dom-item';
+import { DomItem } from '../../spyne/views/dom-item';
 
 chai.use(require('chai-dom'));
 

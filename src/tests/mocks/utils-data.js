@@ -48,39 +48,38 @@ const SpyneConfigData = {
 
 };
 
-
 const routeConfigWithRegexOverride = {
-  "type": "slash",
-  "isHash": false,
-  "isHidden": false,
-  "routes": {
-    "routePath": {
-      "404": ".*",
-      "routeName": "pageId",
-      "home": "^$|index.html",
-      "about": "about",
-      "guide": {
-        "routePath": {
-          "routeName": "section",
-          "overview|reference": {
-            "routePath": {
-              "routeName": "menuItem"
+  'type': 'slash',
+  'isHash': false,
+  'isHidden': false,
+  'routes': {
+    'routePath': {
+      '404': '.*',
+      'routeName': 'pageId',
+      'home': '^$|index.html',
+      'about': 'about',
+      'guide': {
+        'routePath': {
+          'routeName': 'section',
+          'overview|reference': {
+            'routePath': {
+              'routeName': 'menuItem'
             }
           }
         }
       }
     }
   },
-  "regexTokens": {
-    "^$|index.html": ""
+  'regexTokens': {
+    '^$|index.html': ''
   },
-  "paramsArr": [
-    ".*",
-    "pageId",
-    "^$|index.html",
-    "about",
-    "section",
-    "menuItem"
+  'paramsArr': [
+    '.*',
+    'pageId',
+    '^$|index.html',
+    'about',
+    'section',
+    'menuItem'
   ]
 };
 
@@ -175,18 +174,17 @@ const RouteDataForTests = {
 };
 
 const payloadDataForUrlUtils = {
-  "pageId": "home",
-  "pageIdValue": "",
-  "section": "",
-  "menuItem": ""
+  'pageId': 'home',
+  'pageIdValue': '',
+  'section': '',
+  'menuItem': ''
 };
 
 const urlUtilsArr = [
   {
-    "pageId": "^$|index.html"
+    'pageId': '^$|index.html'
   }
 ];
-
 
 const ViewStreamHashMethodsObj = {
   'DISPOSING':     () => {},
@@ -203,4 +201,4 @@ const ViewStreamHashMethodsObj = {
   'UI_EVENT_DBLCLICK': () => {}
 };
 
-export {SpyneConfigData, RouteDataForTests, ViewStreamHashMethodsObj, routeConfigWithRegexOverride, payloadDataForUrlUtils, urlUtilsArr};
+export { SpyneConfigData, RouteDataForTests, ViewStreamHashMethodsObj, routeConfigWithRegexOverride, payloadDataForUrlUtils, urlUtilsArr };

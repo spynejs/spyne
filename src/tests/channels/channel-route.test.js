@@ -1,14 +1,14 @@
 // const assert = require('assert');
 
-import {URLUtils} from '../../spyne/utils/channel-util-urls';
-import {ChannelPayloadRouteData, ChannelPayloadRouteDataRegexOverride} from '../mocks/channel-payload-data';
+import { URLUtils } from '../../spyne/utils/channel-util-urls';
+import { ChannelPayloadRouteData, ChannelPayloadRouteDataRegexOverride } from '../mocks/channel-payload-data';
 
 import {
   SpyneConfigData,
   RouteDataForTests,
   windowLocationData
 } from '../mocks/utils-data';
-import {ChannelRoute} from '../../spyne/channels/channel-route';
+import { ChannelRoute } from '../../spyne/channels/channel-route';
 
 const ObjtoStr = JSON.stringify;
 
@@ -37,7 +37,6 @@ describe('Channel Route', () => {
     let payload = ChannelPayloadRouteData;
     let routePayload = ChannelRoute.getDataFromParams(payload, routeConfig);
     expect(routePayload).to.be.an('object');
-
   });
 
   it('should return slash route string from params', () => {
@@ -75,14 +74,10 @@ describe('Channel Route', () => {
     return true;
   });
 
-  it('should combine any regex tokens into the route string', ()=>{
+  it('should combine any regex tokens into the route string', () => {
+    let payloadOverrideCheck = ChannelRoute.checkForRouteParamsOverrides(ChannelPayloadRouteDataRegexOverride);
+    // console.log("override check ",payloadOverrideCheck);
 
-        let payloadOverrideCheck = ChannelRoute.checkForRouteParamsOverrides(ChannelPayloadRouteDataRegexOverride);
-        //console.log("override check ",payloadOverrideCheck);
-
-        return true;
-
+    return true;
   });
-
-
 });

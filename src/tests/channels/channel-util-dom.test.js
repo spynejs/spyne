@@ -1,6 +1,6 @@
-import {ChannelWindow} from '../../spyne/channels/channel-window';
-import {ChannelUtilsDom} from '../../spyne/utils/channel-util-dom';
-import {SpyneConfigData} from '../mocks/utils-data';
+import { ChannelWindow } from '../../spyne/channels/channel-window';
+import { ChannelUtilsDom } from '../../spyne/utils/channel-util-dom';
+import { SpyneConfigData } from '../mocks/utils-data';
 
 const domData = SpyneConfigData.channels.WINDOW;
 
@@ -29,9 +29,8 @@ describe('channel dom util tests', () => {
     it('it should create a window event', () => {
       const onUnload = e => localStorage.setItem('ubu', window.document.body.outerHTML);
       let obs$ = ChannelUtilsDom.createDomObservableFromEvent('beforeunload');
-      //obs$.subscribe(onUnload);
+      // obs$.subscribe(onUnload);
       expect(obs$.constructor.name).to.equal('Observable');
-
     });
   });
 

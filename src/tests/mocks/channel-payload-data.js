@@ -137,30 +137,28 @@ const ChannelPayloadRouteData = {
   }
 };
 
-
 const ChannelPayloadRouteDataRegexOverride = {
-  "isDeepLink": false,
-  "routeCount": 1,
-  "pathInnermost": "pageId",
-  "paths": [
-    "pageId"
+  'isDeepLink': false,
+  'routeCount': 1,
+  'pathInnermost': 'pageId',
+  'paths': [
+    'pageId'
   ],
-  "routeData": {
-    "pageId": "home",
-    "pageIdValue": "",
-    "section": "",
-    "menuItem": ""
+  'routeData': {
+    'pageId': 'home',
+    'pageIdValue': '',
+    'section': '',
+    'menuItem': ''
   },
-  "routeValue": "^$|index.html",
-  "isHash": false,
-  "isHidden": false,
-  "routeType": "slash",
-  "pathsAdded": [],
-  "pathsRemoved": [],
-  "pathsChanged": [
-    "pageId"
+  'routeValue': '^$|index.html',
+  'isHash': false,
+  'isHidden': false,
+  'routeType': 'slash',
+  'pathsAdded': [],
+  'pathsRemoved': [],
+  'pathsChanged': [
+    'pageId'
   ]
 };
 
-
-export {ChannelPayloadUIData, ChannelPayloadRouteData, DeepLinkData,ChannelPayloadRouteDataRegexOverride};
+export { ChannelPayloadUIData, ChannelPayloadRouteData, DeepLinkData, ChannelPayloadRouteDataRegexOverride };

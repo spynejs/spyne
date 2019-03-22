@@ -1,5 +1,5 @@
-import {ChannelPayloadRouteData, ChannelPayloadUIData, DeepLinkData} from '../mocks/channel-payload-data';
-import {ChannelPayloadItem} from '../../spyne/channels/channel-payload-item';
+import { ChannelPayloadRouteData, ChannelPayloadUIData, DeepLinkData } from '../mocks/channel-payload-data';
+import { ChannelPayloadItem } from '../../spyne/channels/channel-payload-item';
 
 describe('Channel Stream Item tests', () => {
   it('deeplink should return [payload, type, location]', () => {

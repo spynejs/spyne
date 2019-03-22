@@ -1,7 +1,7 @@
 // const assert = require('assert');
 
-import {URLUtils} from '../../spyne/utils/channel-util-urls';
-import {SpyneConfigData, RouteDataForTests, routeConfigWithRegexOverride,payloadDataForUrlUtils,urlUtilsArr} from '../mocks/utils-data';
+import { URLUtils } from '../../spyne/utils/channel-util-urls';
+import { SpyneConfigData, RouteDataForTests, routeConfigWithRegexOverride, payloadDataForUrlUtils, urlUtilsArr } from '../mocks/utils-data';
 
 chai.use(require('chai-dom'));
 
@@ -110,7 +110,7 @@ describe('URL Utils - Params To Route', () => {
       let data = RouteDataForTests.multipleRegex.data;
       let correctRouteQuery = RouteDataForTests.multipleRegex.slash;
       let routeVal = URLUtils.convertParamsToRoute(data, routeConfig, 'slash');
-      //console.log('data query multiple 1',data, correctRouteQuery, routeVal);
+      // console.log('data query multiple 1',data, correctRouteQuery, routeVal);
       expect(correctRouteQuery).to.equal(routeVal);
     });
 
@@ -213,21 +213,16 @@ describe('URL Utils - Params To Route', () => {
     });
   });
 
-  describe("Overrides to regex values are added", ()=>{
-    it('should override pageId home regex', ()=>{
+  describe('Overrides to regex values are added', () => {
+    it('should override pageId home regex', () => {
       let paramsToRouteVal = URLUtils.convertParamsToRoute(payloadDataForUrlUtils, routeConfigWithRegexOverride);
       expect(paramsToRouteVal).to.equal('');
     });
 
-
-    it('should replace regex with obj value from data', ()=>{
+    it('should replace regex with obj value from data', () => {
       let arrUpdate = URLUtils.checkPayloadForRegexOverrides(urlUtilsArr, payloadDataForUrlUtils);
       let pageIdStr = arrUpdate[0].pageId;
       expect(pageIdStr).to.equal('');
-
-    })
-
-
-  })
-
+    });
+  });
 });
