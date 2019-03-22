@@ -73,7 +73,7 @@ export class DomItemSelectors {
     this.setClass = this.mapToValue(mapSetClass);
     this.inlineCss = this.mapToValue(mapInlineCss);
     this.toggleClass = this.mapToValue(mapToggleClass);
-    this.toggleEls = this.mapToValue(mapToggleEls);
+    this.toggleActiveEl = this.mapToValue(mapToggleEls);
   }
 
 

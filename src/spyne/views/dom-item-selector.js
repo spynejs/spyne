@@ -95,10 +95,10 @@ function DomItemSelector(cxt, str) {
   };
 
   nested.setActiveItem = (sel, c) => {
-    return nested.toggleEls(c, sel);
+    return nested.toggleActiveEl(c, sel);
   };
 
-  nested.toggleEls = (c, sel) => {
+  nested.toggleActiveEl = (c, sel) => {
     let arr = getNodeListArray(cxt, str);
     let currentEl = typeof (sel) === 'string' ? getElOrList(cxt, sel) : sel;
     const toggleBool = item => item.classList.toggle(c, item.isEqualNode(currentEl));

@@ -87,7 +87,7 @@ describe('Dom Item Selector', () => {
     let el$ =   DomItemSelector("ul#my-list");
     let el1 = el.querySelector('li:nth-child(1)');
     let liList = el$('li');
-    liList.toggleEls('bar', 'li:nth-child(1)');
+    liList.toggleActiveEl('bar', 'li:nth-child(1)');
     let hasBarClassBool = el1.classList.contains('bar');
     expect(hasBarClassBool).to.eq(true);
   });
@@ -97,7 +97,7 @@ describe('Dom Item Selector', () => {
     let el$ =   DomItemSelector("ul#my-list");
     let el1 = el.querySelector('li:nth-child(1)');
     let liList = el$('li');
-    liList.toggleEls('bar', el1);
+    liList.toggleActiveEl('bar', el1);
     let hasBarClassBool = el1.classList.contains('bar');
     expect(hasBarClassBool).to.eq(true);
   });
