@@ -133,6 +133,14 @@ function DomItemSelector(cxt, str) {
     return this;
   };
 
+  nested.toggleEls = (c, sel)=>{
+    let arr = getNodeListArray(cxt, str);
+    let currentEl = typeof(sel) === "string" ? getElOrList(cxt, sel) : sel;
+    const toggleBool = item => item.classList.toggle(c, item.isEqualNode(currentEl));
+    arr.forEach(toggleBool);
+    return this;
+  };
+
 
 
   Object.defineProperty(nested, 'el', {get: ()=>getElOrList(cxt, str)});
