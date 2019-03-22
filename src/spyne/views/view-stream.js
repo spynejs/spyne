@@ -16,6 +16,7 @@ import { ViewStreamPayload } from './view-stream-payload';
 import { ChannelActionFilter } from '../utils/channel-action-filter';
 import { LifecyleObservables } from '../utils/viewstream-lifecycle-observables';
 import { DomItemSelectors } from './dom-item-selectors';
+import {DomItemSelector} from './dom-item-selector';
 
 import { Subject, of } from 'rxjs';
 import { mergeMap, map, takeWhile, filter, tap, finalize } from 'rxjs/operators';
@@ -656,7 +657,8 @@ export class ViewStream {
       };
     };
 
-    this.props.el$ = dm2(this.props.el);
+    //this.props.el$ = dm2(this.props.el);
+    this.props.el$ = DomItemSelector(this.props.el);
     // console.log('EL IS ', this.props.el$.elArr);
     // window.theEl$ = this.props.el$;
   }

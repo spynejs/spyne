@@ -123,6 +123,10 @@ function DomItemSelector(cxt, str) {
     return this;
   };
 
+  nested.unmount = ()=>{
+    console.log('unmounting selector ',this);
+  };
+
   nested.toggleClass = (c, bool)=>{
     let arr = getNodeListArray(cxt, str);
     const toggleClass = item => {
@@ -131,6 +135,10 @@ function DomItemSelector(cxt, str) {
     };
     arr.forEach(toggleClass);
     return this;
+  };
+
+  nested.setActiveItem = (sel, c)=>{
+      return nested.toggleEls(c, sel);
   };
 
   nested.toggleEls = (c, sel)=>{
