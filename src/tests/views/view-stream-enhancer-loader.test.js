@@ -1,4 +1,4 @@
-import { Enhancer } from '../mocks/enhancer.test';
+/*import { Enhancer } from '../mocks/enhancer.test';
 
 import * as R from 'ramda';
 import { SpyneTrait } from '../../spyne/utils/spyne-trait';
@@ -44,3 +44,4 @@ describe('ViewStream Enhancer Loader', () => {
     return true;
   });
 });
+*/

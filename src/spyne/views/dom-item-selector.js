@@ -2,14 +2,15 @@ import * as R from 'ramda';
 
 
 function generateSpyneSelectorId(el) {
-  const num = () => Math.floor(Math.random(10000000) * 10000000);
-  let spyneSelectorId = `ss-id-${num()}`;
-  if (el.dataset.spyneSelectorId === undefined) {
-    el.dataset.spyneSelectorId = spyneSelectorId;
+  //const num = () => Math.floor(Math.random(10000000) * 10000000);
+  const num = () => Math.random().toString(36).substring(2, 8);;
+  let ssid = `${num()}`;
+  if (el.dataset.ssid === undefined) {
+    el.dataset.ssid = ssid;
   } else {
-    spyneSelectorId = el.dataset.spyneSelectorId;
+    ssid = el.dataset.ssid;
   }
-  return `[data-spyne-selector-id='${spyneSelectorId}']`;
+  return `[data-ssid='${ssid}']`;
 }
 
 function getElOrList(cxt, str) {

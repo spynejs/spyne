@@ -1,5 +1,5 @@
 import { spyneDocsDomStr } from '../mocks/spyne-docs.mocks';
-import { DomItemSelector, generateEl } from '../../spyne/views/dom-item-selector';
+import { DomItemSelector } from '../../spyne/views/dom-item-selector';
 
 import * as R from 'ramda';
 

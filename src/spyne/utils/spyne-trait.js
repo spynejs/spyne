@@ -2,8 +2,8 @@ import { getAllMethodNames } from './frp-tools';
 import * as R from 'ramda';
 
 export class SpyneTrait {
-  constructor(parentViewStream, prefix = '', autoInit = true) {
-    this.parentViewStream = parentViewStream;
+  constructor(parentContext, prefix = '', autoInit = true) {
+    this.parentContext = parentContext;
     this.omittedMethods = [
       'autoBinder',
       'initAutoBinder',
@@ -16,10 +16,11 @@ export class SpyneTrait {
     if (autoInit === true) {
       this.autoBinder();
     }
+    return this.allMethodsList;
   }
 
   initAutoBinder() {
-    // this.autoBinder();
+     this.autoBinder();
   }
 
   getEnhancerMethods() {
@@ -43,25 +44,27 @@ export class SpyneTrait {
 
   bindParentViewStream(methodsObj, context) {
     this.checkForMalformedMethods(methodsObj.allMethods);
-
+      let obj = {};
     const bindMethodsToParentViewStream = (str, isStatic = false) => {
-      const addMethod = s => { context[s] = constructorType[s].bind(context); };
+      const addMethod = s =>  context[s] = constructorType[s].bind(context);
       let constructorType = isStatic === true ? this.constructor : this;
       let propertyType = typeof (constructorType[str]);
       if (propertyType === 'function') {
-        addMethod(str);
+         obj[str] = addMethod(str);
       }
     };
 
     const bindCurry = R.curryN(2, bindMethodsToParentViewStream);
     const bindStaticMethodsToParentViewStream = bindCurry(R.__, true);
-    R.forEach(bindStaticMethodsToParentViewStream, methodsObj.staticMethods);
-    R.forEach(bindMethodsToParentViewStream, methodsObj.methods);
+    let staticMethods = R.map(bindStaticMethodsToParentViewStream, methodsObj.staticMethods);
+    let mainMethods = R.map(bindMethodsToParentViewStream, methodsObj.methods);
+    return obj;
   }
 
   autoBinder() {
     let allMethods = this.getEnhancerMethods();
     // console.log('all ',allMethods);
-    this.bindParentViewStream(allMethods, this.parentViewStream);
+    this.allMethodsList = this.bindParentViewStream(allMethods, this.parentContext);
+    return this.allMethodsList;
   }
 }

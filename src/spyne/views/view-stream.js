@@ -15,9 +15,7 @@ import { ViewStreamBroadcaster } from './view-stream-broadcaster';
 import { ViewStreamPayload } from './view-stream-payload';
 import { ChannelActionFilter } from '../utils/channel-action-filter';
 import { LifecyleObservables } from '../utils/viewstream-lifecycle-observables';
-import { DomItemSelectors } from './dom-item-selectors';
 import {DomItemSelector} from './dom-item-selector';
-
 import { Subject, of } from 'rxjs';
 import { mergeMap, map, takeWhile, filter, tap, finalize } from 'rxjs/operators';
 import * as R from 'ramda';
@@ -651,11 +649,11 @@ export class ViewStream {
   }
 
   beforeAfterRender() {
-    let dm2 = function(el) {
+/*    let dm2 = function(el) {
       return function(str = '') {
         return new DomItemSelectors(el, str);
       };
-    };
+    };*/
 
     //this.props.el$ = dm2(this.props.el);
     this.props.el$ = DomItemSelector(this.props.el);

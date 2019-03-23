@@ -13,7 +13,7 @@ class MyClass {
 
   loadEnhancer() {
     this.enhancer = new Enhancer(this);
-    this.enhancer.initAutoBinder();
+   // this.enhancer.initAutoBinder();
   }
 
   testMethods() {
