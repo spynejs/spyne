@@ -50,6 +50,15 @@ function setInlineCss(val, cxt, str) {
   return this;
 }
 
+/**
+ *
+ * @module DomItemSelector
+ * @param {String|El} cxt The main element
+ * @param {String|El} The selector as a String
+ * @returns {function(*=)}
+ * @constructor
+ */
+
 function DomItemSelector(cxt, str) {
   cxt = typeof (cxt) === 'string' ? cxt : generateSpyneSelectorId(cxt);
   testSelectors(cxt, str);
@@ -60,6 +69,11 @@ function DomItemSelector(cxt, str) {
 
   nested.getNodeListArray = () => getNodeListArray(cxt, str);
 
+  /**
+   * @property {String} c
+   * @desc Adds the class to the Element or to the NodeList.
+   *
+   */
   nested.addClass = (c) => {
     let arr = getNodeListArray(cxt, str);
     const addClass = item => item.classList.add(c);
@@ -67,6 +81,11 @@ function DomItemSelector(cxt, str) {
     return this;
   };
 
+  /**
+   *
+   * @property {String} c
+   * @desc Removes the class to the Element or to the NodeList.
+   */
   nested.removeClass = (c) => {
     let arr = getNodeListArray(cxt, str);
     const removeClass = item => item.classList.remove(c);
@@ -74,6 +93,11 @@ function DomItemSelector(cxt, str) {
     return this;
   };
 
+  /**
+   *
+   * @property {String} c
+   * @desc Sets the class to equal exactly the class string.
+   */
   nested.setClass = (c) => {
     let arr = getNodeListArray(cxt, str);
     const removeClass = item => item.classList = c;
@@ -85,6 +109,13 @@ function DomItemSelector(cxt, str) {
     console.log('unmounting selector ', this);
   };
 
+
+  /**
+   *
+   * @property {String} c
+   * @property {Boolean} bool Default is undefined.
+   * @desc Sets the class based on the provided boolean or the toggles the class.
+   */
   nested.toggleClass = (c, bool) => {
     let arr = getNodeListArray(cxt, str);
     const toggleClass = item => {
@@ -99,6 +130,13 @@ function DomItemSelector(cxt, str) {
     return nested.toggleActiveEl(c, sel);
   };
 
+
+  /**
+   *
+   * @property {String} c
+   * @property {String|HTMLElement} sel The selector for the element.
+   * @desc Sets the class active HTMLElement from a NodeList.
+   */
   nested.toggleActiveEl = (c, sel) => {
     let arr = getNodeListArray(cxt, str);
     let currentEl = typeof (sel) === 'string' ? getElOrList(cxt, sel) : sel;
