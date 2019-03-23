@@ -87,7 +87,11 @@ export class DomTemplateRenderer {
     };
     const mapStringData = (d) => {
       if (typeof (d) === 'string') {
+        //console.log("MAP STR 1 ",{d, subStr});
+
         d = parseString(d, subStr);
+       // console.log("MAP STR 2",{d, subStr});
+
       } else {
         d = parseObject(d, subStr);
       }

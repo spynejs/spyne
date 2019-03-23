@@ -115,6 +115,10 @@ function DomItemSelector(cxt, str) {
    * @property {String} c
    * @property {Boolean} bool Default is undefined.
    * @desc Sets the class based on the provided boolean or the toggles the class.
+   *
+   * @example
+   * this.props.el$.toggleClass('myclass', true);
+   *
    */
   nested.toggleClass = (c, bool) => {
     let arr = getNodeListArray(cxt, str);
