@@ -496,7 +496,7 @@ export class ViewStream {
 
   /**
    * Appends a ViewStream object to an existing dom element.
-   * @property {HTMLElement} node the ViewStream child that is to be attached.
+   * @param {HTMLElement} node the ViewStream child that is to be attached.
    * @example
    * //  returns
    * <body>
@@ -513,7 +513,7 @@ export class ViewStream {
 
   /**
    * Prepends the current ViewStream object to an existing dom element.
-   * @property {HTMLElement} node the ViewStream child that is to be attached.
+   * @param {HTMLElement} node the ViewStream child that is to be attached.
    *
    * @example
    * this.prependToDom(document.body);
@@ -526,8 +526,8 @@ export class ViewStream {
 
   /**
    * This method appends a child ViewStream object. <br>After the attachment, rxjs observables are exchanged between the parent and child ViewStream objects.<br><br>
-   * @property {ViewStream} v the ViewStream child that is to be attached.
-   * @property {string} query a querySelector within this ViewStream.
+   * @param {ViewStream} v the ViewStream child that is to be attached.
+   * @param {string} query a querySelector within this ViewStream.
    *
    * @example
    * //  returns
@@ -551,9 +551,9 @@ export class ViewStream {
 
   /**
    * This method appends a child ViewStream object to a parent ViewStream object.
-   * @property {ViewStream} v the ViewStream parent.
-   * @property {string} query a querySelector within this ViewStream.
-   * @property {level} this parameters can attach the viewStream's dom element up the dom tree while still maintaining the parent-child relationship of the ViewStream objects.
+   * @param {ViewStream} v the ViewStream parent.
+   * @param {string} query a querySelector within this ViewStream.
+   * @param {level} this parameters can attach the viewStream's dom element up the dom tree while still maintaining the parent-child relationship of the ViewStream objects.
    *
    * @example
    * //  returns
@@ -579,6 +579,10 @@ export class ViewStream {
 
   /**
    * This method prepends a child ViewStream object to a parent ViewStream object.
+   * @param {ViewStream} v
+   * @param {string} query
+   * @param {number} level
+   *
    * @property {ViewStream} v the ViewStream parent.
    * @property {string} query a querySelector within this ViewStream.
    * @property {number} level this parameter can attach the viewStream's dom element up the dom tree while still maintaining the parent-child relationship of the ViewStream objects.
@@ -600,8 +604,8 @@ export class ViewStream {
    *
    *
    * This method prepends a child ViewStream object to the current ViewStream object. <br>After the attachment, rxjs observables are exchanged between the parent and child ViewStream objects.<br><br>
-   * @property {ViewStream} v the ViewStream child that is to be attached.
-   * @property {string} query a querySelector within this ViewStream.
+   * @param {ViewStream} v the ViewStream child that is to be attached.
+   * @param {string} query a querySelector within this ViewStream.
    *
    * @example
    * //  returns
@@ -735,9 +739,9 @@ export class ViewStream {
    *
    * Add Channel will automatically unsubscribe to the channel, whereas the getChannel method requires the developer to manually unsubscribe.
    *
-   * @property {string} str The name of the registered Channel that was added to the Channels Controller.
-   * @property {boolean} bool false, add true if the View should wait for this channel to unsubscribe before removing itself.
-   * @property {sendDownStream} bool The direction where the stream is allowed to travel.
+   * @param {string} str The name of the registered Channel that was added to the Channels Controller.
+   * @param {boolean} bool false, add true if the View should wait for this channel to unsubscribe before removing itself.
+   * @param {sendDownStream} bool The direction where the stream is allowed to travel.
    *
    * @example
    *
@@ -780,9 +784,9 @@ export class ViewStream {
 
   /**
    * Method to send data to any registered channel.
-   * @property {string} channelName The name of the registered Channel that was added to the Channels Controller.
-   * @property {string} action The event type that listeners can point to.
-   * @property {object} payload {}, The main data to send to the channel.
+   * @param {string} channelName The name of the registered Channel that was added to the Channels Controller.
+   * @param {string} action The event type that listeners can point to.
+   * @param {object} payload {}, The main data to send to the channel.
    * @example
    * let payload = {'location' : 'about'};
    * let action = 'PAGE_CHANGE_EVENT';

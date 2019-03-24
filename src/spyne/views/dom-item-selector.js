@@ -86,7 +86,7 @@ function DomItemSelector(cxt, str) {
 
   /**
    *
-   * @property {String} c
+   * @param {String} c
    * @desc Removes the class to the Element or to the NodeList.
    */
   nested.removeClass = (c) => {
@@ -98,7 +98,7 @@ function DomItemSelector(cxt, str) {
 
   /**
    *
-   * @property {String} c
+   * @param {String} c
    * @desc Sets the class to equal exactly the class string.
    */
   nested.setClass = (c) => {
@@ -115,8 +115,8 @@ function DomItemSelector(cxt, str) {
 
   /**
    *
-   * @property {String} c
-   * @property {Boolean} bool Default is undefined.
+   * @param {String} c
+   * @param {Boolean} bool Default is undefined.
    * @desc Sets the class based on the provided boolean or the toggles the class.
    *
    * @example
@@ -140,8 +140,8 @@ function DomItemSelector(cxt, str) {
 
   /**
    *
-   * @property {String} c
-   * @property {String|HTMLElement} sel The selector for the element.
+   * @param {String} c
+   * @param {String|HTMLElement} sel The selector for the element.
    * @desc Sets the class active HTMLElement from a NodeList.
    */
   nested.toggleActiveEl = (c, sel) => {

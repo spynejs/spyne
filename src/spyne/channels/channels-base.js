@@ -159,7 +159,7 @@ export class ChannelsBase {
   /**
    *
    * This method allows channels to subscribe to other channels.
-   * @property {String} channel The registered name of the requested channel.
+   * @param {String} channel The registered name of the requested channel.
    * @returns {Subject} This will return the observer$ Subject variable.
    */
   getChannel(channel) {
