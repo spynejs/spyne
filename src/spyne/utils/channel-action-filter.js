@@ -1,6 +1,21 @@
 import * as R from 'ramda';
 
 export class ChannelActionFilter {
+  /**
+   * @module ChannelActionFilter
+   *
+   * @desc
+   * The channel action filter
+   *
+   * @constructor
+   * @param {Object|HTMLElement} selector The matching element
+   * @param {Object} data A json object containing filtering methods for channel props variables
+   *
+   * @property {Object|HTMLElement} selector The matching element
+   * @property {Object} data A json object containing filtering methods for channel props variables
+   *
+   *
+   */
   constructor(selector, data) {
     const addStringSelectorFilter =  R.is(String, selector) ? ChannelActionFilter.filterSelector([selector]) : undefined;
     const addArraySelectorFilter = R.is(Array, selector) ? ChannelActionFilter.filterSelector(selector) : undefined;

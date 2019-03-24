@@ -3,6 +3,26 @@ import { flatMap, map, publish, tap } from 'rxjs/operators';
 import * as R from 'ramda';
 export class ChannelFetchUtil {
 // METHOD GET POST PUT PATCH DELETE
+  /**
+   * @module ChannelFetchUtil
+   *
+   * @desc
+   * This is the core object used for ChannelsFetch. This creates an rxjs observable that returns the HTTP requestion upon completion.
+   *
+   * @constructor
+   * @param {Object} options Properties used to create the fetch request
+   * @param {function} subscriber A method assigned to listen to the result
+   * @param {Boolean} testMode Controls the initializtion for unit tests
+   *
+   * @property {Object} options.url - = undefined; The url used for the request
+   * @property {Object} options.serverOptions - = undefined; The properties, header, body, mode, method, for the request
+   * @property {Object} options.mapFn - = undefined; A method that can be used to parse the data before it's returned
+   * @property {Object} options.responseType - = 'json'; Default is json
+   * @property {Object} options.debug - = false; will trace the fetch response to the console befor the observable completes
+   *
+   *
+   */
+
 
   constructor(options, subscriber, testMode) {
     // console.log('url ',url,options);

@@ -70,7 +70,10 @@ function DomItemSelector(cxt, str) {
   nested.getNodeListArray = () => getNodeListArray(cxt, str);
 
   /**
-   * @property {String} c
+   *
+   *
+   * @property {String} c - = undefined; The class to be added.
+   * @param {String} c
    * @desc Adds the class to the Element or to the NodeList.
    *
    */
