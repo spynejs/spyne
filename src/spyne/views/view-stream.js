@@ -583,9 +583,9 @@ export class ViewStream {
    * @param {string} query
    * @param {number} level
    *
-   * @property {ViewStream} v the ViewStream parent.
-   * @property {string} query a querySelector within this ViewStream.
-   * @property {number} level this parameter can attach the viewStream's dom element up the dom tree while still maintaining the parent-child relationship of the ViewStream objects.
+   * @property {ViewStream} v - = undefined; the ViewStream parent.
+   * @property {string} query - = undefined; a querySelector within this ViewStream.
+   * @property {number} level - = 1; this parameter can attach the viewStream's dom element up the dom tree while still maintaining the parent-child relationship of the ViewStream objects.
    *
    * @example
    * let parentView = new ViewStream('main');
