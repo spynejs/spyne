@@ -666,18 +666,18 @@ export class ViewStream {
   }
 
   // ================================= METHODS TO BE EXTENDED ==============================
-  /**
-   *
-   * This method is called once the ViewStream's domElement has been rendered and attached to the dom.
-   * <br>
-   * This method is empty and is meant to be overridden.
-   *
-   * */
+
 
   // THIS IS AN EVENT HOLDER METHOD BECAUSE SENDING DOWNSTREAM REQUIRE THE PARENT TO HAVE A METHOD
   downStream() {
 
   }
+
+  /**
+   *
+   * This method is called as soon as the element has been rendered.
+   *
+   */
 
   afterRender() {
   }

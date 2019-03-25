@@ -71,12 +71,13 @@ function DomItemSelector(cxt, str) {
 
   /**
    *
+   * Adds the class to the Element or to the NodeList.
+   * @param {String} c
+   *
    *
    * @property {String} c - = undefined; The class to be added.
-   * @param {String} c
-   * @desc Adds the class to the Element or to the NodeList.
    *
-   */
+   **/
   nested.addClass = (c) => {
     let arr = getNodeListArray(cxt, str);
     const addClass = item => item.classList.add(c);
