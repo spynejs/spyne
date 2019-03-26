@@ -101,33 +101,6 @@ export class ViewToDomMediator {
     return fn(d);
   }
 
-  disposeMethod1(d) {
-    let onFadeoutObs = () => {
-      let el = d.el.el !== undefined ? d.el.el : d.el; // DOM ITEMS HAVE THEIR EL ITEMS NESTED
-      const gcData = { action:'READY_FOR_GC', $dir:this.$dirs.PI, el };
-
-      d.el$.setClass(d.animateOutClass);
-      // console.log('DISPOSE FADE OUT ', el, this.$dirs, d.animateOutClass);
-
-      const subscriber = () => {
-        // console.log('MEDIATOR FADEOUT COMPLETE ', this.cid, gcData, this.animateOutClass, d);
-        this._source$.next(gcData);
-      };
-
-      Observable.fromEvent(el, 'transitionend')
-        .filter(e => e.target === el)
-        .take(1)
-        .subscribe(subscriber);
-    };
-    let onEmptyObs = () => ({ action:'DISPOSE_AND_READY_FOR_GC', $dir:this.$dirs.CI });
-    if (d.animateOutClass !== undefined) {
-      onFadeoutObs();
-      return { action:'DISPOSING', $dir:this.$dirs.CI };
-    } else {
-      return onEmptyObs();
-    }
-  }
-
   onDispose(d) {
     return this.disposeMethod(d);
   }
@@ -137,15 +110,8 @@ export class ViewToDomMediator {
     if (this.sourceStreams !== undefined) {
       this.sourceStreams.completeStream(['internal', 'child']);
     }
-    // this._source$.complete();
-    // this._source$.isStopped = true;
   }
 
-  onGarbageCollect9(p) {
-    // console.log('MEDIATOR onGarbageCollect ', this.cid, this.vsName, p);
-    const t = this.vsName === 'PageChildBox' ? 1000 : 0;
-    window.setTimeout(this.onGarbageCollectRun.bind(this), t);
-  }
 
   onReadyForGC(p) {
     this.removeStream();
@@ -248,9 +214,5 @@ export class ViewToDomMediator {
     // BASE CORE MIXINS
     //  ==================================
     let coreMixins = baseCoreMixins();
-    this.createId = coreMixins.createId;
-    this.createpropsMap = coreMixins.createpropsMap;
-    this.convertDomStringMapToObj = convertDomStringMapToObj;
-    this.ifNilThenUpdate = ifNilThenUpdate;
   }
 }

@@ -437,15 +437,6 @@ export class ViewStream {
 
   // ===================================== SINK$ METHODS =================================
 
-  sendEventsDownStreamFn(o, action = {}) {
-    // console.log('OBJ ACTION ', o, action);
-    let obj = deepMerge({ action }, o);
-    // obj['action'] = action;
-    obj['$dir'] = this.$dirs.C;
-    // console.log('OBJ FINAL ', obj);
-    this.sourceStreams.raw$.next(obj);
-  }
-
   openSpigot(action, obj = {}) {
     if (this.props !== undefined) {
       this.props.action = action;

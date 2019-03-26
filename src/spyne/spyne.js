@@ -25,6 +25,7 @@ class SpyneApp {
     window.Spyne = this;
     let defaultConfig = {
       channels: {
+        verbose: false,
         WINDOW: {
           mediqQueries: {
           /*  'test': '(max-width: 500px)',
@@ -53,8 +54,7 @@ class SpyneApp {
       }
     };
     if (config !== undefined) {
-      window.Spyne['config'] = deepMerge(defaultConfig, config);// Object.assign({}, defaultConfig, config);// config !== undefined ? config : defaultConfig;
-      // console.log("CONFIG IS ",{defaultConfig, config},window.Spyne.config)
+      window.Spyne['config'] = deepMerge(defaultConfig, config);
     }
     this.getChannelActions = (str) => window.Spyne.channels.getChannelActions(str);
     this.registerChannel = (val) => this.channels.registerStream(val);
@@ -64,8 +64,6 @@ class SpyneApp {
     nullHolder.appendToDom(document.body);
     nullHolder.props.el.style.cssText = 'display:none; opacity:0; pointer-events:none;';
     this.channels.init();
-
-    // window.Spyne.channels.init();
   }
 
   static listChannels() {
@@ -85,7 +83,6 @@ class SpyneApp {
   }
 }
 
-// let Spyne = {ViewToDomMediator, ChannelsBase, ChannelsBaseController, ViewStreamPayload, DomItem, ViewStream, ViewStreamBroadcaster, registerChannel};
 window['Spyne'] = SpyneApp;
 export {
   ViewToDomMediator,

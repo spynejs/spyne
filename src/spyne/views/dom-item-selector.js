@@ -32,7 +32,10 @@ function testSelectors(cxt, str) {
   if (str !== undefined) {
     let query = el.querySelector(str);
     if (query === null) {
-      console.warn(`Spyne warning: the selector, ${str} does not exist in this el, ${cxt}`);
+      if (window.Spyne.config.verbose === true) {
+        console.warn(`Spyne warning: the selector, ${str} does not exist in this el, ${cxt}`);
+      }
+
     }
   }
 
@@ -66,6 +69,11 @@ function DomItemSelector(cxt, str) {
   function nested(str) {
     return DomItemSelector(cxt, str);
   }
+
+
+  nested.map = (fn)=> Array.from(getNodeListArray(cxt, str)).map(fn);
+  nested.foeEach = (fn)=> Array.from(getNodeListArray(cxt, str)).map(fn);
+
 
   nested.getNodeListArray = () => getNodeListArray(cxt, str);
 
