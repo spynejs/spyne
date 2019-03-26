@@ -1,6 +1,6 @@
 import { ChannelsBase } from './channels-base';
 import { ChannelFetchUtil } from '../utils/channel-fetch-util';
-import * as R from 'ramda';
+import {path, pick, mergeRight, mergeDeepRight, reject, compose, isNil} from 'ramda';
 
 export class ChannelsFetch extends ChannelsBase {
   constructor(name, props = {}) {
@@ -40,16 +40,16 @@ export class ChannelsFetch extends ChannelsBase {
   }
 
   getPropsForFetch(evt) {
-    let dataObj = R.path(['viewStreamInfo', 'payload'], evt);
-    return R.pick(['mapFn', 'url', 'header', 'body', 'mode', 'method', 'responseType', 'debug'], dataObj);
+    let dataObj = path(['viewStreamInfo', 'payload'], evt);
+    return pick(['mapFn', 'url', 'header', 'body', 'mode', 'method', 'responseType', 'debug'], dataObj);
   }
 
   consolidateAllFetchProps(options, props = this.props) {
-    // let currentOptions = R.merge({url}, options);
-    let propsOptions = R.pick(['mapFn', 'url', 'header', 'body', 'mode', 'method', 'responseType', 'debug'], props);
-    const mergeOptions = (o1, o2) => R.mergeDeepRight(o1, o2);
-    const filterOutUndefined = R.reject(R.isNil);
-    return R.compose(filterOutUndefined, mergeOptions)(propsOptions, options);
+    // let currentOptions = mergeRight({url}, options);
+    let propsOptions = pick(['mapFn', 'url', 'header', 'body', 'mode', 'method', 'responseType', 'debug'], props);
+    const mergeOptions = (o1, o2) => mergeDeepRight(o1, o2);
+    const filterOutUndefined = reject(isNil);
+    return compose(filterOutUndefined, mergeOptions)(propsOptions, options);
   }
 
   get observer() {

@@ -3,7 +3,7 @@ import { convertDomStringMapToObj } from '../utils/frp-tools';
 
 import { fromEvent } from 'rxjs';
 import { map } from 'rxjs/operators';
-import * as R from 'ramda';
+import {clone, omit, pick} from 'ramda';
 
 export class ViewStreamBroadcaster {
   constructor(props, broadcastFn) {
@@ -18,7 +18,7 @@ export class ViewStreamBroadcaster {
     // console.log('ADDING DBL CLICK ', q);
     let stream$ = dblclick$.pipe(
       map(p => {
-        let data = R.clone(p);
+        let data = clone(p);
         // ADD DOUBLECLICK TO UI EVENTS
         data['typeOverRide'] = 'dblclick';
         return data;
@@ -71,13 +71,13 @@ export class ViewStreamBroadcaster {
       channel = q.dataset.channel;// ifNilThenUpdate(chnl, q.dataset.channel);
       let data = {};// convertDomStringMapToObj(q.dataset);
       data['payload'] = convertDomStringMapToObj(q.dataset);
-      data.payload = R.omit(['channel'], data.payload);
+      data.payload = omit(['channel'], data.payload);
       data['channel'] = channel;
       // payload needs cid# to pass verification
 
       // data['event'] = event;
       // data['el'] = q;
-      data['srcElement'] = {};// R.pick(['cid','viewName'], data);
+      data['srcElement'] = {};// pick(['cid','viewName'], data);
       data.srcElement['id'] = this.props.id;
       data.srcElement['cid'] = this.props.cid;
       data.srcElement['isLocalEvent'] = isLocalEvent;

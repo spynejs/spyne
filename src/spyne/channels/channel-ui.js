@@ -1,7 +1,7 @@
 import { ChannelsBase } from '../channels/channels-base';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-import * as R from 'ramda';
+import {equals, path, compose,prop, pathEq, when, either, toUpper} from 'ramda';
 
 export class ChannelUI extends ChannelsBase {
   constructor(name = 'CHANNEL_UI', props = {}) {
@@ -65,7 +65,7 @@ export class ChannelUI extends ChannelsBase {
   }
 
   onIncomingObservable(obj) {
-    let eqsName = R.equals(obj.name, this.props.name);
+    let eqsName = equals(obj.name, this.props.name);
     let dataObj = obsVal => ({ viewStreamInfo: obj.data, uiEvent: obsVal });
     let onSuccess = (obj) => obj.observable.pipe(map(dataObj))
       .subscribe(this.onUIEvent.bind(this));
@@ -74,19 +74,19 @@ export class ChannelUI extends ChannelsBase {
   }
 
   getActionState(val) {
-    let typeVal = R.path(['uiEvent', 'type']);
-    let typeOverRideVal = R.path(['uiEvent', 'typeOverRide']);
-    let eventType = R.compose(R.toUpper, R.either(typeOverRideVal, typeVal));
+    let typeVal = path(['uiEvent', 'type']);
+    let typeOverRideVal = path(['uiEvent', 'typeOverRide']);
+    let eventType = compose(toUpper, either(typeOverRideVal, typeVal));
     let type = eventType(val);
     let mainAction = 'CHANNEL_UI';
     return type !== undefined ? `${mainAction}_${type}_EVENT` : mainAction;
   }
 
   static checkToPreventDefaultEvent(obs) {
-    const checkDataForPreventDefault = R.pathEq(['viewStreamInfo', 'payload', 'eventPreventDefault'], 'true');
+    const checkDataForPreventDefault = pathEq(['viewStreamInfo', 'payload', 'eventPreventDefault'], 'true');
     const setPreventDefault = function(evt) { if (evt !== undefined) evt.preventDefault(); };
-    const selectEvtAndPreventDefault = R.compose(setPreventDefault, R.prop('uiEvent'));
-    const checkForPreventDefault = R.when(checkDataForPreventDefault, selectEvtAndPreventDefault);
+    const selectEvtAndPreventDefault = compose(setPreventDefault, prop('uiEvent'));
+    const checkForPreventDefault = when(checkDataForPreventDefault, selectEvtAndPreventDefault);
     checkForPreventDefault(obs);
   }
 

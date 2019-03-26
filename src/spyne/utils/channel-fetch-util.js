@@ -1,6 +1,6 @@
 import { from } from 'rxjs';
 import { flatMap, map, publish, tap } from 'rxjs/operators';
-import * as R from 'ramda';
+import {compose, prop, defaultTo, over, lensProp, has, propEq, when, propIs, allPass, assoc, pick, mergeDeepRight} from 'ramda';
 export class ChannelFetchUtil {
 // METHOD GET POST PUT PATCH DELETE
   /**
@@ -63,12 +63,12 @@ export class ChannelFetchUtil {
   }
 
   static setMapFn(opts) {
-    const getFn = R.compose(R.defaultTo((p) => p), R.prop('mapFn'));
+    const getFn = compose(defaultTo((p) => p), prop('mapFn'));
     return getFn(opts);
   }
 
   static setUrl(opts) {
-    let url = R.prop('url', opts);
+    let url = prop('url', opts);
     if (url === undefined) {
       console.warn(`SPYNE WARNING: URL is undefined for data channel`);
     }
@@ -76,7 +76,7 @@ export class ChannelFetchUtil {
   }
 
   static setResponseType(opts) {
-    return R.defaultTo('json', R.prop('responseType', opts));
+    return defaultTo('json', prop('responseType', opts));
   }
 
   get mapFn() {
@@ -96,21 +96,21 @@ export class ChannelFetchUtil {
   }
 
   static stringifyBodyIfItExists(obj) {
-    const convertToJSON = R.when(R.propIs(Object, 'body'), R.compose(R.over(R.lensProp('body'), JSON.stringify)));
+    const convertToJSON = when(propIs(Object, 'body'), compose(over(lensProp('body'), JSON.stringify)));
 
     return convertToJSON(obj);
   }
 
   static updateMethodWhenBodyExists(opts) {
-    const hasBody = R.has('body');
-    const methodIsGet = R.propEq('method', 'GET');
-    const pred = R.allPass([hasBody, methodIsGet]);
-    return R.when(pred, R.assoc('method', 'POST'))(opts);
+    const hasBody = has('body');
+    const methodIsGet = propEq('method', 'GET');
+    const pred = allPass([hasBody, methodIsGet]);
+    return when(pred, assoc('method', 'POST'))(opts);
   }
 
   static setServerOptions(opts) {
-    let options = R.pick(['header', 'body', 'mode', 'method'], opts);
-    let mergedOptions = R.mergeDeepRight(ChannelFetchUtil.baseOptions(), options);
+    let options = pick(['header', 'body', 'mode', 'method'], opts);
+    let mergedOptions = mergeDeepRight(ChannelFetchUtil.baseOptions(), options);
     mergedOptions = ChannelFetchUtil.updateMethodWhenBodyExists(mergedOptions);
     mergedOptions = ChannelFetchUtil.stringifyBodyIfItExists(mergedOptions);
     return mergedOptions;

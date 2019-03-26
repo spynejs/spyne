@@ -1,5 +1,5 @@
 
-import * as R from 'ramda';
+import {mergeAll, includes, pickAll} from 'ramda';
 
 export class ChannelPayloadItem {
   constructor(channelName, action, channelPayload, srcElement, event) {
@@ -7,7 +7,7 @@ export class ChannelPayloadItem {
 
     let channelPayloadItemObj = { channel, action, channelPayload, srcElement, event };
 
-    channelPayloadItemObj['props'] = () => R.mergeAll([channelPayloadItemObj.channelPayload, { channel }, { event }, { action: channelPayloadItemObj.action }, channelPayloadItemObj.srcElement, channelPayloadItemObj.event]);
+    channelPayloadItemObj['props'] = () => mergeAll([channelPayloadItemObj.channelPayload, { channel }, { event }, { action: channelPayloadItemObj.action }, channelPayloadItemObj.srcElement, channelPayloadItemObj.event]);
     const channelActionsArr = window.Spyne.getChannelActions(channel);
 
     ChannelPayloadItem.validateAction(action, channel, channelActionsArr);
@@ -20,7 +20,7 @@ export class ChannelPayloadItem {
   }
 
   static validateAction(action, channel, arr) {
-    let isInArr = R.contains(action, arr);
+    let isInArr = includes(action, arr);
     if (isInArr === false && window.Spyne !== undefined) {
       console.warn(`warning: Action: '${action}' is not registered within the ${channel} channel!`);
     }
@@ -38,7 +38,7 @@ export class ChannelPayloadItem {
       'pathname',
       'search',
       'hash'];
-    return R.pickAll(locationParamsArr, window.location);
+    return pickAll(locationParamsArr, window.location);
   }
 
   static getStreamItem() {

@@ -1,6 +1,6 @@
 import { fromEventPattern } from 'rxjs';
 import { map } from 'rxjs/operators';
-import * as R from 'ramda';
+import {mapObjIndexed} from 'ramda';
 
 export class ChannelUtilsDom {
   constructor() {
@@ -65,7 +65,7 @@ export class ChannelUtilsDom {
       // return arr;
     };
 
-    R.mapObjIndexed(loopQueries, mediaQueriesObj);
+    mapObjIndexed(loopQueries, mediaQueriesObj);
     // let obs$ = Observable.merge(...arr);
     // console.log('arr is ',arr);
     return arr;

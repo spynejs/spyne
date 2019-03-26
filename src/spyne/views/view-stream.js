@@ -18,7 +18,7 @@ import { LifecyleObservables } from '../utils/viewstream-lifecycle-observables';
 import {DomItemSelector} from './dom-item-selector';
 import { Subject, of } from 'rxjs';
 import { mergeMap, map, takeWhile, filter, tap, finalize } from 'rxjs/operators';
-import * as R from 'ramda';
+import {pick, compose, toLower, either ,prop, always, lte, defaultTo, propSatisfies, allPass, curry, is, path, ifElse, clone,  mergeRight, where, equals} from 'ramda';
 
 export class ViewStream {
   /**
@@ -41,7 +41,7 @@ export class ViewStream {
    *    <li>lastName: Doe<li>
    *    <li>Age: 23<li>
    * </ul>
-   *R.map(updateProperties),
+   *map(updateProperties),
    * let myTemplate = '<li>firstName: {{fName}}<li>lastName: {{lName}}<li>Age: {{age}}';
    * let myData = {fName: Jane, lName: Doe, age:23};
    * new ViewStream({tagName:'ul', data:myData, template:myTemplate});
@@ -96,7 +96,7 @@ export class ViewStream {
     this.sendLifecycleMethod = this.props.sendLifecyleEvents === true ? this.sendLifecycleMethodActive.bind(this) : this.sendLifecycleMethodInactive.bind(this);
     let attributesArr = this.attributesArray;
     // let attributesArr = ['id', 'class', 'dataset'];
-    this.props['domAttributes'] = R.pick(attributesArr, this.props);
+    this.props['domAttributes'] = pick(attributesArr, this.props);
     this.loadEnhancers();
     this.loadAllMethods();
     this.props.action = 'LOADED';
@@ -113,15 +113,15 @@ export class ViewStream {
   }
 
   updatePropsToMatchEl() {
-    const getTagName = R.compose(R.toLower, R.either(R.prop('tagName'), R.always('')));
+    const getTagName = compose(toLower, either(prop('tagName'), always('')));
     this.props.tagName = getTagName(this.props.el);
   }
 
   checkIfElementAlreadyExists() {
-    const elIsDomElement = R.compose(R.lte(0), R.defaultTo(-1), R.prop('nodeType'));
+    const elIsDomElement = compose(lte(0), defaultTo(-1), prop('nodeType'));
     const elIsRendered = el => document.contains(el);
-    const elIsReadyBool = R.propSatisfies(
-      R.allPass([elIsRendered, elIsDomElement]), 'el');
+    const elIsReadyBool = propSatisfies(
+      allPass([elIsRendered, elIsDomElement]), 'el');
 
     if (elIsReadyBool(this.props)) {
       this.updatePropsToMatchEl();
@@ -136,10 +136,10 @@ export class ViewStream {
   }
 
   loadAllMethods() {
-    const channelFn = R.curry(this.onChannelMethodCall.bind(this));
+    const channelFn = curry(this.onChannelMethodCall.bind(this));
     let createExtraStatesMethod = (arr) => {
       let [action, funcStr, actionFilter] = arr;
-      if (R.is(String, actionFilter)) {
+      if (is(String, actionFilter)) {
         actionFilter = ChannelActionFilter(actionFilter);
       }
       this.props.extendedSourcesHashMethods[action] = channelFn(funcStr,
@@ -161,7 +161,7 @@ export class ViewStream {
       obj['$dir'] = this.$dirs.C;
       this.sourceStreams.raw$.next(obj);
     }
-    let filterPayload =  R.defaultTo(R.always(true), actionFilter);
+    let filterPayload =  defaultTo(always(true), actionFilter);
     if (filterPayload(p.props()) === true) {
       this[str](p);
     }
@@ -258,7 +258,7 @@ export class ViewStream {
         }
         return y;
       };
-      return R.pick(['viewName', 'cid'], finalDest(x));
+      return pick(['viewName', 'cid'], finalDest(x));
     };
     let childCompletedData = findName(p);
     this.tracer('onChildCompleted ', this.checker, p);
@@ -338,7 +338,7 @@ export class ViewStream {
 
   // ============================= SUBSCRIBER METHODS ==============================
   onSubscribeToSourcesNext(payload = {}) {
-    let defaultToFn = R.defaultTo((p) => this.sendExtendedStreams(p));
+    let defaultToFn = defaultTo((p) => this.sendExtendedStreams(p));
 
     // ****USE REGEX AS PREDICATE CHECK FOR PAYLOAD.ACTION IN HASH METHODS OBJ
     // const hashAction = this.props.hashSourceMethods[payload.action];
@@ -440,7 +440,7 @@ export class ViewStream {
   openSpigot(action, obj = {}) {
     if (this.props !== undefined) {
       this.props.action = action;
-      let data = R.merge(this.props, obj);
+      let data = mergeRight(this.props, obj);
       this.sink$.next(Object.freeze(data));
     }
   }
@@ -475,7 +475,7 @@ export class ViewStream {
   }
 
   onMapViewSource(payload = {}) {
-    this.props = R.merge(this.props, payload);
+    this.props = mergeRight(this.props, payload);
     return payload;
   }
 
@@ -719,7 +719,7 @@ export class ViewStream {
       return obs$.pipe(takeWhile(p => this.deleted !== true));
     };// getGlobalParam('streamsController').getStream(c).observer;
 
-    let fn = R.ifElse(isValidChannel, startSubscribe, error);
+    let fn = ifElse(isValidChannel, startSubscribe, error);
 
     return fn(channel);
   }
@@ -754,13 +754,13 @@ export class ViewStream {
   addChannel(str, sendDownStream = false, bool = false) {
     const directionArr = sendDownStream === true ? this.$dirs.CI : this.$dirs.I;
     const mapDirection = p => {
-      let p2 = R.defaultTo({}, R.clone(p));
+      let p2 = defaultTo({}, clone(p));
       let dirObj = { $dir: directionArr };
       return deepMerge(dirObj, p2);
-      // Object.assign({$dir: directionArr}, R.clone(p))
+      // Object.assign({$dir: directionArr}, clone(p))
     };
-    const isLocalEventCheck = R.path(['srcElement', 'isLocalEvent']);
-    const cidCheck = R.path(['srcElement', 'cid']);
+    const isLocalEventCheck = path(['srcElement', 'isLocalEvent']);
+    const cidCheck = path(['srcElement', 'cid']);
     const cidMatches = p => {
       let cid = cidCheck(p);
       let isLocalEvent = isLocalEventCheck(p);
@@ -795,9 +795,9 @@ export class ViewStream {
 
   sendInfoToChannel(channelName, payload = {}, action = 'VIEWSTREAM_EVENT') {
     let data = { payload, action };
-    data['srcElement'] = {};// R.pick(['cid','viewName'], data);
-    data.srcElement['cid'] = R.path(['props', 'cid'], this);
-    data.srcElement['id'] = R.path(['props', 'id'], this);
+    data['srcElement'] = {};// pick(['cid','viewName'], data);
+    data.srcElement['cid'] = path(['props', 'cid'], this);
+    data.srcElement['id'] = path(['props', 'id'], this);
     data.srcElement['isLocalEvent'] = false;
     data.srcElement['viewName'] = this.props.name;
     if (this.checkIfChannelExists(channelName) === true) {
@@ -814,9 +814,9 @@ export class ViewStream {
   }
 
   sendLifecycleMethodActive(val, p) {
-    let isRendered = R.where({
-      from$: R.equals('internal'),
-      action: R.equals('RENDERED_AND_ATTACHED_TO_PARENT')
+    let isRendered = where({
+      from$: equals('internal'),
+      action: equals('RENDERED_AND_ATTACHED_TO_PARENT')
     }, p);
     let isDisposed = p === 'GARBAGE_COLLECT';
     if (isRendered === true) {
@@ -831,7 +831,7 @@ export class ViewStream {
   }
 
   isLocalEvent(channelPayloadItem) {
-    const itemEl = R.path(['srcElement', 'el'], channelPayloadItem);
+    const itemEl = path(['srcElement', 'el'], channelPayloadItem);
     return itemEl !== undefined &&
         this.props.el.contains(channelPayloadItem.srcElement.el);
   }

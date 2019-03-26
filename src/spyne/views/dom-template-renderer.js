@@ -1,4 +1,4 @@
-import * as R from 'ramda';
+import {includes, __, ifElse, reject, defaultTo, isNil, isEmpty} from 'ramda';
 
 export class DomTemplateRenderer {
   constructor(template, data) {
@@ -13,9 +13,9 @@ export class DomTemplateRenderer {
     const mapTmplLoop = (str, data) => str.replace(
       DomTemplateRenderer.parseTmplLoopsRE(),
       this.parseTheTmplLoop.bind(this));
-    const findTmplLoopsPred = R.contains(R.__, strMatches);
+    const findTmplLoopsPred = includes(__, strMatches);
 
-    const checkForMatches = R.ifElse(
+    const checkForMatches = ifElse(
       findTmplLoopsPred,
       mapTmplLoop,
       this.addParams.bind(this));
@@ -27,7 +27,7 @@ export class DomTemplateRenderer {
     let strArr = template.split(DomTemplateRenderer.findTmplLoopsRE());
     const emptyRE = /^([\\n\s\W]+)$/;
     const filterOutEmptyStrings = s => s.match(emptyRE);
-    return R.reject(filterOutEmptyStrings, strArr);
+    return reject(filterOutEmptyStrings, strArr);
   }
 
   static findTmplLoopsRE() {
@@ -66,7 +66,7 @@ export class DomTemplateRenderer {
   addParams(str) {
     const replaceTags = (str, p1, p2, p3) => {
       let dataVal = this.templateData[p2];
-      let defaultIsEmptyStr = R.defaultTo('');
+      let defaultIsEmptyStr = defaultTo('');
       return defaultIsEmptyStr(dataVal);
     };
 
@@ -97,7 +97,7 @@ export class DomTemplateRenderer {
       }
       return d;
     };
-    if (R.isNil(elData) === true || R.isEmpty(elData)) {
+    if (isNil(elData) === true || isEmpty(elData)) {
       return '';
     }
     return elData.map(mapStringData).join('');

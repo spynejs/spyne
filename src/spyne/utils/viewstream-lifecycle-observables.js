@@ -1,7 +1,6 @@
 import { Subject } from 'rxjs';
 import { filter, map } from 'rxjs/operators';
-
-import * as R from 'ramda';
+import {flip, mergeRight, clone, propSatisfies} from 'ramda';
 export class LifecyleObservables {
   constructor(props) {
     this.props.observableStreams = LifecyleObservables.createDirectionalObservables();
@@ -22,18 +21,18 @@ export class LifecyleObservables {
   }
 
   static addDefaultDir(obj) {
-    const defaults = R.flip(R.merge);
-    return defaults({ $dir:['internal'] }, R.clone(obj));
+    const defaults = flip(mergeRight);
+    return defaults({ $dir:['internal'] }, clone(obj));
   }
 
   static addDownInternalDir(obj, arr = ['internal', 'down']) {
-    const defaults = R.flip(R.merge);
-    return defaults(R.clone(obj), { $dir:arr });
+    const defaults = flip(mergeRight);
+    return defaults(clone(obj), { $dir:arr });
   }
 
   static addChildAndInternalDir(obj, arr = ['child', 'down']) {
-    const defaults = R.flip(R.merge);
-    return defaults(R.clone(obj), { $dir:arr });
+    const defaults = flip(mergeRight);
+    return defaults(clone(obj), { $dir:arr });
   }
 
   static mapToDefaultDir(p) {
@@ -46,12 +45,12 @@ export class LifecyleObservables {
       obs$['cid'] = cid;
     }
 
-    const filterStreams = val => R.propSatisfies(arrType => arrType.includes(val), '$dir');
+    const filterStreams = val => propSatisfies(arrType => arrType.includes(val), '$dir');
     const filterParent = filterStreams('parent');
     const filterChild = filterStreams('child');
     const filterInternal = filterStreams('internal');
 
-    const addfrom$ = relStr => R.merge({ from$:relStr });
+    const addfrom$ = relStr => mergeRight({ from$:relStr });
     const addParentfrom$ = addfrom$('child');
     const addInternalfrom$ = addfrom$('internal');
     const addChildfrom$ = addfrom$('parent');
@@ -92,7 +91,7 @@ export class LifecyleObservables {
         o.complete();
         o.isStopped = true;
       };
-      R.forEach(completeStream, [raw$, toInternal$, toParent$, toChild$]);
+      forEach(completeStream, [raw$, toInternal$, toParent$, toChild$]);
     };
 
     return {

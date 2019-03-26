@@ -3,7 +3,8 @@ import { checkIfObjIsNotEmptyOrNil } from '../utils/frp-tools';
 import { ChannelUtilsDom } from '../utils/channel-util-dom';
 import { merge } from 'rxjs';
 import { map, debounceTime, skipWhile } from 'rxjs/operators';
-import * as R from 'ramda';
+import {curry, pick, mapObjIndexed} from 'ramda';
+const rMap = require('ramda').map;
 
 export class ChannelWindow extends ChannelsBase {
   constructor() {
@@ -46,7 +47,7 @@ export class ChannelWindow extends ChannelsBase {
 
   static createCurriedGenericEvent(actionStr) {
     let action = `CHANNEL_WINDOW_${actionStr.toUpperCase()}_EVENT`;
-    let curryFn = R.curry(ChannelWindow.mapGenericEvent);
+    let curryFn = curry(ChannelWindow.mapGenericEvent);
     return curryFn(action);
   }
 
@@ -60,7 +61,7 @@ export class ChannelWindow extends ChannelsBase {
 
   static getResizeMapFn(event) {
     let action = this.channelActions.CHANNEL_WINDOW_RESIZE_EVENT;
-    let channelPayload = R.pick(
+    let channelPayload = pick(
       ['innerWidth', 'innerHeight', 'outerWidth', 'outerHeight'], window);
     let srcElement = event.srcElement;
     return { action, channelPayload, srcElement, event };
@@ -70,7 +71,7 @@ export class ChannelWindow extends ChannelsBase {
     let action = this.channelActions.CHANNEL_WINDOW_ORIENTATION_EVENT;
     const orientationStr = '(orientation: portrait)';
     let isPortraitBool = window.matchMedia(orientationStr).matches;
-    let channelPayload = R.pick(
+    let channelPayload = pick(
       ['innerWidth', 'innerHeight', 'outerWidth', 'outerHeight'], window);
     channelPayload['orientation'] = isPortraitBool === true
       ? 'portrait'
@@ -81,7 +82,7 @@ export class ChannelWindow extends ChannelsBase {
 
   getMediaQueryMapFn(event) {
     let action = this.channelActions.CHANNEL_WINDOW_MEDIA_QUERY_EVENT;
-    let channelPayload = R.pick(['matches', 'media', 'mediaQueryName'], event);
+    let channelPayload = pick(['matches', 'media', 'mediaQueryName'], event);
     let srcElement = event.srcElement;
     return { action, channelPayload, srcElement, event };
   }
@@ -126,7 +127,7 @@ export class ChannelWindow extends ChannelsBase {
       return ChannelUtilsDom.createDomObservableFromEvent(str, mapFn);
     };
 
-    return R.map(addWindowEventToArr, obs$Arr);
+    return rMap(addWindowEventToArr, obs$Arr);
   }
 
   getActiveObservables(config = this.domChannelConfig) {
@@ -158,7 +159,7 @@ export class ChannelWindow extends ChannelsBase {
       }
     };
 
-    R.mapObjIndexed(addObservableToArr, methods);
+    mapObjIndexed(addObservableToArr, methods);
 
     // 'listenForMediaQueries' : this.getMediaQueryObservable.bind(this)
     this.checkForMediaQueries(config.listenForMediaQueries);

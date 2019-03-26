@@ -5,7 +5,7 @@ import { fadein, fadeout } from '../utils/viewstream-animations';
 import { LifecyleObservables } from '../utils/viewstream-lifecycle-observables';
 import { deepMerge } from '../utils/deep-merge';
 import { Subject, Observable, bindCallback } from 'rxjs';
-import * as R from 'ramda';
+import {filter, isNil, pick, props, defaultTo} from 'ramda';
 
 export class ViewToDomMediator {
   constructor(sink$, viewProps = {}, cid = '', vsName = 'theName') {
@@ -52,7 +52,7 @@ export class ViewToDomMediator {
   createDomItem() {
     this.props = this.props !== undefined ? this.props : {};
     let removeIsNil = (val) => val !== undefined;
-    let attrs = R.filter(removeIsNil, R.pick(['id', 'className'], this.props));
+    let attrs = filter(removeIsNil, pick(['id', 'className'], this.props));
     return new DomItem(this.props.tagName, attrs, this.props.data, this.props.template);
   }
 
@@ -133,14 +133,14 @@ export class ViewToDomMediator {
   }
 
   combineDomItems(d) {
-    let container =  R.isNil(d.query) ? d.node : d.query;
+    let container =  isNil(d.query) ? d.node : d.query;
     let prepend = (node, item) => node.insertBefore(item, node.firstChild);
     let append = (node, item) => node.appendChild(item);
     // DETERMINE WHETHER TO USE APPEND OR PREPEND
     // ON CONNECTING DOM ITEMS TO EACH OTHER
     // this.domItemEl = this.domItem.render();
     let attachFunc = d.attachType === 'appendChild' ? append : prepend;
-    // d.node = R.isNil(d.query) ? d.node : d.query;
+    // d.node = isNil(d.query) ? d.node : d.query;
     attachFunc(container, this.domItem.render());
     this.setAnimateIn(d);
   }
@@ -171,7 +171,7 @@ export class ViewToDomMediator {
 
   onRender(d) {
     let getEl = (data) => this.renderDomItem(data);
-    let el =  getEl(R.props(['tagName', 'domAttributes', 'data', 'template'], d));
+    let el =  getEl(props(['tagName', 'domAttributes', 'data', 'template'], d));
     return {
       action: 'RENDERED',
       el,
@@ -185,7 +185,7 @@ export class ViewToDomMediator {
   onRenderAndAttachToDom(d) {
     let getEl = (data) => this.renderDomItem(data);
     // let getEl = (data) => new DomItem(...data);
-    d.attachData['el'] = getEl(R.props(['tagName', 'domAttributes', 'data', 'template'], d));
+    d.attachData['el'] = getEl(props(['tagName', 'domAttributes', 'data', 'template'], d));
     this.combineDomItems(d.attachData);
     return {
       action: 'RENDERED_AND_ATTACHED_TO_DOM',
@@ -196,7 +196,7 @@ export class ViewToDomMediator {
 
   onSinkSubscribe(payload) {
     let action = payload.action;
-    let defaultToFn = R.defaultTo((data) => this.extendedMethods(data));
+    let defaultToFn = defaultTo((data) => this.extendedMethods(data));
     let fn = defaultToFn(this.options.hashMethods[action]);
     // console.log('MEDIATOR onSinkSubscribe before ', this.cid, action, payload);
     let data = fn(payload);

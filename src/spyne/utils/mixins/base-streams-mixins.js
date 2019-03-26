@@ -1,7 +1,7 @@
 import { ViewStreamPayload } from '../../views/view-stream-payload';
 import { LifestreamPayload } from '../../channels/lifestream-payload';
 import { of } from 'rxjs';
-import * as R from 'ramda';
+import {prop} from 'ramda';
 
 export function baseStreamsMixins() {
   return {
@@ -15,7 +15,7 @@ export function baseStreamsMixins() {
       return new ViewStreamPayload('CHANNEL_UI', obs, data, 'subscribe');
     },
     sendInfoToChannel: function(channelName, payload) {
-      const getProp = str => R.prop(str, this.props);
+      const getProp = str => prop(str, this.props);
       const channel = channelName;
       let srcElement = {
         cid: getProp('cid'),

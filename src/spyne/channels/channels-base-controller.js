@@ -8,7 +8,8 @@ import { validate } from '../utils/channel-config-validator';
 
 import { Subject } from 'rxjs';
 import { ChannelsBaseProxy } from './channels-base-proxy';
-import * as R from 'ramda';
+import {propEq, pluck, key, filter, compose, join} from 'ramda';
+const rMap = require('ramda').map;
 
 // import * as R from 'ramda';
 
@@ -36,11 +37,11 @@ export class ChannelsBaseController {
 
   static listRegisteredChannels(showOnlyProxies = false) {
     let proxyMap = this.getChannelsList();
-    let rejectProxyFn = R.reject(R.propEq('val', 'ChannelsBaseProxy'));
-    let filterProxyFn = R.filter(R.propEq('val', 'ChannelsBaseProxy'));
+    let rejectProxyFn = reject(propEq('val', 'ChannelsBaseProxy'));
+    let filterProxyFn = filter(propEq('val', 'ChannelsBaseProxy'));
     let fn = showOnlyProxies === true ? filterProxyFn : rejectProxyFn;
     let removedProxyArr = fn(proxyMap);
-    return R.pluck(['key'], removedProxyArr);
+    return pluck(['key'], removedProxyArr);
   }
   listProxyChannels() {
     return this.listRegisteredChannels(true);
@@ -48,12 +49,12 @@ export class ChannelsBaseController {
 
   checkForMissingChannels() {
     let proxyMap = this.getChannelsList();
-    let filterProxyFn = R.filter(R.propEq('val', 'ChannelsBaseProxy'));
+    let filterProxyFn = filter(propEq('val', 'ChannelsBaseProxy'));
     let filterProxyArr = filterProxyFn(proxyMap);
 
     if (filterProxyArr.length >= 1) {
       let channelStr = filterProxyArr.length === 1 ? 'Channel has' : 'Channels have';
-      let channels = R.compose(R.join(', '), R.map(R.prop('key')))(filterProxyArr);
+      let channels = compose(join(', '), rMap(prop('key')))(filterProxyArr);
       let filterPrefixWarning = `Spyne Warning: The following ${channelStr} not been initialized: ${channels}`;
       console.warn(filterPrefixWarning);
       // console.log("FILTER PROXY WARNING ",filterProxyArr);

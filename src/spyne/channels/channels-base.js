@@ -2,7 +2,9 @@ import { registeredStreamNames } from './channels-config';
 import { ChannelPayloadItem } from './channel-payload-item';
 import { ReplaySubject, Subject } from 'rxjs';
 import { map } from 'rxjs/operators';
-import * as R from 'ramda';
+import {ifElse, isString, identity, head, mergeAll, objOf, view, is, chain, lensIndex, always, fromPairs, path, equals, prop} from 'ramda';
+const rMap = require('ramda').map;
+const rMerge = require('ramda').mergeRight;
 
 export class ChannelsBase {
   /**
@@ -69,19 +71,19 @@ export class ChannelsBase {
   }
 
   createChannelActionsObj() {
-    const getActionVal = R.ifElse(R.is(String), R.identity, R.head);
-    let arr = R.map(getActionVal, this.addRegisteredActions());
+    const getActionVal = ifElse(is(String), identity, head);
+    let arr = rMap(getActionVal, this.addRegisteredActions());
     // console.log("ARR IS ",arr);
-    const converter = str => R.objOf(str, str);
-    let obj = R.mergeAll(R.chain(converter, arr));
+    const converter = str => objOf(str, str);
+    let obj = mergeAll(chain(converter, arr));
     this.channelActions = obj;
   }
 
   createChannelActionMethods() {
     const defaultFn = 'onViewStreamInfo';
-    const getActionVal = R.ifElse(R.is(String), R.identity, R.head);
+    const getActionVal = ifElse(is(String), identity, head);
     const getCustomMethod = val => {
-      const methodStr = R.view(R.lensIndex(1), val);
+      const methodStr = view(lensIndex(1), val);
       const hasMethod = typeof (this[methodStr]) === 'function';
       if (hasMethod === true) {
         this[methodStr].bind(this);
@@ -92,7 +94,7 @@ export class ChannelsBase {
       return methodStr;
     };
 
-    const getArrMethod =  R.ifElse(R.is(String), R.always(defaultFn), getCustomMethod);
+    const getArrMethod =  ifElse(is(String), always(defaultFn), getCustomMethod);
 
     const createObj = val => {
       let key = getActionVal(val);
@@ -100,7 +102,7 @@ export class ChannelsBase {
       return [key, method];
     };
 
-    this.channelActionMethods = R.fromPairs(R.map(createObj, this.addRegisteredActions()));
+    this.channelActionMethods = fromPairs(rMap(createObj, this.addRegisteredActions()));
 
     // console.log('the channel action methods ',this.channelActionMethods);
   }
@@ -116,8 +118,8 @@ export class ChannelsBase {
   getActionMethodForObservable(obj) {
     const defaultFn = this.onViewStreamInfo.bind(this);
 
-    let methodStr = R.path(['data', 'action'], obj);
-    const methodVal = R.prop(methodStr, this.channelActionMethods);
+    let methodStr = path(['data', 'action'], obj);
+    const methodVal = prop(methodStr, this.channelActionMethods);
 
     let fn = defaultFn;
 
@@ -132,8 +134,8 @@ export class ChannelsBase {
   }
 
   onIncomingObservable(obj) {
-    let eqsName = R.equals(obj.name, this.props.name);
-    const mergeProps = (d) => R.mergeAll([d, { action: R.prop('action', d) }, R.prop('payload', d), R.prop('srcElement', d)]);
+    let eqsName = equals(obj.name, this.props.name);
+    const mergeProps = (d) => mergeAll([d, { action: prop('action', d) }, prop('payload', d), prop('srcElement', d)]);
     let dataObj = obsVal => ({
       props: () => mergeProps(obj.data),
       viewStreamInfo: obj.data,
@@ -167,7 +169,7 @@ export class ChannelsBase {
     let error = c => console.warn(
       `channel name ${c} is not within ${registeredStreamNames}`);
     let startSubscribe = (c) => this.streamsController.getStream(c).observer;
-    let fn = R.ifElse(isValidChannel, startSubscribe, error);
+    let fn = ifElse(isValidChannel, startSubscribe, error);
     return fn(channel);
   }
 }

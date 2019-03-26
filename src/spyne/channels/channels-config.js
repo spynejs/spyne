@@ -1,7 +1,7 @@
 // import Spyne from '../spyne';
 import { arrFromMapKeys } from '../utils/frp-tools';
 
-import * as R from 'ramda';
+import {compose, path, is} from 'ramda';
 const Observable = require('rxjs');
 const Subject = require('rxjs');
 
@@ -24,7 +24,7 @@ let baseValidations = []; let viewInfoValidations = []; let uiValidations = [];
 let lifestreamValidations = []; let stepValidations = []; let stepDisposeValidations = []; let stepUpdateValidations = [];
 let routeValidations = []; let StreamsConfig = [];
 
-if (R !== undefined && Observable !== undefined) {
+if (compose !== undefined && Observable !== undefined) {
 //  ===========================================================================
   // ALL VALIDATIONS ADD THE BASE VALIDATIONS THROUGH CONCATENATION
   //  ===========================================================================
@@ -51,12 +51,12 @@ if (R !== undefined && Observable !== undefined) {
   viewInfoValidations = [
     {
       error: 'needs cid number in srcElement',
-      predicate: R.compose(R.is(String), R.path(['data', 'srcElement', 'cid']))
+      predicate: compose(is(String), path(['data', 'srcElement', 'cid']))
     },
     {
       error: 'needs a viewName in srcElement',
-      predicate: R.compose(R.is(String),
-        R.path(['data', 'srcElement', 'viewName']))
+      predicate: compose(is(String),
+        path(['data', 'srcElement', 'viewName']))
     }
   ];
 

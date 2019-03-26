@@ -1,4 +1,4 @@
-import * as R from 'ramda';
+import {head, compose, lte, defaultTo, prop} from 'ramda';
 
 
 function generateSpyneSelectorId(el) {
@@ -15,14 +15,14 @@ function generateSpyneSelectorId(el) {
 
 function getElOrList(cxt, str) {
   let list = getNodeListArray(cxt, str);
-  return list.length === 1 ? R.head(list) : list;
+  return list.length === 1 ? head(list) : list;
 };
 
 function testSelectors(cxt, str) {
   let el = document.querySelector(cxt);
 
-  const elIsDomElement = R.compose(R.lte(0), R.defaultTo(-1),
-      R.prop('nodeType'));
+  const elIsDomElement = compose(lte(0), defaultTo(-1),
+      prop('nodeType'));
 
   if (elIsDomElement(el) === false) {
     console.warn(`Spyne warning: the el object is not a valid single element, ${el}`);

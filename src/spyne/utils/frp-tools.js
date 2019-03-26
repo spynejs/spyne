@@ -1,4 +1,4 @@
-import * as R from 'ramda';
+import{defaultTo, match, forEach, test, includes, without,complement, isEmpty, values, isNil, filter, __, keys, compose, head, map, pick, allPass, concat, uniq} from 'ramda';
 const isIOS = () => {
   let userAgent = window.navigator.userAgent.toLowerCase();
   // let safari = /safari/.test(userAgent);
@@ -12,13 +12,13 @@ const getConstructorName = (obj) => {
   }
   const re = /^(function\s)(\w+)(\(.*)$/;
   let str = obj.toString();
-  return R.defaultTo(String(str).substr(0, 12), R.match(re, str)[2]);
+  return defaultTo(String(str).substr(0, 12), match(re, str)[2]);
 };
 
 const arrFromMapKeys = (map) => {
   let arr = [];
   const addKeysToArr = (v, k, i) => arr.push(k);
-  R.forEach(addKeysToArr, map);
+  forEach(addKeysToArr, map);
   return arr;
 };
 
@@ -26,13 +26,13 @@ const findStrFromRegexArr = (obj, str) => {
   if (obj[str] !== undefined) {
     return str;
   }
-  const checkIfMatch = s => R.test(new RegExp(s), str);
-  const checkStrMatch = R.contains(str);
-  const checkIfRegExMatch = R.compose(R.contains(true), R.map(checkIfMatch));
-  const runMatchChecks = R.cond([
+  const checkIfMatch = s => test(new RegExp(s), str);
+  const checkStrMatch = includes(str);
+  const checkIfRegExMatch = compose(includes(true), map(checkIfMatch));
+  const runMatchChecks = cond([
     [checkStrMatch, () => str],
     [checkIfRegExMatch, () => str],
-    [R.T, () => undefined]
+    [T, () => undefined]
   ]);
   return runMatchChecks(obj);
 };
@@ -42,8 +42,8 @@ const findStrOrRegexMatchStr = (obj, str) => {
     return str;
   }
   const createRe = s => new RegExp(s);
-  let checkerIfRegexMatchExists = R.compose(R.head, R.filter(R.compose(R.test(R.__, str), createRe)));
-  return checkerIfRegexMatchExists(R.keys(obj));
+  let checkerIfRegexMatchExists = compose(head, filter(compose(test(__, str), createRe)));
+  return checkerIfRegexMatchExists(keys(obj));
 };
 
 const closest = (array, num) => {
@@ -68,7 +68,7 @@ const convertDomStringMapToObj = (domMap) => {
   return obj;
 };
 
-// const passPageData = R.pick(['params', 'routeId', 'data'], R.__);
+// const passPageData = pick(['params', 'routeId', 'data'], __);
 
 const subscribeFn = {
   next:     x => console.log(`next      ${x}`),
@@ -84,7 +84,7 @@ const right = x => ({
 });
 
 const ifNilThenUpdate = (val, newVal) => {
-  let isNil = R.isNil(val);
+  let isNil = isNil(val);
   return isNil ? newVal : val;
 };
 
@@ -95,9 +95,9 @@ const left = x => ({
 });
 
 const checkIfObjIsNotEmptyOrNil = (obj) => {
-  const isNotEmpty = R.compose(R.complement(R.isEmpty), R.head, R.values);
-  const isNotNil = R.compose(R.complement(R.isNil), R.head, R.values);
-  const isNotNilAndIsNotEmpty = R.allPass([isNotEmpty, isNotNil]);
+  const isNotEmpty = compose(complement(isEmpty), head, values);
+  const isNotNil = compose(complement(isNil), head, values);
+  const isNotNilAndIsNotEmpty = allPass([isNotEmpty, isNotNil]);
   return isNotNilAndIsNotEmpty(obj);
 };
 
@@ -120,13 +120,13 @@ const getAllMethodNames = (_this = this, omittedMethods = []) => {
   };
   // Filter Methods
   let baseClassMethodsArr = ['length', 'name', 'prototype', 'constructor'];
-  omittedMethods = R.concat(baseClassMethodsArr, omittedMethods);
-  let omitPropsFromArr = R.compose(R.without(omittedMethods), R.uniq);
+  omittedMethods = concat(baseClassMethodsArr, omittedMethods);
+  let omitPropsFromArr = compose(without(omittedMethods), uniq);
 
   // PULL OUT METHOD NAMES
   let methods = omitPropsFromArr(Object.getOwnPropertyNames(_this.constructor.prototype));
   let staticMethods = omitPropsFromArr(getPropNamesArr(_this.constructor));
-  let allMethods = R.concat(methods, staticMethods);
+  let allMethods = concat(methods, staticMethods);
 
   return { methods, staticMethods, allMethods };
   // return 'fn';

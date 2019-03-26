@@ -4,7 +4,7 @@ import { DomTemplateRenderer } from './dom-template-renderer';
 import { deepMerge } from '../utils/deep-merge';
 // import {DomTemplateRenderer} from './template-renderer';
 
-import * as R from 'ramda';
+import {is, forEach, mapObjIndexed, forEachObjIndexed, pipe} from 'ramda';
 
 export class DomItem {
   /**
@@ -26,7 +26,7 @@ export class DomItem {
    */
 
   constructor(tagName = 'div', attributes = {}, content = undefined, template = undefined) {
-    let isSimpleView = R.is(String, attributes);
+    let isSimpleView = is(String, attributes);
     if (isSimpleView === true) {
       content = attributes;
       attributes = {};
@@ -56,7 +56,7 @@ export class DomItem {
     let addAttributes = (val, key) => {
       let addToDataset = (val, key) => { el.dataset[key] = val; };
       if (key === 'dataset') {
-        R.forEachObjIndexed(addToDataset, val);
+        forEachObjIndexed(addToDataset, val);
       } else {
         el.setAttribute(key, val);
       }
@@ -68,7 +68,7 @@ export class DomItem {
   updateAttrs(params, m) {
     let theMap = m !== undefined ? m : new Map();
     let addAttributes = (val, key) => theMap.set(key, val);
-    R.mapObjIndexed(addAttributes, params);
+    mapObjIndexed(addAttributes, params);
     return theMap;
   }
 
@@ -77,7 +77,7 @@ export class DomItem {
 
     let addTmpl = (template) => {
       let data = this.getProp('content');
-      data = R.is(Object, data) ? data : {};
+      data = is(Object, data) ? data : {};
 
       let frag = new DomTemplateRenderer(template, data).getTemplateNode();
       el.appendChild(frag);
@@ -93,7 +93,7 @@ export class DomItem {
 
   addContent(el) {
     let text = (this.getProp('content'));
-    let isText = R.is(String, text);
+    let isText = is(String, text);
     if (isText === true) {
       let txt = document.createTextNode(text);
       el.appendChild(txt);
@@ -102,7 +102,7 @@ export class DomItem {
   }
 
   execute() {
-    let el = R.pipe(
+    let el = pipe(
       this.createElement.bind(this),
       this.setElAttrs.bind(this),
       this.addTemplate.bind(this),

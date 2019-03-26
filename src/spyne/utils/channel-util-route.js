@@ -1,5 +1,5 @@
 import { fromEventPattern } from 'rxjs';
-import * as R from 'ramda';
+import {last, pick, prop, equals, compose, keys, filter, propEq, uniq, map, __, chain, includes, fromPairs, toPairs, values} from 'ramda';
 
 export class RouteUtils {
   constructor() {
@@ -19,21 +19,21 @@ export class RouteUtils {
   }
 
   static getLastArrVal(arr) {
-    const getLastParam = (a) => R.last(a) !== undefined ? R.last(a) : '';
+    const getLastParam = (a) => last(a) !== undefined ? last(a) : '';
     return getLastParam(arr);
   }
 
   static compareRouteKeywords(obj = {}, arr) {
-    const pickValues = (o, a) => a !== undefined ? R.pick(a, o) : o;
+    const pickValues = (o, a) => a !== undefined ? pick(a, o) : o;
     let obj1 = pickValues(obj, arr);
     return {
       pickValues,
       compare: (obj = {}, arr) => {
         let obj2 = pickValues(obj, arr);
         const compareProps = p => {
-          let p1 = R.prop(p, obj1);
-          let p2 = R.prop(p, obj2);
-          let same = R.equals(p1, p2);
+          let p1 = prop(p, obj1);
+          let p2 = prop(p, obj2);
+          let same = equals(p1, p2);
           let previousExists = p1 !== undefined;
           let nextExists = p2 !== undefined;
           let changed = !same;
@@ -45,12 +45,12 @@ export class RouteUtils {
           return obj;
         };
 
-        const createPred = p => R.compose(R.keys, R.filter(R.propEq(p, true)));
+        const createPred = p => compose(keys, filter(propEq(p, true)));
 
-        const getPropsState = R.compose(R.map(compareProps), R.uniq, R.chain(R.keys))([obj1, obj2]);
-        let pathsChanged = R.chain(createPred('changed'), getPropsState);
-        let pathsAdded = R.chain(createPred('added'), getPropsState);
-        let pathsRemoved = R.chain(createPred('removed'), getPropsState);
+        const getPropsState = compose(map(compareProps), uniq, chain(keys))([obj1, obj2]);
+        let pathsChanged = chain(createPred('changed'), getPropsState);
+        let pathsAdded = chain(createPred('added'), getPropsState);
+        let pathsRemoved = chain(createPred('removed'), getPropsState);
         // console.log("GET KEYS ", pathsChanged);
         obj1 = obj2;
         return { pathsAdded, pathsRemoved, pathsChanged };
@@ -62,28 +62,28 @@ export class RouteUtils {
   }
 
   static getRouteArrData(routeArr, paramsArr) {
-    let paths =  R.filter(R.contains(R.__, routeArr), paramsArr);
+    let paths =  filter(includes(__, routeArr), paramsArr);
     const pathInnermost = RouteUtils.getLastArrVal(paths);
     // console.log('arr and routeName ',{paths, pathInnermost});
     return { paths, pathInnermost };
   }
 
   static flattenConfigObject(obj) {
-    const go = obj_ => R.chain(([k, v]) => {
+    const go = obj_ => chain(([k, v]) => {
       if (Object.prototype.toString.call(v) === '[object Object]') {
-        return R.map(([k_, v_]) => [`${k}.${k_}`, v_], go(v));
+        return map(([k_, v_]) => [`${k}.${k_}`, v_], go(v));
       } else {
         return [[k, v]];
       }
-    }, R.toPairs(obj_));
+    }, toPairs(obj_));
 
-    // console.log("FLATTEN: ",R.values(R.fromPairs(go(obj))));
+    // console.log("FLATTEN: ",values(fromPairs(go(obj))));
 
     /**
      * TODO: PARSE PAIRS TO ALLOW FOR ARRAYS OR REGEX IN ROUTE CONFIG
      *
      */
-    return R.values(R.fromPairs(go(obj)));
+    return values(fromPairs(go(obj)));
   }
 
   static getLocationData() {
@@ -97,6 +97,6 @@ export class RouteUtils {
       'pathname',
       'search',
       'hash'];
-    return R.pickAll(locationParamsArr, window.location);
+    return pickAll(locationParamsArr, window.location);
   }
 }

@@ -1,5 +1,5 @@
 import { getAllMethodNames } from './frp-tools';
-import * as R from 'ramda';
+import {reject, test, curryN, __, map} from 'ramda';
 
 export class SpyneTrait {
   constructor(parentContext, prefix = '', autoInit = true) {
@@ -35,7 +35,7 @@ export class SpyneTrait {
     let reStr = `^(${this.prefix})(.*)$`;
     let re = new RegExp(reStr);
 
-    let malformedMethodsArr = R.reject(R.test(re), methodsArr);
+    let malformedMethodsArr = reject(test(re), methodsArr);
     if (malformedMethodsArr.length >= 1) {
       let warningStr = `Spyne Warning: The following method(s) in ${this.constructor.name} require the prefix, "${this.prefix}": [${malformedMethodsArr.join(', ')}];`;
       console.warn(warningStr);
@@ -54,10 +54,10 @@ export class SpyneTrait {
       }
     };
 
-    const bindCurry = R.curryN(2, bindMethodsToParentViewStream);
-    const bindStaticMethodsToParentViewStream = bindCurry(R.__, true);
-    let staticMethods = R.map(bindStaticMethodsToParentViewStream, methodsObj.staticMethods);
-    let mainMethods = R.map(bindMethodsToParentViewStream, methodsObj.methods);
+    const bindCurry = curryN(2, bindMethodsToParentViewStream);
+    const bindStaticMethodsToParentViewStream = bindCurry(__, true);
+    let staticMethods = map(bindStaticMethodsToParentViewStream, methodsObj.staticMethods);
+    let mainMethods = map(bindMethodsToParentViewStream, methodsObj.methods);
     return obj;
   }
 

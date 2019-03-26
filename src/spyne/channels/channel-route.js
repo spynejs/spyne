@@ -4,8 +4,8 @@ import { RouteUtils } from '../utils/channel-util-route';
 import { BehaviorSubject, ReplaySubject, merge } from 'rxjs';
 import { map } from 'rxjs/operators';
 
-import * as R from 'ramda';
-
+import {objOf, mergeAll, path, keys, prop, equals, head,compose,chain, pickAll, defaultTo, isEmpty,concat,when,complement, curryN, __ } from 'ramda';
+const rMerge = require('ramda').mergeRight;
 export class ChannelRoute extends ChannelsBase {
   constructor(name = 'CHANNEL_ROUTE', props = {}) {
     props.sendCurrentPayload = true;
@@ -25,8 +25,8 @@ export class ChannelRoute extends ChannelsBase {
 
   createChannelActionsObj() {
     let arr = this.addRegisteredActions();
-    const converter = str => R.objOf(str, str);
-    let obj = R.mergeAll(R.chain(converter, arr));
+    const converter = str => objOf(str, str);
+    let obj = mergeAll(chain(converter, arr));
     this.channelActions = obj;
   }
 
@@ -39,7 +39,7 @@ export class ChannelRoute extends ChannelsBase {
 
   getRouteConfig() {
     const spyneConfig = window.Spyne.config;
-    let routeConfig = R.path(['channels', 'ROUTE'], spyneConfig);
+    let routeConfig = path(['channels', 'ROUTE'], spyneConfig);
     if (routeConfig.type === 'query') {
       routeConfig.isHash = false;
     }
@@ -72,7 +72,7 @@ export class ChannelRoute extends ChannelsBase {
     let payload = this.getDataFromString(config);
     // console.log('route dom ',action, payload);
     let keywordArrs = this.compareRouteKeywords.compare(payload.routeData, payload.paths);
-    payload = R.merge(payload, keywordArrs);
+    payload = rMerge(payload, keywordArrs);
     // console.log("SEND STREAM onIncomingDomEvent", payload, keywordArrs);;
     this.sendChannelPayload(action, payload, undefined, undefined,
       this.navToStream$);
@@ -87,11 +87,11 @@ export class ChannelRoute extends ChannelsBase {
   onViewStreamInfo(pl) {
     let action = this.channelActions.CHANNEL_ROUTE_CHANGE_EVENT;
     let payload = this.getDataFromParams(pl);
-    let srcElement = R.path(['viewStreamInfo', 'srcElement'], pl);
+    let srcElement = path(['viewStreamInfo', 'srcElement'], pl);
     let uiEvent = pl.viewStreamEvent;
     let changeLocationBool = !payload.isHidden;
     let keywordArrs = this.compareRouteKeywords.compare(payload.routeData, payload.paths);
-    payload = R.merge(payload, keywordArrs);
+    payload = rMerge(payload, keywordArrs);
     // this.checkForRouteParamsOverrides(payload);
     this.sendRouteStream(payload, changeLocationBool);
     // console.log("SEND STREAM onViewStreamInfo", payload);
@@ -101,7 +101,7 @@ export class ChannelRoute extends ChannelsBase {
   }
 
   static checkAndConvertStrWithRegexTokens(routeValue, regexTokenObj) {
-    let tokenKeysArr = R.keys(regexTokenObj);
+    let tokenKeysArr = keys(regexTokenObj);
 
     return tokenKeysArr;
   }
@@ -139,12 +139,12 @@ export class ChannelRoute extends ChannelsBase {
   }
 
   static getDataFromParams(pl, config = this.routeConfigJson) {
-    let routeData = R.path(['viewStreamInfo', 'payload'], pl);
+    let routeData = path(['viewStreamInfo', 'payload'], pl);
 
     let routeValue = this.getRouteStrFromParams(routeData, config);
 
     // WINDOW LOCATION HASN'T BEEN CHANGED YET, SO WILL GET STR PARAMS
-    const getPropFromConfig = (prp, defalt) => R.defaultTo(defalt, R.prop(prp, config));
+    const getPropFromConfig = (prp, defalt) => defaultTo(defalt, prop(prp, config));
     let typeForStr = getPropFromConfig('type', 'slash');
     let isHashForStr = getPropFromConfig('isHash', false);
     let nextWindowLoc = URLUtils.formatStrAsWindowLocation(routeValue);
@@ -153,7 +153,7 @@ export class ChannelRoute extends ChannelsBase {
     // console.log(" DATA FROM STRING ",{routeValue, pl, dataFromStr});
     let { pathInnermost, paths } = dataFromStr;
 
-    routeData = R.merge(dataFromStr.routeData, routeData);
+    routeData = rMerge(dataFromStr.routeData, routeData);
 
     let { routeCount, isDeepLink, isHash, isHidden, routeType } = this.getExtraPayloadParams(
       config);
@@ -218,7 +218,7 @@ export class ChannelRoute extends ChannelsBase {
       'pathname',
       'search',
       'hash'];
-    return R.pickAll(locationParamsArr, window.location);
+    return pickAll(locationParamsArr, window.location);
   }
 
   static getRouteStrFromParams(paramsData, routeConfig, t) {
@@ -237,16 +237,16 @@ export class ChannelRoute extends ChannelsBase {
   }
 
   checkEmptyRouteStr(str, isHash = false) {
-    const isEmpty = R.isEmpty(str);
-    const pathNameIsEmptyBool = isEmpty === true && isHash === false;
-    const hashNameIsEmptyBool = isEmpty === true && isHash === true;
-    const hashNameBool = isEmpty === false && isHash === true;
+    const isEmptyBool = isEmpty(str);
+    const pathNameIsEmptyBool = isEmptyBool === true && isHash === false;
+    const hashNameIsEmptyBool = isEmptyBool === true && isHash === true;
+    const hashNameBool = isEmptyBool === false && isHash === true;
 
     // console.log('ROUTE STR CHECK ', {str, isHash});
     if (pathNameIsEmptyBool === true || hashNameIsEmptyBool === true) {
       return '/';
     } else if (hashNameBool === true) {
-      return R.concat('#', str);
+      return concat('#', str);
     }
     return str;
   }
@@ -266,9 +266,9 @@ export class ChannelRoute extends ChannelsBase {
       // console.log('ROUTE STR FOR HASH ', routeValue);
       window.history.pushState({}, '', routeValue);
     } else {
-      // routeValue =  R.when(R.isEmpty, R.always('/'))(routeValue);
-      const checkForSlash = R.when(
-        R.compose(R.complement(R.equals('/')), R.head), R.concat('/', R.__));
+      // routeValue =  when(isEmpty, always('/'))(routeValue);
+      const checkForSlash = when(
+        compose(complement(equals('/')), head), concat('/', __));
       window.history.pushState({}, '', checkForSlash(routeValue));
     }
   }
@@ -289,8 +289,8 @@ export class ChannelRoute extends ChannelsBase {
     this.getDataFromParams = ChannelRoute.getDataFromParams.bind(this);
     this.getRouteCount = ChannelRoute.getRouteCount.bind(this);
     this.getExtraPayloadParams = ChannelRoute.getExtraPayloadParams.bind(this);
-    const curriedGetRoute = R.curryN(3, ChannelRoute.getRouteStrFromParams);
-    this.getRouteStrFromParams = curriedGetRoute(R.__, this.routeConfigJson,
+    const curriedGetRoute = curryN(3, ChannelRoute.getRouteStrFromParams);
+    this.getRouteStrFromParams = curriedGetRoute(__, this.routeConfigJson,
       this.routeConfigJson.type);
   }
 }

@@ -1,5 +1,5 @@
 import { ChannelsBase } from '../channels/channels-base';
-import * as R from 'ramda';
+import {prop} from 'ramda';
 
 export class ChannelViewStreamLifecycle extends ChannelsBase {
   constructor(props = {}) {
@@ -16,7 +16,7 @@ export class ChannelViewStreamLifecycle extends ChannelsBase {
   onViewStreamInfo(obj) {
     let data = obj.viewStreamInfo;
     let action = data.action;
-    let payload = R.prop('srcElement', data);
+    let payload = prop('srcElement', data);
     payload['action'] = action;
     this.onSendEvent(action, payload);
   }

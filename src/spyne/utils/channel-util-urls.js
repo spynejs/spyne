@@ -1,4 +1,4 @@
-import * as R from 'ramda';
+import {isEmpty, head, values, compose, prop, complement, isNil, allPass, reduce, filter, equals, toPairs, replace, either, propEq, __,invert,path,zipObj, reject, keys, find, assoc, is,has, when, split, always, concat, join, flatten, map, ifElse, test, findLastIndex,last, defaultTo,fromPairs } from 'ramda';
 
 export class URLUtils {
   constructor() {
@@ -6,20 +6,20 @@ export class URLUtils {
   }
 
   static checkIfObjIsNotEmptyOrNil(obj) {
-    const isNotEmpty = R.compose(R.complement(R.isEmpty), R.head, R.values);
-    const isNotNil = R.compose(R.complement(R.isNil), R.head, R.values);
-    const isNotNilAndIsNotEmpty = R.allPass([isNotEmpty, isNotNil]);
+    const isNotEmpty = compose(complement(isEmpty), head, values);
+    const isNotNil = compose(complement(isNil), head, values);
+    const isNotNilAndIsNotEmpty = allPass([isNotEmpty, isNotNil]);
     return isNotNilAndIsNotEmpty(obj);
   }
 
   static checkIfParamValueMatchesRegex(paramValue, routeObj) {
-    const rejectParamKey = R.reject(R.equals('routeName'));
-    const keysArr = R.compose(rejectParamKey, R.keys);
-    const testForRegexMatch = str => R.test(new RegExp(str), paramValue);
-    const checker = R.compose(R.find(testForRegexMatch), keysArr);
+    const rejectParamKey = reject(equals('routeName'));
+    const keysArr = compose(rejectParamKey, keys);
+    const testForRegexMatch = str => test(new RegExp(str), paramValue);
+    const checker = compose(find(testForRegexMatch), keysArr);
     const regexMatchStr = checker(routeObj);
-    if (R.is(String, regexMatchStr)) {
-      routeObj = R.assoc(paramValue, R.prop(regexMatchStr, routeObj), routeObj);
+    if (is(String, regexMatchStr)) {
+      routeObj = assoc(paramValue, prop(regexMatchStr, routeObj), routeObj);
     }
     return routeObj;
   }
@@ -39,8 +39,8 @@ export class URLUtils {
       'query': 'search',
       'hash': 'hash'
     };
-    const prop = typeMap[type];
-    let str  = R.prop(prop, loc);
+    const propVal = typeMap[type];
+    let str  = prop(propVal, loc);
     let checkForSlashAndHash = /^(\/)?(#)?(\/)?(.*)$/;
     // console.log("DATA LOC STR ",{str, loc, prop, type,isHash});
     return str.replace(checkForSlashAndHash, '$4');
@@ -51,7 +51,7 @@ export class URLUtils {
     let loopThroughParam = (routeObj) => {
       let urlObj = {};
       let keyword = routeObj.routeName; // PARAM FORM SPYNE CONFIG
-      let paramValFromData = data[keyword] !== undefined ? data[keyword] : R.prop(keyword, paramsFromLoc); // PULL VALUE FOR THIS PARAM FROM DATA
+      let paramValFromData = data[keyword] !== undefined ? data[keyword] : prop(keyword, paramsFromLoc); // PULL VALUE FOR THIS PARAM FROM DATA
       const paramValType = typeof (routeObj[paramValFromData]);
       // console.log({routeObj, paramValType, paramValFromData, keyword})
 
@@ -72,15 +72,15 @@ export class URLUtils {
 
       }
 
-      const isObject = R.is(Object, routeObj);
-      const objectParamExists = R.has(paramValFromData, routeObj);
-      const objectContainsRoute = R.has('routePath', routeObj);
+      const isObject = is(Object, routeObj);
+      const objectParamExists = has(paramValFromData, routeObj);
+      const objectContainsRoute = has('routePath', routeObj);
       const recursivelyCallLoopBool = objectParamExists && isObject;
       // console.log("CHECKS ", {isObject, objectParamExists, objectContainsRoute, recursivelyCallLoopBool})
       if (recursivelyCallLoopBool === true) {
         let newObj = routeObj[paramValFromData];
         // console.log("NEW OBJ ",{paramValFromData, routeObj, newObj});
-        if (R.has('routePath', newObj)) {
+        if (has('routePath', newObj)) {
           loopThroughParam(newObj.routePath);
         }
       } else if (objectContainsRoute === true && paramValFromData !== undefined) {
@@ -94,40 +94,40 @@ export class URLUtils {
   }
 
   static createSlashString(arr) {
-    const arrClear = R.reject(R.isNil);
-    const notUndefined = R.when(R.complement(R.isNil, R.__), R.join('/'));
+    const arrClear = reject(isNil);
+    const notUndefined = when(complement(isNil, __), join('/'));
 
-    const joiner = R.compose(notUndefined, arrClear, R.flatten,
-      R.map(R.values));
+    const joiner = compose(notUndefined, arrClear, flatten,
+      map(values));
 
     return joiner(arr);
   }
 
   static createQueryString(arr) {
-    const arrClear = R.reject(R.isNil);
+    const arrClear = reject(isNil);
 
     const isNotNilAndIsNotEmpty = this.checkIfObjIsNotEmptyOrNil;
 
-    const createPair = R.compose(
-      R.join('='),
-      R.flatten,
-      R.toPairs);
+    const createPair = compose(
+      join('='),
+      flatten,
+      toPairs);
 
-    const checkPair = R.ifElse(
+    const checkPair = ifElse(
       isNotNilAndIsNotEmpty,
       createPair,
-      R.always(undefined)
+      always(undefined)
     );
 
-    const mapArrayOfPairs = R.map(checkPair);
+    const mapArrayOfPairs = map(checkPair);
 
-    const checkIfStrIsEmpty = R.when(
-      R.complement(R.isEmpty),
-      R.concat('?'));
+    const checkIfStrIsEmpty = when(
+      complement(isEmpty),
+      concat('?'));
 
-    const createQs = R.compose(
+    const createQs = compose(
       checkIfStrIsEmpty,
-      R.join('&'),
+      join('&'),
       arrClear,
       mapArrayOfPairs);
 
@@ -136,10 +136,10 @@ export class URLUtils {
 
   static checkPayloadForRegexOverrides(urlsArr, data, parseString = 'Value') {
     // CHECK IF PAYLOAD HAS ANY OVERRIDES
-    const getPropValOverride = (key) => R.prop(`${key}${parseString}`, data);
+    const getPropValOverride = (key) => prop(`${key}${parseString}`, data);
 
     // GET ANY POSSIBLE VALUE USING THE CURRENT KEY
-    const getOverrideVal = R.compose(getPropValOverride, R.head, R.keys);
+    const getOverrideVal = compose(getPropValOverride, head, keys);
 
     // MAP ALL OBJECT VALS TO TEST FOR OVERRIDES
     const mapUrlProps = (prop) => {
@@ -148,13 +148,13 @@ export class URLUtils {
       // console.log("override val ",overrideVal, data);
       // if regex value is found
       if (overrideVal !== undefined) {
-        return R.assoc(R.compose(R.head, R.keys)(prop), overrideVal, prop);
+        return assoc(compose(head, keys)(prop), overrideVal, prop);
       }
       // identity
       return prop;
     };
 
-    return R.map(mapUrlProps, urlsArr);
+    return map(mapUrlProps, urlsArr);
   }
 
   static convertParamsToRoute(data, r = window.Spyne.config.channels.ROUTE, t, locStr) {
@@ -177,7 +177,7 @@ export class URLUtils {
   }
 
   static findIndexOfMatchedStringOrRegex(mainStr, paramsArr) {
-    const checkForEmpty =  R.replace(/^$/, '^$');
+    const checkForEmpty =  replace(/^$/, '^$');
     const createStrRegexTest = (str) => {
       const reFn = s => new RegExp(s);
       return {
@@ -186,11 +186,11 @@ export class URLUtils {
       };
     };
 
-    const checkForEitherStrOrReMatch =  R.either(
-      R.propEq('str', mainStr), R.compose(R.test(R.__, mainStr), R.prop('re'))
+    const checkForEitherStrOrReMatch =  either(
+      propEq('str', mainStr), compose(test(__, mainStr), prop('re'))
     );
 
-    const findMatchIndex = R.compose(R.findLastIndex(R.equals(true)), R.map(checkForEitherStrOrReMatch), R.map(createStrRegexTest), R.map(checkForEmpty));
+    const findMatchIndex = compose(findLastIndex(equals(true)), map(checkForEitherStrOrReMatch), map(createStrRegexTest), map(checkForEmpty));
 
     return findMatchIndex(paramsArr);
   }
@@ -210,7 +210,7 @@ export class URLUtils {
 
     // GO THROUGH ROUTE CONFIG TO FIGURE OUT IF VAL OR KEY SHOULD BE COMPARED
     // if the value is an object, choose the key of the route path to check against
-    const getValCompareArr = R.compose(R.map(R.last), R.map(R.filter(R.is(String))), R.toPairs);
+    const getValCompareArr = compose(map(last), map(filter(is(String))), toPairs);
 
     // CREATE THE ARRAY OF EITHER VALS OR KEYS
     let paramsArr = getValCompareArr(obj);
@@ -227,15 +227,15 @@ export class URLUtils {
     // WHEN THERE IS A MATCH FROM THE CURRENT ROUTE PATH OBJECT
     if (paramIndex >= 0) {
       let param = paramsArr[paramIndex];
-      let invertedObj = R.invert(obj);
+      let invertedObj = invert(obj);
 
       // PULL INVERTED OBJECT TO SEE IF STR MATCHES
-      let getParamInverted = R.compose(R.head, R.defaultTo([]), R.prop(param));
+      let getParamInverted = compose(head, defaultTo([]), prop(param));
       let paramInverted = getParamInverted(invertedObj);
       let re =  /^(\w*)$/;
       let keyMatch =  re.test(paramInverted);
 
-      if (keyMatch === true && R.is(String, paramInverted) === true) {
+      if (keyMatch === true && is(String, paramInverted) === true) {
         paramStr = paramInverted;
       }
     }
@@ -265,8 +265,8 @@ export class URLUtils {
       }
       let strPath = [currentValue, 'routePath'];
       let routeParamPath = ['routePath'];
-      let objectFromStr = R.path(strPath, latestObj);
-      let objectFromRouteParam = R.path(routeParamPath, latestObj);
+      let objectFromStr = path(strPath, latestObj);
+      let objectFromRouteParam = path(routeParamPath, latestObj);
 
       if (objectFromStr !== undefined) {
         latestObj = objectFromStr;
@@ -275,14 +275,14 @@ export class URLUtils {
       }
     };
 
-    R.reduce(createParamsFromStr, 0, valuesArr);
-    let routeData = R.zipObj(paths, routedValuesArr);
+    reduce(createParamsFromStr, 0, valuesArr);
+    let routeData = zipObj(paths, routedValuesArr);
     const pathInnermost = this.getLastArrVal(paths);
     return { paths, pathInnermost, routeData, routeValue };
   }
 
   static getLastArrVal(arr) {
-    const getLastParam = (a) => R.last(a) !== undefined ? R.last(a) : '';
+    const getLastParam = (a) => last(a) !== undefined ? last(a) : '';
     return getLastParam(arr);
   }
 
@@ -297,15 +297,15 @@ export class URLUtils {
     const queryRe = /^([?])?(.*)$/;
     const routeValue = str;
     let strArr = str.replace(queryRe, '$2');
-    let convertToParams = R.compose(R.map(R.split('=')), R.split('&'));
+    let convertToParams = compose(map(split('=')), split('&'));
     let paramsArr = convertToParams(strArr);
-    let routeData = R.fromPairs(paramsArr);
+    let routeData = fromPairs(paramsArr);
 
-    let paths = R.map(R.head, paramsArr);
+    let paths = map(head, paramsArr);
 
-    if (R.isEmpty(str) === true) {
+    if (isEmpty(str) === true) {
       routeData = this.createDefaultParamFromEmptyStr(topLevelRoute, str, regexTokens);
-      paths = R.keys(routeData);
+      paths = keys(routeData);
     }
     let pathInnermost = this.getLastArrVal(paths);
 
@@ -317,7 +317,7 @@ export class URLUtils {
       return {};
     }
     const type = t !== undefined ? t : routeConfig.type;
-    const regexTokens = R.defaultTo({}, R.prop('regexTokens', routeConfig));
+    const regexTokens = defaultTo({}, prop('regexTokens', routeConfig));
     let topLevelRoute = routeConfig.routes.routePath;
 
     if (type === 'query') {

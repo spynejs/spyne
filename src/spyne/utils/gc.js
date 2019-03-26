@@ -1,8 +1,8 @@
-import * as R from 'ramda';
+import {forEach} from 'ramda';
 export function gc() {
   let cleanup = () => {
     let loopM = m => void 0;
-    R.forEach(loopM, this);
+    forEach(loopM, this);
   };
   setTimeout(cleanup, 1);
 }
