@@ -8,7 +8,7 @@ import {
   getConstructorName
 } from '../utils/frp-tools';
 // import {gc} from '../utils/gc';
-import { ViewToDomMediator } from './view-to-dom-mediator';
+import { DomItemObservable } from './dom-item-observable';
 import { ViewStreamEnhancerLoader } from './view-stream-enhancer-loader';
 import { registeredStreamNames } from '../channels/channels-config';
 import { ViewStreamBroadcaster } from './view-stream-broadcaster';
@@ -79,7 +79,7 @@ export class ViewStream {
         animateOutTime: 0.5,
         sendLifecyleEvents: false,
         hashId: `#${id}`,
-        viewClass: ViewToDomMediator,
+        viewClass: DomItemObservable,
         extendedSourcesHashMethods: {},
         debug: false,
         template: undefined,
@@ -450,7 +450,7 @@ export class ViewStream {
   setAttachData(attachType, query) {
     return {
       node: this.props.el,
-      type: 'ViewToDomMediator',
+      type: 'DomItemObservable',
       attachType,
       query: this.props.el.querySelector(query)
     };
@@ -470,7 +470,7 @@ export class ViewStream {
   setAttachParentData(attachType, query, level) {
     return {
       node: this.getParentEls(this.props.el, level),
-      type: 'ViewToDomMediator',
+      type: 'DomItemObservable',
       attachType,
       query: this.props.el.parentElement.querySelector(query)
     };

@@ -14,7 +14,18 @@ const rMap = require('ramda').map;
 // import * as R from 'ramda';
 
 export class ChannelsBaseController {
-  constructor(obs$) {
+  /**
+   * @module ChannelsBaseController
+   *
+   * @desc
+   * This object creates the logic so that Channels and ViewStreams can communicate with each other
+   *
+   * @constructor
+   *
+   */
+
+
+  constructor() {
     this.addMixins();
     this.map = new Map();
 

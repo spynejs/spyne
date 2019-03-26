@@ -7,7 +7,20 @@ import { deepMerge } from '../utils/deep-merge';
 import { Subject, Observable, bindCallback } from 'rxjs';
 import {filter, isNil, pick, props, defaultTo} from 'ramda';
 
-export class ViewToDomMediator {
+export class DomItemObservable {
+  /**
+   * @module DomItemObservable
+   *
+   * @desc
+   * This is an internal class that is part of the ViewStream observable system.
+   *
+   * @constructor
+   * @param {Observable} sink$
+   * @param {Object} viewProps
+   * @param {String} cid
+   * @param {String} vsName
+   *
+   */
   constructor(sink$, viewProps = {}, cid = '', vsName = 'theName') {
     this.addMixins();
     this._state = 'INIT';
@@ -26,7 +39,7 @@ export class ViewToDomMediator {
     this.options.hashMethods = this.setHashMethods(this.options.extendedHashMethods);
     this.sink$ = sink$;
     this.sink$
-      .subscribe(this.onSinkSubscribe.bind(this));
+      .subscribe(this.onObsSinkSubscribe.bind(this));
 
     this.$dirs = LifecyleObservables.createDirectionalFiltersObject();
     this.addDefaultDir = LifecyleObservables.addDefaultDir;
@@ -75,6 +88,13 @@ export class ViewToDomMediator {
       this.animateInTween(el, d.animateInTime);
     }
   }
+
+
+  /**
+   *
+   * @param {Object} d
+   * @returns payload that confirms dispose
+   */
 
   disposeMethod(d) {
     let el = d.el.el !== undefined ? d.el.el : d.el; // DOM ITEMS HAVE THEIR EL ITEMS NESTED
@@ -145,6 +165,12 @@ export class ViewToDomMediator {
     this.setAnimateIn(d);
   }
 
+  /**
+   *
+   * @param p
+   * @returns payload to append child element to current element
+   */
+
   onAttachChildToSelf(p) {
     let data = p.childRenderData;
     this.combineDomItems(data);
@@ -154,6 +180,12 @@ export class ViewToDomMediator {
     };
   }
 
+
+  /**
+   *
+   * @param {Object} d
+   * @returns payload that attaches current child element to parent
+   */
   onRenderAndAttachToParent(d) {
     this.onRender(d);
     this.combineDomItems(d);
@@ -182,6 +214,12 @@ export class ViewToDomMediator {
   extendedMethods(data) {
   }
 
+  /**
+   *
+   * @param d
+   * @returns
+   * Payload containing the action, internal observable and element.
+   */
   onRenderAndAttachToDom(d) {
     let getEl = (data) => this.renderDomItem(data);
     // let getEl = (data) => new DomItem(...data);
@@ -194,17 +232,23 @@ export class ViewToDomMediator {
     };
   }
 
-  onSinkSubscribe(payload) {
+  /**
+   *
+   * The ViewStream directs all relevant actions to the DomItem to render and dispose of itself
+   *
+   * @param {Object} payload
+   */
+  onObsSinkSubscribe(payload) {
     let action = payload.action;
     let defaultToFn = defaultTo((data) => this.extendedMethods(data));
     let fn = defaultToFn(this.options.hashMethods[action]);
-    // console.log('MEDIATOR onSinkSubscribe before ', this.cid, action, payload);
+    // console.log('MEDIATOR onObsSinkSubscribe before ', this.cid, action, payload);
     let data = fn(payload);
     // data = this.addDefaultDir(data);
     // console.log('add default dir ', data);
     let sendData = (d) => this._source$.next(d);
     if (data !== undefined) {
-      // console.log('MEDIATOR onSinkSubscribe ', this.cid, data, payload);
+      // console.log('MEDIATOR onObsSinkSubscribe ', this.cid, data, payload);
       sendData(Object.freeze(data));
     }
   }
