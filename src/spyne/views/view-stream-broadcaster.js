@@ -6,6 +6,15 @@ import { map } from 'rxjs/operators';
 import {clone, omit, pick} from 'ramda';
 
 export class ViewStreamBroadcaster {
+  /**
+   * The class takes in all of the elements from the 'broadcastEvents' method and directs the events to either the UI or ROUTE channels
+   * @module ViewStreamBroadcaster
+   *
+   * @constructor
+   * @param {Object} props
+   * @param {Function} broadcastFn
+   */
+
   constructor(props, broadcastFn) {
     this.addMixins();
     this.props = props;

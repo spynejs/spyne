@@ -3,6 +3,19 @@ import { validate } from '../utils/channel-config-validator';
 import { gc } from '../utils/gc';
 
 export class ViewStreamPayload {
+  /**
+   *
+   * Observables sent from ViewStreams to Channels are validated by this class
+   *
+   * @module ViewStreamPayload
+   *
+   * @constructor
+   * @param {String} name
+   * @param {Observable} observable
+   * @param {Object} data
+   * @param {String} action
+   * @param {Boolean} debug
+   */
   constructor(name, observable, data, action = 'subscribe', debug = false) {
     this.addMixins();
     this.options = {

@@ -1,7 +1,19 @@
-
 import {mergeAll, includes, pickAll} from 'ramda';
 
 export class ChannelPayloadItem {
+  /**
+   *
+   * All payloads sent from Channels returns an instance of this class
+   * @module ChannelPayloadItem
+   *
+   * @constructor
+   * @param {String} channelName
+   * @param {String} action
+   * @param {Object} channelPayload
+   * @param {Element} srcElement
+   * @param {Event} event
+   * @returns Validated Payload
+   */
   constructor(channelName, action, channelPayload, srcElement, event) {
     let channel = channelName;
 

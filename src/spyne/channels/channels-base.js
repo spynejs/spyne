@@ -46,6 +46,9 @@ export class ChannelsBase {
   }
 
   //  OVERRIDE INITIALIZATION METHOD
+  /**
+   * This method is called as soon as the channel is ready.
+   */
   onChannelInitialized() {
 
   }
@@ -58,6 +61,11 @@ export class ChannelsBase {
     return this.props.name;
   }
 
+  /**
+   *
+   * @returns
+   * returns the source observable for the channel
+   */
   get observer() {
     return this.observer$;
   }
@@ -107,6 +115,13 @@ export class ChannelsBase {
     // console.log('the channel action methods ',this.channelActionMethods);
   }
 
+  /**
+   *
+   * @desc
+   * Any action that is to be used by the channel is required to be added here.
+   * If the action is added as a paired array, then the second value will be the method directed if a viewstream sends info.
+   *
+   */
   addRegisteredActions() {
     return [];
   }
@@ -147,9 +162,25 @@ export class ChannelsBase {
     return eqsName === true ? onSuccess(obj) : onError();
   }
 
+  /**
+   * This method returns any ViewStream info payloads that are directed to this channel.
+   *
+   * @param {Object} obj
+   */
   onViewStreamInfo(obj) {
   }
 
+
+  /**
+   *
+   * This is a convenience method that formats a ChannelPayloadItem, that the source observable for the channel uses to send.
+   *
+   * @param {String} action
+   * @param {Object} payload
+   * @param {HTMLElement} srcElement
+   * @param {HTMLElement} event
+   * @param {Observable} obs$
+   */
   sendChannelPayload(action, payload, srcElement = {}, event = {}, obs$ = this.observer$) {
     // MAKES ALL CHANNEL BASE AND DATA STREAMS CONSISTENT
     let channelPayloadItem = new ChannelPayloadItem(this.props.name, action, payload, srcElement, event);

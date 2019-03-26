@@ -14,10 +14,11 @@ class SpyneApp {
   /**
    *
    * SpyneApp initializes the app and creates a global Spyne object that can be used to contain global properties and has several methods
+   * @module SpyneApp
    *
+   * @constructor
    * @param {Object} config
    */
-
   constructor(config = {}) {
     this.channels = new ChannelsBaseController();
     this.VERSION = '0.9.14';

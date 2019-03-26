@@ -71,8 +71,21 @@ function DomItemSelector(cxt, str) {
   }
 
 
+  /**
+   * Convenience method to map through a NodeList.
+   *
+   * @param {Function} fn
+   * @returns An array of elements
+   */
   nested.map = (fn)=> Array.from(getNodeListArray(cxt, str)).map(fn);
-  nested.foeEach = (fn)=> Array.from(getNodeListArray(cxt, str)).map(fn);
+
+  /**
+   * Convenience method to iterate through a NodeList
+   *
+   * @param {Function} fn
+   * @returns An array of elements
+   */
+  nested.forEach = (fn)=> Array.from(getNodeListArray(cxt, str)).map(fn);
 
 
   nested.getNodeListArray = () => getNodeListArray(cxt, str);
