@@ -11,6 +11,13 @@ import { ChannelPayloadItem } from './channels/channel-payload-item';
 import { deepMerge } from './utils/deep-merge';
 
 class SpyneApp {
+  /**
+   *
+   * SpyneApp initializes the app and creates a global Spyne object that can be used to contain global properties and has several methods
+   *
+   * @param {Object} config
+   */
+
   constructor(config = {}) {
     this.channels = new ChannelsBaseController();
     this.VERSION = '0.9.14';
@@ -70,15 +77,27 @@ class SpyneApp {
     return Array.from(window.Spyne.channels.map.keys());
   }
 
+  /**
+   * This method is useful to check in the console or in the code what actions are available to be listened to.
+   * @param {String} str
+   * @returns {Array} An array of Actions that can be listened to
+   */
   static getChannelActions(str) {
     return window.Spyne.channels.getChannelActions(str);
   }
 
-  static registerChannel(val) {
+  /**
+   *
+   * This method will add the channel to the registered list so that it can subscribed by all ViewStream and Channel instances.
+   * @param {Channel} c
+   *
+   *
+   */
+  static registerChannel(c) {
     if (window.Spyne === undefined) {
       console.warn('Spyne has not been initialized');
     } else {
-      return window.Spyne.channels.registerStream(val);
+      return window.Spyne.channels.registerStream(c);
     }
   }
 }

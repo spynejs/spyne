@@ -396,11 +396,13 @@ export class ViewStream {
     this.openSpigot('RENDER_AND_ATTACH_TO_DOM', { attachData });
   }
 
+/*
   attachChildToView(data) {
     // let childRenderData = data.attachData;
     // console.log('CHILD DATA ', this.constructor.name, childRenderData);
     // this.openSpigot('ATTACH_CHILD_TO_SELF', {childRenderData});
   }
+*/
 
   // ===================================== DISPOSE METHODS =================================
   checkParentDispose(p) {
