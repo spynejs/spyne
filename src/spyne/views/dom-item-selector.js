@@ -175,6 +175,7 @@ function DomItemSelector(cxt, str) {
   };
 
   Object.defineProperty(nested, 'el', {get: () => getElOrList(cxt, str)});
+  Object.defineProperty(nested, 'nodeList', {get: () => getNodeListArray(cxt, str)});
   Object.defineProperty(nested, 'inlineCss', {set: (val) => setInlineCss(val, cxt, str)});
 
   return nested;
