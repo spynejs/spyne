@@ -4,7 +4,26 @@ import { RouteUtils } from '../utils/channel-util-route';
 import { BehaviorSubject, ReplaySubject, merge } from 'rxjs';
 import { map } from 'rxjs/operators';
 
-import {objOf, mergeAll, path, keys, prop, equals, head,compose,chain, pickAll, defaultTo, isEmpty,concat,when,complement, curryN, __ } from 'ramda';
+import {
+  objOf,
+  mergeAll,
+  path,
+  keys,
+  prop,
+  equals,
+  head,
+  compose,
+  chain,
+  pickAll,
+  defaultTo,
+  isEmpty,
+  concat,
+  when,
+  complement,
+  curryN,
+  __,
+  pathEq
+} from 'ramda';
 const rMerge = require('ramda').mergeRight;
 export class ChannelRoute extends ChannelsBase {
   constructor(name = 'CHANNEL_ROUTE', props = {}) {
@@ -84,8 +103,22 @@ export class ChannelRoute extends ChannelsBase {
     return payload;
   }
 
+  static checkToPreventDefaultEvent(obs) {
+    const checkDataForPreventDefault = pathEq(['viewStreamInfo', 'payload', 'eventPreventDefault'], 'true');
+    const setPreventDefault = (evt) => {
+      if (evt !== undefined) {
+        evt.preventDefault();
+      }
+    };
+    const selectEvtAndPreventDefault = compose(setPreventDefault, prop('viewStreamEvent'));
+    const checkForPreventDefault = when(checkDataForPreventDefault, selectEvtAndPreventDefault);
+    checkForPreventDefault(obs);
+  }
+
+
   onViewStreamInfo(pl) {
     let action = this.channelActions.CHANNEL_ROUTE_CHANGE_EVENT;
+    ChannelRoute.checkToPreventDefaultEvent(pl);
     let payload = this.getDataFromParams(pl);
     let srcElement = path(['viewStreamInfo', 'srcElement'], pl);
     let uiEvent = pl.viewStreamEvent;

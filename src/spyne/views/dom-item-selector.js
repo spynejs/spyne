@@ -66,7 +66,7 @@ function DomItemSelector(cxt, str) {
   cxt = typeof (cxt) === 'string' ? cxt : generateSpyneSelectorId(cxt);
   testSelectors(cxt, str);
 
-  function nested(str) {
+  function selector(str) {
     return DomItemSelector(cxt, str);
   }
 
@@ -77,7 +77,7 @@ function DomItemSelector(cxt, str) {
    * @param {Function} fn
    * @returns An array of elements
    */
-  nested.map = (fn)=> Array.from(getNodeListArray(cxt, str)).map(fn);
+  selector.map = (fn)=> Array.from(getNodeListArray(cxt, str)).map(fn);
 
   /**
    * Convenience method to iterate through a NodeList
@@ -85,10 +85,10 @@ function DomItemSelector(cxt, str) {
    * @param {Function} fn
    * @returns An array of elements
    */
-  nested.forEach = (fn)=> Array.from(getNodeListArray(cxt, str)).map(fn);
+  selector.forEach = (fn)=> Array.from(getNodeListArray(cxt, str)).map(fn);
 
 
-  nested.getNodeListArray = () => getNodeListArray(cxt, str);
+  selector.getNodeListArray = () => getNodeListArray(cxt, str);
 
   /**
    *
@@ -99,7 +99,7 @@ function DomItemSelector(cxt, str) {
    * @property {String} c - = undefined; The class to be added.
    *
    **/
-  nested.addClass = (c) => {
+  selector.addClass = (c) => {
     let arr = getNodeListArray(cxt, str);
     const addClass = item => item.classList.add(c);
     arr.forEach(addClass);
@@ -111,7 +111,7 @@ function DomItemSelector(cxt, str) {
    * @param {String} c
    * @desc Removes the class to the Element or to the NodeList.
    */
-  nested.removeClass = (c) => {
+  selector.removeClass = (c) => {
     let arr = getNodeListArray(cxt, str);
     const removeClass = item => item.classList.remove(c);
     arr.forEach(removeClass);
@@ -123,14 +123,14 @@ function DomItemSelector(cxt, str) {
    * @param {String} c
    * @desc Sets the class to equal exactly the class string.
    */
-  nested.setClass = (c) => {
+  selector.setClass = (c) => {
     let arr = getNodeListArray(cxt, str);
     const removeClass = item => item.classList = c;
     arr.forEach(removeClass);
     return this;
   };
 
-  nested.unmount = () => {
+  selector.unmount = () => {
     console.log('unmounting selector ', this);
   };
 
@@ -145,7 +145,7 @@ function DomItemSelector(cxt, str) {
    * this.props.el$.toggleClass('myclass', true);
    *
    */
-  nested.toggleClass = (c, bool) => {
+  selector.toggleClass = (c, bool) => {
     let arr = getNodeListArray(cxt, str);
     const toggleClass = item => {
       bool = bool !== undefined ? bool : !item.classList.contains(c);
@@ -155,8 +155,8 @@ function DomItemSelector(cxt, str) {
     return this;
   };
 
-  nested.setActiveItem = (sel, c) => {
-    return nested.toggleActiveEl(c, sel);
+  selector.setActiveItem = (sel, c) => {
+    return selector.toggleActiveEl(c, sel);
   };
 
 
@@ -166,7 +166,7 @@ function DomItemSelector(cxt, str) {
    * @param {String|HTMLElement} sel The selector for the element.
    * @desc Sets the class active HTMLElement from a NodeList.
    */
-  nested.toggleActiveEl = (c, sel) => {
+  selector.toggleActiveEl = (c, sel) => {
     let arr = getNodeListArray(cxt, str);
     let currentEl = typeof (sel) === 'string' ? getElOrList(cxt, sel) : sel;
     const toggleBool = item => item.classList.toggle(c, item.isEqualNode(currentEl));
@@ -174,11 +174,12 @@ function DomItemSelector(cxt, str) {
     return this;
   };
 
-  Object.defineProperty(nested, 'el', {get: () => getElOrList(cxt, str)});
-  Object.defineProperty(nested, 'nodeList', {get: () => getNodeListArray(cxt, str)});
-  Object.defineProperty(nested, 'inlineCss', {set: (val) => setInlineCss(val, cxt, str)});
+  Object.defineProperty(selector, 'el', {get: () => getElOrList(cxt, str)});
+  Object.defineProperty(selector, 'length', {get: () => getNodeListArray(cxt, str).length});
+  Object.defineProperty(selector, 'nodeList', {get: () => getNodeListArray(cxt, str)});
+  Object.defineProperty(selector, 'inlineCss', {set: (val) => setInlineCss(val, cxt, str)});
 
-  return nested;
+  return selector;
 
 }
 

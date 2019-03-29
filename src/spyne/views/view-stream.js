@@ -29,6 +29,7 @@ export class ViewStream {
    * ViewStreams are views that reactively communicate render and remove states throughout appended ViewStream chains, They remain completely encapsulated with zero outside refernces.
    *   <h4>How ViewStreams Communicate</h4>
    * ViewStreams communicate globally while remaining completely encapsulated by using observables.
+   * The special property, this.props.el$ is an instance of the <a class='linker' data-channel="ROUTE"  data-event-prevent-default="true" data-menu-item="dom-item-selector"  href="/guide/reference/dom-item-selector" >DomItemSelector</a>.
    *
    *
    * @example
