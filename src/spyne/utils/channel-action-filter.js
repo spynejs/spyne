@@ -8,12 +8,22 @@ export class ChannelActionFilter {
    * The channel action filter
    *
    * @constructor
-   * @param {Object|HTMLElement} selector The matching element
+   * @param {String|Array|HTMLElement} selector The matching element
    * @param {Object} data A json object containing filtering methods for channel props variables
    *
-   * @property {Object|HTMLElement} selector The matching element
+   * @property {String|Array|HTMLElement} selector The matching element
    * @property {Object} data A json object containing filtering methods for channel props variables
+   * @example
+   *    let data = {
+   *      linkType:  R.test(/external/)
+   *    };
+   * let myFilter = new ChannelActionFilter(['', 'li:first-child'], data);
    *
+   *    addActionListeners() {
+   *      return [
+   *                ['CHANNEL_UI_CLICK_EVENT', 'onClickEvent', myFilter]
+   *             ]
+   *              }
    *
    */
   constructor(selector, data) {

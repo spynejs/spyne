@@ -151,6 +151,23 @@ export class ViewStream {
       this.props.extendedSourcesHashMethods);
   }
 
+  /**
+   * This method will direct data from channels to methods,
+   * The method takes a nested array.
+   * The firset element is the name of the action.
+   * The second value is the name of the method that will be called when the action is published.
+   * A third option value is a selector string (if the action is based on an event from an HTMLElement, or this could be an instance of the <a class='linker' data-channel="ROUTE"  data-event-prevent-default="true" data-menu-item="channel-action-filter"  href="/guide/reference/channel-action-filter" >ChannelActionFilter</a>.
+   *
+   * @example
+   *   addActionListeners() {
+   *     return [
+   *     ['CHANNEL_UI_CLICK_EVENT', 'onClickEvent', 'li.myclass'],
+   *     ['CHANNEL_MY_CUSTOM_EVENT', 'onActionReturned']
+   *            ]
+   *           }
+   *
+   * @returns Nested Array
+   */
   addActionListeners() {
     return [];
   }
