@@ -1,18 +1,18 @@
-import { DomTemplateRenderer } from '../../spyne/views/dom-template-renderer';
+import { DomItemTemplate } from '../../spyne/views/dom-item-template';
 import { ScriptTemplate, StringTemplate, starWarsData } from '../mocks/template-renderer.mocks';
 
 chai.use(require('chai-dom'));
 
-describe('DomTemplateRenderer', () => {
+describe('DomItemTemplate', () => {
   it('template renderer exists', () => {
-    expect(DomTemplateRenderer).to.exist;
+    expect(DomItemTemplate).to.exist;
   });
 
   it('should take in a tmpl parameter', () => {
     // console.log('String template ', starWarsData);
-    const re = DomTemplateRenderer.findTmplLoopsRE();
+    const re = DomItemTemplate.findTmplLoopsRE();
     const reArr = ['{{#characters}}<li>{{.*}}</li>{{/characters}}', '{{#movies}}<li>{{title}} year:{{year}}</li>{{/movies}}'];
-    const tmplMatch = ScriptTemplate.innerHTML.match(DomTemplateRenderer.findTmplLoopsRE());
+    const tmplMatch = ScriptTemplate.innerHTML.match(DomItemTemplate.findTmplLoopsRE());
     expect(tmplMatch).to.deep.equal(reArr);
   });
 });

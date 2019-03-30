@@ -1,8 +1,8 @@
 // import {createElement} from '../utils/dom-methods';
 import { baseCoreMixins } from '../utils/mixins/base-core-mixins';
-import { DomTemplateRenderer } from './dom-template-renderer';
+import { DomItemTemplate } from './dom-item-template';
 import { deepMerge } from '../utils/deep-merge';
-// import {DomTemplateRenderer} from './template-renderer';
+// import {DomItemTemplate} from './template-renderer';
 
 import {is, forEach, mapObjIndexed, forEachObjIndexed, pipe} from 'ramda';
 
@@ -79,7 +79,7 @@ export class DomItem {
       let data = this.getProp('content');
       data = is(Object, data) ? data : {};
 
-      let frag = new DomTemplateRenderer(template, data).getTemplateNode();
+      let frag = new DomItemTemplate(template, data).getTemplateNode();
       el.appendChild(frag);
       return el;
     };

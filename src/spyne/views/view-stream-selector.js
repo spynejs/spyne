@@ -55,19 +55,19 @@ function setInlineCss(val, cxt, str) {
 
 /**
  *
- * @module DomItemSelector
+ * @module ViewStreamSelector
  * @param {String|El} cxt The main element
  * @param {String|El} The selector as a String
  * @returns {function(*=)}
  * @constructor
  */
 
-function DomItemSelector(cxt, str) {
+function ViewStreamSelector(cxt, str) {
   cxt = typeof (cxt) === 'string' ? cxt : generateSpyneSelectorId(cxt);
   testSelectors(cxt, str);
 
   function selector(str) {
-    return DomItemSelector(cxt, str);
+    return ViewStreamSelector(cxt, str);
   }
 
 
@@ -183,4 +183,4 @@ function DomItemSelector(cxt, str) {
 
 }
 
-export {DomItemSelector};
+export {ViewStreamSelector};

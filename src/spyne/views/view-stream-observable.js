@@ -7,9 +7,9 @@ import { deepMerge } from '../utils/deep-merge';
 import { Subject, Observable, bindCallback } from 'rxjs';
 import {filter, isNil, pick, props, defaultTo} from 'ramda';
 
-export class DomItemObservable {
+export class ViewStreamObservable {
   /**
-   * @module DomItemObservable
+   * @module ViewStreamObservable
    *
    * @desc
    * This is an internal class that is part of the ViewStream observable system.

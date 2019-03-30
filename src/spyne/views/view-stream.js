@@ -8,14 +8,14 @@ import {
   getConstructorName
 } from '../utils/frp-tools';
 // import {gc} from '../utils/gc';
-import { DomItemObservable } from './dom-item-observable';
+import { ViewStreamObservable } from './view-stream-observable';
 import { ViewStreamEnhancerLoader } from './view-stream-enhancer-loader';
 import { registeredStreamNames } from '../channels/channels-config';
 import { ViewStreamBroadcaster } from './view-stream-broadcaster';
 import { ViewStreamPayload } from './view-stream-payload';
 import { ChannelActionFilter } from '../utils/channel-action-filter';
 import { LifecyleObservables } from '../utils/viewstream-lifecycle-observables';
-import {DomItemSelector} from './dom-item-selector';
+import {ViewStreamSelector} from './view-stream-selector';
 import { Subject, of } from 'rxjs';
 import { mergeMap, map, takeWhile, filter, tap, finalize } from 'rxjs/operators';
 import {pick, compose, toLower, either ,prop, always, lte, defaultTo, propSatisfies, allPass, curry, is, path, ifElse, clone,  mergeRight, where, equals} from 'ramda';
@@ -29,7 +29,7 @@ export class ViewStream {
    * ViewStreams are views that reactively communicate render and remove states throughout appended ViewStream chains, They remain completely encapsulated with zero outside refernces.
    *   <h4>How ViewStreams Communicate</h4>
    * ViewStreams communicate globally while remaining completely encapsulated by using observables.
-   * The special property, this.props.el$ is an instance of the <a class='linker' data-channel="ROUTE"  data-event-prevent-default="true" data-menu-item="dom-item-selector"  href="/guide/reference/dom-item-selector" >DomItemSelector</a>.
+   * The special property, this.props.el$ is an instance of the <a class='linker' data-channel="ROUTE"  data-event-prevent-default="true" data-menu-item="dom-item-selector"  href="/guide/reference/dom-item-selector" >ViewStreamSelector</a>.
    *
    *
    * @example
@@ -57,9 +57,9 @@ export class ViewStream {
    * @property {boolean} props.sendLifecyleEvents = false; When set to true, the view will automatically send its rendering and disposing events to the CHANNEL_LIFECYCLE.
    * @property {string} props.id - = undefined; generates a random id if left undefined
    * @property {template} props.template - = undefined; html template
-   * @property {DomItemSelectors} props.el$ This is an instance of the DomItemSelector that has special selector and class manipulation methods.
+   * @property {DomItemSelectors} props.el$ This is an instance of the ViewStreamSelector that has special selector and class manipulation methods.
    * @special {"name": "DomItem", "desc": "ViewStreams uses the DomItem class to render html tags and templates.", "link":"dom-item"}
-   * @special {"name": "DomItemSelector", "desc": "The <b>props.el$</b> property creates an instance of this class, used to query elements within the props.el element; also has methods to update css classes.", "link":"dom-item-selectors"}
+   * @special {"name": "ViewStreamSelector", "desc": "The <b>props.el$</b> property creates an instance of this class, used to query elements within the props.el element; also has methods to update css classes.", "link":"dom-item-selectors"}
    *
    */
   constructor(props = {}) {
@@ -80,7 +80,7 @@ export class ViewStream {
         animateOutTime: 0.5,
         sendLifecyleEvents: false,
         hashId: `#${id}`,
-        viewClass: DomItemObservable,
+        viewClass: ViewStreamObservable,
         extendedSourcesHashMethods: {},
         debug: false,
         template: undefined,
@@ -468,7 +468,7 @@ export class ViewStream {
   setAttachData(attachType, query) {
     return {
       node: this.props.el,
-      type: 'DomItemObservable',
+      type: 'ViewStreamObservable',
       attachType,
       query: this.props.el.querySelector(query)
     };
@@ -488,7 +488,7 @@ export class ViewStream {
   setAttachParentData(attachType, query, level) {
     return {
       node: this.getParentEls(this.props.el, level),
-      type: 'DomItemObservable',
+      type: 'ViewStreamObservable',
       attachType,
       query: this.props.el.parentElement.querySelector(query)
     };
@@ -671,7 +671,7 @@ export class ViewStream {
     };*/
 
     //this.props.el$ = dm2(this.props.el);
-    this.props.el$ = DomItemSelector(this.props.el);
+    this.props.el$ = ViewStreamSelector(this.props.el);
     // console.log('EL IS ', this.props.el$.elArr);
     // window.theEl$ = this.props.el$;
   }

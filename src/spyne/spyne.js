@@ -1,6 +1,6 @@
 import { ChannelsBaseController } from './channels/channels-base-controller';
 import { DomItem } from './views/dom-item';
-import { DomItemObservable } from './views/dom-item-observable';
+import { ViewStreamObservable } from './views/view-stream-observable';
 import { ViewStream } from './views/view-stream';
 import { ViewStreamBroadcaster } from './views/view-stream-broadcaster';
 import { SpyneTrait } from './utils/spyne-trait';
@@ -23,7 +23,7 @@ class SpyneApp {
     this.channels = new ChannelsBaseController();
     this.VERSION = '0.9.14';
     this.ViewStream = ViewStream;
-    this.BasicView = DomItemObservable;
+    this.BasicView = ViewStreamObservable;
     this.DomItem = DomItem;
     this.ViewStreamBroadcaster = ViewStreamBroadcaster;
     this.ChannelsPayload = ViewStreamPayload;
@@ -105,7 +105,7 @@ class SpyneApp {
 
 window['Spyne'] = SpyneApp;
 export {
-  DomItemObservable,
+  ViewStreamObservable,
   ChannelsBase,
   ChannelsFetch,
   ChannelsBaseController,

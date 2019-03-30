@@ -1,17 +1,26 @@
 import {includes, __, ifElse, reject, defaultTo, isNil, isEmpty} from 'ramda';
 
-export class DomTemplateRenderer {
+/**
+ * @module DomItemTemplate
+ * @constructor
+ * @param {String|HTMLElement} template
+ * @param {Object} data
+ *
+ * @desc DomItem uses this class when rendering templates.
+ */
+
+export class DomItemTemplate {
   constructor(template, data) {
     this.template = this.formatTemplate(template);
     this.templateData = data;
 
-    let strArr = DomTemplateRenderer.getStringArray(this.template);
+    let strArr = DomItemTemplate.getStringArray(this.template);
 
-    let strMatches = this.template.match(DomTemplateRenderer.findTmplLoopsRE());
+    let strMatches = this.template.match(DomItemTemplate.findTmplLoopsRE());
     strMatches = strMatches === null ? [] : strMatches;
 
     const mapTmplLoop = (str, data) => str.replace(
-      DomTemplateRenderer.parseTmplLoopsRE(),
+      DomItemTemplate.parseTmplLoopsRE(),
       this.parseTheTmplLoop.bind(this));
     const findTmplLoopsPred = includes(__, strMatches);
 
@@ -24,7 +33,7 @@ export class DomTemplateRenderer {
   }
 
   static getStringArray(template) {
-    let strArr = template.split(DomTemplateRenderer.findTmplLoopsRE());
+    let strArr = template.split(DomItemTemplate.findTmplLoopsRE());
     const emptyRE = /^([\\n\s\W]+)$/;
     const filterOutEmptyStrings = s => s.match(emptyRE);
     return reject(filterOutEmptyStrings, strArr);
@@ -48,6 +57,11 @@ export class DomTemplateRenderer {
     this.template = undefined;
   }
 
+
+    /**
+     *
+     * @desc Returns a document fragment generated from the template and any added data.
+     */
   getTemplateNode() {
     const html = this.finalArr.join('');
     const el = document.createRange().createContextualFragment(html);
@@ -70,20 +84,20 @@ export class DomTemplateRenderer {
       return defaultIsEmptyStr(dataVal);
     };
 
-    return str.replace(DomTemplateRenderer.swapParamsForTagsRE(), replaceTags);
+    return str.replace(DomItemTemplate.swapParamsForTagsRE(), replaceTags);
   }
 
   parseTheTmplLoop(str, p1, p2, p3) {
     const subStr = p3;
     let elData = this.templateData[p2];
     const parseString = (item, str) => {
-      return str.replace(DomTemplateRenderer.swapParamsForTagsRE(), item);
+      return str.replace(DomItemTemplate.swapParamsForTagsRE(), item);
     };
     const parseObject = (obj, str) => {
       const loopObj = (str, p1, p2) => {
         return obj[p2];
       };
-      return str.replace(DomTemplateRenderer.swapParamsForTagsRE(), loopObj);
+      return str.replace(DomItemTemplate.swapParamsForTagsRE(), loopObj);
     };
     const mapStringData = (d) => {
       if (typeof (d) === 'string') {

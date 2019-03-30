@@ -37,8 +37,8 @@
         <article>
             <pre class="prettyprint source linenums"><code>// import {createElement} from '../utils/dom-methods';
 import {BaseCoreMixins} from '../utils/mixins/base-core-mixins';
-import { DomTemplateRenderer } from './template-renderer';
-// import {DomTemplateRenderer} from './template-renderer';
+import { DomItemTemplate } from './template-renderer';
+// import {DomItemTemplate} from './template-renderer';
 
 const R = require('ramda');
 
@@ -110,7 +110,7 @@ export class DomItem {
       let data = this.getProp('content');
       data = R.is(Object, data) ? data : {};
 
-      let frag = new DomTemplateRenderer(tmpl, data).getTemplateNode();
+      let frag = new DomItemTemplate(tmpl, data).getTemplateNode();
       el.appendChild(frag);
       return el;
     };
