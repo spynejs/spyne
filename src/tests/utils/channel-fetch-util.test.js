@@ -88,6 +88,22 @@ describe('ChannelFetchUtil Tests', () => {
     });
   });
 
+
+  describe('it should fetch an image', ()=>{
+    let imgUrl = "http://localhost/spyne/src/tests/mocks/imgs/goat.jpg";
+
+
+    it ('should return the image', ()=>{
+      let channelFetchUtil = new ChannelFetchUtil({url:imgUrl, responseType:'blob'}, subscriber);
+      let subscriber = (data) => console.log('data retruned ', data);
+
+
+      return true;
+    })
+
+
+  });
+
   describe('fetch util updates method to POST from GET when body exists', () => {
     let subscriber = (data) => console.log('data retruned ', data);
     let p = R.omit(['method', 'mapFn'], props);

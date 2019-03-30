@@ -5,7 +5,8 @@ export class ChannelActionFilter {
    * @module ChannelActionFilter
    *
    * @desc
-   * The channel action filter
+   * Filters Channel Actions before the assigned method is called.<span class='break'/>
+   * Actions can be filtered by a selector when triggered by an HTML element, and/or actions can be filtered by the values returned by that action.
    *
    * @constructor
    * @param {String|Array|HTMLElement} selector The matching element
@@ -15,15 +16,15 @@ export class ChannelActionFilter {
    * @property {Object} data A json object containing filtering methods for channel props variables
    * @example
    *    let data = {
-   *      linkType:  R.test(/external/)
+   *      linkType: (type)=>type==='external'
    *    };
-   * let myFilter = new ChannelActionFilter(['', 'li:first-child'], data);
+   * let myFilter = new ChannelActionFilter(['ul', 'li:first-child'], data);
    *
    *    addActionListeners() {
    *      return [
    *                ['CHANNEL_UI_CLICK_EVENT', 'onClickEvent', myFilter]
    *             ]
-   *              }
+   *          }
    *
    */
   constructor(selector, data) {

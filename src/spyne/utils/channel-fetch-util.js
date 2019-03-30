@@ -7,7 +7,7 @@ export class ChannelFetchUtil {
    * @module ChannelFetchUtil
    *
    * @desc
-   * This is the core object used for ChannelsFetch. This creates an rxjs observable that returns the HTTP requestion upon completion.
+   * This is the core object used for ChannelsFetch. This utility wraps the javascript fetch api into an observable.
    *
    * @constructor
    * @param {Object} options Properties used to create the fetch request
@@ -19,6 +19,28 @@ export class ChannelFetchUtil {
    * @property {Object} options.mapFn - = undefined; A method that can be used to parse the data before it's returned
    * @property {Object} options.responseType - = 'json'; Default is json
    * @property {Object} options.debug - = false; will trace the fetch response to the console befor the observable completes
+   * @property {Function} Subscriber - = undefined; the method that will be called when the fetch is complete.
+   * @property {Boolean} testMode - = false; Used for unit testing.
+   *
+   * @returns The fetched response parsed by the set parameters.
+   *
+   *
+   * @example
+   * // An example of fetching an image
+   *
+   *   const url = "/static/images/myimage.jpg";
+   *   const responseType = "blob";
+   *   const onImgFn = (blob)=>{
+   *        let blobUrl = URL.createObjectURL(blob);
+   *        this.appendView(
+   *            new ViewStream({
+   *              tagName: 'img',
+   *              src: blobUrl,
+   *              width:300
+   *            })
+   *           )}
+   *
+   *   new ChannelFetchUtil({url, responseType}, onImgFn);
    *
    *
    */
