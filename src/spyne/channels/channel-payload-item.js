@@ -12,14 +12,31 @@ export class ChannelPayloadItem {
    * @param {Object} channelPayload
    * @param {Element} srcElement
    * @param {Event} event
-   * @returns Validated Payload
+   *
+   * @property {String} channelName - = undefined; The channel name used to register the channel.
+   * @property {String} action - = undefined; An action string that has been registered in the registeredActions method.
+   * @property {Object} channelPayload - = undefined; The data object returned; if the action is from a UI Element, this would typically be the dataset values.
+   * @property {HTMLElement} srcElement - = {}; This is populated when the action is triggered from an element.
+   * @property {UIEvent} event - = undefined; This will be populated if the event is triggered by the browser.
+   * @returns Validated payload object
    */
   constructor(channelName, action, channelPayload, srcElement, event) {
     let channel = channelName;
 
-    let channelPayloadItemObj = { channel, action, channelPayload, srcElement, event };
+    let channelPayloadItemObj = { channelName, action, channelPayload, srcElement, event };
 
-    channelPayloadItemObj['props'] = () => mergeAll([channelPayloadItemObj.channelPayload, { channel }, { event }, { action: channelPayloadItemObj.action }, channelPayloadItemObj.srcElement, channelPayloadItemObj.event]);
+    /**
+     * This is a convenience method that helps with descructuring by merging all properties.
+     *
+     * @returns
+     * Object
+     *
+     * @example
+     * let {el, action, myVal} = payload.props();
+     *
+     *
+     */
+    channelPayloadItemObj.props = () => mergeAll([channelPayloadItemObj.channelPayload, { channel }, { event }, { action: channelPayloadItemObj.action }, channelPayloadItemObj.srcElement, channelPayloadItemObj.event]);
     const channelActionsArr = window.Spyne.getChannelActions(channel);
 
     ChannelPayloadItem.validateAction(action, channel, channelActionsArr);

@@ -25,7 +25,7 @@ function testSelectors(cxt, str) {
       prop('nodeType'));
 
   if (elIsDomElement(el) === false) {
-    console.warn(`Spyne warning: the el object is not a valid single element, ${el}`);
+    console.warn(`Spyne Warning: the el object is not a valid single element, ${el}`);
     return;
   }
 
@@ -33,7 +33,7 @@ function testSelectors(cxt, str) {
     let query = el.querySelector(str);
     if (query === null) {
       if (window.Spyne.config.verbose === true) {
-        console.warn(`Spyne warning: the selector, ${str} does not exist in this el, ${cxt}`);
+        console.warn(`Spyne Warning: the selector, ${str} does not exist in this el, ${cxt}`);
       }
 
     }

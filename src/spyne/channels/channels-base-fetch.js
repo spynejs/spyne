@@ -3,6 +3,35 @@ import { ChannelFetchUtil } from '../utils/channel-fetch-util';
 import {path, pick, mergeRight, mergeDeepRight, reject, compose, isNil} from 'ramda';
 
 export class ChannelsFetch extends ChannelsBase {
+  /**
+   * @module ChannelsFetch
+   * @desc
+   * Extends ChannelBase and addes the ChannelFetchUtil to create a system that is able to coordinate with an api. <span class='break'/>
+   * The fetch request can be updated from any ViewStream instance by using the sendInfoChannel method. <span class='break'/>
+   * It is recommended that a ChannelsFetch instance be created for each type of request. For example, one ChannelsFetch can read the amount available from a checking account, while another instance writes to that checking account.
+   * A main channel can maintain the state of both.
+   *
+   * @constructor
+   * @param {String} name
+   * @param {Object} props
+   *
+   * @property {String} name - = undefined; The regsitered name for the channel.
+   * @property {String} props.url - = undefined; The url to be fetched.
+   * @property {Object} props.body - = undefined; This will update the options sent along with the fetch request. Default options uses a GET request.
+   *
+   * @example
+   * // updating the fetch request from a ViewStream instance
+   * const action = "CHANNEL_UPDATE_DATA_EVENT";
+   * const url = "//site.com/json/";
+   * const body = {
+   *     method: "POST"
+   * }
+   *
+   * this.sendInfoToChannel("CHANNEL_MY_FETCH", {action, url, body});
+   *
+   */
+
+
   constructor(name, props = {}) {
     props.sendCurrentPayload = true;
     super(name, props);
