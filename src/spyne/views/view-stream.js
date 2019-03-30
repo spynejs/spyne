@@ -108,37 +108,6 @@ export class ViewStream {
    *     <li>Automatic removing of all elements and properties from the DOM and from memory</li>
    *     </ul>
    *
-   * The <i>props</i> property is also used to hold all of the internal values within the ViewStream instance.
-   *
-   * <h5>Appending to Document</h5>
-   * <p>ViewStreams renders an HTML DocumentFragment and only attaches that element to the DOM when appended to another ViewStream instance or to an existing HTML element.</p>
-   * <p>Below are the methods that appends the View to the DOM:</p>
-   *
-   *
-   *
-   *
-   * ViewStreams are views that reactively communicate render and remove states throughout appended ViewStream chains, They remain completely encapsulated with zero outside refernces.
-   *   <h3>How ViewStreams Communicate</h3>
-   * ViewStreams communicate globally while remaining completely encapsulated by using observables.
-   * The special property, this.props.el$ is an instance of the <a class='linker' data-channel="ROUTE"  data-event-prevent-default="true" data-menu-item="dom-item-selector"  href="/guide/reference/dom-item-selector" >ViewStreamSelector</a>.
-   *
-   *
-   * @example
-   * // returns <h2>Hello World</h2>
-   * new ViewStream({tagName:'h2', data:'Hello World'};
-   * @example
-   * //  returns
-   * <ul>
-   *    <li>firstName: Jane<li>
-   *    <li>lastName: Doe<li>
-   *    <li>Age: 23<li>
-   * </ul>
-   *map(updateProperties),
-   * let myTemplate = '<li>firstName: {{fName}}<li>lastName: {{lName}}<li>Age: {{age}}';
-   * let myData = {fName: Jane, lName: Doe, age:23};
-   * new ViewStream({tagName:'ul', data:myData, template:myTemplate});
-   *
-   *
    *
    * @constructor
    * @param {object} props This json object takes in parameters to generate or reference the dom element

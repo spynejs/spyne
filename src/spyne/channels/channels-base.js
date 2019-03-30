@@ -10,13 +10,18 @@ export class ChannelsBase {
   /**
    * @module ChannelsBase
    * @desc
-   * This class is extended when creating a new Channel.
+   * <p>This is the base for all Channels, including the UI, ROUTE, WINDOW, LIFECYCLE and FETCH channels.</p>
+   * <p>If the channel is subscribed to before it is created, Spyne will create a proxy channel in its place, and will be swapped when the actual channel is ready.</p>
+   * <p>Depending on the value of <i>sendCurrentPayload</i>, the core of each channel is either an rxjs Subject or ReplaySubject.
+   * The difference being that a ReplaySubject will send the most recent payload to any objects that have subscribed after the original data was published.
+   * </p>
    *
    *
    * @constructor
-   * @param {string} name This is the name that will be used to get the channel
-   * @param {object} props This json object takes in parameters to initialize the channel
-   * @property {Subject} this.observer$ = new Subject(); Depending on required behavior, this can be a Subject, BehaviorSubject or AsynSubject.
+   * @param {string} name
+   * @param {Object} props This json object takes in parameters to initialize the channel
+   * @property {String} name - = undefined; This will be the registered name for this channel.
+   * @property {Object} props - = {}; The props objects allows for custom properties for the channel.
    *
    */
   constructor(name = 'observer', props = {}) {
@@ -47,7 +52,8 @@ export class ChannelsBase {
 
   //  OVERRIDE INITIALIZATION METHOD
   /**
-   * This method is called as soon as the channel is ready.
+   * <p>This method is called as soon as the channel is ready.</p>
+   * <p>This is the recommended method to add functionality such as publishing the first channel payload, or subscribing to other channels.</p>
    */
   onChannelInitialized() {
 
@@ -119,7 +125,14 @@ export class ChannelsBase {
    *
    * @desc
    * Any action that is to be used by the channel is required to be added here.
-   * If the action is added as a paired array, then the second value will be the method directed if a viewstream sends info.
+   * If the action is added as a paired array, then the second value will be the directed to that method instead of the default, <i>onViewStreamInfo</i> method.
+   * @example
+   *    addRegisteredActions() {
+   *     return [
+   *        'CHANNEL_MY_CHANNEL_EVENT',
+   *        ['CHANNEL_MY_CHANNEL_UPDATE_EVENT', 'onMethodListener']
+   *       ];
+   *      }
    *
    */
   addRegisteredActions() {
@@ -163,9 +176,16 @@ export class ChannelsBase {
   }
 
   /**
-   * This method returns any ViewStream info payloads that are directed to this channel.
+   * This is the default method for ViewStream payloads that are directed to a registered channel.
    *
-   * @param {Object} obj
+   * @param {ViewStreamPayload} obj
+   *
+   * @example
+   * onViewStreamInfo(obj){
+   *     let data = obj.viewStreamInfo;
+   *     let action = data.action;
+   *     this.sendChannelPayload(action, data);
+   * }
    */
   onViewStreamInfo(obj) {
   }
@@ -173,13 +193,26 @@ export class ChannelsBase {
 
   /**
    *
-   * This is a convenience method that formats a ChannelPayloadItem, that the source observable for the channel uses to send.
+   * @desc
+   * This is method  will send format and send a ChannelPayloadItem.
    *
    * @param {String} action
    * @param {Object} payload
    * @param {HTMLElement} srcElement
    * @param {HTMLElement} event
    * @param {Observable} obs$
+   * @property {String} action - = undefined; An action that has been added to the <i>addRegisteredActions</i> method.
+   * @property {Object} paylaod - = undefined; The data to be sent.
+   * @property {HTMLElement} srcElement - = undefined; This can be either the element returned from the UI Channel, or the srcElement from a ViewStream instance.
+   * @property {UIEvent} event - = undefined; This will be defined if the event is from the UI Channel.
+   * @property {Observable} obs$ - = this.observable$; This default is the main observable for the channel. The option for another observable is available.;
+   * @property {Array} channelActionMethods - = Array list of actions generated form the addRegisteredActions method.
+   *
+   * @example
+   * let action = "CHANNEL_MY_CHANNEL_REGISTERED_ACTION_EVENT";
+   * let data = {foo:"bar"};
+   * this.sendChannelPayload(action, data);
+   *
    */
   sendChannelPayload(action, payload, srcElement = {}, event = {}, obs$ = this.observer$) {
     // MAKES ALL CHANNEL BASE AND DATA STREAMS CONSISTENT
@@ -193,7 +226,11 @@ export class ChannelsBase {
    *
    * This method allows channels to subscribe to other channels.
    * @param {String} channel The registered name of the requested channel.
-   * @returns {Subject} This will return the observer$ Subject variable.
+   * @example
+   * let route$ = this.getChannel("CHANNEL_ROUTE")
+   * route$.subscribe(localMethod);
+   *
+   *
    */
   getChannel(channel) {
     let isValidChannel = c => registeredStreamNames().includes(c);
