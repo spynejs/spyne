@@ -2,6 +2,19 @@ import { getAllMethodNames } from './frp-tools';
 import {reject, test, curryN, __, map} from 'ramda';
 
 export class SpyneTrait {
+  /**
+   * @module SpyneTrait
+   * @param {this} parentContext
+   * @param {String} prefix
+   * @param {Boolean} autoInit
+   * @constructor
+   * @property {this} parentContent - = undefined; This binds all methods within SpyneTrait into the parentContext's object
+   * @property {String} prefix - = undefined; SpyneTraits forces all method names to begin with the same prefix. This allows other objects to quickly understand where the original method is set.
+   * @desc
+   * SpyneTraits allow the ehancing of classes and other objects without having to extend classes or manipulate function prototypes
+   *
+   */
+
   constructor(parentContext, prefix = '', autoInit = true) {
     this.parentContext = parentContext;
     this.omittedMethods = [

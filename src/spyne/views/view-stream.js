@@ -26,8 +26,99 @@ export class ViewStream {
    * @borrows DomItemSelectors as el$
    *
    * @desc
+   * <p>ViewStreams are the core of this framework.</br>Taking analogy of Spyne, they are basically the nervous system of the application.</p>
+   * <h3>ViewStreams have three main tasks:</h3>
+   * <ol>
+   * <li>Render or reference an HTML element
+   * <li>Broadcast UI events
+   * <li>Provide tools to maintain state
+   * </ol>
+   *
+   * <h4>Rendering</h4>
+   * <p>ViewStream will progressively enhance the rendering of its element based on the values defined within the <i>props</i> property.</p>
+   * <ul>
+   *     <li>A ViewStream instance will reference an element instead of rendering when the <i>el</i> property is defined at instantiation.</li>
+   *     <li>An empty div is returned when no values are assigned to its <i>props</i> property.</li>
+   *     <li>A single element is rendered when only the tagName and data (as String) are defined.</li>
+   *     <li>The instance will render a template when that property is defined and will populate the template if the data property is defined as an object.</li>
+   *     <li>ViewStreams will apply any HTML attributes defined within  <i>props</i> to the rendered element, for example, <i>src</i> for img and video tags.</li>
+   *
+   *     </ul>
+   *
+   * The <i>props</i> property is also used to hold all of the internal values within the ViewStream instance.
+   *
+   * <h5>Appending to Document</h5>
+   * <p>ViewStreams renders an HTML DocumentFragment and only attaches that element to the DOM when appended to another ViewStream instance or to an existing HTML element.</p>
+   * <p>Below are the methods that appends the View to the DOM:</p>
+   *
+   *
+   *    <div class='method-section'>
+   *        <h5>Appending To Other ViewStreams</h5>
+   *
+   *        <a class='linker' data-channel="ROUTE"  data-event-prevent-default="true" data-menu-item="view-stream-append-view"  href="/guide/reference/view-stream-append-view" >appendView</a>
+   *        <a class='linker' data-channel="ROUTE"  data-event-prevent-default="true" data-menu-item="view-stream-prepend-view"  href="/guide/reference/view-stream-prepend-view" >prependView</a>
+   *        <a class='linker' data-channel="ROUTE"  data-event-prevent-default="true" data-menu-item="view-stream-append-view-to-parent"  href="/guide/reference/view-stream-append-view-to-parent" >appendViewToParent</a>
+   *        <a class='linker' data-channel="ROUTE"  data-event-prevent-default="true" data-menu-item="view-stream-prepend-view-to-parent"  href="/guide/reference/view-stream-prepend-view-to-parent" >prependViewToParent</a>
+   *        </div>
+   *
+   *
+   *    <div class='method-section'>
+   *        <h5>Appending Directly to the DOM</h5>
+   *
+   *        <a class='linker' data-channel="ROUTE"  data-event-prevent-default="true" data-menu-item="view-stream-append-to-dom"  href="/guide/reference/view-stream-append-to-dom" >appendToDom</a>
+   *        <a class='linker' data-channel="ROUTE"  data-event-prevent-default="true" data-menu-item="view-stream-prepend-to-dom"  href="/guide/reference/view-stream-prepend-to-dom" >prependToDom</a>
+   *
+   *        </div>
+   *
+   *    <div class='method-section'>
+   *        <h5>Appended but hidden</h5>
+   *
+   *        <a class='linker' data-channel="ROUTE"  data-event-prevent-default="true" data-menu-item="view-stream-append-to-null"  href="/guide/reference/view-stream-append-to-null" >appendToNull</a>
+   *
+   *        </div>
+   *
+   * <h4>Broadcasting Events</h4>
+   * <p>ViewStreams instances has two methods of broadcasting events:</p>
+   *    <div class='method-section'>
+   * <h5><a class='linker' data-channel="ROUTE"  data-event-prevent-default="true" data-menu-item="view-stream-broadcast-events"  href="/guide/reference/view-stream-broadcast-events" >1. broadcastEvents Method</a></h5>
+   *   <p>  Elements listed here will automatically be published to the UI Channel, and the dataset values for that element will be returned along with the relevant action.</br>The event will be published to the ROUTE Channel when the element's dataset value for channel is set to "ROUTE"</p>
+   *  </div>
+   *    <div class='method-section'>
+   * <h5><a class='linker' data-channel="ROUTE"  data-event-prevent-default="true" data-menu-item="view-stream-send-info-to-channel"  href="/guide/reference/view-stream-send-info-channel" >2. sendInfoToChannel Method</a></h5>
+   *   <p>Any type of data can be sent to any channel using the sendInfoToChannel method. This can be especially useful to allow global communication of data from third-party libraries and resources.</p>
+   * </div>
+   *
+   *
+   * <h4>State Management</h4>
+   * <p>There are several properties, methods and structures that allow ViewStream instances to maintain state, with code that is DRY and easy to reason about.
+   *  The key innovation is the swapping of ViewStream internal observables to create a smart chain of views that reactively render and dispose entire branches with little or no code.</br>
+   *  The following items assist in maintaining state:
+   * </p>
+   * <ul>
+   *     <li>all properties contained in one element, <i>props</i></li>
+   *     <li>The <i>props.el$</i> object, an instance of <a class='linker no-break' data-channel="ROUTE"  data-event-prevent-default="true" data-menu-item="view-stream-selector"  href="/guide/reference/view-stream-selector" >ViewStreamSelector</a>, that has special selector and class manipulation methods</li>
+   *     <li>The swapping of observables when appending ViewStream instances to one another</li>
+   *     <li>The consolidation of channel actions into the <a class='linker no-break' data-channel="ROUTE"  data-event-prevent-default="true" data-menu-item="view-stream-add-action-listeners"  href="/guide/reference/view-stream-add=action-listeners" >addActionListeners</a> method, that directs events to custom methods</li>
+   *     <li><a class='linker no-break' data-channel="ROUTE"  data-event-prevent-default="true" data-menu-item="spyne-trait"  href="/guide/reference/spyne-trait" >SpyneTraits</a> that allow for the enhancing and exchanging of methods</li>
+   *     <li><a class='linker no-break' data-channel="ROUTE"  data-event-prevent-default="true" data-menu-item="channel-action-filter"  href="/guide/reference/channel-action-filter" >ChannelActionFilters</a> that allow for the prefiltering of actions</li>
+   *     <li>The ability to limit UI event publishing to locally elements using the third 'local' parameter in broadcastEvents</li>
+   *     <li>Automatic subscribing and unsubscribing of all observables using the <a class='linker no-break' data-channel="ROUTE"  data-event-prevent-default="true" data-menu-item="view-stream-add-channel"  href="/guide/reference/view-stream-add-channel" >addChannel</a> method</li>
+   *     <li><a class='linker no-break' data-channel="ROUTE"  data-event-prevent-default="true" data-menu-item="view-stream-after-render"  href="/guide/reference/view-stream-after-render" >afterRender</a> method allows for adding functionality</li>
+   *     <li>communicate render and dispose events for an ViewStream method throught the <a class='linker no-break' data-channel="ROUTE"  data-event-prevent-default="true" data-is-manual-scroll='true' data-section='overview' data-menu-item="intro-channel-life-cycle"  href="/guide/overview/intro-channel-life-cycle" >LIFECYCLE_CHANNEL</a> method</li>
+   *     <li>Automatic removing of all elements and properties from the DOM and from memory</li>
+   *     </ul>
+   *
+   * The <i>props</i> property is also used to hold all of the internal values within the ViewStream instance.
+   *
+   * <h5>Appending to Document</h5>
+   * <p>ViewStreams renders an HTML DocumentFragment and only attaches that element to the DOM when appended to another ViewStream instance or to an existing HTML element.</p>
+   * <p>Below are the methods that appends the View to the DOM:</p>
+   *
+   *
+   *
+   *
    * ViewStreams are views that reactively communicate render and remove states throughout appended ViewStream chains, They remain completely encapsulated with zero outside refernces.
-   *   <h4>How ViewStreams Communicate</h4>
+   *   <h3>How ViewStreams Communicate</h3>
    * ViewStreams communicate globally while remaining completely encapsulated by using observables.
    * The special property, this.props.el$ is an instance of the <a class='linker' data-channel="ROUTE"  data-event-prevent-default="true" data-menu-item="dom-item-selector"  href="/guide/reference/dom-item-selector" >ViewStreamSelector</a>.
    *
@@ -52,14 +143,17 @@ export class ViewStream {
    * @constructor
    * @param {object} props This json object takes in parameters to generate or reference the dom element
    * @property {string} props.tagName - = 'div'; This can be any dom tag
-   * @property {domItem} props.el - = undefined; if defined, ViewStream will connect to that element
+   * @property {domItem} props.el - = undefined; if defined, ViewStream will connect to that element. If undefined, the instance will create its element based on the defined properties, and assign that element to this property.
    * @property {string|object} props.data - = undefined;  string for innerText or Json object for html template
    * @property {boolean} props.sendLifecyleEvents = false; When set to true, the view will automatically send its rendering and disposing events to the CHANNEL_LIFECYCLE.
    * @property {string} props.id - = undefined; generates a random id if left undefined
    * @property {template} props.template - = undefined; html template
-   * @property {DomItemSelectors} props.el$ This is an instance of the ViewStreamSelector that has special selector and class manipulation methods.
    * @special {"name": "DomItem", "desc": "ViewStreams uses the DomItem class to render html tags and templates.", "link":"dom-item"}
    * @special {"name": "ViewStreamSelector", "desc": "The <b>props.el$</b> property creates an instance of this class, used to query elements within the props.el element; also has methods to update css classes.", "link":"dom-item-selectors"}
+   *
+   *
+   *
+   *
    *
    */
   constructor(props = {}) {
@@ -793,17 +887,6 @@ export class ViewStream {
     this.updateSourceSubscription(channel$, false);
   }
 
-  /**
-   * Method to send data to any registered channel.
-   * @param {string} channelName The name of the registered Channel that was added to the Channels Controller.
-   * @param {string} action The event type that listeners can point to.
-   * @param {object} payload {}, The main data to send to the channel.
-   * @example
-   * let payload = {'location' : 'about'};
-   * let action = 'PAGE_CHANGE_EVENT';
-   * this.sendInfoToChannel('ROUTE', paylaod, action);
-   *
-   * */
 
   checkIfChannelExists(channelName) {
     let channelExists = window.Spyne.channels.map.get(channelName) !== undefined;
@@ -812,6 +895,21 @@ export class ViewStream {
     }
     return channelExists;
   }
+
+
+  /**
+   *
+   * @param {String} channelName
+   * @param {Object} payload
+   * @param {String} action
+   * @property {string} channelName - = undefined; The name of the registered Channel.
+   * @property {object} payload - = {}; The main data to send to the channel.
+   * @property {string} action - = "VIEWSTREAM_EVENT"; The action sent to the channel.
+   * @desc
+   * This method creates a versatile and consistent method to communicate with all channels.
+   *
+   *
+   */
 
   sendInfoToChannel(channelName, payload = {}, action = 'VIEWSTREAM_EVENT') {
     let data = { payload, action };
