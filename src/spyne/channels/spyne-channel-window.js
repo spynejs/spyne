@@ -6,7 +6,16 @@ import { map, debounceTime, skipWhile } from 'rxjs/operators';
 import {curry, pick, mapObjIndexed} from 'ramda';
 const rMap = require('ramda').map;
 
-export class ChannelWindow extends ChannelBaseClass {
+export class SpyneChannelWindow extends ChannelBaseClass {
+
+  /**
+   * @module SpyneChannelWindow
+   * @desc
+   * Internal channel that publishes all window events.
+   *
+   * @constructor
+   *
+   */
   constructor() {
     super('CHANNEL_WINDOW');
     this.bindStaticMethods();
@@ -47,7 +56,7 @@ export class ChannelWindow extends ChannelBaseClass {
 
   static createCurriedGenericEvent(actionStr) {
     let action = `CHANNEL_WINDOW_${actionStr.toUpperCase()}_EVENT`;
-    let curryFn = curry(ChannelWindow.mapGenericEvent);
+    let curryFn = curry(SpyneChannelWindow.mapGenericEvent);
     return curryFn(action);
   }
 
@@ -91,14 +100,14 @@ export class ChannelWindow extends ChannelBaseClass {
     const debounceTime = config.debounceMSTimeForScroll;
 
     return ChannelUtilsDom.createDomObservableFromEvent('mousewheel',
-      ChannelWindow.getMouseWheelMapFn.bind(this)).debounceTime(debounceTime);
+      SpyneChannelWindow.getMouseWheelMapFn.bind(this)).debounceTime(debounceTime);
   }
 
   createScrollObservable(config) {
     const skipWhenDirIsMissing = evt => evt.scrollDistance === 0;
     const dTime = config.debounceMSTimeForScroll;
     return ChannelUtilsDom.createDomObservableFromEvent('scroll',
-      ChannelWindow.getScrollMapFn.bind(this))
+      SpyneChannelWindow.getScrollMapFn.bind(this))
       .pipe(
         debounceTime(dTime),
         skipWhile(skipWhenDirIsMissing)
@@ -108,7 +117,7 @@ export class ChannelWindow extends ChannelBaseClass {
   createOrientationObservable(config) {
     // console.log("add orientation");orientationchange
     return ChannelUtilsDom.createDomObservableFromEvent('orientationchange',
-      ChannelWindow.getOrientationMapFn.bind(this));
+      SpyneChannelWindow.getOrientationMapFn.bind(this));
   }
 
   createResizeObservable(config) {
@@ -116,14 +125,14 @@ export class ChannelWindow extends ChannelBaseClass {
     // console.log('resize this ', this);
 
     return ChannelUtilsDom.createDomObservableFromEvent('resize',
-      ChannelWindow.getResizeMapFn.bind(this)).pipe(debounceTime(dTime));
+      SpyneChannelWindow.getResizeMapFn.bind(this)).pipe(debounceTime(dTime));
   }
 
   getEventsFromConfig(config = this.domChannelConfig) {
     let obs$Arr = config.events;
 
     const addWindowEventToArr = str => {
-      let mapFn = ChannelWindow.createCurriedGenericEvent(str);
+      let mapFn = SpyneChannelWindow.createCurriedGenericEvent(str);
       return ChannelUtilsDom.createDomObservableFromEvent(str, mapFn);
     };
 

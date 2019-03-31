@@ -1,9 +1,9 @@
 // import {baseCoreMixins}    from '../utils/mixins/base-core-mixins';
 // import {BaseStreamsMixins} from '../utils/mixins/base-streams-mixins';
-import { ChannelRoute } from './channel-route';
-import { ChannelUI } from './channel-ui';
-import { ChannelWindow } from './channel-window';
-import { ChannelViewStreamLifecycle } from './channel-viewstream-lifecycle';
+import { SpyneChannelRoute } from './spyne-channel-route';
+import { SpyneChannelUI } from './spyne-channel-ui';
+import { SpyneChannelWindow } from './spyne-channel-window';
+import { SpyneChannelLifecycle } from './spyne-channel-lifecycle';
 import { validate } from '../utils/channel-config-validator';
 
 import { Subject } from 'rxjs';
@@ -85,16 +85,16 @@ export class ChannelsController {
   }
 
   createMainStreams() {
-    this.routeValueeam = new ChannelRoute();
+    this.routeValueeam = new SpyneChannelRoute();
     this.map.set('CHANNEL_ROUTE', this.routeValueeam);
 
-    this.uiStream = new ChannelUI();
+    this.uiStream = new SpyneChannelUI();
     this.map.set('CHANNEL_UI', this.uiStream);
 
-    this.domStream = new ChannelWindow();
+    this.domStream = new SpyneChannelWindow();
     this.map.set('CHANNEL_WINDOW', this.domStream);
 
-    this.viewStreamLifecycle = new ChannelViewStreamLifecycle();
+    this.viewStreamLifecycle = new SpyneChannelLifecycle();
     this.map.set('CHANNEL_LIFECYCLE', this.viewStreamLifecycle);
 
     this.routeValueeam.initializeStream();

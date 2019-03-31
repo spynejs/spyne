@@ -3,7 +3,17 @@ import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import {equals, path, compose,prop, pathEq, when, either, toUpper} from 'ramda';
 
-export class ChannelUI extends ChannelBaseClass {
+export class SpyneChannelUI extends ChannelBaseClass {
+  /**
+   * @module SpyneChannelUI
+   * @desc
+   * Internal Channel that publishes all UI Events.
+   *
+   * @constructor
+   * @param {String} name
+   * @param {Object} props
+   */
+
   constructor(name = 'CHANNEL_UI', props = {}) {
     props.sendCurrentPayload = false;
     super(name, props);
@@ -94,7 +104,7 @@ export class ChannelUI extends ChannelBaseClass {
     // obs.uiEvent.preventDefault();
     // console.log("UI EVENT ",obs);
 
-    ChannelUI.checkToPreventDefaultEvent(obs);
+    SpyneChannelUI.checkToPreventDefaultEvent(obs);
 
     obs['action'] = this.getActionState(obs);
     const action = obs.action;// this.getActionState(obs);

@@ -7,7 +7,7 @@ import {
   RouteDataForTests,
   windowLocationData
 } from '../mocks/utils-data';
-import { ChannelRoute } from '../../spyne/channels/channel-route';
+import { SpyneChannelRoute } from '../../spyne/channels/spyne-channel-route';
 
 const ObjtoStr = JSON.stringify;
 

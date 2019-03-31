@@ -1,7 +1,17 @@
 import { ChannelBaseClass } from './channel-base-class';
 import {prop} from 'ramda';
 
-export class ChannelViewStreamLifecycle extends ChannelBaseClass {
+export class SpyneChannelLifecycle extends ChannelBaseClass {
+  /**
+   * @module SpyneChannelLifeCycle
+   * @desc
+   * Internal Channel that publishes ViewStream rendering and disposing events.
+   *
+   * @constructor
+   * @param {String} name
+   * @param {Object} props
+   */
+
   constructor(props = {}) {
     super('CHANNEL_LIFECYCLE', props);
   }

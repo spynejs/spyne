@@ -25,8 +25,16 @@ import {
   pathEq
 } from 'ramda';
 const rMerge = require('ramda').mergeRight;
-export class ChannelRoute extends ChannelBaseClass {
+export class SpyneChannelRoute extends ChannelBaseClass {
   constructor(name = 'CHANNEL_ROUTE', props = {}) {
+    /**
+     * @module SpyneChannelRoute
+     * @desc
+     * Internal Channel that has special methods to parse Route Values both directions.
+     *
+     * @constructor
+     *
+     */
     props.sendCurrentPayload = true;
     super('CHANNEL_ROUTE', props);
     this.createChannelActionsObj();
@@ -118,7 +126,7 @@ export class ChannelRoute extends ChannelBaseClass {
 
   onViewStreamInfo(pl) {
     let action = this.channelActions.CHANNEL_ROUTE_CHANGE_EVENT;
-    ChannelRoute.checkToPreventDefaultEvent(pl);
+    SpyneChannelRoute.checkToPreventDefaultEvent(pl);
     let payload = this.getDataFromParams(pl);
     let srcElement = path(['viewStreamInfo', 'srcElement'], pl);
     let uiEvent = pl.viewStreamEvent;
@@ -208,7 +216,7 @@ export class ChannelRoute extends ChannelBaseClass {
     const hashIsTrue = config.isHash === true;
     // type = config.isHash === true ? ''
     const str = URLUtils.getLocationStrByType(type, hashIsTrue);
-    let { paths, pathInnermost, routeData, routeValue } = ChannelRoute.getParamsFromRouteStr(
+    let { paths, pathInnermost, routeData, routeValue } = SpyneChannelRoute.getParamsFromRouteStr(
       str, config, type);
     let { routeCount, isDeepLink, isHash, routeType, isHidden } = this.getExtraPayloadParams(
       config);
@@ -293,7 +301,7 @@ export class ChannelRoute extends ChannelBaseClass {
     routeValue = this.checkEmptyRouteStr(routeValue, isHash);
     // console.log("SET WINDOW LOCATION ",routeValue, channelPayload);
     if (isHash === true) {
-      let pathName = ChannelRoute.removeLastSlash(window.location.pathname);
+      let pathName = SpyneChannelRoute.removeLastSlash(window.location.pathname);
       routeValue = pathName + routeValue;
       // window.location.hash = routeValue;
       // console.log('ROUTE STR FOR HASH ', routeValue);
@@ -311,18 +319,18 @@ export class ChannelRoute extends ChannelBaseClass {
   }
 
   bindStaticMethods() {
-    this.getIsDeepLinkBool = ChannelRoute.getIsDeepLinkBool.bind(this);
-    this.getDataFromLocationStr = ChannelRoute.getDataFromLocationStr.bind(
+    this.getIsDeepLinkBool = SpyneChannelRoute.getIsDeepLinkBool.bind(this);
+    this.getDataFromLocationStr = SpyneChannelRoute.getDataFromLocationStr.bind(
       this);
-    this.onIncomingDomEvent = ChannelRoute.onIncomingDomEvent.bind(this);
-    this.getDataFromString = ChannelRoute.getDataFromString.bind(this);
-    this.getParamsFromRouteStr = ChannelRoute.getParamsFromRouteStr.bind(this);
-    this.getLocationData = ChannelRoute.getLocationData.bind(this);
-    this.getRouteState = ChannelRoute.getRouteState.bind(this);
-    this.getDataFromParams = ChannelRoute.getDataFromParams.bind(this);
-    this.getRouteCount = ChannelRoute.getRouteCount.bind(this);
-    this.getExtraPayloadParams = ChannelRoute.getExtraPayloadParams.bind(this);
-    const curriedGetRoute = curryN(3, ChannelRoute.getRouteStrFromParams);
+    this.onIncomingDomEvent = SpyneChannelRoute.onIncomingDomEvent.bind(this);
+    this.getDataFromString = SpyneChannelRoute.getDataFromString.bind(this);
+    this.getParamsFromRouteStr = SpyneChannelRoute.getParamsFromRouteStr.bind(this);
+    this.getLocationData = SpyneChannelRoute.getLocationData.bind(this);
+    this.getRouteState = SpyneChannelRoute.getRouteState.bind(this);
+    this.getDataFromParams = SpyneChannelRoute.getDataFromParams.bind(this);
+    this.getRouteCount = SpyneChannelRoute.getRouteCount.bind(this);
+    this.getExtraPayloadParams = SpyneChannelRoute.getExtraPayloadParams.bind(this);
+    const curriedGetRoute = curryN(3, SpyneChannelRoute.getRouteStrFromParams);
     this.getRouteStrFromParams = curriedGetRoute(__, this.routeConfigJson,
       this.routeConfigJson.type);
   }

@@ -1,4 +1,4 @@
-import { ChannelWindow } from '../../spyne/channels/channel-window';
+import { SpyneChannelWindow } from '../../spyne/channels/spyne-channel-window';
 import { ChannelUtilsDom } from '../../spyne/utils/channel-util-dom';
 import { SpyneConfigData } from '../mocks/utils-data';
 

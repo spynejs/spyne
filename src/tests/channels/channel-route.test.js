@@ -8,7 +8,7 @@ import {
   RouteDataForTests,
   windowLocationData
 } from '../mocks/utils-data';
-import { ChannelRoute } from '../../spyne/channels/channel-route';
+import { SpyneChannelRoute } from '../../spyne/channels/spyne-channel-route';
 
 const ObjtoStr = JSON.stringify;
 
@@ -29,41 +29,41 @@ describe('Channel Route', () => {
       'search',
       'hash'];
     let locationObj = R.pickAll(locationParamsArr, window.location);
-    let routeLocationObj = ChannelRoute.getLocationData();
+    let routeLocationObj = SpyneChannelRoute.getLocationData();
     expect(ObjtoStr(routeLocationObj)).to.equal(ObjtoStr(locationObj));
   });
 
   it('should return payload from params', () => {
     let payload = ChannelPayloadRouteData;
-    let routePayload = ChannelRoute.getDataFromParams(payload, routeConfig);
+    let routePayload = SpyneChannelRoute.getDataFromParams(payload, routeConfig);
     expect(routePayload).to.be.an('object');
   });
 
   it('should return slash route string from params', () => {
     let data = RouteDataForTests.multiple.data;
     let queryStr = RouteDataForTests.multiple.slash;
-    let routeFromParams = ChannelRoute.getRouteStrFromParams(data, routeConfig);
+    let routeFromParams = SpyneChannelRoute.getRouteStrFromParams(data, routeConfig);
     expect(routeFromParams).to.equal(queryStr);
   });
 
   it('should return query route string from params', () => {
     let data = RouteDataForTests.multiple.data;
     let queryStr = RouteDataForTests.multiple.query;
-    let routeFromParams = ChannelRoute.getRouteStrFromParams(data, routeConfig, 'query');
+    let routeFromParams = SpyneChannelRoute.getRouteStrFromParams(data, routeConfig, 'query');
     expect(routeFromParams).to.equal(queryStr);
   });
 
   it('should return params object from slash string', () => {
     let data = RouteDataForTests.multiple.data;
     let queryStr = RouteDataForTests.multiple.slash;
-    let paramsFromRoute = ChannelRoute.getParamsFromRouteStr(queryStr, routeConfig);
+    let paramsFromRoute = SpyneChannelRoute.getParamsFromRouteStr(queryStr, routeConfig);
     expect(ObjtoStr(paramsFromRoute.routeData)).to.equal(ObjtoStr(data));
   });
 
   it('should return params object from query string', () => {
     let data = RouteDataForTests.multiple.data;
     let queryStr = RouteDataForTests.multiple.query;
-    let paramsFromRoute = ChannelRoute.getParamsFromRouteStr(queryStr, routeConfig, 'query');
+    let paramsFromRoute = SpyneChannelRoute.getParamsFromRouteStr(queryStr, routeConfig, 'query');
     expect(ObjtoStr(paramsFromRoute.routeData)).to.equal(ObjtoStr(data));
   });
 
@@ -75,7 +75,7 @@ describe('Channel Route', () => {
   });
 
   it('should combine any regex tokens into the route string', () => {
-    let payloadOverrideCheck = ChannelRoute.checkForRouteParamsOverrides(ChannelPayloadRouteDataRegexOverride);
+    let payloadOverrideCheck = SpyneChannelRoute.checkForRouteParamsOverrides(ChannelPayloadRouteDataRegexOverride);
     // console.log("override check ",payloadOverrideCheck);
 
     return true;
