@@ -7,15 +7,15 @@ import { ChannelViewStreamLifecycle } from './channel-viewstream-lifecycle';
 import { validate } from '../utils/channel-config-validator';
 
 import { Subject } from 'rxjs';
-import { ChannelsBaseProxy } from './channels-base-proxy';
+import { ChannelsCoreProxy } from './channels-core-proxy';
 import {propEq, pluck, key, filter, compose, join} from 'ramda';
 const rMap = require('ramda').map;
 
 // import * as R from 'ramda';
 
-export class ChannelsBaseController {
+export class ChannelsController {
   /**
-   * @module ChannelsBaseController
+   * @module ChannelsController
    *
    * @desc
    * This object creates the logic so that Channels and ViewStreams can communicate with each other
@@ -32,8 +32,8 @@ export class ChannelsBaseController {
     // console.log('Rx is ',Rx);
     // console.log('RX IS ', Subject);
     this.map.set('DISPATCHER', new Subject());
-    this.listRegisteredChannels = ChannelsBaseController.listRegisteredChannels.bind(this);
-    this.getChannelsList = ChannelsBaseController.getChannelsList.bind(this);
+    this.listRegisteredChannels = ChannelsController.listRegisteredChannels.bind(this);
+    this.getChannelsList = ChannelsController.getChannelsList.bind(this);
     window.setTimeout(this.checkForMissingChannels.bind(this), 3000);
   }
 
@@ -48,8 +48,8 @@ export class ChannelsBaseController {
 
   static listRegisteredChannels(showOnlyProxies = false) {
     let proxyMap = this.getChannelsList();
-    let rejectProxyFn = reject(propEq('val', 'ChannelsBaseProxy'));
-    let filterProxyFn = filter(propEq('val', 'ChannelsBaseProxy'));
+    let rejectProxyFn = reject(propEq('val', 'ChannelsCoreProxy'));
+    let filterProxyFn = filter(propEq('val', 'ChannelsCoreProxy'));
     let fn = showOnlyProxies === true ? filterProxyFn : rejectProxyFn;
     let removedProxyArr = fn(proxyMap);
     return pluck(['key'], removedProxyArr);
@@ -60,7 +60,7 @@ export class ChannelsBaseController {
 
   checkForMissingChannels() {
     let proxyMap = this.getChannelsList();
-    let filterProxyFn = filter(propEq('val', 'ChannelsBaseProxy'));
+    let filterProxyFn = filter(propEq('val', 'ChannelsCoreProxy'));
     let filterProxyArr = filterProxyFn(proxyMap);
 
     if (filterProxyArr.length >= 1) {
@@ -127,7 +127,7 @@ export class ChannelsBaseController {
 
   getStream(name) {
     if (this.testStream(name) === false) {
-      this.map.set(name, new ChannelsBaseProxy(name));
+      this.map.set(name, new ChannelsCoreProxy(name));
     }
 
     return this.map.get(name);

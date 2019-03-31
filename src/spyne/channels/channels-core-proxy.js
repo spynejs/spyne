@@ -1,7 +1,7 @@
 import { ChannelsBase } from './channels-base';
 import { Subject, ReplaySubject, merge } from 'rxjs';
 
-export class ChannelsBaseProxy extends ChannelsBase {
+export class ChannelsCoreProxy extends ChannelsBase {
   constructor(name, props = {}) {
     props.isProxy = true;
     super(name, props);

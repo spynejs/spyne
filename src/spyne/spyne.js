@@ -1,4 +1,4 @@
-import { ChannelsBaseController } from './channels/channels-base-controller';
+import { ChannelsController } from './channels/channels-controller';
 import { DomItem } from './views/dom-item';
 import { ViewStreamObservable } from './views/view-stream-observable';
 import { ViewStream } from './views/view-stream';
@@ -6,7 +6,7 @@ import { ViewStreamBroadcaster } from './views/view-stream-broadcaster';
 import { SpyneTrait } from './utils/spyne-trait';
 import { ViewStreamPayload } from './views/view-stream-payload';
 import { ChannelsBase } from './channels/channels-base';
-import { ChannelsFetch } from './channels/channels-base-fetch';
+import { ChannelsFetch } from './channels/channels-core-fetch';
 import { ChannelPayloadItem } from './channels/channel-payload-item';
 import { deepMerge } from './utils/deep-merge';
 
@@ -20,14 +20,14 @@ class SpyneApp {
    * @param {Object} config
    */
   constructor(config = {}) {
-    this.channels = new ChannelsBaseController();
+    this.channels = new ChannelsController();
     this.VERSION = '0.9.14';
     this.ViewStream = ViewStream;
     this.BasicView = ViewStreamObservable;
     this.DomItem = DomItem;
     this.ViewStreamBroadcaster = ViewStreamBroadcaster;
     this.ChannelsPayload = ViewStreamPayload;
-    this.ChannelsBaseController = ChannelsBaseController;
+    this.ChannelsController = ChannelsController;
     this.ChannelsBase = ChannelsBase;
     this.ChannelPayloadItem = ChannelPayloadItem;
     window.Spyne = this;
@@ -108,7 +108,7 @@ export {
   ViewStreamObservable,
   ChannelsBase,
   ChannelsFetch,
-  ChannelsBaseController,
+  ChannelsController,
   ViewStreamPayload,
   ChannelPayloadItem,
   DomItem,
