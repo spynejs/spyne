@@ -1,4 +1,4 @@
-import { ChannelsBase } from '../channels/channels-base';
+import { ChannelBaseClass } from './channel-base-class';
 import { URLUtils } from '../utils/channel-util-urls';
 import { RouteUtils } from '../utils/channel-util-route';
 import { BehaviorSubject, ReplaySubject, merge } from 'rxjs';
@@ -25,7 +25,7 @@ import {
   pathEq
 } from 'ramda';
 const rMerge = require('ramda').mergeRight;
-export class ChannelRoute extends ChannelsBase {
+export class ChannelRoute extends ChannelBaseClass {
   constructor(name = 'CHANNEL_ROUTE', props = {}) {
     props.sendCurrentPayload = true;
     super('CHANNEL_ROUTE', props);

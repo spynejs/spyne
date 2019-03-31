@@ -5,7 +5,7 @@ import { ViewStream } from './views/view-stream';
 import { ViewStreamBroadcaster } from './views/view-stream-broadcaster';
 import { SpyneTrait } from './utils/spyne-trait';
 import { ViewStreamPayload } from './views/view-stream-payload';
-import { ChannelsBase } from './channels/channels-base';
+import { ChannelBaseClass } from './channels/channel-base-class';
 import { ChannelsFetch } from './channels/channels-core-fetch';
 import { ChannelPayloadItem } from './channels/channel-payload-item';
 import { deepMerge } from './utils/deep-merge';
@@ -28,7 +28,7 @@ class SpyneApp {
     this.ViewStreamBroadcaster = ViewStreamBroadcaster;
     this.ChannelsPayload = ViewStreamPayload;
     this.ChannelsController = ChannelsController;
-    this.ChannelsBase = ChannelsBase;
+    this.ChannelsBase = ChannelBaseClass;
     this.ChannelPayloadItem = ChannelPayloadItem;
     window.Spyne = this;
     let defaultConfig = {
@@ -106,7 +106,7 @@ class SpyneApp {
 window['Spyne'] = SpyneApp;
 export {
   ViewStreamObservable,
-  ChannelsBase,
+  ChannelBaseClass,
   ChannelsFetch,
   ChannelsController,
   ViewStreamPayload,

@@ -6,9 +6,9 @@ import {ifElse, isString, identity, head, mergeAll, objOf, view, is, chain, lens
 const rMap = require('ramda').map;
 const rMerge = require('ramda').mergeRight;
 
-export class ChannelsBase {
+export class ChannelBaseClass {
   /**
-   * @module ChannelsBase
+   * @module ChannelBaseClass
    * @desc
    * <p>This is the base for all Channels, including the UI, ROUTE, WINDOW, LIFECYCLE and FETCH channels.</p>
    * <p>If the channel is subscribed to before it is created, Spyne will create a proxy channel in its place, and will be swapped when the actual channel is ready.</p>

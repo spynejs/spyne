@@ -1,7 +1,7 @@
-import { ChannelsBase } from '../channels/channels-base';
+import { ChannelBaseClass } from './channel-base-class';
 import {prop} from 'ramda';
 
-export class ChannelViewStreamLifecycle extends ChannelsBase {
+export class ChannelViewStreamLifecycle extends ChannelBaseClass {
   constructor(props = {}) {
     super('CHANNEL_LIFECYCLE', props);
   }

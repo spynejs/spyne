@@ -1,9 +1,9 @@
-import { ChannelsBase } from '../channels/channels-base';
+import { ChannelBaseClass } from './channel-base-class';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import {equals, path, compose,prop, pathEq, when, either, toUpper} from 'ramda';
 
-export class ChannelUI extends ChannelsBase {
+export class ChannelUI extends ChannelBaseClass {
   constructor(name = 'CHANNEL_UI', props = {}) {
     props.sendCurrentPayload = false;
     super(name, props);

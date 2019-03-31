@@ -1,4 +1,4 @@
-import { ChannelsBase } from '../channels/channels-base';
+import { ChannelBaseClass } from './channel-base-class';
 import { checkIfObjIsNotEmptyOrNil } from '../utils/frp-tools';
 import { ChannelUtilsDom } from '../utils/channel-util-dom';
 import { merge } from 'rxjs';
@@ -6,7 +6,7 @@ import { map, debounceTime, skipWhile } from 'rxjs/operators';
 import {curry, pick, mapObjIndexed} from 'ramda';
 const rMap = require('ramda').map;
 
-export class ChannelWindow extends ChannelsBase {
+export class ChannelWindow extends ChannelBaseClass {
   constructor() {
     super('CHANNEL_WINDOW');
     this.bindStaticMethods();
