@@ -7,7 +7,7 @@ export class ChannelFetchUtil {
    * @module ChannelFetchUtil
    *
    * @desc
-   * This is the core object used for ChannelsFetch. This utility wraps the javascript fetch api into an observable.
+   * This is the core object used for ChannelFetch. This utility wraps the javascript fetch api into an observable.
    *
    * @constructor
    * @param {Object} options Properties used to create the fetch request

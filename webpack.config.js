@@ -9,9 +9,9 @@ const libraryName = 'spyne';
 let devToolValue = 'eval-source-map';
 let outputFile;
 let externalsArr =[];
-let viewStreamFile = path.join(__dirname, '/src/spyne/views/view-stream.js');
+let viewStreamFile = path.join(__dirname, '/src/spyne/views/view-stream-a.js');
 let optimizeFile = path.join(__dirname, '/src/spyne/utils/optimize-class.js');
-let channelStreamItemFile = path.join(__dirname, '/src/spyne/channels/channel-payload-item.js');
+let channelStreamItemFile = path.join(__dirname, '/src/spyne/channels/channel-payload-class.js');
 const WebpackRxjsExternals = require('webpack-rxjs-externals');
 
 const loaderOptionsPlugin = new webpack.LoaderOptionsPlugin({ options: {

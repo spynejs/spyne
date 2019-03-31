@@ -2,13 +2,13 @@ import { ChannelBaseClass } from './channel-base-class';
 import { ChannelFetchUtil } from '../utils/channel-fetch-util';
 import {path, pick, mergeRight, mergeDeepRight, reject, compose, isNil} from 'ramda';
 
-export class ChannelsFetch extends ChannelBaseClass {
+export class ChannelFetch extends ChannelBaseClass {
   /**
-   * @module ChannelsFetch
+   * @module ChannelFetch
    * @desc
-   * Extends ChannelBase and addes the ChannelFetchUtil to create a system that is able to coordinate with an api. <span class='break'/>
+   * Extends ChannelBase and adds the ChannelFetchUtil to create a system that is able to coordinate with an api. <span class='break'/>
    * The fetch request can be updated from any ViewStream instance by using the sendInfoChannel method. <span class='break'/>
-   * It is recommended that a ChannelsFetch instance be created for each type of request. For example, one ChannelsFetch can read the amount available from a checking account, while another instance writes to that checking account.
+   * It is recommended that a ChannelFetch instance be created for each type of request. For example, one ChannelFetch can read the amount available from a checking account, while another instance writes to that checking account.
    * A main channel can maintain the state of both.
    *
    * @constructor
@@ -64,7 +64,7 @@ export class ChannelsFetch extends ChannelBaseClass {
   }
 
   createChannelPayloadItem(payload, action = 'CHANNEL_DATA_EVENT') {
-    // return new ChannelPayloadItem(this.props.name, action, payload);
+    // return new ChannelPayload(this.props.name, action, payload);
     this.sendChannelPayload(action, payload);
   }
 

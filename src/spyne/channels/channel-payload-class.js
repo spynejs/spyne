@@ -1,10 +1,10 @@
 import {mergeAll, includes, pickAll} from 'ramda';
 
-export class ChannelPayloadItem {
+export class ChannelPayload {
   /**
    *
    * All payloads sent from Channels returns an instance of this class
-   * @module ChannelPayloadItem
+   * @module ChannelPayload
    *
    * @constructor
    * @param {String} channelName
@@ -39,10 +39,10 @@ export class ChannelPayloadItem {
     channelPayloadItemObj.props = () => mergeAll([channelPayloadItemObj.channelPayload, { channel }, { event }, { action: channelPayloadItemObj.action }, channelPayloadItemObj.srcElement, channelPayloadItemObj.event]);
     const channelActionsArr = window.Spyne.getChannelActions(channel);
 
-    ChannelPayloadItem.validateAction(action, channel, channelActionsArr);
+    ChannelPayload.validateAction(action, channel, channelActionsArr);
 
     if (channel === 'CHANNEL_ROUTE') {
-      channelPayloadItemObj['location'] = ChannelPayloadItem.getLocationData();
+      channelPayloadItemObj['location'] = ChannelPayload.getLocationData();
     }
 
     return channelPayloadItemObj;

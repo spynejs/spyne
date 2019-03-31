@@ -1,5 +1,5 @@
 import { ChannelPayloadRouteData, ChannelPayloadUIData, DeepLinkData } from '../mocks/channel-payload-data';
-import { ChannelPayloadItem } from '../../spyne/channels/channel-payload-item';
+import { ChannelPayload } from '../../spyne/channels/channel-payload-class';
 
 describe('Channel Stream Item tests', () => {
   it('deeplink should return [payload, type, location]', () => {
@@ -13,7 +13,7 @@ describe('Channel Stream Item tests', () => {
     const arr = ['CHANNEL_ROUTE_DEEPLINK_EVENT', 'CHANNEL_ROUTE_CHANGE_EVENT'];
     const action = 'CHANNEL_ROUTE_DEEPLINK_EVENT';
     const channel = 'ROUTE';
-    let actionIsValid = ChannelPayloadItem.validateAction(action, channel, arr);
+    let actionIsValid = ChannelPayload.validateAction(action, channel, arr);
     expect(actionIsValid).to.equal(true);
   });
 
@@ -21,7 +21,7 @@ describe('Channel Stream Item tests', () => {
     const arr = ['CHANNEL_ROUTE_DEEPLINK_EVENT', 'CHANNEL_ROUTE_CHANGE_EVENT'];
     const action = 'TEST';
     const channel = 'ROUTE';
-    let actionIsValid = ChannelPayloadItem.validateAction(action, channel, arr);
+    let actionIsValid = ChannelPayload.validateAction(action, channel, arr);
     expect(actionIsValid).to.equal(false);
   });
 });

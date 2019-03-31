@@ -13,7 +13,7 @@ import { ViewStreamEnhancerLoader } from './view-stream-enhancer-loader';
 import { registeredStreamNames } from '../channels/channels-config';
 import { ViewStreamBroadcaster } from './view-stream-broadcaster';
 import { ViewStreamPayload } from './view-stream-payload';
-import { ChannelActionFilter } from '../utils/channel-action-filter';
+import { ChannelPayloadFilter } from '../utils/channel-payload-filter';
 import { LifecyleObservables } from '../utils/viewstream-lifecycle-observables';
 import {ViewStreamSelector} from './view-stream-selector';
 import { Subject, of } from 'rxjs';
@@ -204,7 +204,7 @@ export class ViewStream {
     let createExtraStatesMethod = (arr) => {
       let [action, funcStr, actionFilter] = arr;
       if (is(String, actionFilter)) {
-        actionFilter = ChannelActionFilter(actionFilter);
+        actionFilter = ChannelPayloadFilter(actionFilter);
       }
       this.props.extendedSourcesHashMethods[action] = channelFn(funcStr,
         actionFilter);
@@ -219,7 +219,7 @@ export class ViewStream {
    * The method takes a nested array.
    * The firset element is the name of the action.
    * The second value is the name of the method that will be called when the action is published.
-   * A third option value is a selector string (if the action is based on an event from an HTMLElement, or this could be an instance of the <a class='linker' data-channel="ROUTE"  data-event-prevent-default="true" data-menu-item="channel-action-filter"  href="/guide/reference/channel-action-filter" >ChannelActionFilter</a>.
+   * A third option value is a selector string (if the action is based on an event from an HTMLElement, or this could be an instance of the <a class='linker' data-channel="ROUTE"  data-event-prevent-default="true" data-menu-item="channel-action-filter"  href="/guide/reference/channel-action-filter" >ChannelPayloadFilter</a>.
    *
    * @example
    *   addActionListeners() {
@@ -914,7 +914,7 @@ export class ViewStream {
   }
 
   createActionFilter(selectors, data) {
-    return new ChannelActionFilter(selectors, data);
+    return new ChannelPayloadFilter(selectors, data);
   }
 
   isLocalEvent(channelPayloadItem) {

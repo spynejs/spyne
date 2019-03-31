@@ -1,8 +1,8 @@
 import {is, filter, reject, isNil, allPass, isEmpty, isAlways, compose, uniq, equals, all, prop, whereEq, where, defaultTo, path, values, type, flatten, any, curry} from 'ramda';
 const rMap = require('ramda').map;
-export class ChannelActionFilter {
+export class ChannelPayloadFilter {
   /**
-   * @module ChannelActionFilter
+   * @module ChannelPayloadFilter
    *
    * @desc
    * Filters Channel Actions before the assigned method is called.<span class='break'/>
@@ -18,7 +18,7 @@ export class ChannelActionFilter {
    *    let data = {
    *      linkType: (type)=>type==='external'
    *    };
-   * let myFilter = new ChannelActionFilter(['ul', 'li:first-child'], data);
+   * let myFilter = new ChannelPayloadFilter(['ul', 'li:first-child'], data);
    *
    *    addActionListeners() {
    *      return [
@@ -28,9 +28,9 @@ export class ChannelActionFilter {
    *
    */
   constructor(selector, data) {
-    const addStringSelectorFilter =  is(String, selector) ? ChannelActionFilter.filterSelector([selector]) : undefined;
-    const addArraySelectorFilter = is(Array, selector) ? ChannelActionFilter.filterSelector(selector) : undefined;
-    const addDataFilter = is(Object, data) ? ChannelActionFilter.filterData(data) : undefined;
+    const addStringSelectorFilter =  is(String, selector) ? ChannelPayloadFilter.filterSelector([selector]) : undefined;
+    const addArraySelectorFilter = is(Array, selector) ? ChannelPayloadFilter.filterSelector(selector) : undefined;
+    const addDataFilter = is(Object, data) ? ChannelPayloadFilter.filterData(data) : undefined;
 
     const filtersArr = reject(isNil, [addStringSelectorFilter, addArraySelectorFilter, addDataFilter]);
 
@@ -99,7 +99,7 @@ export class ChannelActionFilter {
 
   static filterSelector(selectorArr) {
     let arr = reject(isEmpty, selectorArr);
-    let payloadCheck = curry(ChannelActionFilter.checkPayloadSelector);
+    let payloadCheck = curry(ChannelPayloadFilter.checkPayloadSelector);
     return payloadCheck(arr);
   }
 }

@@ -1,5 +1,5 @@
 import { registeredStreamNames } from './channels-config';
-import { ChannelPayloadItem } from './channel-payload-item';
+import { ChannelPayload } from './channel-payload-class';
 import { ReplaySubject, Subject } from 'rxjs';
 import { map } from 'rxjs/operators';
 import {ifElse, isString, identity, head, mergeAll, objOf, view, is, chain, lensIndex, always, fromPairs, path, equals, prop} from 'ramda';
@@ -194,7 +194,7 @@ export class ChannelBaseClass {
   /**
    *
    * @desc
-   * This is method  will send format and send a ChannelPayloadItem.
+   * This is method  will send format and send a ChannelPayload.
    *
    * @param {String} action
    * @param {Object} payload
@@ -216,7 +216,7 @@ export class ChannelBaseClass {
    */
   sendChannelPayload(action, payload, srcElement = {}, event = {}, obs$ = this.observer$) {
     // MAKES ALL CHANNEL BASE AND DATA STREAMS CONSISTENT
-    let channelPayloadItem = new ChannelPayloadItem(this.props.name, action, payload, srcElement, event);
+    let channelPayloadItem = new ChannelPayload(this.props.name, action, payload, srcElement, event);
     // console.log("CHANNEL STREEM ITEM ",channelPayloadItem);
 
     obs$.next(channelPayloadItem);

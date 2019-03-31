@@ -1,4 +1,4 @@
-import { ChannelActionFilter } from '../../spyne/utils/channel-action-filter';
+import { ChannelPayloadFilter } from '../../spyne/utils/channel-payload-filter';
 import { internalViewStreamPayload, internvalRouteChannelPayload } from '../mocks/viewstream-internal-payload.mocks';
 import { spyneDocsDomStr } from '../mocks/spyne-docs.mocks';
 
@@ -22,21 +22,21 @@ describe('channel action filter', () => {
   afterEach(function() {
     document.body.removeChild(document.getElementById('app'));
   });
-  it('Create a new ChannelActionFilter', () => {
-    let filter = new ChannelActionFilter();
+  it('Create a new ChannelPayloadFilter', () => {
+    let filter = new ChannelPayloadFilter();
     let filterConstructor = filter.constructor.name;
     return filterConstructor.should.equal('Function');
   });
 
   it('String selector only with no data', () => {
-    let filter = new ChannelActionFilter('#header ul li:last-child');
+    let filter = new ChannelPayloadFilter('#header ul li:last-child');
     let filterVal = filter(payload);
     // console.log(filterVal, 'filter val string');
     expect(filterVal).to.eq(true);
   });
 
   it('Selectors array contains match but no data', () => {
-    let filter = new ChannelActionFilter(['#header ul li:last-child', '#header ul li:first-child' ]);
+    let filter = new ChannelPayloadFilter(['#header ul li:last-child', '#header ul li:first-child' ]);
     let filterVal = filter(payload);
     expect(filterVal).to.eq(true);
   });
@@ -47,7 +47,7 @@ describe('channel action filter', () => {
       type:'link',
       linkType:  'external'
     };
-    let filter = new ChannelActionFilter(str, data);
+    let filter = new ChannelPayloadFilter(str, data);
     let filterVal = filter(payload);
 
     expect(filterVal).to.eq(true);
@@ -59,7 +59,7 @@ describe('channel action filter', () => {
       type: (str) => str === 'link',
       linkType:  R.test(/ext.*nal/)
     };
-    let filter = new ChannelActionFilter(str, data);
+    let filter = new ChannelPayloadFilter(str, data);
     let filterVal = filter(payload);
 
     expect(filterVal).to.eq(true);
@@ -71,20 +71,20 @@ describe('channel action filter', () => {
       type: (str) => str === 'link',
       linkType:  R.test(/ext.*nal/)
     };
-    let filter = new ChannelActionFilter(undefined, data);
+    let filter = new ChannelPayloadFilter(undefined, data);
     let filterVal = filter(payload);
 
     expect(filterVal).to.eq(true);
   });
 
   it('Empty String selector with no data', () => {
-    let filter = new ChannelActionFilter('');
+    let filter = new ChannelPayloadFilter('');
     let filterVal = filter(payload);
     expect(filterVal).to.eq(false);
   });
 
   it('Empty Arrays of selectors with no data', () => {
-    let filter = new ChannelActionFilter(['', '#header ul li:first-child']);
+    let filter = new ChannelPayloadFilter(['', '#header ul li:first-child']);
     let filterVal = filter(payload);
     expect(filterVal).to.eq(false);
   });
@@ -95,7 +95,7 @@ describe('channel action filter', () => {
       type: (str) => str === 'Incorrect',
       linkType:  R.test(/ext.*nal/)
     };
-    let filter = new ChannelActionFilter(undefined, data);
+    let filter = new ChannelPayloadFilter(undefined, data);
     let filterVal = filter(payload);
     expect(filterVal).to.eq(false);
   });
@@ -106,7 +106,7 @@ describe('channel action filter', () => {
       type: (str) => str === 'Incorrect',
       linkType:  R.test(/ext.*nal/)
     };
-    let filter = new ChannelActionFilter(['', '#header ul li:first-child'], data);
+    let filter = new ChannelPayloadFilter(['', '#header ul li:first-child'], data);
     let filterVal = filter(payload);
 
     expect(filterVal).to.eq(false);
