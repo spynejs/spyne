@@ -14,7 +14,21 @@ class SpyneApp {
   /**
    *
    * SpyneApp initializes the app and creates a global Spyne object that can be used to contain global properties and has several methods
+   *
+   * <h3>Initializing Internal Spyne Channels</h3>
+   * <p>Internal Spyne Channels extend the <a class='linker' data-channel="ROUTE"  data-event-prevent-default="true" data-menu-item="channel-base-class"  href="/guide/reference/channel-base-class" >ChannelBaseClass</a>.</br>
+   *
+   * And Spyne App automatically creates all internal Spyne channels when instantiated.
+   * There is one Internal channel for each type of information, <a class='linker' data-channel="ROUTE"  data-event-prevent-default="true" data-menu-item="spyne-channel-u-i"  href="/guide/reference/spyne-channel-u-i" >UI</a>., <a class='linker' data-channel="ROUTE"  data-event-prevent-default="true" data-menu-item="spyne-channel-window"  href="/guide/reference/spyne-channel-window" >WINDOW</a>., <a class='linker' data-channel="ROUTE"  data-event-prevent-default="true" data-menu-item="spyne-channel-route"  href="/guide/reference/spyne-channel-route" >ROUTE</a>. and <a class='linker' data-channel="ROUTE"  data-event-prevent-default="true" data-menu-item="spyne-channel-life-cycle"  href="/guide/reference/spyne-channel-life-cycle" >LIFECYCLE</a> <br/>These channels are not meant to be extended.</p>
+   *
+   *     <h3>Each Channel have the following unique properties</h3>
+   * <ol>
+   *     <li>Each may have seperate type of configuration properties</li>
+   *     <li>Internal Channels listens for their respective event types</li>
+   *     <li>Internal Channels returns specific relevant properties in their channel payloads</li>
+   * </ol>
    * @module SpyneApp
+   *
    *
    * @constructor
    * @param {Object} config

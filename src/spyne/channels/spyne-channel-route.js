@@ -30,9 +30,40 @@ export class SpyneChannelRoute extends ChannelBaseClass {
     /**
      * @module SpyneChannelRoute
      * @desc
-     * Internal Channel that has special methods to parse Route Values both directions.
+     *
+     * <h3>This channel takes a fundamental approach to a routing system.</h3>
+     * <p>The core of any routing system is two way translation of values:</p>
+     * <ol>
+     * <li>Transform the window location into usable properties</li>
+     * <li>Combine variables to change the window location</li>
+     * </ol>
+     * <p>This is in essence all of what the ROUTE channel does. </br>It combines values sent from a bound HTML Element, or sent from a ViewStream instance, and uses those properties to create the new window locaiton, building out any missing properties by using the nested route configuration file.
+     * </br>In the same way, the ROUTE Channel can transform the string of the window location into a JSON object containing the values that were set in the configuration file.
+     * Useful information such as changed, deleted and added properties are also sent in the payload.</p>
+     *
+     * <h5>The nested route configuration object allows for regular expressions.</h5>
+     *
+     * <ul>
+     * <li>A simple example of two way translation.</li>
+     * <li>The key to making this powerful is a configuration file that does much of the work of the translation.</li>
+     *
+     * <h3>The Nested Routes Object</h3>
+     * <p>Like all Channels the ROUTE Channel publishes globally</p>
+     * <h4>Publishes all window.location events</h4>
+     * ROUTE combines the window location and history apis to automatically publish any window.location changes
+     * Using the config.routes Object, the Route Channel will parse the location and transform the location string into an object containing the relevant data.
+     *
+     * <h5>Allows HTML Elements and ViewStream instances to change window location by updating only the necessary properties.</h5>
+     * <ol>
+     * </ol>
+     *
      *
      * @constructor
+     * @param {Object} config
+     * @property {String} config.type - = 'slash'; The one other option is 'query' which will use the query syntax for window locaiton.
+     * @property {Boolean} config.isHash - = false; If set to true, the window location will use the hashchange event.
+     * @property {Boolean} config.isHidden - = false; If set to true, the logic of the route channel will remain, however the window location will not change.
+     * @property {Object} config.routes - = {routePath: {routeName:'change'}; This nested Object is used to parse variables from the window location, and this also allows ui channels the ability to send only partial parts of the window location.
      *
      */
     props.sendCurrentPayload = true;
