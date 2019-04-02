@@ -2,7 +2,7 @@ import { ChannelBaseClass } from './channel-base-class';
 import { URLUtils } from '../utils/channel-util-urls';
 import { RouteUtils } from '../utils/channel-util-route';
 import { BehaviorSubject, ReplaySubject, merge } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { map, filter } from 'rxjs/operators';
 
 import {
   objOf,
@@ -72,12 +72,24 @@ export class SpyneChannelRoute extends ChannelBaseClass {
     this.routeConfigJson = this.getRouteConfig();
     this.bindStaticMethods();
     this.navToStream$ = new ReplaySubject(1);
+    const filterUndefined = (e)=>e!==undefined;
     this.observer$ = this.navToStream$.pipe(map(info => this.onMapNext(info)));
     // let compareKeysFn = RouteUtils.compareRouteKeywords.bind(this);
     this.compareRouteKeywords = RouteUtils.compareRouteKeywords();
   }
 
-  initializeStream() {
+  checkConfigForHash(){
+    // LEGACY CHECK TO SIMPLIFY CONFIG FOR HASH;
+    let isHashType = window.Spyne.config.channels.ROUTE.type==='hash';
+    if (isHashType === true){
+      window.Spyne.config.channels.ROUTE.type = 'slash';
+      window.Spyne.config.channels.ROUTE.isHash = true;
+    }
+
+  }
+
+  onChannelInitialized() {
+    this.checkConfigForHash();
     this.initStream();
   }
 
@@ -109,9 +121,9 @@ export class SpyneChannelRoute extends ChannelBaseClass {
   }
 
   initStream() {
-    this.firstLoadStream$ = new BehaviorSubject(
-      this.onIncomingDomEvent(undefined, this.routeConfigJson,
-        '' + 'CHANNEL_ROUTE_DEEPLINK_EVENT'));
+    this.firstLoadStream$ = new ReplaySubject(1);
+      this.onIncomingDomEvent(undefined, this.routeConfigJson, '' + 'CHANNEL_ROUTE_DEEPLINK_EVENT');
+
     RouteUtils.createPopStateStream(this.onIncomingDomEvent.bind(this));
 
     this.observer$ = merge(this.firstLoadStream$,
@@ -119,6 +131,7 @@ export class SpyneChannelRoute extends ChannelBaseClass {
   }
 
   onMapNext(data, firstLoaded = false) {
+    console.log("MAP NEXT ",{firstLoaded, data});
     data['action'] = 'CHANNEL_ROUTE_CHANGE_EVENT';
     return data;
   }
@@ -132,8 +145,8 @@ export class SpyneChannelRoute extends ChannelBaseClass {
     let keywordArrs = this.compareRouteKeywords.compare(payload.routeData, payload.paths);
     payload = rMerge(payload, keywordArrs);
     // console.log("SEND STREAM onIncomingDomEvent", payload, keywordArrs);;
-    this.sendChannelPayload(action, payload, undefined, undefined,
-      this.navToStream$);
+      this.sendChannelPayload(action, payload, undefined, undefined, this.navToStream$);
+
   }
 
   static checkForRouteParamsOverrides(payload) {
