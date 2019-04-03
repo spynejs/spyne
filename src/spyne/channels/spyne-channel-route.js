@@ -136,6 +136,12 @@ export class SpyneChannelRoute extends ChannelBaseClass {
     return data;
   }
 
+  static removeSSID(payload){
+    const routeLens = R.lensProp(['routeData']);
+    const omitSSID = R.over(routeLens, R.omit(['ssid']));
+    return omitSSID(payload);;
+  }
+
   static onIncomingDomEvent(evt, config = this.routeConfigJson, actn) {
     let action = actn !== undefined
       ? actn
@@ -145,6 +151,7 @@ export class SpyneChannelRoute extends ChannelBaseClass {
     let keywordArrs = this.compareRouteKeywords.compare(payload.routeData, payload.paths);
     payload = rMerge(payload, keywordArrs);
     // console.log("SEND STREAM onIncomingDomEvent", payload, keywordArrs);;
+    payload = SpyneChannelRoute.removeSSID(payload);
       this.sendChannelPayload(action, payload, undefined, undefined, this.navToStream$);
 
   }
@@ -180,6 +187,7 @@ export class SpyneChannelRoute extends ChannelBaseClass {
     // this.checkForRouteParamsOverrides(payload);
     this.sendRouteStream(payload, changeLocationBool);
     // console.log("SEND STREAM onViewStreamInfo", payload);
+    payload = SpyneChannelRoute.removeSSID(payload);
 
     this.sendChannelPayload(action, payload, srcElement, uiEvent,
       this.navToStream$);

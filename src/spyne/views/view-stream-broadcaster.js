@@ -98,7 +98,7 @@ export class ViewStreamBroadcaster {
       // run payload
       channelPayload(observable, data);
     };
-    if (query === undefined || query.length <= 0) {
+    if (query === undefined || query.length <= 0 && window.Spyne.config.verbose===true) {
       console.warn(`Spyne Warning: The item ${selector}, does not appear to exist!`);
       // query = this.props.el;
       // addObservable(query, event);

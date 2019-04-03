@@ -85,8 +85,8 @@ export class ChannelsController {
   }
 
   createMainStreams() {
-    this.routeValueeam = new SpyneChannelRoute();
-    this.map.set('CHANNEL_ROUTE', this.routeValueeam);
+    this.routeStream = new SpyneChannelRoute();
+    this.map.set('CHANNEL_ROUTE', this.routeStream);
 
     this.uiStream = new SpyneChannelUI();
     this.map.set('CHANNEL_UI', this.uiStream);
@@ -97,7 +97,7 @@ export class ChannelsController {
     this.viewStreamLifecycle = new SpyneChannelLifecycle();
     this.map.set('CHANNEL_LIFECYCLE', this.viewStreamLifecycle);
 
-    this.routeValueeam.initializeStream();
+    this.routeStream.initializeStream();
     this.domStream.initializeStream();
   }
 

@@ -13,12 +13,12 @@ function generateSpyneSelectorId(el) {
   return `[data-ssid='${ssid}']`;
 }
 
-function getElOrList(cxt, str) {
-  let list = getNodeListArray(cxt, str);
+function getElOrList(cxt, str, verboseBool=false) {
+  let list = getNodeListArray(cxt, str, verboseBool);
   return list.length === 1 ? head(list) : list;
 };
 
-function testSelectors(cxt, str) {
+function testSelectors(cxt, str, verboseBool) {
   let el = document.querySelector(cxt);
 
   const elIsDomElement = compose(lte(0), defaultTo(-1),
@@ -32,7 +32,7 @@ function testSelectors(cxt, str) {
   if (str !== undefined) {
     let query = el.querySelector(str);
     if (query === null) {
-      if (window.Spyne.config.verbose === true) {
+      if (window.Spyne.config.verbose === true && verboseBool===true) {
         console.warn(`Spyne Warning: the selector, ${str} does not exist in this el, ${cxt}`);
       }
 
@@ -41,8 +41,9 @@ function testSelectors(cxt, str) {
 
 }
 
-function getNodeListArray(cxt, str) {
+function getNodeListArray(cxt, str, verboseBool=false) {
   let selector = str !== undefined ? `${cxt} ${str}` : cxt;
+  testSelectors(cxt, str, verboseBool);
   return document.querySelectorAll(selector);
 }
 
@@ -64,7 +65,7 @@ function setInlineCss(val, cxt, str) {
 
 function ViewStreamSelector(cxt, str) {
   cxt = typeof (cxt) === 'string' ? cxt : generateSpyneSelectorId(cxt);
-  testSelectors(cxt, str);
+  testSelectors(cxt, str, false);
 
   function selector(str) {
     return ViewStreamSelector(cxt, str);
@@ -174,8 +175,44 @@ function ViewStreamSelector(cxt, str) {
     return this;
   };
 
-  Object.defineProperty(selector, 'el', {get: () => getElOrList(cxt, str)});
-  Object.defineProperty(selector, 'length', {get: () => getNodeListArray(cxt, str).length});
+  /**
+   *
+   * @function el
+   *
+   * @desc
+   * getter for the selector
+   *
+   * @returns
+   * The a single element or a NodeList from the selector
+   */
+
+
+  /**
+   *
+   * @function length
+   *
+   * @desc
+   * Determines the length of the NodeList
+   *
+   * @returns
+   * The length of the selector as a NodeList
+   */
+
+  /**
+   *
+   * @function exists
+   *
+   * @desc
+   * Determines whether an the selected element exists
+   *
+   * @returns
+   * Boolean
+   */
+
+
+  Object.defineProperty(selector, 'el', {get: () => getElOrList(cxt, str, true)});
+  Object.defineProperty(selector, 'length', {get: () => getNodeListArray(cxt, str, false).length});
+  Object.defineProperty(selector, 'exists', {get: () => getNodeListArray(cxt, str, false).length>=1});
   Object.defineProperty(selector, 'nodeList', {get: () => getNodeListArray(cxt, str)});
   Object.defineProperty(selector, 'inlineCss', {set: (val) => setInlineCss(val, cxt, str)});
 

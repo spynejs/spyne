@@ -723,7 +723,7 @@ export class ViewStream {
     this.beforeAfterRender();
     this.afterRender();
     this.viewsStreamBroadcaster = new ViewStreamBroadcaster(this.props,
-      this.broadcastEvents);
+      this.broadcastEvents.bind(this));
   }
 
   beforeAfterRender() {

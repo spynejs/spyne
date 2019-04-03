@@ -8,6 +8,7 @@ import { ViewStreamPayload } from './views/view-stream-payload';
 import { ChannelBaseClass } from './channels/channel-base-class';
 import { ChannelFetch } from './channels/channel-fetch-class';
 import { ChannelPayload } from './channels/channel-payload-class';
+import {ChannelPayloadFilter} from './utils/channel-payload-filter';
 import { deepMerge } from './utils/deep-merge';
 
 class SpyneApp {
@@ -125,6 +126,7 @@ export {
   ChannelsController,
   ViewStreamPayload,
   ChannelPayload,
+    ChannelPayloadFilter,
   DomItem,
   ViewStream,
   ViewStreamBroadcaster,
