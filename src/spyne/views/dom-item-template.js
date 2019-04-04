@@ -1,4 +1,4 @@
-import {includes, __, ifElse, reject, defaultTo, isNil, isEmpty} from 'ramda';
+import {includes, __, ifElse, reject, is, defaultTo, isNil, isEmpty} from 'ramda';
 
 /**
  * @module DomItemTemplate
@@ -12,6 +12,18 @@ import {includes, __, ifElse, reject, defaultTo, isNil, isEmpty} from 'ramda';
 export class DomItemTemplate {
   constructor(template, data) {
     this.template = this.formatTemplate(template);
+
+    const checkForArrayData = ()=>{
+      if (is(Array, data) === true) {
+        data = {spyneData:data};
+        this.template = this.template.replace("{{/}}", "{{/spyneData}}");
+        this.template = this.template.replace("{{#}}", "{{#spyneData}}");
+      }
+    };
+
+    checkForArrayData();
+
+
     this.templateData = data;
 
     let strArr = DomItemTemplate.getStringArray(this.template);

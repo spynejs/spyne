@@ -799,6 +799,7 @@ export class ViewStream {
       `channel name ${c} is not within ${registeredStreamNames}`);
     let startSubscribe = (c) => {
       let obs$ = window.Spyne.channels.getStream(c).observer;
+
       return obs$.pipe(takeWhile(p => this.deleted !== true));
     };// getGlobalParam('streamsController').getStream(c).observer;
 

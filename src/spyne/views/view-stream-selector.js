@@ -156,7 +156,7 @@ function ViewStreamSelector(cxt, str) {
     return this;
   };
 
-  selector.setActiveItem = (sel, c) => {
+  selector.setActiveItem = (c, sel) => {
     return selector.toggleActiveEl(c, sel);
   };
 

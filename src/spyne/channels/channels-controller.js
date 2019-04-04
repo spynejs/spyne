@@ -7,8 +7,8 @@ import { SpyneChannelLifecycle } from './spyne-channel-lifecycle';
 import { validate } from '../utils/channel-config-validator';
 
 import { Subject } from 'rxjs';
-import { ChannelsCoreProxy } from './channels-core-proxy';
-import {propEq, pluck, key, filter, compose, join} from 'ramda';
+import { ChannelsBaseProxy } from './channels-base-proxy';
+import {propEq, pluck, prop, key, filter, reject, compose, join} from 'ramda';
 const rMap = require('ramda').map;
 
 // import * as R from 'ramda';
@@ -34,7 +34,7 @@ export class ChannelsController {
     this.map.set('DISPATCHER', new Subject());
     this.listRegisteredChannels = ChannelsController.listRegisteredChannels.bind(this);
     this.getChannelsList = ChannelsController.getChannelsList.bind(this);
-    window.setTimeout(this.checkForMissingChannels.bind(this), 3000);
+    //window.setTimeout(this.checkForMissingChannels.bind(this), 8000);
   }
 
   static getChannelsList() {
@@ -48,8 +48,8 @@ export class ChannelsController {
 
   static listRegisteredChannels(showOnlyProxies = false) {
     let proxyMap = this.getChannelsList();
-    let rejectProxyFn = reject(propEq('val', 'ChannelsCoreProxy'));
-    let filterProxyFn = filter(propEq('val', 'ChannelsCoreProxy'));
+    let rejectProxyFn = reject(propEq('val', 'ChannelsBaseProxy'));
+    let filterProxyFn = filter(propEq('val', 'ChannelsBaseProxy'));
     let fn = showOnlyProxies === true ? filterProxyFn : rejectProxyFn;
     let removedProxyArr = fn(proxyMap);
     return pluck(['key'], removedProxyArr);
@@ -60,7 +60,7 @@ export class ChannelsController {
 
   checkForMissingChannels() {
     let proxyMap = this.getChannelsList();
-    let filterProxyFn = filter(propEq('val', 'ChannelsCoreProxy'));
+    let filterProxyFn = filter(propEq('val', 'ChannelsBaseProxy'));
     let filterProxyArr = filterProxyFn(proxyMap);
 
     if (filterProxyArr.length >= 1) {
@@ -127,7 +127,7 @@ export class ChannelsController {
 
   getStream(name) {
     if (this.testStream(name) === false) {
-      this.map.set(name, new ChannelsCoreProxy(name));
+      this.map.set(name, new ChannelsBaseProxy(name));
     }
 
     return this.map.get(name);
