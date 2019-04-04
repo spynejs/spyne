@@ -29,8 +29,8 @@ export class SpyneChannelWindow extends ChannelBaseClass {
     let dom$ = merge(...obs$Arr);
 
     dom$.subscribe(p => {
-      let { action, channelPayload, srcElement, event } = p;
-      this.sendChannelPayload(action, channelPayload, srcElement, event);
+      let { action, payload, srcElement, event } = p;
+      this.sendChannelPayload(action, payload, srcElement, event);
     });
   }
 
@@ -181,8 +181,8 @@ export class SpyneChannelWindow extends ChannelBaseClass {
 
   checkForMediaQueries(bool) {
     const sendMQStream = p => {
-      let { action, channelPayload, srcElement, event } = p;
-      this.sendChannelPayload(action, channelPayload, srcElement, event,
+      let { action, payload, srcElement, event } = p;
+      this.sendChannelPayload(action, payload, srcElement, event,
         this.observer$);
     };
 

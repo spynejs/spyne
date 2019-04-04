@@ -9,7 +9,7 @@ export class ChannelPayload {
    * @constructor
    * @param {String} channelName
    * @param {String} action
-   * @param {Object} channelPayload
+   * @param {Object} payload
    * @param {Element} srcElement
    * @param {Event} event
    *
@@ -20,10 +20,10 @@ export class ChannelPayload {
    * @property {UIEvent} event - = undefined; This will be populated if the event is triggered by the browser.
    * @returns Validated payload object
    */
-  constructor(channelName, action, channelPayload, srcElement, event) {
+  constructor(channelName, action, payload, srcElement, event) {
     let channel = channelName;
 
-    let channelPayloadItemObj = { channelName, action, channelPayload, srcElement, event };
+    let channelPayloadItemObj = { channelName, action, payload, srcElement, event };
 
     /**
      * This is a convenience method that helps with descructuring by merging all properties.
@@ -36,7 +36,7 @@ export class ChannelPayload {
      *
      *
      */
-    channelPayloadItemObj.props = () => mergeAll([channelPayloadItemObj.channelPayload, { channel }, { event }, { action: channelPayloadItemObj.action }, channelPayloadItemObj.srcElement, channelPayloadItemObj.event]);
+    channelPayloadItemObj.props = () => mergeAll([channelPayloadItemObj.payload, { channel }, { event }, { action: channelPayloadItemObj.action }, channelPayloadItemObj.srcElement, channelPayloadItemObj.event]);
     const channelActionsArr = window.Spyne.getChannelActions(channel);
 
     ChannelPayload.validateAction(action, channel, channelActionsArr);

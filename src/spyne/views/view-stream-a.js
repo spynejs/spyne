@@ -14,7 +14,7 @@ import { registeredStreamNames } from '../channels/channels-config';
 import { ViewStreamBroadcaster } from './view-stream-broadcaster';
 import { ViewStreamPayload } from './view-stream-payload';
 import { ChannelPayloadFilter } from '../utils/channel-payload-filter';
-import { LifecyleObservables } from '../utils/viewstream-lifecycle-observables';
+import { LifecyleObservables } from '.git ./utils/viewstream-lifecycle-observables';
 import {ViewStreamSelector} from './view-stream-selector';
 import { Subject, of } from 'rxjs';
 import { mergeMap, map, takeWhile, filter, tap, finalize } from 'rxjs/operators';
