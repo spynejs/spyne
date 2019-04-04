@@ -40,18 +40,18 @@ export class SpyneChannelWindow extends ChannelBaseClass {
     let scrollDistance = this.currentScrollY - scrollY;
     let scrollDir = scrollDistance >= 0 ? 'up' : 'down';
     this.currentScrollY = scrollY;
-    let channelPayload = { scrollY, scrollDistance, scrollDir };
+    let payload = { scrollY, scrollDistance, scrollDir };
     let srcElement = event.srcElement;
-    return { action, channelPayload, srcElement, scrollDistance, event };
+    return { action, payload, srcElement, scrollDistance, event };
   }
 
   static getMouseWheelMapFn(event) {
     let action = this.channelActions.CHANNEL_WINDOW_MOUSEWHEEL_EVENT;
     let scrollDir = event.deltaY <= 0 ? 'up' : 'down';
     let { deltaX, deltaY, deltaZ } = event;
-    let channelPayload = { scrollDir, deltaX, deltaY, deltaZ };
+    let payload = { scrollDir, deltaX, deltaY, deltaZ };
     let srcElement = event.srcElement;
-    return { action, channelPayload, srcElement, event };
+    return { action, payload, srcElement, event };
   }
 
   static createCurriedGenericEvent(actionStr) {
@@ -63,37 +63,37 @@ export class SpyneChannelWindow extends ChannelBaseClass {
   static mapGenericEvent(actn, event) {
     // console.log("map generic event ",actn);
     let action = actn;
-    let channelPayload = event;
+    let payload = event;
     let srcElement = event.srcElement;
-    return { action, channelPayload, srcElement, event };
+    return { action, payload, srcElement, event };
   }
 
   static getResizeMapFn(event) {
     let action = this.channelActions.CHANNEL_WINDOW_RESIZE_EVENT;
-    let channelPayload = pick(
+    let payload = pick(
       ['innerWidth', 'innerHeight', 'outerWidth', 'outerHeight'], window);
     let srcElement = event.srcElement;
-    return { action, channelPayload, srcElement, event };
+    return { action, payload, srcElement, event };
   }
 
   static getOrientationMapFn(event) {
     let action = this.channelActions.CHANNEL_WINDOW_ORIENTATION_EVENT;
     const orientationStr = '(orientation: portrait)';
     let isPortraitBool = window.matchMedia(orientationStr).matches;
-    let channelPayload = pick(
+    let payload = pick(
       ['innerWidth', 'innerHeight', 'outerWidth', 'outerHeight'], window);
-    channelPayload['orientation'] = isPortraitBool === true
+    payload['orientation'] = isPortraitBool === true
       ? 'portrait'
       : 'landscape';
     let srcElement = event.srcElement;
-    return { action, channelPayload, srcElement, event };
+    return { action, payload, srcElement, event };
   }
 
   getMediaQueryMapFn(event) {
     let action = this.channelActions.CHANNEL_WINDOW_MEDIA_QUERY_EVENT;
-    let channelPayload = pick(['matches', 'media', 'mediaQueryName'], event);
+    let payload = pick(['matches', 'media', 'mediaQueryName'], event);
     let srcElement = event.srcElement;
-    return { action, channelPayload, srcElement, event };
+    return { action, payload, srcElement, event };
   }
 
   createMouseWheelObservable(config) {
