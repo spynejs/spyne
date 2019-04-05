@@ -1,4 +1,4 @@
-import {is, filter, reject, isNil, allPass, isEmpty, isAlways, compose, uniq, equals, all, prop, whereEq, where, defaultTo, path, values, type, flatten, any, curry} from 'ramda';
+import {is, filter, reject, isNil, allPass, not, isEmpty, always, compose, uniq, equals, all, prop, whereEq, where, defaultTo, path, values, type, flatten, any, curry} from 'ramda';
 const rMap = require('ramda').map;
 export class ChannelPayloadFilter {
   /**
@@ -28,11 +28,31 @@ export class ChannelPayloadFilter {
    *
    */
   constructor(selector, data) {
-    const addStringSelectorFilter =  is(String, selector) ? ChannelPayloadFilter.filterSelector([selector]) : undefined;
-    const addArraySelectorFilter = is(Array, selector) ? ChannelPayloadFilter.filterSelector(selector) : undefined;
+    const isNotEmpty = compose(not, isEmpty);
+    const isNonEmptyStr = allPass([is(String), isNotEmpty]);
+    const isNonEmptyArr = allPass([is(Array), isNotEmpty]);
+    const allEqTrue = all(equals(true));
+    const addStringSelectorFilter =  isNonEmptyStr(selector) ? ChannelPayloadFilter.filterSelector([selector]) : undefined;
+    const addArraySelectorFilter =   isNonEmptyArr(selector) ? ChannelPayloadFilter.filterSelector(selector) : undefined;
+
+
     const addDataFilter = is(Object, data) ? ChannelPayloadFilter.filterData(data) : undefined;
 
-    const filtersArr = reject(isNil, [addStringSelectorFilter, addArraySelectorFilter, addDataFilter]);
+    //console.log("IS STRING ",{selector, addStringSelectorFilter, addArraySelectorFilter, addDataFilter},isNonEmptyStr(selector))
+
+
+    let filtersArr = reject(isNil, [addStringSelectorFilter, addArraySelectorFilter, addDataFilter]);
+
+      // IF ARRAY IS EMPTY ALWAYS RETURN FALSE;
+
+      if (isEmpty(filtersArr)){
+        filtersArr = [always(false)];
+
+        if (path(['Spyne', 'config', 'verbose'], window) === true){
+          console.warn(`Spyne Warning: The Channel Filter, with selector: ${selector}, and data:${data} appears to be empty!`);
+        }
+
+      }
 
     return allPass(filtersArr);
   }

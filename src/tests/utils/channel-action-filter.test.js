@@ -77,9 +77,17 @@ describe('channel action filter', () => {
     expect(filterVal).to.eq(true);
   });
 
+  it('Empty Filter', () => {
+    let filter = new ChannelPayloadFilter();
+    let filterVal = filter(payload);
+    //console.log("EMPTY STRING ",filterVal);
+    expect(filterVal).to.eq(false);
+  });
+
   it('Empty String selector with no data', () => {
     let filter = new ChannelPayloadFilter('');
     let filterVal = filter(payload);
+    //console.log("EMPTY STRING NO DATA",payload);
     expect(filterVal).to.eq(false);
   });
 
