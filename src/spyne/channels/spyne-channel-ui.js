@@ -1,7 +1,7 @@
 import { ChannelBaseClass } from './channel-base-class';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-import {equals, path, compose,prop, pathEq, when, either, toUpper} from 'ramda';
+import {equals, path, compose,prop, pathEq, when, either, omit, toUpper} from 'ramda';
 
 export class SpyneChannelUI extends ChannelBaseClass {
   /**
@@ -118,9 +118,18 @@ export class SpyneChannelUI extends ChannelBaseClass {
   onKeyPressed(evt) {
     console.log('key is ', evt);
   }
+  static removeSSID(pl){
+    const routeLens = R.lensProp(['payload']);
+    const omitSSID = R.over(routeLens, R.omit(['ssid']));
+    return omitSSID(pl);
+  }
+
 
   onIncomingObservable(obj) {
     let eqsName = equals(obj.name, this.props.name);
+    obj.data = SpyneChannelUI.removeSSID(obj.data);
+    console.log("OBJECT DATA ",obj.data);
+
     let dataObj = obsVal => ({ viewStreamInfo: obj.data, uiEvent: obsVal });
     let onSuccess = (obj) => obj.observable.pipe(map(dataObj))
       .subscribe(this.onUIEvent.bind(this));

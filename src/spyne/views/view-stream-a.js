@@ -18,7 +18,7 @@ import { LifecyleObservables } from '../utils/viewstream-lifecycle-observables';
 import {ViewStreamSelector} from './view-stream-selector';
 import { Subject, of } from 'rxjs';
 import { mergeMap, map, takeWhile, filter, tap, finalize } from 'rxjs/operators';
-import {pick, compose, toLower, either ,prop, always, lte, defaultTo, propSatisfies, allPass, curry, is, path, ifElse, clone,  mergeRight, where, equals} from 'ramda';
+import {pick, compose, toLower, either ,prop, always, lte, defaultTo, propSatisfies, allPass, curry, is, path, omit, ifElse, clone,  mergeRight, where, equals} from 'ramda';
 
 export class ViewStream {
   /**
@@ -244,6 +244,9 @@ export class ViewStream {
     }
     let filterPayload =  defaultTo(always(true), actionFilter);
     if (filterPayload(p.props()) === true) {
+    //  p = omit(['dir$'],p);
+      p = omit(['$dir'], p)
+      //console.log(' payload vs ',p);
       this[str](p);
     }
   }
@@ -886,7 +889,7 @@ export class ViewStream {
     data['srcElement'] = {};// pick(['cid','viewName'], data);
     data.srcElement['cid'] = path(['props', 'cid'], this);
     data.srcElement['id'] = path(['props', 'id'], this);
-    data.srcElement['isLocalEvent'] = false;
+   // data.srcElement['isLocalEvent'] = false;
     data.srcElement['viewName'] = this.props.name;
     if (this.checkIfChannelExists(channelName) === true) {
       let obs$ = of(data);
