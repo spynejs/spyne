@@ -151,7 +151,7 @@ export class SpyneChannelRoute extends ChannelBaseClass {
     let keywordArrs = this.compareRouteKeywords.compare(payload.routeData, payload.paths);
     payload = rMerge(payload, keywordArrs);
     // console.log("SEND STREAM onIncomingDomEvent", payload, keywordArrs);;
-    payload = SpyneChannelRoute.removeSSID(payload);
+   // payload = SpyneChannelRoute.removeSSID(payload);
       this.sendChannelPayload(action, payload, undefined, undefined, this.navToStream$);
 
   }

@@ -18,7 +18,7 @@ import { LifecyleObservables } from '../utils/viewstream-lifecycle-observables';
 import {ViewStreamSelector} from './view-stream-selector';
 import { Subject, of } from 'rxjs';
 import { mergeMap, map, takeWhile, filter, tap, finalize } from 'rxjs/operators';
-import {pick, compose, toLower, either ,prop, always, lte, defaultTo, propSatisfies, allPass, curry, is, path, omit, ifElse, clone,  mergeRight, where, equals} from 'ramda';
+import {pick, compose, both, isNil, toLower, either ,prop, always, lte, defaultTo, propSatisfies, allPass, curry, is, path, omit, ifElse, clone,  mergeRight, where, equals} from 'ramda';
 
 export class ViewStream {
   /**
@@ -532,11 +532,20 @@ export class ViewStream {
   }
 
   setAttachData(attachType, query) {
+    const checkQuery = ()=>{
+      let q = this.props.el.querySelector(query);
+      const isVerbose = path(['Spyne', 'config', 'verbose'], window)=== true
+      if (isVerbose === true && is(String, query) && isNil(q) ){
+        console.warn(`Spyne Warning: The appendView query in ${this.props.name}, '${query}', appears to not exist!`);
+      }
+      return q;
+    }
+
     return {
       node: this.props.el,
       type: 'ViewStreamObservable',
       attachType,
-      query: this.props.el.querySelector(query)
+      query: checkQuery(query)
     };
   }
 

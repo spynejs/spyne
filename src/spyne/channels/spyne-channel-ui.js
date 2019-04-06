@@ -128,8 +128,7 @@ export class SpyneChannelUI extends ChannelBaseClass {
   onIncomingObservable(obj) {
     let eqsName = equals(obj.name, this.props.name);
     obj.data = SpyneChannelUI.removeSSID(obj.data);
-    console.log("OBJECT DATA ",obj.data);
-
+    //console.log("OBJECT DATA ",obj.data);
     let dataObj = obsVal => ({ viewStreamInfo: obj.data, uiEvent: obsVal });
     let onSuccess = (obj) => obj.observable.pipe(map(dataObj))
       .subscribe(this.onUIEvent.bind(this));
