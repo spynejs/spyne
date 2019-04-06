@@ -173,6 +173,8 @@ export class ViewStream {
     this._rawSource$['viewName'] = this.props.name;
     this.sendEventsDownStream = this.sendEventsDownStreamFn;
     this.initViewStream();
+    this.isVerbose = ViewStream.isVerbose();
+
     this.checkIfElementAlreadyExists();
   }
 
@@ -236,6 +238,14 @@ export class ViewStream {
   }
 
   onChannelMethodCall(str, actionFilter, p) {
+    const runFunc = (payload)=>{
+      if (this[str] === undefined){
+        console.warn(`Spyne Warning: The method, ${str} does not appear to exist in ${this.constructor.name}!`)
+      } else{
+        this[str](payload);
+      }
+    }
+
     if (p.$dir !== undefined && p.$dir.includes('child') &&
         this.deleted !== true) {
       let obj = deepMerge({}, p);// Object.assign({}, p);
@@ -247,7 +257,8 @@ export class ViewStream {
     //  p = omit(['dir$'],p);
       p = omit(['$dir'], p)
       //console.log(' payload vs ',p);
-      this[str](p);
+      runFunc(p);
+      //this[str](p);
     }
   }
 
@@ -531,10 +542,14 @@ export class ViewStream {
     }
   }
 
+  static isVerbose(){
+    return path(['Spyne', 'config', 'verbose'], window)===true;
+  }
+
   setAttachData(attachType, query) {
     const checkQuery = ()=>{
       let q = this.props.el.querySelector(query);
-      const isVerbose = path(['Spyne', 'config', 'verbose'], window)=== true
+      const isVerbose = ViewStream.isVerbose();
       if (isVerbose === true && is(String, query) && isNil(q) ){
         console.warn(`Spyne Warning: The appendView query in ${this.props.name}, '${query}', appears to not exist!`);
       }
