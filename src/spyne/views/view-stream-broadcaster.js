@@ -3,7 +3,7 @@ import { convertDomStringMapToObj } from '../utils/frp-tools';
 
 import { fromEvent } from 'rxjs';
 import { map } from 'rxjs/operators';
-import {clone, omit, pick} from 'ramda';
+import {clone, omit, pick, path} from 'ramda';
 
 export class ViewStreamBroadcaster {
   /**
@@ -98,7 +98,9 @@ export class ViewStreamBroadcaster {
       // run payload
       channelPayload(observable, data);
     };
-    if (query === undefined || query.length <= 0 && window.Spyne.config.verbose===true) {
+    let isDevMode = path(['Spyne', 'config', 'devMode'], window) === true;
+    let queryIsNil = query === undefined || query.length <= 0;
+    if (queryIsNil === true && isDevMode === true) {
       console.warn(`Spyne Warning: The item ${selector}, does not appear to exist!`);
       // query = this.props.el;
       // addObservable(query, event);

@@ -48,7 +48,7 @@ class SpyneApp {
     window.Spyne = this;
     let defaultConfig = {
       channels: {
-        verbose: false,
+        devMode: false,
         WINDOW: {
           mediqQueries: {
           /*  'test': '(max-width: 500px)',

@@ -18,7 +18,7 @@ import { LifecyleObservables } from '../utils/viewstream-lifecycle-observables';
 import {ViewStreamSelector} from './view-stream-selector';
 import { Subject, of } from 'rxjs';
 import { mergeMap, map, takeWhile, filter, tap, finalize } from 'rxjs/operators';
-import {pick, compose, both, isNil, toLower, either ,prop, always, lte, defaultTo, propSatisfies, allPass, curry, is, path, omit, ifElse, clone,  mergeRight, where, equals} from 'ramda';
+import {pick, compose, both, isNil, toLower, either, findIndex, test, flatten ,prop, always, lte, defaultTo, propSatisfies, allPass, curry, is, path, omit, ifElse, clone,  mergeRight, where, equals} from 'ramda';
 
 export class ViewStream {
   /**
@@ -173,8 +173,8 @@ export class ViewStream {
     this._rawSource$['viewName'] = this.props.name;
     this.sendEventsDownStream = this.sendEventsDownStreamFn;
     this.initViewStream();
-    this.isVerbose = ViewStream.isVerbose();
-
+    this.isDevMode = ViewStream.isDevMode();
+    this.props.addedChannels = [];
     this.checkIfElementAlreadyExists();
   }
 
@@ -542,15 +542,15 @@ export class ViewStream {
     }
   }
 
-  static isVerbose(){
-    return path(['Spyne', 'config', 'verbose'], window)===true;
+  static isDevMode(){
+    return path(['Spyne', 'config', 'devMode'], window)===true;
   }
 
   setAttachData(attachType, query) {
     const checkQuery = ()=>{
       let q = this.props.el.querySelector(query);
-      const isVerbose = ViewStream.isVerbose();
-      if (isVerbose === true && is(String, query) && isNil(q) ){
+      const isDevMode = ViewStream.isDevMode();
+      if (isDevMode === true && is(String, query) && isNil(q) ){
         console.warn(`Spyne Warning: The appendView query in ${this.props.name}, '${query}', appears to not exist!`);
       }
       return q;
@@ -756,6 +756,34 @@ export class ViewStream {
 
   afterBroadcastEvents(){
 
+      if (this.isDevMode === true ){
+        const pullActionsFromList = (arr)=>arr[0];
+        let actionsArr = this.addActionListeners().map(pullActionsFromList);
+        const delayForProxyChannelResets = ()=>ViewStream.checkIfActionsAreRegistered.bind(this)(this.props.addedChannels, actionsArr);
+        window.setTimeout(delayForProxyChannelResets, 1000);
+      }
+  }
+  static checkIfActionsAreRegistered(channelsArr=[], actionsArr){
+      //const getActionsFn = path(['Spyne', 'channels', 'getChannelActions'], window);
+      if (actionsArr.length>0){
+        const getAllActions = (a)=>{
+          const getRegisteredActionsArr = (str)=>window.Spyne.channels.getChannelActions(str);
+          let arr =  a.map(getRegisteredActionsArr);
+          return flatten(arr);
+        }
+        const checkForMatch = (strMatch) => {
+          let re = new RegExp(strMatch);
+          let actionIndex = findIndex(test(re), getAllActionsArr)
+          if (actionIndex<0){
+            let channelSyntax = channelsArr.length === 1 ? "from added channel" : "from added dchannels";
+            console.warn(`Spyne Warning: The action, ${strMatch}, in ${this.props.name}, does not match any of the registered actions ${channelSyntax}, ${channelsArr.join(', ')}`)
+          }
+         //  const checker = ()=> R.test(new RegExp(str), "CHANNEL_ROUTE_TEST_EVENT")
+        }
+        let getAllActionsArr = getAllActions(channelsArr);
+        actionsArr.forEach(checkForMatch);
+
+      }
 
   }
 
@@ -888,6 +916,7 @@ export class ViewStream {
 
     let channel$ = this.getChannel(str).pipe(map(mapDirection), filter(cidMatches));
     this.updateSourceSubscription(channel$, false);
+    this.props.addedChannels.push(str);
   }
 
 

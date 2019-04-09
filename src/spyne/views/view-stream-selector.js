@@ -13,8 +13,8 @@ function generateSpyneSelectorId(el) {
   return `[data-ssid='${ssid}']`;
 }
 
-function isVerbose(){
-  return path(['Spyne', 'config', 'verbose'], window) === true;
+function isDevMode(){
+  return path(['Spyne', 'config', 'devMode'], window) === true;
 }
 
 
@@ -42,7 +42,7 @@ function testSelectors(cxt, str, verboseBool) {
   if (str !== undefined) {
     let query = el.querySelector(str);
     if (query === null) {
-      if (isVerbose() === true && verboseBool===true) {
+      if (isDevMode() === true && verboseBool===true) {
         console.warn(`Spyne Warning: the selector, ${str} does not exist in this el, ${cxt}`);
       }
 
@@ -185,7 +185,7 @@ function ViewStreamSelector(cxt, str) {
     const toggleBool = item => item.classList.toggle(c, item.isEqualNode(currentEl));
     if (isNodeElement(currentEl)===true) {
       arr.forEach(toggleBool);
-    } else if (isVerbose()===true){
+    } else if (isDevMode()===true){
       console.log("SEL IS ",sel,c);
       console.warn(`Spyne Warning: The selector, ${sel}, does not appear to be a valid item in setActiveItem: ${c}`);
     }
