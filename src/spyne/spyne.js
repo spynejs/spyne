@@ -5,7 +5,7 @@ import { ViewStream } from './views/view-stream-base';
 import { ViewStreamBroadcaster } from './views/view-stream-broadcaster';
 import { SpyneTrait } from './utils/spyne-trait';
 import { ViewStreamPayload } from './views/view-stream-payload';
-import { ChannelBaseClass } from './channels/channel-base-class';
+import { Channel } from './channels/channel';
 import { ChannelFetch } from './channels/channel-fetch-class';
 import { ChannelPayload } from './channels/channel-payload-class';
 import {ChannelPayloadFilter} from './utils/channel-payload-filter';
@@ -17,7 +17,7 @@ class SpyneApp {
    * SpyneApp initializes the app and creates a global Spyne object that can be used to contain global properties and has several methods
    *
    * <h3>Initializing Internal Spyne Channels</h3>
-   * <p>Internal Spyne Channels extend the <a class='linker' data-channel="ROUTE"  data-event-prevent-default="true" data-menu-item="channel-base-class"  href="/guide/reference/channel-base-class" >ChannelBaseClass</a>.</br>
+   * <p>Internal Spyne Channels extend the <a class='linker' data-channel="ROUTE"  data-event-prevent-default="true" data-menu-item="channel-base-class"  href="/guide/reference/channel-base-class" >Channel</a>.</br>
    *
    * And Spyne App automatically creates all internal Spyne channels when instantiated.
    * There is one Internal channel for each type of information, <a class='linker' data-channel="ROUTE"  data-event-prevent-default="true" data-menu-item="spyne-channel-u-i"  href="/guide/reference/spyne-channel-u-i" >UI</a>., <a class='linker' data-channel="ROUTE"  data-event-prevent-default="true" data-menu-item="spyne-channel-window"  href="/guide/reference/spyne-channel-window" >WINDOW</a>., <a class='linker' data-channel="ROUTE"  data-event-prevent-default="true" data-menu-item="spyne-channel-route"  href="/guide/reference/spyne-channel-route" >ROUTE</a>. and <a class='linker' data-channel="ROUTE"  data-event-prevent-default="true" data-menu-item="spyne-channel-life-cycle"  href="/guide/reference/spyne-channel-life-cycle" >LIFECYCLE</a> <br/>These channels are not meant to be extended.</p>
@@ -43,7 +43,7 @@ class SpyneApp {
     this.ViewStreamBroadcaster = ViewStreamBroadcaster;
     this.ChannelsPayload = ViewStreamPayload;
     this.ChannelsController = ChannelsController;
-    this.ChannelsBase = ChannelBaseClass;
+    this.ChannelsBase = Channel;
     this.ChannelPayloadItem = ChannelPayload;
     window.Spyne = this;
     let defaultConfig = {
@@ -121,7 +121,7 @@ class SpyneApp {
 window['Spyne'] = SpyneApp;
 export {
   ViewStreamElObservable,
-  ChannelBaseClass,
+  Channel,
   ChannelFetch,
   ChannelsController,
   ViewStreamPayload,

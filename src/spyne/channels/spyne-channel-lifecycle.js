@@ -1,7 +1,7 @@
-import { ChannelBaseClass } from './channel-base-class';
+import { Channel } from './channel';
 import {prop} from 'ramda';
 
-export class SpyneChannelLifecycle extends ChannelBaseClass {
+export class SpyneChannelLifecycle extends Channel {
   /**
    * @module SpyneChannelLifeCycle
    * @desc

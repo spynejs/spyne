@@ -1,9 +1,9 @@
-import { ChannelBaseClass } from './channel-base-class';
+import { Channel } from './channel';
 import {Subject} from 'rxjs';
 import {partition, map} from 'rxjs/operators';
 import {prop} from 'ramda';
 
-export class SpyneChannelLocalstorage extends ChannelBaseClass {
+export class SpyneChannelLocalstorage extends Channel {
 
 
     constructor(props = {}) {

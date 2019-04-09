@@ -1,4 +1,4 @@
-import { ChannelBaseClass } from './channel-base-class';
+import { Channel } from './channel';
 import { checkIfObjIsNotEmptyOrNil } from '../utils/frp-tools';
 import { ChannelUtilsDom } from '../utils/channel-util-dom';
 import { merge } from 'rxjs';
@@ -6,7 +6,7 @@ import { map, debounceTime, skipWhile } from 'rxjs/operators';
 import {curry, pick, mapObjIndexed} from 'ramda';
 const rMap = require('ramda').map;
 
-export class SpyneChannelWindow extends ChannelBaseClass {
+export class SpyneChannelWindow extends Channel {
 
   /**
    * @module SpyneChannelWindow

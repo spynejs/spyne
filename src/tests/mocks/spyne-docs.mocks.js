@@ -611,7 +611,7 @@ let spyneDocsDomStr = `<main id="app" class="reveal">
             </section>
 
         </dd>
-    </li><li id="method-view-stream-append-view-to-parent" class="method method-appendViewToParent">    <h2 class="method">appendViewToParent()</h2>
+    </li><li id="method-view-stream-append-view-to-parent" class="method method-appendViewToParentEl">    <h2 class="method">appendViewToParentEl()</h2>
 
 
         <dd class="constructor">
@@ -620,7 +620,7 @@ let spyneDocsDomStr = `<main id="app" class="reveal">
             </div>
             <div class="constructor-method method-item show-constructor">
                 <h5>CONSTRUCTOR:</h5>
-                <h3 class="constructor-instance">this.appendViewToParent<span class="paren">(</span></h3>
+                <h3 class="constructor-instance">this.appendViewToParentEl<span class="paren">(</span></h3>
                 <div class="constructor-params code-example">
 
                     <p class="constructor code-example param-method"><span class="string">v</span>,</p>
@@ -666,7 +666,7 @@ let spyneDocsDomStr = `<main id="app" class="reveal">
             </section>
 
         </dd>
-    </li><li id="method-view-stream-prepend-view-to-parent" class="method method-prependViewToParent">    <h2 class="method">prependViewToParent()</h2>
+    </li><li id="method-view-stream-prepend-view-to-parent" class="method method-prependViewToParentEl">    <h2 class="method">prependViewToParentEl()</h2>
 
 
         <dd class="constructor">
@@ -675,7 +675,7 @@ let spyneDocsDomStr = `<main id="app" class="reveal">
             </div>
             <div class="constructor-method method-item show-constructor">
                 <h5>CONSTRUCTOR:</h5>
-                <h3 class="constructor-instance">this.prependViewToParent<span class="paren">(</span></h3>
+                <h3 class="constructor-instance">this.prependViewToParentEl<span class="paren">(</span></h3>
                 <div class="constructor-params code-example">
 
                     <p class="constructor code-example param-method"><span class="string">v</span>,</p>
@@ -707,7 +707,7 @@ let spyneDocsDomStr = `<main id="app" class="reveal">
 <span class="method">parentView</span><span class="syntax">.</span><span class="method">prependToDom</span><span class="syntax">(</span><span class="method">document</span><span class="syntax">.</span><span class="method">body</span><span class="syntax">)</span><span class="syntax">;</span>
 
 <span class="keyword">let</span> <span class="method">childView</span> <span class="syntax">=</span> <span class="string">new</span> <span class="method">ViewStream</span><span class="syntax">(</span><span class="syntax">{</span><span class="string">tagName</span><span class="syntax">:</span><span class="string">'</span><span class="string">h2</span><span class="string">'</span><span class="syntax">,</span> <span class="string">data</span><span class="syntax">:</span><span class="string">'</span><span class="string">Hello</span> <span class="string">World</span><span class="string">'</span><span class="syntax">}</span><span class="syntax">;</span>
-<span class="method">childView</span><span class="syntax">.</span><span class="method">prependViewToParent</span><span class="syntax">(</span><span class="string">parentView</span><span class="syntax">)</span></pre>
+<span class="method">childView</span><span class="syntax">.</span><span class="method">prependViewToParentEl</span><span class="syntax">(</span><span class="string">parentView</span><span class="syntax">)</span></pre>
 
 
             </section>
@@ -986,6 +986,6 @@ let spyneDocsDomStr = `<main id="app" class="reveal">
 		l-13.3,7.7C46,58,35,64.3,28.4,68.2l-13.3,7.7C8.5,79.7,3,76.5,3,68.8V53.5z"></path>
 </g>
 </svg>
-</div><li id="channels-base" class="menu-item menu-level-1" data-channel="ROUTE" data-type="menuItem" data-menu-item="channels-base">ChannelsBase</li><li id="channels-base-get-channel" class="menu-item menu-level-2" data-channel="ROUTE" data-type="menuItem" data-menu-item="channels-base-get-channel">getChannel</li><li id="dom-item" class="menu-item menu-level-1" data-channel="ROUTE" data-type="menuItem" data-menu-item="dom-item">DomItem</li><li id="dom-item-render" class="menu-item menu-level-2" data-channel="ROUTE" data-type="menuItem" data-menu-item="dom-item-render">render</li><li id="view-stream" class="menu-item menu-level-1" data-channel="ROUTE" data-type="menuItem" data-menu-item="view-stream">ViewStream</li><li id="view-stream-append-to-dom" class="menu-item menu-level-2" data-channel="ROUTE" data-type="menuItem" data-menu-item="view-stream-append-to-dom">appendToDom</li><li id="view-stream-prepend-to-dom" class="menu-item menu-level-2" data-channel="ROUTE" data-type="menuItem" data-menu-item="view-stream-prepend-to-dom">prependToDom</li><li id="view-stream-append-view" class="menu-item menu-level-2" data-channel="ROUTE" data-type="menuItem" data-menu-item="view-stream-append-view">appendView</li><li id="view-stream-append-view-to-parent" class="menu-item menu-level-2" data-channel="ROUTE" data-type="menuItem" data-menu-item="view-stream-append-view-to-parent">appendViewToParent</li><li id="view-stream-prepend-view-to-parent" class="menu-item menu-level-2" data-channel="ROUTE" data-type="menuItem" data-menu-item="view-stream-prepend-view-to-parent">prependViewToParent</li><li id="view-stream-prepend-view" class="menu-item menu-level-2" data-channel="ROUTE" data-type="menuItem" data-menu-item="view-stream-prepend-view">prependView</li><li id="view-stream-append-to-null" class="menu-item menu-level-2" data-channel="ROUTE" data-type="menuItem" data-menu-item="view-stream-append-to-null">appendToNull</li><li id="view-stream-down-stream" class="menu-item menu-level-2" data-channel="ROUTE" data-type="menuItem" data-menu-item="view-stream-down-stream">downStream</li><li id="view-stream-broadcast-events" class="menu-item menu-level-2" data-channel="ROUTE" data-type="menuItem" data-menu-item="view-stream-broadcast-events">broadcastEvents</li><li id="view-stream-get-channel" class="menu-item menu-level-2" data-channel="ROUTE" data-type="menuItem" data-menu-item="view-stream-get-channel">getChannel</li><li id="view-stream-add-channel" class="menu-item menu-level-2" data-channel="ROUTE" data-type="menuItem" data-menu-item="view-stream-add-channel">addChannel</li><li id="view-stream-send-channel-payload" class="menu-item menu-level-2" data-channel="ROUTE" data-type="menuItem" data-menu-item="view-stream-send-channel-payload">sendInfoToChannel</li></ul></section></section></main>`;
+</div><li id="channels-base" class="menu-item menu-level-1" data-channel="ROUTE" data-type="menuItem" data-menu-item="channels-base">ChannelsBase</li><li id="channels-base-get-channel" class="menu-item menu-level-2" data-channel="ROUTE" data-type="menuItem" data-menu-item="channels-base-get-channel">getChannel</li><li id="dom-item" class="menu-item menu-level-1" data-channel="ROUTE" data-type="menuItem" data-menu-item="dom-item">DomItem</li><li id="dom-item-render" class="menu-item menu-level-2" data-channel="ROUTE" data-type="menuItem" data-menu-item="dom-item-render">render</li><li id="view-stream" class="menu-item menu-level-1" data-channel="ROUTE" data-type="menuItem" data-menu-item="view-stream">ViewStream</li><li id="view-stream-append-to-dom" class="menu-item menu-level-2" data-channel="ROUTE" data-type="menuItem" data-menu-item="view-stream-append-to-dom">appendToDom</li><li id="view-stream-prepend-to-dom" class="menu-item menu-level-2" data-channel="ROUTE" data-type="menuItem" data-menu-item="view-stream-prepend-to-dom">prependToDom</li><li id="view-stream-append-view" class="menu-item menu-level-2" data-channel="ROUTE" data-type="menuItem" data-menu-item="view-stream-append-view">appendView</li><li id="view-stream-append-view-to-parent" class="menu-item menu-level-2" data-channel="ROUTE" data-type="menuItem" data-menu-item="view-stream-append-view-to-parent">appendViewToParentEl</li><li id="view-stream-prepend-view-to-parent" class="menu-item menu-level-2" data-channel="ROUTE" data-type="menuItem" data-menu-item="view-stream-prepend-view-to-parent">prependViewToParentEl</li><li id="view-stream-prepend-view" class="menu-item menu-level-2" data-channel="ROUTE" data-type="menuItem" data-menu-item="view-stream-prepend-view">prependView</li><li id="view-stream-append-to-null" class="menu-item menu-level-2" data-channel="ROUTE" data-type="menuItem" data-menu-item="view-stream-append-to-null">appendToNull</li><li id="view-stream-down-stream" class="menu-item menu-level-2" data-channel="ROUTE" data-type="menuItem" data-menu-item="view-stream-down-stream">downStream</li><li id="view-stream-broadcast-events" class="menu-item menu-level-2" data-channel="ROUTE" data-type="menuItem" data-menu-item="view-stream-broadcast-events">broadcastEvents</li><li id="view-stream-get-channel" class="menu-item menu-level-2" data-channel="ROUTE" data-type="menuItem" data-menu-item="view-stream-get-channel">getChannel</li><li id="view-stream-add-channel" class="menu-item menu-level-2" data-channel="ROUTE" data-type="menuItem" data-menu-item="view-stream-add-channel">addChannel</li><li id="view-stream-send-channel-payload" class="menu-item menu-level-2" data-channel="ROUTE" data-type="menuItem" data-menu-item="view-stream-send-channel-payload">sendInfoToChannel</li></ul></section></section></main>`;
 
 export { spyneDocsDomStr };

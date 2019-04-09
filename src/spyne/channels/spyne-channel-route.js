@@ -1,4 +1,4 @@
-import { ChannelBaseClass } from './channel-base-class';
+import { Channel } from './channel';
 import { URLUtils } from '../utils/channel-util-urls';
 import { RouteUtils } from '../utils/channel-util-route';
 import { BehaviorSubject, ReplaySubject, merge } from 'rxjs';
@@ -27,7 +27,7 @@ import {
 } from 'ramda';
 const ramdaFilter = require('ramda').filter;
 const rMerge = require('ramda').mergeRight;
-export class SpyneChannelRoute extends ChannelBaseClass {
+export class SpyneChannelRoute extends Channel {
   constructor(name = 'CHANNEL_ROUTE', props = {}) {
     /**
      * @module SpyneChannelRoute

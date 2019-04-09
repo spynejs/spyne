@@ -1,8 +1,8 @@
-import { ChannelBaseClass } from './channel-base-class';
+import { Channel } from './channel';
 import { ChannelFetchUtil } from '../utils/channel-fetch-util';
 import {path, pick, mergeRight, mergeDeepRight, reject, compose, isNil} from 'ramda';
 
-export class ChannelFetch extends ChannelBaseClass {
+export class ChannelFetch extends Channel {
   /**
    * @module ChannelFetch
    * @desc

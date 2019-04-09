@@ -1,8 +1,8 @@
-import { ChannelBaseClass } from './channel-base-class';
+import { Channel } from './channel';
 import { Subject, ReplaySubject, merge } from 'rxjs';
 import {includes, path} from 'ramda';
 
-export class ChannelsBaseProxy extends ChannelBaseClass {
+export class ChannelsBaseProxy extends Channel {
   constructor(name, props = {}) {
     props.isProxy = true;
     super(name, props);

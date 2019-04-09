@@ -1,9 +1,9 @@
-import { ChannelBaseClass } from './channel-base-class';
+import { Channel } from './channel';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import {equals, path, compose,prop, pathEq, find, filter,replace, when, test, keys, either, omit, toUpper} from 'ramda';
 
-export class SpyneChannelUI extends ChannelBaseClass {
+export class SpyneChannelUI extends Channel {
   /**
    * @module SpyneChannelUI
    * @desc
@@ -176,11 +176,7 @@ export class SpyneChannelUI extends ChannelBaseClass {
 */
 
   onUIEvent(obs) {
-    // obs.uiEvent.preventDefault();
-    // console.log("UI EVENT ",obs);
-    console.log("OBS ",obs);
     SpyneChannelUI.checkForEventMethods(obs);
-
     obs['action'] = this.getActionState(obs);
     const action = obs.action;// this.getActionState(obs);
     const { payload, srcElement } = obs.viewStreamInfo;

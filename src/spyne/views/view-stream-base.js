@@ -57,8 +57,8 @@ export class ViewStream {
    *
    *        <a class='linker' data-channel="ROUTE"  data-event-prevent-default="true" data-menu-item="view-stream-append-view"  href="/guide/reference/view-stream-append-view" >appendView</a>
    *        <a class='linker' data-channel="ROUTE"  data-event-prevent-default="true" data-menu-item="view-stream-prepend-view"  href="/guide/reference/view-stream-prepend-view" >prependView</a>
-   *        <a class='linker' data-channel="ROUTE"  data-event-prevent-default="true" data-menu-item="view-stream-append-view-to-parent"  href="/guide/reference/view-stream-append-view-to-parent" >appendViewToParent</a>
-   *        <a class='linker' data-channel="ROUTE"  data-event-prevent-default="true" data-menu-item="view-stream-prepend-view-to-parent"  href="/guide/reference/view-stream-prepend-view-to-parent" >prependViewToParent</a>
+   *        <a class='linker' data-channel="ROUTE"  data-event-prevent-default="true" data-menu-item="view-stream-append-view-to-parent"  href="/guide/reference/view-stream-append-view-to-parent" >appendViewToParentEl</a>
+   *        <a class='linker' data-channel="ROUTE"  data-event-prevent-default="true" data-menu-item="view-stream-prepend-view-to-parent"  href="/guide/reference/view-stream-prepend-view-to-parent" >prependViewToParentEl</a>
    *        </div>
    *
    *
@@ -673,7 +673,7 @@ export class ViewStream {
    *
    * */
 
-  appendViewToParent(v, query, level = 1) {
+  appendViewToParentEl(v, query, level = 1) {
     this.exchangeViewsWithChild(v,
       this.setAttachParentData('appendChild', query, level));
   }
@@ -693,10 +693,10 @@ export class ViewStream {
    * parentView.prependToDom(document.body);
    *
    * let childView = new ViewStream({tagName:'h2', data:'Hello World'};
-   * childView.prependViewToParent(parentView)
+   * childView.prependViewToParentEl(parentView)
    *
    * */
-  prependViewToParent(v, query, level = 1) {
+  prependViewToParentEl(v, query, level = 1) {
     this.exchangeViewsWithChild(v,
       this.setAttachParentData('prependChild', query, level));
   }
