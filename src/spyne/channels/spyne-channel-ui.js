@@ -1,7 +1,7 @@
 import { ChannelBaseClass } from './channel-base-class';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-import {equals, path, compose,prop, pathEq, when, either, omit, toUpper} from 'ramda';
+import {equals, path, compose,prop, pathEq, find, filter,replace, when, test, keys, either, omit, toUpper} from 'ramda';
 
 export class SpyneChannelUI extends ChannelBaseClass {
   /**
@@ -145,6 +145,27 @@ export class SpyneChannelUI extends ChannelBaseClass {
     return type !== undefined ? `${mainAction}_${type}_EVENT` : mainAction;
   }
 
+  static checkForEventMethods(obs){
+    const re = /^(event)([A-Z].*)([A-Z].*)$/gm;
+    const getMethods = compose(filter(test(re)), keys, path(['viewStreamInfo', 'payload']));
+    const methodsArr = getMethods(obs);
+    if (methodsArr.length>=1) {
+      const evt = prop('uiEvent', obs);
+      if (evt !== undefined) {
+        const methodUpdate = (match,p1,p2,p3,p4)=>String(p2).toLowerCase()+p3+p4;
+        const methodStrReplace = replace(/^(event)([A-Z])(.*)([A-Z].*)$/gm, methodUpdate);
+        const runMethod = (methodStr)=>{
+          const m = methodStrReplace(methodStr);
+          if (evt[m]!==undefined) {evt[m]();}
+        };
+        methodsArr.forEach(runMethod)
+      }
+    }
+
+    return obs;
+  }
+
+/*
   static checkToPreventDefaultEvent(obs) {
     const checkDataForPreventDefault = pathEq(['viewStreamInfo', 'payload', 'eventPreventDefault'], 'true');
     const setPreventDefault = function(evt) { if (evt !== undefined) evt.preventDefault(); };
@@ -152,12 +173,13 @@ export class SpyneChannelUI extends ChannelBaseClass {
     const checkForPreventDefault = when(checkDataForPreventDefault, selectEvtAndPreventDefault);
     checkForPreventDefault(obs);
   }
+*/
 
   onUIEvent(obs) {
     // obs.uiEvent.preventDefault();
     // console.log("UI EVENT ",obs);
-
-    SpyneChannelUI.checkToPreventDefaultEvent(obs);
+    console.log("OBS ",obs);
+    SpyneChannelUI.checkForEventMethods(obs);
 
     obs['action'] = this.getActionState(obs);
     const action = obs.action;// this.getActionState(obs);

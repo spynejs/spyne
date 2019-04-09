@@ -272,7 +272,7 @@ export class ViewStream {
       'VS_SPAWNED_AND_ATTACHED_TO_PARENT': (p) => this.onRendered(p),
       // 'CHILD_VS_SPAWNED'                   : (p) => this.attachChildToView(p),
       'READY_FOR_VS_DETRITUS_COLLECT': (p) => this.onReadyToGC(p),
-      'NOTHING': () => ({})
+      'VS_NULLITY': () => ({})
     };
     return deepMerge.all([{}, hashSourceKeys, extendedSourcesHashMethods]);
   }
@@ -322,8 +322,7 @@ export class ViewStream {
 
     this.parent$ = obs.pipe(
       filter(filterOutNullData),
-      map(checkIfDisposeOrFadeout),
-      takeWhile(this.notGCCOMPLETE));
+      map(checkIfDisposeOrFadeout));
     this.updateSourceSubscription(this.parent$, false, 'PARENT');
     this.renderAndAttachToParent(attachData);
   }
@@ -576,6 +575,7 @@ export class ViewStream {
   }
 
   setAttachParentData(attachType, query, level) {
+    query = query!=="" ? query : undefined;
     return {
       node: this.getParentEls(this.props.el, level),
       type: 'ViewStreamObservable',
@@ -760,7 +760,7 @@ export class ViewStream {
         const pullActionsFromList = (arr)=>arr[0];
         let actionsArr = this.addActionListeners().map(pullActionsFromList);
         const delayForProxyChannelResets = ()=>ViewStream.checkIfActionsAreRegistered.bind(this)(this.props.addedChannels, actionsArr);
-        window.setTimeout(delayForProxyChannelResets, 1000);
+        window.setTimeout(delayForProxyChannelResets, 500);
       }
   }
   static checkIfActionsAreRegistered(channelsArr=[], actionsArr){

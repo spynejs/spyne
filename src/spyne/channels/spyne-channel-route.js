@@ -11,6 +11,7 @@ import {
   keys,
   prop,
   equals,
+    find,
   head,
   compose,
   chain,
@@ -22,8 +23,9 @@ import {
   complement,
   curryN,
   __,
-  pathEq
+  pathEq, test, replace,
 } from 'ramda';
+const ramdaFilter = require('ramda').filter;
 const rMerge = require('ramda').mergeRight;
 export class SpyneChannelRoute extends ChannelBaseClass {
   constructor(name = 'CHANNEL_ROUTE', props = {}) {
@@ -162,6 +164,29 @@ export class SpyneChannelRoute extends ChannelBaseClass {
     return payload;
   }
 
+  static checkForEventMethods(obs){
+    const re = /^(event)([A-Z].*)([A-Z].*)$/gm;
+    const getMethods = compose(ramdaFilter(test(re)), keys, path(['viewStreamInfo', 'payload']));
+    const methodsArr = getMethods(obs);
+    if (methodsArr.length>=1) {
+      const evt = prop('viewStreamEvent', obs);
+      if (evt !== undefined) {
+        const methodUpdate = (match,p1,p2,p3,p4)=>String(p2).toLowerCase()+p3+p4;
+        const methodStrReplace = replace(/^(event)([A-Z])(.*)([A-Z].*)$/gm, methodUpdate);
+        const runMethod = (methodStr)=>{
+          const m = methodStrReplace(methodStr);
+          if (evt[m]!==undefined) {evt[m]();}
+        };
+        methodsArr.forEach(runMethod)
+      }
+    }
+
+    return obs;
+  }
+
+
+
+/*
   static checkToPreventDefaultEvent(obs) {
     const checkDataForPreventDefault = pathEq(['viewStreamInfo', 'payload', 'eventPreventDefault'], 'true');
     const setPreventDefault = (evt) => {
@@ -173,11 +198,12 @@ export class SpyneChannelRoute extends ChannelBaseClass {
     const checkForPreventDefault = when(checkDataForPreventDefault, selectEvtAndPreventDefault);
     checkForPreventDefault(obs);
   }
+*/
 
 
   onViewStreamInfo(pl) {
     let action = this.channelActions.CHANNEL_ROUTE_CHANGE_EVENT;
-    SpyneChannelRoute.checkToPreventDefaultEvent(pl);
+    SpyneChannelRoute.checkForEventMethods(pl);
     let payload = this.getDataFromParams(pl);
     let srcElement = path(['viewStreamInfo', 'srcElement'], pl);
     let uiEvent = pl.viewStreamEvent;

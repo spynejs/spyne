@@ -174,6 +174,7 @@ export class ViewStreamElObservable {
   onAttachChildToSelf(p) {
     let data = p.childRenderData;
     this.combineDomItems(data);
+    console.log("ATTACHING CHID TO SELF ===============")
     return {
       action: 'CHILD_ATTACHED',
       $dir: this.$dirs.PI
