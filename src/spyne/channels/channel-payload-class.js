@@ -5,6 +5,7 @@ export class ChannelPayload {
    *
    * All payloads sent from Channels returns an instance of this class
    * @module ChannelPayload
+   * @type Util
    *
    * @constructor
    * @param {String} channelName

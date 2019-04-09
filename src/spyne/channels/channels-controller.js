@@ -1,13 +1,13 @@
 // import {baseCoreMixins}    from '../utils/mixins/base-core-mixins';
 // import {BaseStreamsMixins} from '../utils/mixins/base-streams-mixins';
-import { SpyneChannelRoute } from './spyne-channel-route';
+import { SpyneChannelRoute } from './spyne-channel-route-base';
 import { SpyneChannelUI } from './spyne-channel-ui';
-import { SpyneChannelWindow } from './spyne-channel-window';
+import { SpyneChannelWindow } from './spyne-channel-window-base';
 import { SpyneChannelLifecycle } from './spyne-channel-lifecycle';
 import { validate } from '../utils/channel-config-validator';
 
 import { Subject } from 'rxjs';
-import { ChannelsBaseProxy } from './channels-base-proxy';
+import { ChannelProxy } from './channel-proxy';
 import {propEq, pluck, prop, key, filter, reject, compose, join} from 'ramda';
 const rMap = require('ramda').map;
 
@@ -16,6 +16,7 @@ const rMap = require('ramda').map;
 export class ChannelsController {
   /**
    * @module ChannelsController
+   * @type Internal
    *
    * @desc
    * This object creates the logic so that Channels and ViewStreams can communicate with each other
@@ -48,8 +49,8 @@ export class ChannelsController {
 
   static listRegisteredChannels(showOnlyProxies = false) {
     let proxyMap = this.getChannelsList();
-    let rejectProxyFn = reject(propEq('val', 'ChannelsBaseProxy'));
-    let filterProxyFn = filter(propEq('val', 'ChannelsBaseProxy'));
+    let rejectProxyFn = reject(propEq('val', 'ChannelProxy'));
+    let filterProxyFn = filter(propEq('val', 'ChannelProxy'));
     let fn = showOnlyProxies === true ? filterProxyFn : rejectProxyFn;
     let removedProxyArr = fn(proxyMap);
     return pluck(['key'], removedProxyArr);
@@ -60,7 +61,7 @@ export class ChannelsController {
 
   checkForMissingChannels() {
     let proxyMap = this.getChannelsList();
-    let filterProxyFn = filter(propEq('val', 'ChannelsBaseProxy'));
+    let filterProxyFn = filter(propEq('val', 'ChannelProxy'));
     let filterProxyArr = filterProxyFn(proxyMap);
 
     if (filterProxyArr.length >= 1) {
@@ -127,7 +128,7 @@ export class ChannelsController {
 
   getStream(name) {
     if (this.testStream(name) === false) {
-      this.map.set(name, new ChannelsBaseProxy(name));
+      this.map.set(name, new ChannelProxy(name));
     }
 
     return this.map.get(name);

@@ -29,13 +29,13 @@ export function baseStreamsMixins() {
       return new ViewStreamPayload(channelName, new of(''), data,
         'subscribe');
     },
-    sendLifeStreamPayload: function(obs, data) {
+/*    sendLifeStreamPayload: function(obs, data) {
       return new ViewStreamPayload('LIFESTREAM', obs, data, 'subscribe');
     },
 
     createLifeStreamPayload: function(STEP, data = {}, type = 'parent') {
       let viewId = `${this.props.name}: ${this.props.cid}`;
       return new LifestreamPayload('LIFESTREAM', STEP, type, viewId, data).data;
-    }
+    }*/
   };
 }

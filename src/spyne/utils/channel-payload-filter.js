@@ -3,6 +3,8 @@ const rMap = require('ramda').map;
 export class ChannelPayloadFilter {
   /**
    * @module ChannelPayloadFilter
+   * @type Util
+   *
    *
    * @desc
    * Filters Channel Actions before the assigned method is called.<span class='break'/>

@@ -1,6 +1,6 @@
 // const assert = require('assert');
 
-import { URLUtils } from '../../spyne/utils/channel-util-urls';
+import { SpyneChannelRouteUrlUtils } from '../../spyne/utils/spyne-channel-route-url-utils';
 import { SpyneConfigData, RouteDataForTests, routeConfigWithRegexOverride, payloadDataForUrlUtils, urlUtilsArr } from '../mocks/utils-data';
 
 chai.use(require('chai-dom'));
@@ -12,19 +12,19 @@ describe('URL Utils - Params To Route', () => {
     it('output multiple routeData from slash query', () => {
       let data = RouteDataForTests.multiple.data;
       let queryStr = RouteDataForTests.multiple.query;
-      let paramsFromRoute = URLUtils.convertRouteToParams(queryStr, routeConfig, 'query');
+      let paramsFromRoute = SpyneChannelRouteUrlUtils.convertRouteToParams(queryStr, routeConfig, 'query');
       expect(JSON.stringify(paramsFromRoute.routeData)).to.equal(JSON.stringify(data));
     });
     it('output single routeData from slash query', () => {
       let data = RouteDataForTests.singleBasic.data;
       let queryStr = RouteDataForTests.singleBasic.query;
-      let paramsFromRoute = URLUtils.convertRouteToParams(queryStr, routeConfig, 'query');
+      let paramsFromRoute = SpyneChannelRouteUrlUtils.convertRouteToParams(queryStr, routeConfig, 'query');
       expect(JSON.stringify(paramsFromRoute.routeData)).to.equal(JSON.stringify(data));
     });
     it('output home routeData from slash query', () => {
       let data = RouteDataForTests.home.data;
       let queryStr = RouteDataForTests.home.query;
-      let paramsFromRoute = URLUtils.convertRouteToParams(queryStr, routeConfig, 'query');
+      let paramsFromRoute = SpyneChannelRouteUrlUtils.convertRouteToParams(queryStr, routeConfig, 'query');
       expect(JSON.stringify(paramsFromRoute.routeData)).to.equal(JSON.stringify(data));
     });
   });
@@ -33,7 +33,7 @@ describe('URL Utils - Params To Route', () => {
     it('output multiple routeData from slash query', () => {
       let data = RouteDataForTests.multiple.data;
       let slashStr = RouteDataForTests.multiple.slash;
-      let paramsFromRoute = URLUtils.convertRouteToParams(slashStr, routeConfig);
+      let paramsFromRoute = SpyneChannelRouteUrlUtils.convertRouteToParams(slashStr, routeConfig);
       // console.log('data query multiple1 ',slashStr,paramsFromRoute.routeData);
       expect(JSON.stringify(paramsFromRoute.routeData)).to.equal(JSON.stringify(data));
     });
@@ -41,7 +41,7 @@ describe('URL Utils - Params To Route', () => {
     it('output multiple regex routeData from slash query', () => {
       let data = RouteDataForTests.multipleRegex.data;
       let slashStr = RouteDataForTests.multipleRegex.slash;
-      let paramsFromRoute = URLUtils.convertRouteToParams(slashStr, routeConfig);
+      let paramsFromRoute = SpyneChannelRouteUrlUtils.convertRouteToParams(slashStr, routeConfig);
       // console.log('data query regex str to routeData ',data,slashStr,paramsFromRoute.routeData);
       // return true;
       expect(JSON.stringify(paramsFromRoute.routeData)).to.equal(JSON.stringify(data));
@@ -50,7 +50,7 @@ describe('URL Utils - Params To Route', () => {
     it('output single routeData from slash query', () => {
       let data = RouteDataForTests.singleBasic.data;
       let slashStr = RouteDataForTests.singleBasic.slash;
-      let paramsFromRoute = URLUtils.convertRouteToParams(slashStr, routeConfig);
+      let paramsFromRoute = SpyneChannelRouteUrlUtils.convertRouteToParams(slashStr, routeConfig);
       // console.log('data query multiple1 ',slashStr,paramsFromRoute.routeData);
       expect(JSON.stringify(paramsFromRoute.routeData)).to.equal(JSON.stringify(data));
     });
@@ -58,7 +58,7 @@ describe('URL Utils - Params To Route', () => {
     it('output home routeData from slash query', () => {
       let data = RouteDataForTests.home.data;
       let slashStr = RouteDataForTests.home.slash;
-      let paramsFromRoute = URLUtils.convertRouteToParams(slashStr, routeConfig);
+      let paramsFromRoute = SpyneChannelRouteUrlUtils.convertRouteToParams(slashStr, routeConfig);
       // console.log('data query multiple1 ',slashStr,paramsFromRoute.routeData,data);
       expect(JSON.stringify(paramsFromRoute.routeData)).to.equal(JSON.stringify(data));
     });
@@ -69,7 +69,7 @@ describe('URL Utils - Params To Route', () => {
       let data = RouteDataForTests.multiple.data;
       let correctRouteArr = RouteDataForTests.multiple.arr;
       let route = routeConfig.routes.routePath;
-      let routeVal = URLUtils.createRouteArrayFromParams(data, route);
+      let routeVal = SpyneChannelRouteUrlUtils.createRouteArrayFromParams(data, route);
       expect(JSON.stringify(routeVal)).to.equal(correctRouteArr);
     });
 
@@ -77,7 +77,7 @@ describe('URL Utils - Params To Route', () => {
       let data = RouteDataForTests.single.data;
       let correctRouteArr = RouteDataForTests.single.arr;
       let route = routeConfig.routes.routePath;
-      let routeVal = URLUtils.createRouteArrayFromParams(data, route);
+      let routeVal = SpyneChannelRouteUrlUtils.createRouteArrayFromParams(data, route);
       expect(JSON.stringify(routeVal)).to.equal(correctRouteArr);
     });
 
@@ -85,7 +85,7 @@ describe('URL Utils - Params To Route', () => {
       let data = RouteDataForTests.home.data;
       let correctRouteArr = RouteDataForTests.home.arr;
       let route = routeConfig.routes.routePath;
-      let routeVal = URLUtils.createRouteArrayFromParams(data, route);
+      let routeVal = SpyneChannelRouteUrlUtils.createRouteArrayFromParams(data, route);
       expect(JSON.stringify(routeVal))
         .to.equal(JSON.stringify(correctRouteArr));
     });
@@ -93,7 +93,7 @@ describe('URL Utils - Params To Route', () => {
       let data = RouteDataForTests.empty.data;
       let correctRouteArr = RouteDataForTests.empty.arr;
       let route = routeConfig.routes.routePath;
-      let routeVal = URLUtils.createRouteArrayFromParams(data, route);
+      let routeVal = SpyneChannelRouteUrlUtils.createRouteArrayFromParams(data, route);
       // console.log('data empty ',JSON.stringify(routeVal),correctRouteArr);
       expect(1).to.equal(1);
     });
@@ -102,14 +102,14 @@ describe('URL Utils - Params To Route', () => {
     it('output multiple routeData query', () => {
       let data = RouteDataForTests.multiple.data;
       let correctRouteQuery = RouteDataForTests.multiple.slash;
-      let routeVal = URLUtils.convertParamsToRoute(data, routeConfig, 'slash');
+      let routeVal = SpyneChannelRouteUrlUtils.convertParamsToRoute(data, routeConfig, 'slash');
       // console.log('data query multiple ',routeVal);
       expect(correctRouteQuery).to.equal(routeVal);
     });
     it('Params based on regex should translate to slash routes', () => {
       let data = RouteDataForTests.multipleRegex.data;
       let correctRouteQuery = RouteDataForTests.multipleRegex.slash;
-      let routeVal = URLUtils.convertParamsToRoute(data, routeConfig, 'slash');
+      let routeVal = SpyneChannelRouteUrlUtils.convertParamsToRoute(data, routeConfig, 'slash');
       // console.log('data query multiple 1',data, correctRouteQuery, routeVal);
       expect(correctRouteQuery).to.equal(routeVal);
     });
@@ -120,7 +120,7 @@ describe('URL Utils - Params To Route', () => {
       let correctRouteQuery = RouteDataForTests.multiple.slash;
       correctRouteQuery = 'page-one/5/doe';
       let updatedQuery = 'page-one/5/ubalu';
-      let routeVal = URLUtils.convertParamsToRoute(data, routeConfig, 'slash', correctRouteQuery);
+      let routeVal = SpyneChannelRouteUrlUtils.convertParamsToRoute(data, routeConfig, 'slash', correctRouteQuery);
       // console.log('data query multiple 1',data, correctRouteQuery, routeVal);
       // console.log(' data: ',updatedQuery, correctRouteQuery, routeVal);
       expect(routeVal).to.equal(updatedQuery);
@@ -130,7 +130,7 @@ describe('URL Utils - Params To Route', () => {
       let data = RouteDataForTests.multiple.data;
       data = R.omit(['pageId', 'imageNum'], data);
       let correctRouteQuery = 'page-one';
-      let routeVal = URLUtils.convertParamsToRoute(data, routeConfig, 'slash', correctRouteQuery);
+      let routeVal = SpyneChannelRouteUrlUtils.convertParamsToRoute(data, routeConfig, 'slash', correctRouteQuery);
       // console.log('data query multiple 1',data, correctRouteQuery, routeVal);
       expect(routeVal).to.equal(correctRouteQuery);
     });
@@ -143,7 +143,7 @@ describe('URL Utils - Params To Route', () => {
       let correctRouteQuery = RouteDataForTests.multiple.slash;
       correctRouteQuery = 'page-one/5/sdfdf';
       let updatedQuery = 'page-one/5/ubalu';
-      let routeVal = URLUtils.convertParamsToRoute(data, thisRouteConfig, 'slash', correctRouteQuery);
+      let routeVal = SpyneChannelRouteUrlUtils.convertParamsToRoute(data, thisRouteConfig, 'slash', correctRouteQuery);
       // console.log('data query multiple 1',data, correctRouteQuery, routeVal,updatedQuery);
       // console.log(' data: ',updatedQuery, correctRouteQuery, routeVal);
       // return true;
@@ -153,21 +153,21 @@ describe('URL Utils - Params To Route', () => {
     it('output single routeData query', () => {
       let data = RouteDataForTests.single.data;
       let correctRouteQuery = RouteDataForTests.single.slash;
-      let routeVal = URLUtils.convertParamsToRoute(data, routeConfig, 'slash');
+      let routeVal = SpyneChannelRouteUrlUtils.convertParamsToRoute(data, routeConfig, 'slash');
       // console.log('data query single ',routeVal);
       expect(correctRouteQuery).to.equal(routeVal);
     });
     it('output home routeData query', () => {
       let data = RouteDataForTests.home.data;
       let correctRouteQuery = RouteDataForTests.home.slash;
-      let routeVal = URLUtils.convertParamsToRoute(data, routeConfig, 'slash');
+      let routeVal = SpyneChannelRouteUrlUtils.convertParamsToRoute(data, routeConfig, 'slash');
       // console.log('data query home ',routeVal);
       expect(correctRouteQuery).to.equal(routeVal);
     });
     it('output empty routeData query', () => {
       let data = RouteDataForTests.empty.data;
       let correctRouteQuery = RouteDataForTests.empty.slash;
-      let routeVal = URLUtils.convertParamsToRoute(data, routeConfig, 'slash', correctRouteQuery);
+      let routeVal = SpyneChannelRouteUrlUtils.convertParamsToRoute(data, routeConfig, 'slash', correctRouteQuery);
       // console.log('data query empty ',routeVal);
       expect(correctRouteQuery).to.equal(routeVal);
     });
@@ -177,7 +177,7 @@ describe('URL Utils - Params To Route', () => {
     it('output multiple routeData query', () => {
       let data = RouteDataForTests.multiple.data;
       let correctRouteQuery = RouteDataForTests.multiple.query;
-      let routeVal = URLUtils.convertParamsToRoute(data, routeConfig, 'query');
+      let routeVal = SpyneChannelRouteUrlUtils.convertParamsToRoute(data, routeConfig, 'query');
       // console.log('data query multiple ',routeVal);
       expect(correctRouteQuery).to.equal(routeVal);
     });
@@ -185,7 +185,7 @@ describe('URL Utils - Params To Route', () => {
     it('output multiple routeData with regex query', () => {
       let data = RouteDataForTests.multipleRegex.data;
       let correctRouteQuery = RouteDataForTests.multipleRegex.query;
-      let routeVal = URLUtils.convertParamsToRoute(data, routeConfig, 'query');
+      let routeVal = SpyneChannelRouteUrlUtils.convertParamsToRoute(data, routeConfig, 'query');
       // console.log('data query multiple ',routeVal);
       expect(correctRouteQuery).to.equal(routeVal);
     });
@@ -193,21 +193,21 @@ describe('URL Utils - Params To Route', () => {
     it('output single routeData query', () => {
       let data = RouteDataForTests.single.data;
       let correctRouteQuery = RouteDataForTests.single.query;
-      let routeVal = URLUtils.convertParamsToRoute(data, routeConfig, 'query');
+      let routeVal = SpyneChannelRouteUrlUtils.convertParamsToRoute(data, routeConfig, 'query');
       // console.log('data query single ',routeVal);
       expect(correctRouteQuery).to.equal(routeVal);
     });
     it('output home routeData query', () => {
       let data = RouteDataForTests.home.data;
       let correctRouteQuery = RouteDataForTests.home.query;
-      let routeVal = URLUtils.convertParamsToRoute(data, routeConfig, 'query');
+      let routeVal = SpyneChannelRouteUrlUtils.convertParamsToRoute(data, routeConfig, 'query');
       // console.log('data query home ',routeVal);
       expect(correctRouteQuery).to.equal(routeVal);
     });
     it('output empty routeData query', () => {
       let data = RouteDataForTests.empty.data;
       let correctRouteQuery = RouteDataForTests.empty.query;
-      let routeVal = URLUtils.convertParamsToRoute(data, routeConfig, 'query');
+      let routeVal = SpyneChannelRouteUrlUtils.convertParamsToRoute(data, routeConfig, 'query');
       // console.log('data query empty ',routeVal);
       expect(correctRouteQuery).to.equal(routeVal);
     });
@@ -215,12 +215,12 @@ describe('URL Utils - Params To Route', () => {
 
   describe('Overrides to regex values are added', () => {
     it('should override pageId home regex', () => {
-      let paramsToRouteVal = URLUtils.convertParamsToRoute(payloadDataForUrlUtils, routeConfigWithRegexOverride);
+      let paramsToRouteVal = SpyneChannelRouteUrlUtils.convertParamsToRoute(payloadDataForUrlUtils, routeConfigWithRegexOverride);
       expect(paramsToRouteVal).to.equal('');
     });
 
     it('should replace regex with obj value from data', () => {
-      let arrUpdate = URLUtils.checkPayloadForRegexOverrides(urlUtilsArr, payloadDataForUrlUtils);
+      let arrUpdate = SpyneChannelRouteUrlUtils.checkPayloadForRegexOverrides(urlUtilsArr, payloadDataForUrlUtils);
       let pageIdStr = arrUpdate[0].pageId;
       expect(pageIdStr).to.equal('');
     });

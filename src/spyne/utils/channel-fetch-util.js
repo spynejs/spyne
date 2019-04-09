@@ -5,6 +5,8 @@ export class ChannelFetchUtil {
 // METHOD GET POST PUT PATCH DELETE
   /**
    * @module ChannelFetchUtil
+   * @type Util
+   *
    *
    * @desc
    * This is the core object used for ChannelFetch. This utility wraps the javascript fetch api into an observable.

@@ -1,8 +1,16 @@
 import {isEmpty, head, values, compose, prop, complement, isNil, allPass, reduce, filter, equals, toPairs, replace, either, propEq, __,invert,path,zipObj, reject, keys, find, assoc, is,has, when, split, always, concat, join, flatten, map, ifElse, test, findLastIndex,last, defaultTo,fromPairs } from 'ramda';
 
-export class URLUtils {
+export class SpyneChannelRouteUrlUtils {
   constructor() {
-    this.checkIfObjIsNotEmptyOrNil = URLUtils.checkIfObjIsNotEmptyOrNil.bind(this);
+    /**
+     * @module SpyneChannelRouteUrlUtils
+     * @type Internal
+     *
+     * @constructor
+     * @desc
+     * Internal url methods for the SpyneRouteChannel
+     */
+    this.checkIfObjIsNotEmptyOrNil = SpyneChannelRouteUrlUtils.checkIfObjIsNotEmptyOrNil.bind(this);
   }
 
   static checkIfObjIsNotEmptyOrNil(obj) {
@@ -165,7 +173,7 @@ export class URLUtils {
     let paramsFromCurrentLocation = this.convertRouteToParams(locationStr, r, urlType).routeData;
     let urlArr = this.createRouteArrayFromParams(data, route, urlType, paramsFromCurrentLocation);
 
-    urlArr = URLUtils.checkPayloadForRegexOverrides(urlArr, data);
+    urlArr = SpyneChannelRouteUrlUtils.checkPayloadForRegexOverrides(urlArr, data);
     // console.log("PARAMS TO ROUTE ",{data,r,urlArr,locationStr, paramsFromCurrentLocation});
 
     // THIS CREATES A QUERY PATH STR
@@ -218,7 +226,7 @@ export class URLUtils {
     // RESULTS FROM PARAM CHECK
     // let paramIndex = checkForParamsMatch(paramsArr);
 
-    let paramIndex = URLUtils.findIndexOfMatchedStringOrRegex(str, paramsArr);
+    let paramIndex = SpyneChannelRouteUrlUtils.findIndexOfMatchedStringOrRegex(str, paramsArr);
 
     // DEFAULT VAL FOR STRING
     let paramStr = str;

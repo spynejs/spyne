@@ -8,13 +8,13 @@ import {
   getConstructorName
 } from '../utils/frp-tools';
 // import {gc} from '../utils/gc';
-import { ViewStreamElObservable } from './view-stream-el-observable';
+import { ViewStreamElement } from './view-stream-element';
 import { ViewStreamEnhancerLoader } from './view-stream-enhancer-loader';
 import { registeredStreamNames } from '../channels/channels-config';
 import { ViewStreamBroadcaster } from './view-stream-broadcaster';
 import { ViewStreamPayload } from './view-stream-payload';
 import { ChannelPayloadFilter } from '../utils/channel-payload-filter';
-import { LifecyleObservables } from '../utils/viewstream-lifecycle-observables';
+import { ViewStreamObservable } from '../utils/viewstream-observables';
 import {ViewStreamSelector} from './view-stream-selector';
 import { Subject, of } from 'rxjs';
 import { mergeMap, map, takeWhile, filter, tap, finalize } from 'rxjs/operators';
@@ -23,7 +23,7 @@ import {pick, compose, both, isNil, toLower, either, findIndex, test, flatten ,p
 export class ViewStream {
   /**
    * @module ViewStream
-   * @borrows DomItemSelectors as el$
+   * @type Extendable
    *
    * @desc
    * <p>ViewStreams are the core of this framework.</br>Taking analogy of Spyne, they are basically the nervous system of the application.</p>
@@ -143,7 +143,7 @@ export class ViewStream {
         animateOutTime: 0.5,
         sendLifecyleEvents: false,
         hashId: `#${id}`,
-        viewClass: ViewStreamElObservable,
+        viewClass: ViewStreamElement,
         extendedSourcesHashMethods: {},
         debug: false,
         template: undefined,
@@ -152,9 +152,9 @@ export class ViewStream {
       };
     };
     this._state = {};
-    this.$dirs = LifecyleObservables.createDirectionalFiltersObject();
-    this.addDefaultDirection = LifecyleObservables.addDefaultDir;
-    this.addDownInternalDir = LifecyleObservables.addDownInternalDir;
+    this.$dirs = ViewStreamObservable.createDirectionalFiltersObject();
+    this.addDefaultDirection = ViewStreamObservable.addDefaultDir;
+    this.addDownInternalDir = ViewStreamObservable.addDownInternalDir;
     // this.props = Object.assigREADY_FOR_VS_DETRITUS_COLLECTn({}, this.defaults(), props);
     this.props = deepMerge(this.defaults(), props);
     this.sendLifecycleMethod = this.props.sendLifecyleEvents === true ? this.sendLifecycleMethodActive.bind(this) : this.sendLifecycleMethodInactive.bind(this);
@@ -1120,16 +1120,16 @@ export class ViewStream {
     //  ==================================
     let coreMixins = baseCoreMixins();
     this.createId = coreMixins.createId;
-    this.createpropsMap = coreMixins.createpropsMap;
+/*    this.createpropsMap = coreMixins.createpropsMap;
     this.convertDomStringMapToObj = convertDomStringMapToObj;
-    this.ifNilThenUpdate = ifNilThenUpdate;
+    this.ifNilThenUpdate = ifNilThenUpdate;*/
     // this.gc = gc.bind(this);
     //  ==================================
     // BASE STREAM MIXINS
     //  ==================================
     let streamMixins = baseStreamsMixins();
-    this.sendUIPayload = streamMixins.sendUIPayload;
+/*    this.sendUIPayload = streamMixins.sendUIPayload;
     this.sendRoutePayload = streamMixins.sendRoutePayload;
-    this.createLifeStreamPayload = streamMixins.createLifeStreamPayload;
+    this.createLifeStreamPayload = streamMixins.createLifeStreamPayload;*/
   }
 }

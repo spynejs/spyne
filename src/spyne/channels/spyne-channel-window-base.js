@@ -1,6 +1,6 @@
 import { Channel } from './channel';
 import { checkIfObjIsNotEmptyOrNil } from '../utils/frp-tools';
-import { ChannelUtilsDom } from '../utils/channel-util-dom';
+import { SpyneChannelWindowUtils } from '../utils/spyne-channel-window-utils';
 import { merge } from 'rxjs';
 import { map, debounceTime, skipWhile } from 'rxjs/operators';
 import {curry, pick, mapObjIndexed} from 'ramda';
@@ -10,6 +10,8 @@ export class SpyneChannelWindow extends Channel {
 
   /**
    * @module SpyneChannelWindow
+   * @type Core
+   *
    * @desc
    * Internal channel that publishes all window events.
    *
@@ -99,14 +101,14 @@ export class SpyneChannelWindow extends Channel {
   createMouseWheelObservable(config) {
     const debounceTime = config.debounceMSTimeForScroll;
 
-    return ChannelUtilsDom.createDomObservableFromEvent('mousewheel',
+    return SpyneChannelWindowUtils.createDomObservableFromEvent('mousewheel',
       SpyneChannelWindow.getMouseWheelMapFn.bind(this)).debounceTime(debounceTime);
   }
 
   createScrollObservable(config) {
     const skipWhenDirIsMissing = evt => evt.scrollDistance === 0;
     const dTime = config.debounceMSTimeForScroll;
-    return ChannelUtilsDom.createDomObservableFromEvent('scroll',
+    return SpyneChannelWindowUtils.createDomObservableFromEvent('scroll',
       SpyneChannelWindow.getScrollMapFn.bind(this))
       .pipe(
         debounceTime(dTime),
@@ -116,7 +118,7 @@ export class SpyneChannelWindow extends Channel {
 
   createOrientationObservable(config) {
     // console.log("add orientation");orientationchange
-    return ChannelUtilsDom.createDomObservableFromEvent('orientationchange',
+    return SpyneChannelWindowUtils.createDomObservableFromEvent('orientationchange',
       SpyneChannelWindow.getOrientationMapFn.bind(this));
   }
 
@@ -124,7 +126,7 @@ export class SpyneChannelWindow extends Channel {
     const dTime = config.debounceMSTimeForResize;
     // console.log('resize this ', this);
 
-    return ChannelUtilsDom.createDomObservableFromEvent('resize',
+    return SpyneChannelWindowUtils.createDomObservableFromEvent('resize',
       SpyneChannelWindow.getResizeMapFn.bind(this)).pipe(debounceTime(dTime));
   }
 
@@ -133,7 +135,7 @@ export class SpyneChannelWindow extends Channel {
 
     const addWindowEventToArr = str => {
       let mapFn = SpyneChannelWindow.createCurriedGenericEvent(str);
-      return ChannelUtilsDom.createDomObservableFromEvent(str, mapFn);
+      return SpyneChannelWindowUtils.createDomObservableFromEvent(str, mapFn);
     };
 
     return rMap(addWindowEventToArr, obs$Arr);
@@ -259,9 +261,9 @@ export class SpyneChannelWindow extends Channel {
   }
 
   bindStaticMethods() {
-    this.createMediaQueryHandler = ChannelUtilsDom.createMediaQueryHandler.bind(
+    this.createMediaQueryHandler = SpyneChannelWindowUtils.createMediaQueryHandler.bind(
       this);
-    this.createMergedObsFromObj = ChannelUtilsDom.createMergedObsFromObj.bind(
+    this.createMergedObsFromObj = SpyneChannelWindowUtils.createMergedObsFromObj.bind(
       this);
   }
 }

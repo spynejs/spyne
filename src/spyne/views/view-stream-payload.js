@@ -8,6 +8,7 @@ export class ViewStreamPayload {
    * Observables sent from ViewStreams to Channels are validated by this class
    *
    * @module ViewStreamPayload
+   * @type Internal
    *
    * @constructor
    * @param {String} name

@@ -1,9 +1,17 @@
 import { Subject } from 'rxjs';
 import { filter, map } from 'rxjs/operators';
 import {flip, mergeRight, clone, propSatisfies} from 'ramda';
-export class LifecyleObservables {
+export class ViewStreamObservable {
   constructor(props) {
-    this.props.observableStreams = LifecyleObservables.createDirectionalObservables();
+    /**
+     * @module ViewStreamObservable
+     * @type Internal
+     *
+     * @constructor
+     * @desc
+     * Internal observable that creates the ViewStream Observable that branches out to parent, internal and child directions
+     */
+    this.props.observableStreams = ViewStreamObservable.createDirectionalObservables();
   }
 
   static createDirectionalFiltersObject() {

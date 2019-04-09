@@ -9,6 +9,7 @@ export class ViewStreamBroadcaster {
   /**
    * The class takes in all of the elements from the 'broadcastEvents' method and directs the events to either the UI or ROUTE channels
    * @module ViewStreamBroadcaster
+   * @type Internal
    *
    * @constructor
    * @param {Object} props
@@ -123,6 +124,6 @@ export class ViewStreamBroadcaster {
     let streamMixins = baseStreamsMixins();
     this.sendUIPayload = streamMixins.sendUIPayload;
     this.sendRoutePayload = streamMixins.sendRoutePayload;
-    this.createLifeStreamPayload = streamMixins.createLifeStreamPayload;
+    //this.createLifeStreamPayload = streamMixins.createLifeStreamPayload;
   }
 }

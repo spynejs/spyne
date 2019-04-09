@@ -2,15 +2,15 @@ import { baseCoreMixins } from '../utils/mixins/base-core-mixins';
 import { DomItem } from './dom-item';
 import { ifNilThenUpdate, convertDomStringMapToObj } from '../utils/frp-tools';
 import { fadein, fadeout } from '../utils/viewstream-animations';
-import { LifecyleObservables } from '../utils/viewstream-lifecycle-observables';
+import { ViewStreamObservable } from '../utils/viewstream-observables';
 import { deepMerge } from '../utils/deep-merge';
 import { Subject, Observable, bindCallback } from 'rxjs';
 import {filter, isNil, pick, props, defaultTo} from 'ramda';
 
-export class ViewStreamElObservable {
+export class ViewStreamElement {
   /**
-   * @module ViewStreamElObservable
-   *
+   * @module ViewStreamElement
+   * @type Util
    * @desc
    * This is an internal class that is part of the ViewStream observable system.
    *
@@ -41,9 +41,9 @@ export class ViewStreamElObservable {
     this.sink$
       .subscribe(this.onObsSinkSubscribe.bind(this));
 
-    this.$dirs = LifecyleObservables.createDirectionalFiltersObject();
-    this.addDefaultDir = LifecyleObservables.addDefaultDir;
-    this.sourceStreams = LifecyleObservables.createDirectionalObservables(new Subject(), this.vsName, this.cid);
+    this.$dirs = ViewStreamObservable.createDirectionalFiltersObject();
+    this.addDefaultDir = ViewStreamObservable.addDefaultDir;
+    this.sourceStreams = ViewStreamObservable.createDirectionalObservables(new Subject(), this.vsName, this.cid);
     this._source$ = this.sourceStreams.toInternal$; //  new Subject();
   }
   addActionListeners() {

@@ -1,9 +1,18 @@
 import { fromEventPattern } from 'rxjs';
 import {last, pick, prop, equals, compose, keys, filter, propEq, uniq, map, __, chain, includes, fromPairs, toPairs, values} from 'ramda';
 
-export class RouteUtils {
+export class SpyneChannelRouteUtils {
   constructor() {
-    this.createPopStateStream = RouteUtils.createPopStateStream.bind(this);
+    /**
+     * @module SpyneChannelRouteUtils
+     * @type Internal
+     *
+     * @constructor
+     * @desc
+     * Internal utility methods for the SpyneRouteChannel
+     *
+     */
+    this.createPopStateStream = SpyneChannelRouteUtils.createPopStateStream.bind(this);
   }
 
   static createPopStateStream(subscribeFn) {
@@ -63,7 +72,7 @@ export class RouteUtils {
 
   static getRouteArrData(routeArr, paramsArr) {
     let paths =  filter(includes(__, routeArr), paramsArr);
-    const pathInnermost = RouteUtils.getLastArrVal(paths);
+    const pathInnermost = SpyneChannelRouteUtils.getLastArrVal(paths);
     // console.log('arr and routeName ',{paths, pathInnermost});
     return { paths, pathInnermost };
   }

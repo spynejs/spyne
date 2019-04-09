@@ -4,6 +4,7 @@ import {reject, test, curryN, __, map} from 'ramda';
 export class SpyneTrait {
   /**
    * @module SpyneTrait
+   * @type Extendable
    * @param {this} parentContext
    * @param {String} prefix
    * @param {Boolean} autoInit

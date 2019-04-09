@@ -2,7 +2,19 @@ import { Channel } from './channel';
 import { Subject, ReplaySubject, merge } from 'rxjs';
 import {includes, path} from 'ramda';
 
-export class ChannelsBaseProxy extends Channel {
+export class ChannelProxy extends Channel {
+  /**
+   * @module ChannelProxy
+   * @type Internal
+   *
+   * @constructor
+   * @param {String} name
+   * @param {Object} props
+   *
+   * @desc
+   * A proxy channel is created when a channel is subscribed to before it is registered.
+   *
+   */
   constructor(name, props = {}) {
     props.isProxy = true;
     super(name, props);

@@ -5,6 +5,7 @@ import {path, pick, mergeRight, mergeDeepRight, reject, compose, isNil} from 'ra
 export class ChannelFetch extends Channel {
   /**
    * @module ChannelFetch
+   * @type Extendable
    * @desc
    * Extends ChannelBase and adds the ChannelFetchUtil to create a system that is able to coordinate with an api. <span class='break'/>
    * The fetch request can be updated from any ViewStream instance by using the sendInfoChannel method. <span class='break'/>
