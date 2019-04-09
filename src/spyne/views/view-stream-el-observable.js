@@ -53,7 +53,7 @@ export class ViewStreamElObservable {
     let defaultHashMethods = {
       'GARBAGE_COLLECT'                : (p) => this.onGarbageCollect(p),
       'READY_FOR_GC'                   : (p) => this.onReadyForGC(p),
-      'DISPOSE'                        : (p) => this.onDispose(p),
+      'EXTIRPATE'                        : (p) => this.onDispose(p),
       'RENDER'                         : (p) => this.onRender(p),
       'RENDER_AND_ATTACH_TO_PARENT'    : (p) => this.onRenderAndAttachToParent(p),
       'RENDER_AND_ATTACH_TO_DOM'       : (p) => this.onRenderAndAttachToDom(p),
@@ -114,9 +114,9 @@ export class ViewStreamElObservable {
     let onFadeoutObs = (d) => {
       fadeOutObs(d)
         .subscribe(onFadeoutCompleted);
-      return { action:'DISPOSING', $dir:this.$dirs.CI };
+      return { action:'EXTIRPATING', $dir:this.$dirs.CI };
     };
-    let onEmptyObs = () => ({ action:'DISPOSE_AND_READY_FOR_GC', $dir:this.$dirs.CI });
+    let onEmptyObs = () => ({ action:'EXTIRPATE_AND_READY_FOR_GC', $dir:this.$dirs.CI });
     let fn = d.animateOut === true ? onFadeoutObs : onEmptyObs;
     return fn(d);
   }

@@ -36,7 +36,7 @@ class SpyneApp {
    */
   constructor(config = {}) {
     this.channels = new ChannelsController();
-    this.VERSION = '0.9.17';
+    this.VERSION = '0.9.18';
     this.ViewStream = ViewStream;
     this.BasicView = ViewStreamElObservable;
     this.DomItem = DomItem;

@@ -264,9 +264,9 @@ export class ViewStream {
 
   setSourceHashMethods(extendedSourcesHashMethods = {}) {
     let hashSourceKeys = {
-      'DISPOSING': (p) => this.checkParentDispose(p),
-      'DISPOSE': (p) => this.disposeViewStream(p),
-      // 'CHILD_DISPOSE'                    : (p) => this.disposeViewStream(p),
+      'EXTIRPATING': (p) => this.checkParentDispose(p),
+      'EXTIRPATE': (p) => this.disposeViewStream(p),
+      // 'CHILD_EXTIRPATE'                    : (p) => this.disposeViewStream(p),
       'RENDERED': (p) => this.onRendered(p),
       'RENDERED_AND_ATTACHED_TO_DOM': (p) => this.onRendered(p),
       'RENDERED_AND_ATTACHED_TO_PARENT': (p) => this.onRendered(p),
@@ -313,7 +313,7 @@ export class ViewStream {
     let checkIfDisposeOrFadeout = (d) => {
       let data = deepMerge({}, d);
 
-      if (data.action === 'DISPOSE_AND_READY_FOR_GC') {
+      if (data.action === 'EXTIRPATE_AND_READY_FOR_GC') {
         this.disposeViewStream(data);
         data.action = 'READY_FOR_GC';
       }
@@ -448,7 +448,7 @@ export class ViewStream {
 
     fn(payload);
     // console.log(fn, payload, ' THE PAYLOAD FROM SUBSCRIBE IS ', ' ---- ', ' ---> ', this.props);
-    // console.log('DISPOSER VS NEXT', this.constructor.name, payload);
+    // console.log('EXTIRPATER VS NEXT', this.constructor.name, payload);
 
     this.tracer('onSubscribeToSourcesNext', { payload });
   }
@@ -458,7 +458,7 @@ export class ViewStream {
   }
 
   onSubscribeToSourcesComplete() {
-    // console.log('==== DISPOSER ALL COMPLETED ====', this.constructor.name);
+    // console.log('==== EXTIRPATER ALL COMPLETED ====', this.constructor.name);
     this.tracer('onSubscribeToSourcesComplete', 'GARBAGE_COLLECT');
 
     this.openSpigot('GARBAGE_COLLECT');
@@ -499,7 +499,7 @@ export class ViewStream {
   }
 */
 
-  // ===================================== DISPOSE METHODS =================================
+  // ===================================== EXTIRPATE METHODS =================================
   checkParentDispose(p) {
     if (p.from$ === 'parent') {
       this.disposeViewStream(p);
@@ -511,9 +511,9 @@ export class ViewStream {
   }
 
   disposeViewStream(p) {
-    // console.log('DISPOSER VS onDispose ', this.constructor.name);
+    // console.log('EXTIRPATER VS onDispose ', this.constructor.name);
     this.onBeforeDispose();
-    this.openSpigot('DISPOSE');
+    this.openSpigot('EXTIRPATE');
   }
 
   onChildDispose(p) {
@@ -521,7 +521,7 @@ export class ViewStream {
 
   onParentDisposing(p) {
     // this.updateSourceSubscription(this._source$);
-    this.openSpigot('DISPOSE');
+    this.openSpigot('EXTIRPATE');
   }
 
   onReadyToGC(p) {
