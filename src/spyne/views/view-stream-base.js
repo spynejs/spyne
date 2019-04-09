@@ -271,7 +271,7 @@ export class ViewStream {
       'RENDERED_AND_ATTACHED_TO_DOM': (p) => this.onRendered(p),
       'RENDERED_AND_ATTACHED_TO_PARENT': (p) => this.onRendered(p),
       // 'CHILD_RENDERED'                   : (p) => this.attachChildToView(p),
-      'READY_FOR_GC': (p) => this.onReadyToGC(p),
+      'READY_FOR_VS_DETRITUS_COLLECT': (p) => this.onReadyToGC(p),
       'NOTHING': () => ({})
     };
     return deepMerge.all([{}, hashSourceKeys, extendedSourcesHashMethods]);
@@ -288,11 +288,11 @@ export class ViewStream {
   }
 
   notGCSTATE(p) {
-    return !p.action.includes('READY_FOR_GC');
+    return !p.action.includes('READY_FOR_VS_DETRITUS_COLLECT');
   }
 
   eqGCSTATE(p) {
-    return !p.action.includes('READY_FOR_GC');
+    return !p.action.includes('READY_FOR_VS_DETRITUS_COLLECT');
   }
 
   notCOMPLETED(p) {
@@ -313,9 +313,9 @@ export class ViewStream {
     let checkIfDisposeOrFadeout = (d) => {
       let data = deepMerge({}, d);
 
-      if (data.action === 'EXTIRPATE_AND_READY_FOR_GC') {
+      if (data.action === 'EXTIRPATE_AND_READY_FOR_VS_DETRITUS_COLLECT') {
         this.disposeViewStream(data);
-        data.action = 'READY_FOR_GC';
+        data.action = 'READY_FOR_VS_DETRITUS_COLLECT';
       }
       return data;
     };
@@ -369,8 +369,8 @@ export class ViewStream {
       error: this.onSubscribeToSourcesError.bind(this),
       complete: this.onSubscribeToSourcesComplete.bind(this)
     };
-    // let takeBeforeGCOld = (val) => val.action !== 'GARBAGE_COLLECTED';
-    // let takeBeforeGC = (p) => !p.action.includes('READY_FOR_GC');
+    // let takeBeforeGCOld = (val) => val.action !== 'VS_DETRITUS_COLLECTED';
+    // let takeBeforeGC = (p) => !p.action.includes('READY_FOR_VS_DETRITUS_COLLECT');
     // let mapToState = (val) => ({action:val});
     //  =====================================================================
     // ========== METHODS TO CHECK FOR WHEN TO COMPLETE THE STREAM =========
@@ -459,9 +459,9 @@ export class ViewStream {
 
   onSubscribeToSourcesComplete() {
     // console.log('==== EXTIRPATER ALL COMPLETED ====', this.constructor.name);
-    this.tracer('onSubscribeToSourcesComplete', 'GARBAGE_COLLECT');
+    this.tracer('onSubscribeToSourcesComplete', 'VS_DETRITUS_COLLECT');
 
-    this.openSpigot('GARBAGE_COLLECT');
+    this.openSpigot('VS_DETRITUS_COLLECT');
   }
 
   //  =======================================================================================
@@ -527,7 +527,7 @@ export class ViewStream {
   onReadyToGC(p) {
     const isInternal = p.from$ !== undefined && p.from$ === 'internal';
     if (isInternal) {
-      // this.openSpigot('GARBAGE_COLLECT');
+      // this.openSpigot('VS_DETRITUS_COLLECT');
     }
     this.tracer('onReadyToGC', isInternal, p);
   }
@@ -939,7 +939,7 @@ export class ViewStream {
       from$: equals('internal'),
       action: equals('RENDERED_AND_ATTACHED_TO_PARENT')
     }, p);
-    let isDisposed = p === 'GARBAGE_COLLECT';
+    let isDisposed = p === 'VS_DETRITUS_COLLECT';
     if (isRendered === true) {
       this.sendInfoToChannel('CHANNEL_LIFECYCLE', { action:'CHANNEL_LIFECYCLE_RENDERED_EVENT' }, 'CHANNEL_LIFECYCLE_RENDERED_EVENT');
     } else if (isDisposed === true) {

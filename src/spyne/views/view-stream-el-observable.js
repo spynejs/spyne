@@ -51,8 +51,8 @@ export class ViewStreamElObservable {
   }
   setHashMethods(extendedHashMethodsObj = {}) {
     let defaultHashMethods = {
-      'GARBAGE_COLLECT'                : (p) => this.onGarbageCollect(p),
-      'READY_FOR_GC'                   : (p) => this.onReadyForGC(p),
+      'VS_DETRITUS_COLLECT'                : (p) => this.onGarbageCollect(p),
+      'READY_FOR_VS_DETRITUS_COLLECT'                   : (p) => this.onReadyForGC(p),
       'EXTIRPATE'                        : (p) => this.onDispose(p),
       'RENDER'                         : (p) => this.onRender(p),
       'RENDER_AND_ATTACH_TO_PARENT'    : (p) => this.onRenderAndAttachToParent(p),
@@ -99,7 +99,7 @@ export class ViewStreamElObservable {
   disposeMethod(d) {
     let el = d.el.el !== undefined ? d.el.el : d.el; // DOM ITEMS HAVE THEIR EL ITEMS NESTED
 
-    const gcData = { action:'READY_FOR_GC', $dir:this.$dirs.PI, el };
+    const gcData = { action:'READY_FOR_VS_DETRITUS_COLLECT', $dir:this.$dirs.PI, el };
 
     let animateOut = (d, callback) => {
       this.animateOutTween(el, d.animateOutTime, callback);
@@ -116,7 +116,7 @@ export class ViewStreamElObservable {
         .subscribe(onFadeoutCompleted);
       return { action:'EXTIRPATING', $dir:this.$dirs.CI };
     };
-    let onEmptyObs = () => ({ action:'EXTIRPATE_AND_READY_FOR_GC', $dir:this.$dirs.CI });
+    let onEmptyObs = () => ({ action:'EXTIRPATE_AND_READY_FOR_VS_DETRITUS_COLLECT', $dir:this.$dirs.CI });
     let fn = d.animateOut === true ? onFadeoutObs : onEmptyObs;
     return fn(d);
   }
