@@ -1,7 +1,7 @@
 import { ChannelsController } from './channels/channels-controller';
 import { DomItem } from './views/dom-item';
 import { ViewStreamObservable } from './views/view-stream-observable';
-import { ViewStream } from './views/view-stream-a';
+import { ViewStream } from './views/view-stream-base';
 import { ViewStreamBroadcaster } from './views/view-stream-broadcaster';
 import { SpyneTrait } from './utils/spyne-trait';
 import { ViewStreamPayload } from './views/view-stream-payload';

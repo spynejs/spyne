@@ -1,5 +1,6 @@
 import { registeredStreamNames } from './channels-config';
 import { ChannelPayload } from './channel-payload-class';
+import {RouteChannelUpdater} from '../utils/route-channel-updater';
 import { ReplaySubject, Subject } from 'rxjs';
 import { map } from 'rxjs/operators';
 import {ifElse, isString, identity, head, mergeAll, objOf, view, is, chain, lensIndex, always, fromPairs, path, equals, prop} from 'ramda';
@@ -31,6 +32,7 @@ export class ChannelBaseClass {
     this.props = props;
     this.props.isProxy = this.props.isProxy === undefined ? false : this.props.isProxy;
     this.props.sendCurrentPayload = this.props.sendCurrentPayload === undefined ? false : this.props.sendCurrentPayload;
+    this.sendPayloadToRouteChannel = new RouteChannelUpdater(this);
     this.createChannelActionMethods();
     this.streamsController = window.Spyne.channels;// getGlobalParam('streamsController');
     let observer$ = this.getMainObserver();
