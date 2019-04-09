@@ -54,9 +54,9 @@ export class ViewStreamElObservable {
       'VS_DETRITUS_COLLECT'                : (p) => this.onGarbageCollect(p),
       'READY_FOR_VS_DETRITUS_COLLECT'                   : (p) => this.onReadyForGC(p),
       'EXTIRPATE'                        : (p) => this.onDispose(p),
-      'RENDER'                         : (p) => this.onRender(p),
-      'RENDER_AND_ATTACH_TO_PARENT'    : (p) => this.onRenderAndAttachToParent(p),
-      'RENDER_AND_ATTACH_TO_DOM'       : (p) => this.onRenderAndAttachToDom(p),
+      'VS_SPAWN'                         : (p) => this.onRender(p),
+      'VS_SPAWN_AND_ATTACH_TO_PARENT'    : (p) => this.onRenderAndAttachToParent(p),
+      'VS_SPAWN_AND_ATTACH_TO_DOM'       : (p) => this.onRenderAndAttachToDom(p),
       'ATTACH_CHILD_TO_SELF'           : (p) => this.onAttachChildToSelf(p)
     };
     return deepMerge(defaultHashMethods, extendedHashMethodsObj);
@@ -190,7 +190,7 @@ export class ViewStreamElObservable {
     this.onRender(d);
     this.combineDomItems(d);
     return {
-      action: 'RENDERED_AND_ATTACHED_TO_PARENT',
+      action: 'VS_SPAWNED_AND_ATTACHED_TO_PARENT',
       el: this.domItem.el,
       $dir: this.$dirs.PI
     };
@@ -205,7 +205,7 @@ export class ViewStreamElObservable {
     let getEl = (data) => this.renderDomItem(data);
     let el =  getEl(props(['tagName', 'domAttributes', 'data', 'template'], d));
     return {
-      action: 'RENDERED',
+      action: 'VS_SPAWNED',
       el,
       $dir: this.$dirs.I
     };
@@ -226,7 +226,7 @@ export class ViewStreamElObservable {
     d.attachData['el'] = getEl(props(['tagName', 'domAttributes', 'data', 'template'], d));
     this.combineDomItems(d.attachData);
     return {
-      action: 'RENDERED_AND_ATTACHED_TO_DOM',
+      action: 'VS_SPAWNED_AND_ATTACHED_TO_DOM',
       el:     d.attachData['el'].el,
       $dir: this.$dirs.CI
     };

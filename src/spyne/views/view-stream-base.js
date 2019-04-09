@@ -155,7 +155,7 @@ export class ViewStream {
     this.$dirs = LifecyleObservables.createDirectionalFiltersObject();
     this.addDefaultDirection = LifecyleObservables.addDefaultDir;
     this.addDownInternalDir = LifecyleObservables.addDownInternalDir;
-    // this.props = Object.assign({}, this.defaults(), props);
+    // this.props = Object.assigREADY_FOR_VS_DETRITUS_COLLECTn({}, this.defaults(), props);
     this.props = deepMerge(this.defaults(), props);
     this.sendLifecycleMethod = this.props.sendLifecyleEvents === true ? this.sendLifecycleMethodActive.bind(this) : this.sendLifecycleMethodInactive.bind(this);
     let attributesArr = this.attributesArray;
@@ -267,10 +267,10 @@ export class ViewStream {
       'EXTIRPATING': (p) => this.checkParentDispose(p),
       'EXTIRPATE': (p) => this.disposeViewStream(p),
       // 'CHILD_EXTIRPATE'                    : (p) => this.disposeViewStream(p),
-      'RENDERED': (p) => this.onRendered(p),
-      'RENDERED_AND_ATTACHED_TO_DOM': (p) => this.onRendered(p),
-      'RENDERED_AND_ATTACHED_TO_PARENT': (p) => this.onRendered(p),
-      // 'CHILD_RENDERED'                   : (p) => this.attachChildToView(p),
+      'VS_SPAWNED': (p) => this.onRendered(p),
+      'VS_SPAWNED_AND_ATTACHED_TO_DOM': (p) => this.onRendered(p),
+      'VS_SPAWNED_AND_ATTACHED_TO_PARENT': (p) => this.onRendered(p),
+      // 'CHILD_VS_SPAWNED'                   : (p) => this.attachChildToView(p),
       'READY_FOR_VS_DETRITUS_COLLECT': (p) => this.onReadyToGC(p),
       'NOTHING': () => ({})
     };
@@ -476,19 +476,19 @@ export class ViewStream {
     this.openSpigot(payload.action, payload);
   }
 
-  // ===================================== RENDER METHODS ==================================
+  // ===================================== VS_SPAWN METHODS ==================================
   renderAndAttachToParent(attachData) {
     // let childRenderData = attachData;
-    this.openSpigot('RENDER_AND_ATTACH_TO_PARENT', attachData);
+    this.openSpigot('VS_SPAWN_AND_ATTACH_TO_PARENT', attachData);
   }
 
   renderView() {
-    this.openSpigot('RENDER');
+    this.openSpigot('VS_SPAWN');
   }
 
   renderViewAndAttachToDom(node, type, attachType) {
     let attachData = { node, type, attachType };
-    this.openSpigot('RENDER_AND_ATTACH_TO_DOM', { attachData });
+    this.openSpigot('VS_SPAWN_AND_ATTACH_TO_DOM', { attachData });
   }
 
 /*
@@ -737,7 +737,7 @@ export class ViewStream {
   }
 
   onRendered(payload) {
-    // console.log('RENDER: ', this.props.name, payload);
+    // console.log('VS_SPAWN: ', this.props.name, payload);
     if (payload.from$ === 'internal') {
       // this.props['el'] = payload.el.el;
 
@@ -937,7 +937,7 @@ export class ViewStream {
   sendLifecycleMethodActive(val, p) {
     let isRendered = where({
       from$: equals('internal'),
-      action: equals('RENDERED_AND_ATTACHED_TO_PARENT')
+      action: equals('VS_SPAWNED_AND_ATTACHED_TO_PARENT')
     }, p);
     let isDisposed = p === 'VS_DETRITUS_COLLECT';
     if (isRendered === true) {
