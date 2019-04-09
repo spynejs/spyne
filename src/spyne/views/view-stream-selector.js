@@ -1,4 +1,4 @@
-import {head, compose, lte, defaultTo, prop} from 'ramda';
+import {head, compose, path, lte, defaultTo, prop} from 'ramda';
 
 
 function generateSpyneSelectorId(el) {
@@ -11,6 +11,16 @@ function generateSpyneSelectorId(el) {
     ssid = el.dataset.ssid;
   }
   return `[data-ssid='${ssid}']`;
+}
+
+function isVerbose(){
+  return path(['Spyne', 'config', 'verbose'], window) === true;
+}
+
+
+function isNodeElement(el){
+  const nodeCheck = compose(lte(0), defaultTo(-1), prop('nodeType'));
+  return nodeCheck(el);
 }
 
 function getElOrList(cxt, str, verboseBool=false) {
@@ -32,7 +42,7 @@ function testSelectors(cxt, str, verboseBool) {
   if (str !== undefined) {
     let query = el.querySelector(str);
     if (query === null) {
-      if (window.Spyne.config.verbose === true && verboseBool===true) {
+      if (isVerbose() === true && verboseBool===true) {
         console.warn(`Spyne Warning: the selector, ${str} does not exist in this el, ${cxt}`);
       }
 
@@ -156,9 +166,11 @@ function ViewStreamSelector(cxt, str) {
     return this;
   };
 
+/*
   selector.setActiveItem = (c, sel) => {
     return selector.toggleActiveEl(c, sel);
   };
+*/
 
 
   /**
@@ -167,11 +179,16 @@ function ViewStreamSelector(cxt, str) {
    * @param {String|HTMLElement} sel The selector for the element.
    * @desc Sets the class active HTMLElement from a NodeList.
    */
-  selector.toggleActiveEl = (c, sel) => {
+  selector.setActiveItem = (c, sel) => {
     let arr = getNodeListArray(cxt, str);
     let currentEl = typeof (sel) === 'string' ? getElOrList(cxt, sel) : sel;
     const toggleBool = item => item.classList.toggle(c, item.isEqualNode(currentEl));
-    arr.forEach(toggleBool);
+    if (isNodeElement(currentEl)===true) {
+      arr.forEach(toggleBool);
+    } else if (isVerbose()===true){
+      console.log("SEL IS ",sel,c);
+      console.warn(`Spyne Warning: The selector, ${sel}, does not appear to be a valid item in setActiveItem: ${c}`);
+    }
     return this;
   };
 

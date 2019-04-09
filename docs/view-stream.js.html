@@ -39,7 +39,7 @@
 import {BaseStreamsMixins} from '../utils/mixins/base-streams-mixins';
 import {ifNilThenUpdate, convertDomStringMapToObj} from '../utils/frp-tools';
 // import {gc} from '../utils/gc';
-import {ViewStreamObservable} from './basic-view';
+import {ViewStreamElObservable} from './basic-view';
 import {registeredStreamNames} from '../channels/channels-config';
 import {ViewStreamBroadcaster} from './view-stream-broadcaster';
 import {ViewStreamPayload} from '../channels/channels-payload';
@@ -103,7 +103,7 @@ export class ViewStream {
         cid: this.createId(),
         id: id,
         hashId: `#${id}`,
-        viewClass: ViewStreamObservable,
+        viewClass: ViewStreamElObservable,
         extendedSourcesHashMethods: {},
         debug: false,
         tmpl: undefined,
@@ -418,7 +418,7 @@ export class ViewStream {
   setAttachData(attachType, query) {
     return {
       node: this.props.el,
-      type: 'ViewStreamObservable',
+      type: 'ViewStreamElObservable',
       attachType,
       query: this.props.el.querySelector(query)
     };
@@ -438,7 +438,7 @@ export class ViewStream {
   setAttachParentData(attachType, query, level) {
     return {
       node: this.getParentEls(this.props.el, level),
-      type: 'ViewStreamObservable',
+      type: 'ViewStreamElObservable',
       attachType,
       query: this.props.el.parentElement.querySelector(query)
     };

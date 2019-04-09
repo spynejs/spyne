@@ -8,7 +8,7 @@ import {
   getConstructorName
 } from '../utils/frp-tools';
 // import {gc} from '../utils/gc';
-import { ViewStreamObservable } from './view-stream-observable';
+import { ViewStreamElObservable } from './view-stream-el-observable';
 import { ViewStreamEnhancerLoader } from './view-stream-enhancer-loader';
 import { registeredStreamNames } from '../channels/channels-config';
 import { ViewStreamBroadcaster } from './view-stream-broadcaster';
@@ -143,7 +143,7 @@ export class ViewStream {
         animateOutTime: 0.5,
         sendLifecyleEvents: false,
         hashId: `#${id}`,
-        viewClass: ViewStreamObservable,
+        viewClass: ViewStreamElObservable,
         extendedSourcesHashMethods: {},
         debug: false,
         template: undefined,
