@@ -156,7 +156,7 @@ export class SpyneChannelUI extends ChannelBaseClass {
         const methodStrReplace = replace(/^(event)([A-Z])(.*)([A-Z].*)$/gm, methodUpdate);
         const runMethod = (methodStr)=>{
           const m = methodStrReplace(methodStr);
-          if (evt[m]!==undefined) {evt[m]();}
+          if (evt[m]!==undefined && typeof(evt[m])==='function') {evt[m]();}
         };
         methodsArr.forEach(runMethod)
       }
