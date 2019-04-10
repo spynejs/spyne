@@ -13,6 +13,14 @@ export class Channel {
    * @type extendable
    *
    * @desc
+   * <p>A Channel sends data over time that other Channels and ViewStream instances can listen to through the getChannel and addChannel methods.</p>
+   * <h3>The Basic Channel Structure</h3>
+   * <ul>
+   * <li>Channels requires a unique name, such as, <em>CHANNEL_MYCHANNEL</em>, which is used by the ChannelsController to direct the flow of data to and from all channels.</li>
+   * <li>Channels can listen to and combine data from other Channels, and they can receive info from ViewStream instances, to efficiently create and send sophisticated data.</li>
+   * <li>Channels are instantiated and 'registered' at the start Spyne applications; they remain persistent and are not deleted.</li>
+   * </ul>
+   * <p>Channels can integrate data from other Channels, as well as info received from ViewStreams instances, and then send data in the ChannelPayloads format, which rquire an action string and data in the form of a javsacript object</p>
    * <p>Channels are observables that sends data and events using the ChannelPayloads format.</p>
    * <h3>Channel Name</h3>
    * <p>All Channels requires a unique name that is typically set in the following format, <em>CHANNEL_MYCHANNEL</em> </p>
