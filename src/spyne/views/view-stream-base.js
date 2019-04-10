@@ -23,7 +23,7 @@ import {pick, compose, both, isNil, toLower, either, findIndex, test, flatten ,p
 export class ViewStream {
   /**
    * @module ViewStream
-   * @type Extendable
+   * @type extendable
    *
    * @desc
    * <p>ViewStreams are the core of this framework.</br>Taking analogy of Spyne, they are basically the nervous system of the application.</p>

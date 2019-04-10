@@ -9,7 +9,7 @@ import {is, forEach, mapObjIndexed, forEachObjIndexed, pipe} from 'ramda';
 export class DomItem {
   /**
    * @module DomItem
-   * @type Util
+   * @type util
    *
    * @desc
    * This class is mostly used internally by the ViewStream object, but it can be also used to generate a lightweight dom element that contains no props or parameters.

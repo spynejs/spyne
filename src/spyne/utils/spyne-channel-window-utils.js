@@ -5,7 +5,7 @@ import {mapObjIndexed} from 'ramda';
 export class SpyneChannelWindowUtils {
   /**
    * @module SpyneChannelWindowUtils
-   * @type Internal
+   * @type internal
    *
    * @constructor
    * @desc

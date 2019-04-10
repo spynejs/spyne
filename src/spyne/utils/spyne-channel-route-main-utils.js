@@ -5,7 +5,7 @@ export class SpyneChannelRouteUtils {
   constructor() {
     /**
      * @module SpyneChannelRouteUtils
-     * @type Internal
+     * @type internal
      *
      * @constructor
      * @desc

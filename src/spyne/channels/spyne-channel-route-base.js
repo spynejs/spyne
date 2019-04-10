@@ -31,7 +31,7 @@ export class SpyneChannelRoute extends Channel {
   constructor(name = 'CHANNEL_ROUTE', props = {}) {
     /**
      * @module SpyneChannelRoute
-     * @type Core
+     * @type core
      *
      * @desc
      *

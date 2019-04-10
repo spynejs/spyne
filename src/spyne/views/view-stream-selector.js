@@ -67,7 +67,7 @@ function setInlineCss(val, cxt, str) {
 /**
  *
  * @module ViewStreamSelector
- * @type Internal
+ * @type internal
  *
  * @param {String|El} cxt The main element
  * @param {String|El} The selector as a String

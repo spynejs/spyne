@@ -10,7 +10,7 @@ export class SpyneChannelWindow extends Channel {
 
   /**
    * @module SpyneChannelWindow
-   * @type Core
+   * @type core
    *
    * @desc
    * Internal channel that publishes all window events.

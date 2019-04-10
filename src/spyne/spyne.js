@@ -29,7 +29,7 @@ class SpyneApp {
    *     <li>Internal Channels returns specific relevant properties in their channel payloads</li>
    * </ol>
    * @module SpyneApp
-   *
+   * @type core
    *
    * @constructor
    * @param {Object} config

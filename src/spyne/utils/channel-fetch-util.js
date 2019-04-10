@@ -5,7 +5,7 @@ export class ChannelFetchUtil {
 // METHOD GET POST PUT PATCH DELETE
   /**
    * @module ChannelFetchUtil
-   * @type Util
+   * @type util
    *
    *
    * @desc

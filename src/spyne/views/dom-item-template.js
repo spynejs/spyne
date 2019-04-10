@@ -2,7 +2,7 @@ import {includes, __, ifElse, reject, is, defaultTo, isNil, isEmpty} from 'ramda
 
 /**
  * @module DomItemTemplate
- * @type Internal
+ * @type internal
  *
  * @constructor
  * @param {String|HTMLElement} template

@@ -3,7 +3,7 @@ const rMap = require('ramda').map;
 export class ChannelPayloadFilter {
   /**
    * @module ChannelPayloadFilter
-   * @type Util
+   * @type util
    *
    *
    * @desc

@@ -5,7 +5,7 @@ export class ViewStreamObservable {
   constructor(props) {
     /**
      * @module ViewStreamObservable
-     * @type Internal
+     * @type internal
      *
      * @constructor
      * @desc

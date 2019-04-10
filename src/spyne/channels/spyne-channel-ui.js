@@ -6,7 +6,7 @@ import {equals, path, compose,prop, pathEq, find, filter,replace, when, test, ke
 export class SpyneChannelUI extends Channel {
   /**
    * @module SpyneChannelUI
-   * @type Core
+   * @type core
    *
    * @desc
    * Internal Channel that publishes all UI Events.

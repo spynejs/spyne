@@ -4,7 +4,7 @@ import {prop} from 'ramda';
 export class SpyneChannelLifecycle extends Channel {
   /**
    * @module SpyneChannelLifeCycle
-   * @type Core
+   * @type core
    *
    * @desc
    * Internal Channel that publishes ViewStream rendering and disposing events.

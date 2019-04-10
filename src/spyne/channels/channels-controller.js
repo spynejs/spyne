@@ -16,7 +16,7 @@ const rMap = require('ramda').map;
 export class ChannelsController {
   /**
    * @module ChannelsController
-   * @type Internal
+   * @type internal
    *
    * @desc
    * This object creates the logic so that Channels and ViewStreams can communicate with each other

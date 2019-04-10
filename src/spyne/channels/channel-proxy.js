@@ -5,7 +5,7 @@ import {includes, path} from 'ramda';
 export class ChannelProxy extends Channel {
   /**
    * @module ChannelProxy
-   * @type Internal
+   * @type internal
    *
    * @constructor
    * @param {String} name

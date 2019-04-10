@@ -10,7 +10,7 @@ const rMerge = require('ramda').mergeRight;
 export class Channel {
   /**
    * @module Channel
-   * @type Extendable
+   * @type extendable
    *
    * @desc
    * <p>This is the base for all Channels, including the UI, ROUTE, WINDOW, LIFECYCLE and FETCH channels.</p>

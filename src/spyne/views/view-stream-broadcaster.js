@@ -9,7 +9,7 @@ export class ViewStreamBroadcaster {
   /**
    * The class takes in all of the elements from the 'broadcastEvents' method and directs the events to either the UI or ROUTE channels
    * @module ViewStreamBroadcaster
-   * @type Internal
+   * @type internal
    *
    * @constructor
    * @param {Object} props
