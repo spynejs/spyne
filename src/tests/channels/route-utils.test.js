@@ -1,6 +1,6 @@
 // const assert = require('assert');
 
-import { SpyneChannelRouteUtils } from '../../spyne/utils/spyne-channel-route-main-utils';
+import { SpyneUtilsChannelRoute } from '../../spyne/utils/spyne-utils-channel-route';
 
 import {
   SpyneConfigData,
@@ -16,7 +16,7 @@ const routeConfig = SpyneConfigData.channels.ROUTE;
 describe('Route Utils', () => {
   it('flattenConfigObjects should return array of params', () => {
     const finalArr = ['pageId', '', 'imageNum', 'author', 'photogNum', 'randomNum'];
-    let arr = SpyneChannelRouteUtils.flattenConfigObject(routeConfig.routes);
+    let arr = SpyneUtilsChannelRoute.flattenConfigObject(routeConfig.routes);
     // return true;
     expect(arr).to.deep.equal(finalArr);
   });
@@ -25,7 +25,7 @@ describe('Route Utils', () => {
     const paramsArr = ['pageId', '', 'imageNum', 'author', 'photogNum'];
     const arr = ['imageNum', 'pageId', 'author'];
     const routedArr = ['pageId', 'imageNum', 'author'];
-    let routeObj = SpyneChannelRouteUtils.getRouteArrData(arr, paramsArr);
+    let routeObj = SpyneUtilsChannelRoute.getRouteArrData(arr, paramsArr);
     expect(routeObj.paths).to.deep.equal(routedArr);
   });
 });
@@ -59,7 +59,7 @@ describe('it should compare two objects for updated keys', () => {
     'menuItem'
   ];
 
-  let checkUpdatedKeys = SpyneChannelRouteUtils.compareRouteKeywords();
+  let checkUpdatedKeys = SpyneUtilsChannelRoute.compareRouteKeywords();
 
   it('first comparison should be done against empty obj', () => {
     let compareStart = checkUpdatedKeys.compare(obj1);

@@ -10,7 +10,7 @@ import {filter, isNil, pick, props, defaultTo} from 'ramda';
 export class ViewStreamElement {
   /**
    * @module ViewStreamElement
-   * @type util
+   * @type internal
    * @desc
    * This is an internal class that is part of the ViewStream observable system.
    *

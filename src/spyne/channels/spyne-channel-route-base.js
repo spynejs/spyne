@@ -1,6 +1,6 @@
 import { Channel } from './channel';
-import { SpyneChannelRouteUrlUtils } from '../utils/spyne-channel-route-url-utils';
-import { SpyneChannelRouteUtils } from '../utils/spyne-channel-route-main-utils';
+import { SpyneUtilsChannelRouteUrl } from '../utils/spyne-utils-channel-route-url';
+import { SpyneUtilsChannelRoute } from '../utils/spyne-utils-channel-route';
 import { BehaviorSubject, ReplaySubject, merge } from 'rxjs';
 import { map, filter } from 'rxjs/operators';
 
@@ -78,8 +78,8 @@ export class SpyneChannelRoute extends Channel {
     this.navToStream$ = new ReplaySubject(1);
     const filterUndefined = (e)=>e!==undefined;
     this.observer$ = this.navToStream$.pipe(map(info => this.onMapNext(info)));
-    // let compareKeysFn = SpyneChannelRouteUtils.compareRouteKeywords.bind(this);
-    this.compareRouteKeywords = SpyneChannelRouteUtils.compareRouteKeywords();
+    // let compareKeysFn = SpyneUtilsChannelRoute.compareRouteKeywords.bind(this);
+    this.compareRouteKeywords = SpyneUtilsChannelRoute.compareRouteKeywords();
   }
 
   checkConfigForHash(){
@@ -118,7 +118,7 @@ export class SpyneChannelRoute extends Channel {
       routeConfig.isHash = false;
     }
 
-    let arr = SpyneChannelRouteUtils.flattenConfigObject(routeConfig.routes);
+    let arr = SpyneUtilsChannelRoute.flattenConfigObject(routeConfig.routes);
     // console.log("FLATTENED CONFIG ",arr);
     routeConfig['paramsArr'] = arr;
     return routeConfig;
@@ -128,7 +128,7 @@ export class SpyneChannelRoute extends Channel {
     this.firstLoadStream$ = new ReplaySubject(1);
       this.onIncomingDomEvent(undefined, this.routeConfigJson, '' + 'CHANNEL_ROUTE_DEEPLINK_EVENT');
 
-    SpyneChannelRouteUtils.createPopStateStream(this.onIncomingDomEvent.bind(this));
+    SpyneUtilsChannelRoute.createPopStateStream(this.onIncomingDomEvent.bind(this));
 
     this.observer$ = merge(this.firstLoadStream$,
       this.navToStream$);
@@ -268,7 +268,7 @@ export class SpyneChannelRoute extends Channel {
     const getPropFromConfig = (prp, defalt) => defaultTo(defalt, prop(prp, config));
     let typeForStr = getPropFromConfig('type', 'slash');
     let isHashForStr = getPropFromConfig('isHash', false);
-    let nextWindowLoc = SpyneChannelRouteUrlUtils.formatStrAsWindowLocation(routeValue);
+    let nextWindowLoc = SpyneUtilsChannelRouteUrl.formatStrAsWindowLocation(routeValue);
     let dataFromStr = this.getDataFromLocationStr(typeForStr, isHashForStr, nextWindowLoc);
 
     // console.log(" DATA FROM STRING ",{routeValue, pl, dataFromStr});
@@ -295,7 +295,7 @@ export class SpyneChannelRoute extends Channel {
     const type = config.type;
     const hashIsTrue = config.isHash === true;
     // type = config.isHash === true ? ''
-    const str = SpyneChannelRouteUrlUtils.getLocationStrByType(type, hashIsTrue);
+    const str = SpyneUtilsChannelRouteUrl.getLocationStrByType(type, hashIsTrue);
     let { paths, pathInnermost, routeData, routeValue } = SpyneChannelRoute.getParamsFromRouteStr(
       str, config, type);
     let { routeCount, isDeepLink, isHash, routeType, isHidden } = this.getExtraPayloadParams(
@@ -321,7 +321,7 @@ export class SpyneChannelRoute extends Channel {
       : t;
 
     // console.log("DATA CHECK STRING ",loc);
-    const str = SpyneChannelRouteUrlUtils.getLocationStrByType(type, isHash, loc);
+    const str = SpyneUtilsChannelRouteUrl.getLocationStrByType(type, isHash, loc);
     let { paths, pathInnermost, routeData, routeValue } = this.getParamsFromRouteStr(
       str, this.routeConfigJson, type);
     const action = this.getRouteState();
@@ -344,7 +344,7 @@ export class SpyneChannelRoute extends Channel {
 
   static getRouteStrFromParams(paramsData, routeConfig, t) {
     const type = t !== undefined ? t : routeConfig.type;
-    let obj = SpyneChannelRouteUrlUtils.convertParamsToRoute(paramsData, routeConfig, type);
+    let obj = SpyneUtilsChannelRouteUrl.convertParamsToRoute(paramsData, routeConfig, type);
 
     // console.log("ROUTE getRouteStrFromParams ",paramsData,obj);
     return obj;
@@ -352,7 +352,7 @@ export class SpyneChannelRoute extends Channel {
 
   static getParamsFromRouteStr(str, routeConfig, t) {
     const type = t !== undefined ? t : routeConfig.type;
-    let obj = SpyneChannelRouteUrlUtils.convertRouteToParams(str, routeConfig, type);
+    let obj = SpyneUtilsChannelRouteUrl.convertRouteToParams(str, routeConfig, type);
     // console.log("ROUTE getParamsFromRouteStr ",obj);
     return obj;
   }

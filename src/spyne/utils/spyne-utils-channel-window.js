@@ -2,9 +2,9 @@ import { fromEventPattern } from 'rxjs';
 import { map } from 'rxjs/operators';
 import {mapObjIndexed} from 'ramda';
 
-export class SpyneChannelWindowUtils {
+export class SpyneUtilsChannelWindow {
   /**
-   * @module SpyneChannelWindowUtils
+   * @module SpyneUtilsChannelWindow
    * @type internal
    *
    * @constructor
@@ -14,7 +14,7 @@ export class SpyneChannelWindowUtils {
    *
    */
   constructor() {
-    this.createDomObservableFromEvent = SpyneChannelWindowUtils.createDomObservableFromEvent.bind(
+    this.createDomObservableFromEvent = SpyneUtilsChannelWindow.createDomObservableFromEvent.bind(
       this);
   }
 
@@ -70,8 +70,8 @@ export class SpyneChannelWindowUtils {
     let arr = [];
 
     const loopQueries = (val, key, obj) => {
-      let mq = SpyneChannelWindowUtils.createMediaQuery(val);
-      arr.push(SpyneChannelWindowUtils.createMediaQueryHandler(mq, key));
+      let mq = SpyneUtilsChannelWindow.createMediaQuery(val);
+      arr.push(SpyneUtilsChannelWindow.createMediaQueryHandler(mq, key));
       // return arr;
     };
 

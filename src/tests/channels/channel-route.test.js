@@ -1,6 +1,6 @@
 // const assert = require('assert');
 
-import { SpyneChannelRouteUrlUtils } from '../../spyne/utils/spyne-channel-route-url-utils';
+import { SpyneUtilsChannelRouteUrl } from '../../spyne/utils/spyne-utils-channel-route-url';
 import { ChannelPayloadRouteData, ChannelPayloadRouteDataRegexOverride } from '../mocks/channel-payload-data';
 
 import {
@@ -68,7 +68,7 @@ describe('Channel Route', () => {
   });
 
   it('return route str by config type', () => {
-    const val = SpyneChannelRouteUrlUtils.getLocationStrByType('hash');
+    const val = SpyneUtilsChannelRouteUrl.getLocationStrByType('hash');
     // console.log('route str val is ',val,' -->',ObjtoStr(window.location));
 
     return true;
