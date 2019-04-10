@@ -39,6 +39,7 @@ export class Channel {
    * @param {Object} props This json object takes in parameters to initialize the channel
    * @property {String} name - = undefined; This will be the registered name for this channel.
    * @property {Object} props - = {}; The props objects allows for custom properties for the channel.
+   * @property {Observable} observer - = new Subject(); This is the source rxjs Subject for the channel.
    *
    */
   constructor(name = 'observer', props = {}) {
@@ -87,7 +88,7 @@ export class Channel {
 
   /**
    *
-   * @returns
+   * @desc
    * returns the source observable for the channel
    */
   get observer() {
@@ -144,6 +145,9 @@ export class Channel {
    * @desc
    * Any action that is to be used by the channel is required to be added here.
    * If the action is added as a paired array, then the second value will be the directed to that method instead of the default, <i>onViewStreamInfo</i> method.
+   * @returns
+   * Array of Strings and/or paired Array
+   *
    * @example
    *    addRegisteredActions() {
    *     return [
@@ -194,7 +198,7 @@ export class Channel {
   }
 
   /**
-   * This is the default method for ViewStream payloads that are directed to a registered channel.
+   * This is the default method to listen for ViewStream payloads that are directed to a particular channel.
    *
    * @param {ViewStreamPayload} obj
    *
@@ -202,8 +206,11 @@ export class Channel {
    * onViewStreamInfo(obj){
    *     let data = obj.viewStreamInfo;
    *     let action = data.action;
-   *     this.sendChannelPayload(action, data);
+   *     let newPayload = this.parseViewStreamData(data);
+   *     this.sendChannelPayload(action, newPayload);
    * }
+   *
+   *
    */
   onViewStreamInfo(obj) {
   }
@@ -212,19 +219,20 @@ export class Channel {
   /**
    *
    * @desc
-   * This is method  will send format and send a ChannelPayload.
+   * <p>All channels send data using the <a class='linker' data-channel="ROUTE"  data-event-prevent-default="true" data-menu-item="channel-payload"  href="/guide/reference/channel-payload" >Channel Payload</a>
+   object format. This consistent format allows subscribers to understand how to parse any incoming channel data.</p>
+   * <p>And this method automatically formats an action and javascript payload object into a ChannelPayload object and calls this.observer.next().</p>
    *
    * @param {String} action
    * @param {Object} payload
    * @param {HTMLElement} srcElement
    * @param {HTMLElement} event
    * @param {Observable} obs$
-   * @property {String} action - = undefined; An action that has been added to the <i>addRegisteredActions</i> method.
-   * @property {Object} paylaod - = undefined; The data to be sent.
+   * @property {String} action - = undefined; Required. An action is a string, typically in the format of "CHANNEL_NAME_ACTION_NAME_EVENT", and that has been added in the addRegisteredActions method.
+   * @property {Object} paylaod - = undefined; Required. This can be any javascript object and is used to send any custom data.
    * @property {HTMLElement} srcElement - = undefined; This can be either the element returned from the UI Channel, or the srcElement from a ViewStream instance.
    * @property {UIEvent} event - = undefined; This will be defined if the event is from the UI Channel.
-   * @property {Observable} obs$ - = this.observable$; This default is the main observable for the channel. The option for another observable is available.;
-   * @property {Array} channelActionMethods - = Array list of actions generated form the addRegisteredActions method.
+   * @property {Observable} obs$ - = this.observer; This default is the main observable for the channel. The option for another observable is available.
    *
    * @example
    * let action = "CHANNEL_MY_CHANNEL_REGISTERED_ACTION_EVENT";
