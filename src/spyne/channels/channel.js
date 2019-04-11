@@ -13,8 +13,8 @@ export class Channel {
    * @type extendable
    *
    * @desc
-   * <p>Just like any tv station, channels are meant to be listened to for specific types of data.</p>
-   * <p>Channels create their specific type of data by listening to and parsing the data from the other channels and from any ViewStream instances that are set to send info to that particular channel.</p>
+   * <p>Channels broadcast specific types of data that other Channel and ViewStream instances can listen to.</p>
+   * <p>Channels create their data stream by listening to and parsing data from the other channels and by parsing data from any ViewStream instances that sends data to that particular channel.</p>
    * <h3>The Basic Channel Structure</h3>
    * <ul>
    * <li>Channels requires a unique name, such as, <em>CHANNEL_MYCHANNEL</em>, which is used by the ChannelsController to direct the flow of data to and from all channels.</li>
@@ -45,17 +45,17 @@ export class Channel {
    *
    *
    * @constructor
-   * @param {string} name
+   * @param {string} CHANNEL_NAME
    * @param {Object} props This json object takes in parameters to initialize the channel
-   * @property {String} name - = undefined; This will be the registered name for this channel.
+   * @property {String} CHANNEL_NAME - = undefined; This will be the registered name for this channel.
    * @property {Object} props - = {}; The props objects allows for custom properties for the channel.
    * @property {Observable} observer - = new Subject(); This is the source rxjs Subject for the channel.
    *
    */
-  constructor(name = 'observer', props = {}) {
+  constructor(CHANNEL_NAME, props = {}) {
     this.addRegisteredActions.bind(this);
     this.createChannelActionsObj();
-    props.name = name;
+    props.name = CHANNEL_NAME;
     this.props = props;
     this.props.isProxy = this.props.isProxy === undefined ? false : this.props.isProxy;
     this.props.sendCurrentPayload = this.props.sendCurrentPayload === undefined ? false : this.props.sendCurrentPayload;
