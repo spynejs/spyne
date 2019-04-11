@@ -7,10 +7,14 @@ export class ChannelFetch extends Channel {
    * @module ChannelFetch
    * @type extendable
    * @desc
-   * Extends ChannelBase and adds the ChannelFetchUtil to create a system that is able to coordinate with an api. <span class='break'/>
-   * The fetch request can be updated from any ViewStream instance by using the sendInfoChannel method. <span class='break'/>
-   * It is recommended that a ChannelFetch instance be created for each type of request. For example, one ChannelFetch can read the amount available from a checking account, while another instance writes to that checking account.
-   * A main channel can maintain the state of both.
+   * <p>Extends Channel and uses the ChannelFetchUtil to make any type of http(s) request.</p>
+   * <p>Requires a url property at instantiation.</p>
+   * <p>The response data is published as a ChannelPayload along with the CHANNEL_UPDATE_DATA_EVENT action.</p>
+   * <p>The default request type is a GET request that returns a JSON object.</p>
+   * <p>However, any type of request and return type can be configured by adding a body property when creating the instance.</p>
+   * <p>Channel Fetch will send the last response to future subscribers, and will not make further http(s) requests unless directed to do  so.</p>
+   * <p>Data can be Fetched again, by sending a "CHANNEL_UPDATE_DATA_EVENT" action from a ViewStream's sendInfoToChannel method.</p>
+   *
    *
    * @constructor
    * @param {String} name

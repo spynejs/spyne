@@ -153,9 +153,9 @@ export class Channel {
   /**
    *
    * @desc
+   * <p>Before any action can be used, that action name needs to be registered using this method.</p>
    * <p>Channels send along Action names along with its payload.</p>
    * <p>Actions allows ViewStream instances to filter channel payloads by binding specific actions to local ViewStream methods.</p>
-   * <p>Before any action can be used, that action name needs to be registered using this method.</p>
    * <p>Registered actions allows Spyne to validate Actions that are listened to by ViewStream instances.</p>
    * <p>Forcing registration of actions is also a useful way to keep track of all Actions that are intended to be used by any particular channel.</p>
 
@@ -213,7 +213,10 @@ export class Channel {
   }
 
   /**
-   * This is the default method to listen for ViewStream payloads that are directed to a particular channel.
+   *
+   * <p>ViewSteam instances can send data to channels by using its sendIntoToChannel method.</p>
+   * <p>ViewStream data is automatically sent to a channel's onViewStreamInfo method</p>
+   * <p>ViewStreams send a ViewStream Payload that has a uniform signature</p>
    *
    * @param {ViewStreamPayload} obj
    *
@@ -265,20 +268,25 @@ export class Channel {
 
   /**
    *
-   * This method allows channels to subscribe to other channels.
-   * @param {String} channel The registered name of the requested channel.
+   * <p>Allows channels to subscribe to other channels.</p>
+   * <p>This method returns the source rxjs Subject for the requested Channel, which can be listened to by calling its subscribe method.</p>
+   * <p>Although knowledge of rxjs is not required, having access to the source rxjs Subject gives developers the ability to use all of the available mapping and observable tools that rxjs has to offer.</p>
+   *
+   * @param {String} CHANNEL_NAME The registered name of the requested channel.
+   * @returns
+   * The source rxjs Subject of the requested channel.
    * @example
    * let route$ = this.getChannel("CHANNEL_ROUTE")
    * route$.subscribe(localMethod);
    *
    *
    */
-  getChannel(channel) {
+  getChannel(CHANNEL_NAME) {
     let isValidChannel = c => registeredStreamNames().includes(c);
     let error = c => console.warn(
       `channel name ${c} is not within ${registeredStreamNames}`);
     let startSubscribe = (c) => this.streamsController.getStream(c).observer;
     let fn = ifElse(isValidChannel, startSubscribe, error);
-    return fn(channel);
+    return fn(CHANNEL_NAME);
   }
 }
