@@ -13,14 +13,16 @@ export class Channel {
    * @type extendable
    *
    * @desc
-   * <p>A Channel sends data over time that other Channels and ViewStream instances can listen to through the getChannel and addChannel methods.</p>
+   * <p>Just like any tv station, channels are meant to be listened to for specific types of data.</p>
+   * <p>Channels create their specific type of data by listening to and parsing the data from the other channels and from any ViewStream instances that are set to send info to that particular channel.</p>
    * <h3>The Basic Channel Structure</h3>
    * <ul>
    * <li>Channels requires a unique name, such as, <em>CHANNEL_MYCHANNEL</em>, which is used by the ChannelsController to direct the flow of data to and from all channels.</li>
-   * <li>Channels can listen to and combine data from other Channels, and they can receive info from ViewStream instances, to efficiently create and send sophisticated data.</li>
+   * <li>Channels can listen to and combine data from other Channels using the getChannel method, which exposes the source rxjs Subject for any channel.
+   * <li>Channels have a onViewStreamInfo method that is called whenever a ViewStream instances sends data to that channel.</li>
+   * <li>Channels can send data at any time using the sendChannelPayload method.</li>
    * <li>Channels are instantiated and 'registered' at the start Spyne applications; they remain persistent and are not deleted.</li>
    * </ul>
-   * <p>Channels can integrate data from other Channels, as well as info received from ViewStreams instances, and then send data in the ChannelPayloads format, which rquire an action string and data in the form of a javsacript object</p>
    * <p>Channels are observables that sends data and events using the ChannelPayloads format.</p>
    * <h3>Channel Name</h3>
    * <p>All Channels requires a unique name that is typically set in the following format, <em>CHANNEL_MYCHANNEL</em> </p>
@@ -79,8 +81,8 @@ export class Channel {
 
   //  OVERRIDE INITIALIZATION METHOD
   /**
-   * <p>This method is meant to be extended and is called as soon as the channel is ready.</p>
-   * <p>This is the recommended method to add functionality such as publishing the first channel payload, or subscribing to other channels.</p>
+   * <p>This method is empty and is called as soon as the Channel has been registered.</p>
+   * <p>Tasks such as subscribing to other channels, and sending initial payloads can be added here.</p>
    */
   onChannelInitialized() {
 
@@ -151,16 +153,21 @@ export class Channel {
   /**
    *
    * @desc
-   * Any action that is to be used by the channel is required to be added here.
-   * If the action is added as a paired array, then the second value will be the directed to that method instead of the default, <i>onViewStreamInfo</i> method.
+   * <p>Channels send along Action names along with its payload.</p>
+   * <p>Actions allows ViewStream instances to filter channel payloads by binding specific actions to local ViewStream methods.</p>
+   * <p>Before any action can be used, that action name needs to be registered using this method.</p>
+   * <p>Registered actions allows Spyne to validate Actions that are listened to by ViewStream instances.</p>
+   * <p>Forcing registration of actions is also a useful way to keep track of all Actions that are intended to be used by any particular channel.</p>
+
+
    * @returns
-   * Array of Strings and/or paired Array
+   * Array of Strings
    *
    * @example
    *    addRegisteredActions() {
    *     return [
    *        'CHANNEL_MY_CHANNEL_EVENT',
-   *        ['CHANNEL_MY_CHANNEL_UPDATE_EVENT', 'onMethodListener']
+   *        'CHANNEL_MY_CHANNEL_UPDATE_EVENT'
    *       ];
    *      }
    *
