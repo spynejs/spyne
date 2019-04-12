@@ -1,6 +1,6 @@
 import { Channel } from './channel';
 import { ChannelFetchUtil } from '../utils/channel-fetch-util';
-import {path, pick, mergeRight, mergeDeepRight, reject, compose, isNil} from 'ramda';
+import {path, pick, mergeRight, mergeDeepRight, defaultTo, reject, compose, isNil} from 'ramda';
 
 export class ChannelFetch extends Channel {
   /**
@@ -38,6 +38,10 @@ export class ChannelFetch extends Channel {
 
 
   constructor(name, props = {}) {
+    props.extendedActionsArr = [
+      `${name}_DATA_EVENT`,
+      [`${name}_UPDATE_DATA_EVENT`, 'onFetchUpdate']
+    ];
     props.sendCurrentPayload = true;
     super(name, props);
   }
@@ -46,11 +50,14 @@ export class ChannelFetch extends Channel {
     this.startFetch();
   }
 
-  addRegisteredActions() {
-    return [
+  addRegisteredActions(name) {
+    let arr = [
       'CHANNEL_DATA_EVENT',
       ['CHANNEL_UPDATE_DATA_EVENT', 'onFetchUpdate']
     ];
+
+    let extendedArr = compose(defaultTo([]), path(['props', 'extendedActionsArr']));
+    return arr.concat(extendedArr(this));
   }
 
   startFetch(options = {}, subscriber = this.onFetchReturned.bind(this)) {
@@ -68,7 +75,8 @@ export class ChannelFetch extends Channel {
     this.observer$.next(payload);
   }
 
-  createChannelPayloadItem(payload, action = 'CHANNEL_DATA_EVENT') {
+  createChannelPayloadItem(payload, action = `${this.props.name}_DATA_EVENT`) {
+    console.log("FETCH ",this.props.name, {action,payload});
     // return new ChannelPayload(this.props.name, action, payload);
     this.sendChannelPayload(action, payload);
   }

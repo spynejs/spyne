@@ -51,7 +51,7 @@ export class Channel {
    */
   constructor(CHANNEL_NAME, props = {}) {
     this.addRegisteredActions.bind(this);
-    this.createChannelActionsObj();
+    this.createChannelActionsObj(CHANNEL_NAME, props.extendedActionsArr);
     props.name = CHANNEL_NAME;
     this.props = props;
     this.props.isProxy = this.props.isProxy === undefined ? false : this.props.isProxy;
@@ -110,10 +110,10 @@ export class Channel {
   setTrace(bool) {
   }
 
-  createChannelActionsObj() {
+  createChannelActionsObj(name, extendedActionsArr=[]) {
     const getActionVal = ifElse(is(String), identity, head);
-    let arr = rMap(getActionVal, this.addRegisteredActions());
-    // console.log("ARR IS ",arr);
+    let mainArr = extendedActionsArr.concat(this.addRegisteredActions(name));
+    let arr = rMap(getActionVal,mainArr);
     const converter = str => objOf(str, str);
     let obj = mergeAll(chain(converter, arr));
     this.channelActions = obj;
