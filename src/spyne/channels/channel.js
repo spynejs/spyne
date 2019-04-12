@@ -14,23 +14,20 @@ export class Channel {
    *
    * @desc
    * <p>Channels broadcast specific types of data that other Channel and LINK['ViewStream', 'view-stream'] instances can listen to.</p>
-   * <p>Channels create data by subscribing to other channels and by parsing info that's directed to its onViewStreamInfo method.</p>
+   * <p>Channels create data by subscribing to other channels and by parsing ViewStream info that's directed to its onViewStreamInfo method.</p>
    * <h3>The Basic Channel Structure</h3>
    * <ul>
-   * <li>Channels requires a unique name, such as, <em>CHANNEL_MYCHANNEL</em>, which is used by the LINK['ChannelsController', 'channels-controller'] to direct the flow of data to and from all channels.</li>
-   * <li>Channels are instantiated and 'registered' at the start Spyne applications; they remain persistent and are not deleted.</li>
+   * <li>Channels requires a unique name, for example, <em>CHANNEL_MYCHANNEL</em>, which is used by the LINK['ChannelsController', 'channels-controller'] to direct the flow of Channel data.</li>
+   * <li>Channels are instantiated and 'registered' after initializing a LINK['SpyneApp', 'spyne-app']; they remain persistent and are not deleted.</li>
    * <li>Channels can send data at any time using the sendChannelPayload method.</li>
-   * <li>Channels run the LINK['getChannel', 'channel-get-channel'] method to retrieve data from other channels by subscribing to its source EXT['rxjs Subject', '//rxjs-dev.firebaseapp.com/guide/subject']</li>
-   * <li>A Channels onViewStreamInfo method is called whenever a ViewStream instances sends data to that channel.</li>
+   * <li>Channels use the LINK['getChannel', 'channel-get-channel'] method to retrieve data from other channels by subscribing to its source EXT['rxjs Subject', '//rxjs-dev.firebaseapp.com/guide/subject']</li>
+   * <li>A Channel's LINK['onViewStreamInfo', 'channel-on-view-stream-info'] method is called whenever a ViewStream instances sends data to that channel.</li>
    * </ul>
-   * <p>Channels are observables that sends data and events using the ChannelPayloads format.</p>
-   * <h3>Channel Name</h3>
-   * <p>All Channels requires a unique name that is typically set in the following format, <em>CHANNEL_MYCHANNEL</em> </p>
-   * <h3>Connecting to Channels</h3>
-   * <p>Any Channel can subscribe to any other Channel instance by calling its unique name in the <a class='linker' data-channel="ROUTE"  data-event-prevent-default="true" data-menu-item="channel-get-channel"  href="/guide/reference/channel-get-channel" >getChannel</a>
-   method.</p>
-   *   <p>ViewStreams automatically subscribes and unsubscribes to channels by calling its unique name in the <a class='linker' data-channel="ROUTE"  data-event-prevent-default="true" data-menu-item="view-stream-add-channel"  href="/guide/reference/view-stream-add-channel" >addChannel</a> method.</p>
-   *
+   * <h3>Other Channels that extend Channel</h3>
+   * <ul>
+   * <li>The four Spyne Channels, LINK['SpyneChannelUI', 'spyne-channel-u-i'], LINK['SpyneChannelWindow', 'spyne-channel-window'], LINK['SpyneChannelRoute', 'spyne-channel-route'] and LINK['SpyneChannelLifecycle', 'spyne-channel-lifecycle'], all extend this Channel class.<br>Channel instances can subscribe to any combination of these four SpyneChannels.</li>
+   * <li>ChannelFetch instances also extends Channel by using the ChannelFetchUtil to immediately publish the fetched response as a ChannelPayload.</li>
+   * </ul>
    * <h3>Sending ChannelPayloads</h3>
    *   <p>The main task of all channels is to send data and events using the <a class='linker' data-channel="ROUTE"  data-event-prevent-default="true" data-menu-item="channel-send-channel-payload"  href="/guide/reference/channel-send-channel-payload" >sendChannelPayload</a>
    method.</p>
