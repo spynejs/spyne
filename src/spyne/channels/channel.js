@@ -14,14 +14,14 @@ export class Channel {
    *
    * @desc
    * <p>Channels broadcast specific types of data that other Channel and LINK['ViewStream', 'view-stream'] instances can listen to.</p>
-   * <p>Channels create their data stream by listening to and parsing data from the other channels and by parsing data from any ViewStream instances that sends data to that particular channel.</p>
+   * <p>Channels create data by subscribing to other channels and by parsing info that's directed to its onViewStreamInfo method.</p>
    * <h3>The Basic Channel Structure</h3>
    * <ul>
    * <li>Channels requires a unique name, such as, <em>CHANNEL_MYCHANNEL</em>, which is used by the LINK['ChannelsController', 'channels-controller'] to direct the flow of data to and from all channels.</li>
-   * <li>Channels can listen to and combine data from other Channels using the LINK['getChannel', 'channel-get-channel'] method, which exposes the source EXTERNAL['rxjs Subject', '//rxjs-dev.firebaseapp.com/guide/subject']END_EXTERNAL for any channel.
-   * <li>Channels have a onViewStreamInfo method that is called whenever a ViewStream instances sends data to that channel.</li>
-   * <li>Channels can send data at any time using the sendChannelPayload method.</li>
    * <li>Channels are instantiated and 'registered' at the start Spyne applications; they remain persistent and are not deleted.</li>
+   * <li>Channels can send data at any time using the sendChannelPayload method.</li>
+   * <li>Channels run the LINK['getChannel', 'channel-get-channel'] method to retrieve data from other channels by subscribing to its source EXT['rxjs Subject', '//rxjs-dev.firebaseapp.com/guide/subject']</li>
+   * <li>A Channels onViewStreamInfo method is called whenever a ViewStream instances sends data to that channel.</li>
    * </ul>
    * <p>Channels are observables that sends data and events using the ChannelPayloads format.</p>
    * <h3>Channel Name</h3>
