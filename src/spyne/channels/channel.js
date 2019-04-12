@@ -150,13 +150,11 @@ export class Channel {
   /**
    *
    * @desc
-   * <p>Before any action can be used, that action name needs to be registered using this method.</p>
    * <p>Channels send along Action names along with its payload.</p>
-   * <p>Actions allows ViewStream instances to filter channel payloads by binding specific actions to local ViewStream methods.</p>
-   * <p>Registered actions allows Spyne to validate Actions that are listened to by ViewStream instances.</p>
-   * <p>Forcing registration of actions is also a useful way to keep track of all Actions that are intended to be used by any particular channel.</p>
-
-
+   * <p>Before any action can be used, that action needs to be registered using this method.</p>
+   * <p>ViewStream instances can filter ChannelPayloads by binding specific LINK['actions to local methods', 'view-stream-add-action-listeners'].</p>
+   * <p>Forcing registration of actions allows Spyne to validate Actions, and is also a useful way to keep track of all Actions that are intended to be used.</p>
+   *
    * @returns
    * Array of Strings
    *
@@ -211,9 +209,9 @@ export class Channel {
 
   /**
    *
-   * <p>ViewSteam instances can send data to channels by using its sendIntoToChannel method.</p>
-   * <p>ViewStream data is automatically sent to a channel's onViewStreamInfo method</p>
-   * <p>ViewStreams send a ViewStream Payload that has a uniform signature</p>
+   * <p>ViewSteam instances can send info to channels through its LINK['sendInfoToChannel, 'view-stream-send-info-to-channel'] method.</p>
+   * <p>Data received from ViewStreams are directed to this method.</p>
+   * <p>ViewStreams send data using the LINK['ViewStreamPayload', 'view-stream-payload'] object format.</p>
    *
    * @param {ViewStreamPayload} obj
    *
@@ -234,9 +232,10 @@ export class Channel {
   /**
    *
    * @desc
-   * <p>All channels send data using the <a class='linker' data-channel="ROUTE"  data-event-prevent-default="true" data-menu-item="channel-payload"  href="/guide/reference/channel-payload" >Channel Payload</a>
-   object format. This consistent format allows subscribers to understand how to parse any incoming channel data.</p>
-   * <p>And this method automatically formats an action and javascript payload object into a ChannelPayload object and calls this.observer.next().</p>
+   *
+   * <p>All channels must use the LINK['Channel Paylaod', 'channel-payload'] object to send data. This consistent format allows subscribers to understand how to parse any incoming channel data.</p>
+   * <p>This method takes an action, a data object and other properties to create and publish a ChannelPayload object.</p>
+   * <p>Once the action and payload is validated, this method will publish the data by using the channel's source Subject next() method.
    *
    * @param {String} action
    * @param {Object} payload
@@ -245,9 +244,9 @@ export class Channel {
    * @param {Observable} obs$
    * @property {String} action - = undefined; Required. An action is a string, typically in the format of "CHANNEL_NAME_ACTION_NAME_EVENT", and that has been added in the addRegisteredActions method.
    * @property {Object} paylaod - = undefined; Required. This can be any javascript object and is used to send any custom data.
-   * @property {HTMLElement} srcElement - = undefined; This can be either the element returned from the UI Channel, or the srcElement from a ViewStream instance.
-   * @property {UIEvent} event - = undefined; This will be defined if the event is from the UI Channel.
-   * @property {Observable} obs$ - = this.observer; This default is the main observable for the channel. The option for another observable is available.
+   * @property {HTMLElement} srcElement - = Not Required. undefined; This can be either the element returned from the UI Channel, or the srcElement from a ViewStream instance.
+   * @property {UIEvent} event - = undefined; Not Required. This will be defined if the event is from the UI Channel.
+   * @property {Observable} obs$ - = this.observer; This default is the source observable for this channel.
    *
    * @example
    * let action = "CHANNEL_MY_CHANNEL_REGISTERED_ACTION_EVENT";
@@ -267,7 +266,8 @@ export class Channel {
    *
    * <p>Allows channels to subscribe to other channels.</p>
    * <p>This method returns the source rxjs Subject for the requested Channel, which can be listened to by calling its subscribe method.</p>
-   * <p>Although knowledge of rxjs is not required, having access to the source rxjs Subject gives developers the ability to use all of the available mapping and observable tools that rxjs has to offer.</p>
+   * <p>Knowledge of rxjs is not required to subscribe and parse Channel data.</p>
+   * <p>But having access to the source rxjs Subject does give developers the ability to use all of the available mapping and observable tools that rxjs has to offer.</p>
    *
    * @param {String} CHANNEL_NAME The registered name of the requested channel.
    * @returns
