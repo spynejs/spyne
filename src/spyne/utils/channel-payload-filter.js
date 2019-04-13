@@ -7,15 +7,14 @@ export class ChannelPayloadFilter {
    *
    *
    * @desc
-   * <p>Filters ChannelPayload objects using selectors and/or a data object containing properties and wither a value or method as a comparator</p>
+   * <p>This utility filters ChannelPayload objects by using query selectors and/or by comparing data properties</p>
    * <h3>The ChannelPayloadFilter features</h3>
    * <ul>
-   *   <li>Can be used by both Channels and ViewStreams</li>
-   *   <li>Selectors can be either a query string, an array or selector strings, or an actual dom element</li>
-   *   <li>Add either "" or undefined when not using a selector to filter a payload</li>
-   *   <li>This filter will first try and compare the values from the props() method of a ChannelPayload object</li>
-   *   <li>Data comparators can either be a the actual expected value, or the comparator can be any method that returns true/false</li>
-   *   <li>This can be used as the third parameter when binding actions to ViewStream methods.</li>
+   *   <li>Can be used by Channels and ViewStreams</li>
+   *   <li>ChannelPayloadFilter instances can be used as the third parameter when binding actions to ViewStream methods.</li>
+   *   <li>Selectors can be a query string, an array of selector strings, or the selector can be an actual dom element.</li>
+   *   <li>Selectors are not required and can be disregarded by adding "" or undefined as the selector property.</li>
+   *   <li>The data object compares the values from the props() method of a ChannelPayload object</li>
    *   </ul>
    *
    * @constructor
@@ -60,6 +59,7 @@ export class ChannelPayloadFilter {
    * TITLE['<h4>A Simple Property Filtering Example Within a Channel Instance</h4>']
    * // Filter for a button with a data type of 'link'
    * const myFilter = new ChannelPayloadFilter('' {type: "link"});
+   *
    * this.getChannel("CHANNEL_UI")
    * .pipe(filter(myFilter))
    * .subscribe(myChannelMethod);
