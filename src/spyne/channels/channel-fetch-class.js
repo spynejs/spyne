@@ -28,7 +28,7 @@ export class ChannelFetch extends Channel {
    * @param {String} name
    * @param {Object} props
    *
-   * @property {String} name - = undefined; The regsitered name for the channel.
+   * @property {String} name - = undefined; The registered name for the channel.
    * @property {String} props.url - = undefined; The url to be fetched.
    * @property {Function} props.mapFn - = undefined; This method is called immediately after the fetched response and behaves like any map method.
    * @property {Object} props.body - = undefined; This will update the options, including header options, sent along with the fetch request. Default options uses a GET request.

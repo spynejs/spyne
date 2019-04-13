@@ -232,6 +232,7 @@ function ViewStreamSelector(cxt, str) {
   Object.defineProperty(selector, 'el', {get: () => getElOrList(cxt, str, true)});
   Object.defineProperty(selector, 'length', {get: () => getNodeListArray(cxt, str, false).length});
   Object.defineProperty(selector, 'exists', {get: () => getNodeListArray(cxt, str, false).length>=1});
+  Object.defineProperty(selector, 'exist', {get: () => getNodeListArray(cxt, str, false).length>=1});
   Object.defineProperty(selector, 'nodeList', {get: () => getNodeListArray(cxt, str)});
   Object.defineProperty(selector, 'inlineCss', {set: (val) => setInlineCss(val, cxt, str)});
 

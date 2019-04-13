@@ -89,7 +89,7 @@ export class ViewStream {
    * </div>
    *
    *
-   * <h4>State Management</h4>
+   * <h4>Context (State) Management</h4>
    * <p>There are several properties, methods and structures that allow ViewStream instances to maintain state, with code that is DRY and easy to reason about.
    *  The key innovation is the swapping of ViewStream internal observables to create a smart chain of views that reactively render and dispose entire branches with little or no code.</br>
    *  The following items assist in maintaining state:

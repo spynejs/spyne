@@ -12,15 +12,17 @@ export class DomItem {
    * @type util
    *
    * @desc
-   * This class is mostly used internally by the ViewStream object, but it can be also used to generate a lightweight dom element that contains no props or parameters.
+   * <p>This is the ViewStream rendering engine.</p>
+   * <p>This is the recommended process for creating HTMLElements that do not require the logic and overhead of a ViewStream instance.</p>
+   * <button class='modal-btn' data-type='modal-window' data-value='attributes'>View Attributes</button>
    *
    * @constructor
    * @param {string} tagName the tagname for this dom element.
    * @param {object} attributes any domElement attribute (except for class )
    * @param {string|object} content string for text tags and json for templates
    * @param {template} template
-   * @property {String} props.tagName = 'div'; Default for tagName.
-   * @property {Object} props.attributes = {};
+   * @property {String} props.tagName - = 'div'; Default for tagName.
+   * @property {Object} props.attributes - = {}; This can be any valid HTML attribute for the given tagName.
    * @property {String|Object} props.content = undefined; This is either a String for an element or JSON data object for a template.
    * @property {String|HTML} props.template = undefined; If a template is defined, the DomItem will use it.
    *
