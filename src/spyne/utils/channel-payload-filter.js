@@ -7,20 +7,23 @@ export class ChannelPayloadFilter {
    *
    *
    * @desc
-   * Filters Channel Actions before the assigned method is called.<span class='break'/>
-   * Actions can be filtered by a selector when triggered by an HTML element, and/or actions can be filtered by the values returned by that action.
+   * <p>Filters ChannelPayload objects using selectors and/or a data object containing filtering methods for any property.</p>
+   * <p>This is mainly used as the third parameter when binding actions to ViewStream methods. The local ViewStream method will only be called when the ChannelPayloadFilter returns true.</p>
    *
    * @constructor
    * @param {String|Array|HTMLElement} selector The matching element
-   * @param {Object} data A json object containing filtering methods for channel props variables
+   * @param {Object} data A json object containing filtering methods for channel props variables.
    *
-   * @property {String|Array|HTMLElement} selector The matching element
-   * @property {Object} data A json object containing filtering methods for channel props variables
+   * @property {String|Array|HTMLElement} selector - = ''; The matching element.
+   * @property {Object} data - = {}; A json object containing filtering methods for channel props variables.
+   * @returns Boolean
    * @example
+   * TITLE['<h4>Filtering a ChannelPayload Using Selectors and a Data object</h4>']
+   *    let mySelectors = ['ul', 'li:first-child'];
    *    let data = {
    *      linkType: (type)=>type==='external'
    *    };
-   * let myFilter = new ChannelPayloadFilter(['ul', 'li:first-child'], data);
+   *    let myFilter = new ChannelPayloadFilter(mySelectors, data);
    *
    *    addActionListeners() {
    *      return [

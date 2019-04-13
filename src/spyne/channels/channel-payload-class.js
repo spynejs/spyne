@@ -30,9 +30,10 @@ export class ChannelPayload {
      * This is a convenience method that helps with descructuring by merging all properties.
      *
      * @returns
-     * Object
+     * JSON Object
      *
      * @example
+     * TITLE['<h4>Destructuring Properties using the ChannelPayload props Method</h4>']
      * let {el, action, myVal} = payload.props();
      *
      *
