@@ -28,11 +28,11 @@ export class ChannelFetchUtil {
    *
    *
    * @example
-   * // An example of fetching an image
+   * TITLE['<h4>Using ChannelFetchUtil to Retrieve an Image</h4>']
    *
    *   const url = "/static/images/myimage.jpg";
    *   const responseType = "blob";
-   *   const onImgFn = (blob)=>{
+   *   const onImgBlobReturned = (blob)=>{
    *        let blobUrl = URL.createObjectURL(blob);
    *        this.appendView(
    *            new ViewStream({
@@ -42,7 +42,7 @@ export class ChannelFetchUtil {
    *            })
    *           )}
    *
-   *   new ChannelFetchUtil({url, responseType}, onImgFn);
+   *   new ChannelFetchUtil({url, responseType}, onImgBlobReturned);
    *
    *
    */

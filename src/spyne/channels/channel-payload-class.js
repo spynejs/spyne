@@ -3,9 +3,9 @@ import {mergeAll, includes, pickAll} from 'ramda';
 export class ChannelPayload {
   /**
    *
-   * All payloads sent from Channels returns an instance of this class
+   * All Channel data is published using this interface.
    * @module ChannelPayload
-   * @type util
+   * @type internal
    *
    * @constructor
    * @param {String} channelName
@@ -14,12 +14,12 @@ export class ChannelPayload {
    * @param {Element} srcElement
    * @param {Event} event
    *
-   * @property {String} channelName - = undefined; The channel name used to register the channel.
-   * @property {String} action - = undefined; An action string that has been registered in the registeredActions method.
-   * @property {Object} payload - = undefined; The data object returned; if the action is from a UI Element, this would typically be the dataset values.
-   * @property {HTMLElement} srcElement - = {}; This is populated when the action is triggered from an element.
-   * @property {UIEvent} event - = undefined; This will be populated if the event is triggered by the browser.
-   * @returns Validated payload object
+   * @property {String} channelName - = undefined; The name of the Channel that is sending the payload.
+   * @property {String} action - = undefined; An action string that has been registered within the Channel's addRegisteredActions method.
+   * @property {Object} payload - = undefined; The data object.
+   * @property {HTMLElement} srcElement - = {}; This is populated when triggered from a ViewStream instance.
+   * @property {UIEvent} event - = undefined; The UIEvent, if any.
+   * @returns Validated ChannelPayload json object
    */
   constructor(channelName, action, payload, srcElement, event) {
     let channel = channelName;

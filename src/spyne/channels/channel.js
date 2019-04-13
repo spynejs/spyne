@@ -13,13 +13,13 @@ export class Channel {
    * @type extendable
    *
    * @desc
-   * <p>Channels broadcast specific types of data that other Channel and LINK['ViewStream', 'view-stream'] instances can listen to.</p>
-   * <p>Channels create data by subscribing to other channels and by parsing ViewStream info that's directed to its onViewStreamInfo method.</p>
+   * <p>Channels broadcast specific types of data that is listened to by other Channels and by LINK['ViewStream', 'view-stream'] instances.</p>
+   * <p>Channels create data by subscribing to other Channels and by parsing ViewStream info that's sent to its LINK['onViewStreamInfo', 'channel-on-view-stream-info'] method.</p>
    * <h3>The Basic Channel Structure</h3>
    * <ul>
    * <li>Channels requires a unique name, for example, <em>CHANNEL_MYCHANNEL</em>, which is used by the LINK['ChannelsController', 'channels-controller'] to direct the flow of Channel data.</li>
    * <li>Channels are instantiated and 'registered' after initializing a LINK['SpyneApp', 'spyne-app']; they remain persistent and are not deleted.</li>
-   * <li>Channels can send data at any time using the sendChannelPayload method.</li>
+   * <li>Channels can send data at any time using the LINK['sendChannelPayload', 'channel-send-channel-payload'] method.</li>
    * <li>Channels use the LINK['getChannel', 'channel-get-channel'] method to retrieve data from other channels by subscribing to its source EXT['rxjs Subject', '//rxjs-dev.firebaseapp.com/guide/subject']</li>
    * <li>A Channel's LINK['onViewStreamInfo', 'channel-on-view-stream-info'] method is called whenever a ViewStream instances sends data to that channel.</li>
    * </ul>
@@ -39,6 +39,11 @@ export class Channel {
    * <h3>Receiving Data from ViewStream Instances</h3>
    * <p>ViewStreams can send data to any custom channel using the <a class='linker' data-channel="ROUTE"  data-event-prevent-default="true" data-menu-item="view-stream-send-into-to-channel"  href="/guide/reference/view-stream-send-info-to-channel" >sendInfoToChannel</a>
    method. Channels cam listen to any ViewStream data directed to itself through the default method, <a class='linker' data-channel="ROUTE"  data-event-prevent-default="true" data-menu-item="channel-on-view-stream-info"  href="/guide/reference/channel-on-view-stream-info" >onViewStreamInfo</a>. </p>
+   *
+   *
+   * @example
+   * TITLE["<h4>Registering a New Channel Instance</h4>"]
+   * SpyneApp.register(new Channel("CHANNEL_MYCHANNEL");
    *
    *
    * @constructor
@@ -159,6 +164,7 @@ export class Channel {
    * Array of Strings
    *
    * @example
+   * TITLE["<h4>Registering Actions in the addRegisteredActions method</h4>"]
    *    addRegisteredActions() {
    *     return [
    *        'CHANNEL_MY_CHANNEL_EVENT',
@@ -211,11 +217,12 @@ export class Channel {
    *
    * <p>ViewSteam instances can send info to channels through its LINK['sendInfoToChannel, 'view-stream-send-info-to-channel'] method.</p>
    * <p>Data received from ViewStreams are directed to this method.</p>
-   * <p>ViewStreams send data using the LINK['ViewStreamPayload', 'view-stream-payload'] object format.</p>
+   * <p>ViewStreams send data using the LINK['ViewStreamPayload', 'view-stream-payload'] format.</p>
    *
    * @param {ViewStreamPayload} obj
    *
    * @example
+   * TITLE["<h4>Parsing Data Returned from a ViewStream Instance</h4>"]
    * onViewStreamInfo(obj){
    *     let data = obj.viewStreamInfo;
    *     let action = data.action;
@@ -233,9 +240,9 @@ export class Channel {
    *
    * @desc
    *
-   * <p>All channels must use the LINK['Channel Paylaod', 'channel-payload'] object to send data. This consistent format allows subscribers to understand how to parse any incoming channel data.</p>
-   * <p>This method takes an action, a data object and other properties to create and publish a ChannelPayload object.</p>
+   * <p>This method takes an action, a data object and other properties to create and publish a LINK['ChannelPayload', 'channel-payload'] object.</p>
    * <p>Once the action and payload is validated, this method will publish the data by using the channel's source Subject next() method.
+   * <p>This consistent format allows subscribers to understand how to parse any incoming channel data.</p>
    *
    * @param {String} action
    * @param {Object} payload
@@ -243,12 +250,13 @@ export class Channel {
    * @param {HTMLElement} event
    * @param {Observable} obs$
    * @property {String} action - = undefined; Required. An action is a string, typically in the format of "CHANNEL_NAME_ACTION_NAME_EVENT", and that has been added in the addRegisteredActions method.
-   * @property {Object} paylaod - = undefined; Required. This can be any javascript object and is used to send any custom data.
+   * @property {Object} payload - = undefined; Required. This can be any javascript object and is used to send any custom data.
    * @property {HTMLElement} srcElement - = Not Required. undefined; This can be either the element returned from the UI Channel, or the srcElement from a ViewStream instance.
    * @property {UIEvent} event - = undefined; Not Required. This will be defined if the event is from the UI Channel.
    * @property {Observable} obs$ - = this.observer; This default is the source observable for this channel.
    *
    * @example
+   * TITLE['<h4>Publishing a ChannelPayload</h4>']
    * let action = "CHANNEL_MY_CHANNEL_REGISTERED_ACTION_EVENT";
    * let data = {foo:"bar"};
    * this.sendChannelPayload(action, data);
@@ -266,13 +274,14 @@ export class Channel {
    *
    * <p>Allows channels to subscribe to other channels.</p>
    * <p>This method returns the source rxjs Subject for the requested Channel, which can be listened to by calling its subscribe method.</p>
-   * <p>Knowledge of rxjs is not required to subscribe and parse Channel data.</p>
-   * <p>But having access to the source rxjs Subject does give developers the ability to use all of the available mapping and observable tools that rxjs has to offer.</p>
+   * <p>Knowledge of rxjs is not required to subscribe to and parse Channel data.</p>
+   * <p>But accessing the rxjs Subject gives developers the ability to use all of the available rxjs mapping and observable tools.</p>
    *
    * @param {String} CHANNEL_NAME The registered name of the requested channel.
    * @returns
    * The source rxjs Subject of the requested channel.
    * @example
+   * TITLE["<h4>Subscribing to a Channel Using the getChannel method</h4>"]
    * let route$ = this.getChannel("CHANNEL_ROUTE")
    * route$.subscribe(localMethod);
    *
