@@ -1,4 +1,4 @@
-import {is, filter, reject, isNil, allPass, not, isEmpty, always, compose, uniq, equals, all, prop, whereEq, where, defaultTo, path, values, type, flatten, any, curry} from 'ramda';
+import {is, filter, reject, ifElse, invoker, identity, isNil, allPass, not, isEmpty, always, compose, uniq, equals, all, prop, whereEq, where, defaultTo, path, values, type, flatten, any, curry} from 'ramda';
 const rMap = require('ramda').map;
 export class ChannelPayloadFilter {
   /**
@@ -86,8 +86,8 @@ export class ChannelPayloadFilter {
 
       // IF THERE ARE METHODS IN THE FILTERING JSON, THEN USE where or whereEq if Basic JSON
       let fMethod = isAllMethods === true ? where(filterJson) : whereEq(filterJson);
-
-      return compose(fMethod, defaultTo({}));
+      const getFilteringObj =  ifElse(prop('props'), invoker(0, 'props'), identity);
+      return compose(fMethod, defaultTo({}), getFilteringObj);
     };
 
     return compareData();
