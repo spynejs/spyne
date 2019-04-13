@@ -1,4 +1,4 @@
-import {is, filter, reject, ifElse, invoker, identity, isNil, allPass, not, isEmpty, always, compose, uniq, equals, all, prop, whereEq, where, defaultTo, path, values, type, flatten, any, curry} from 'ramda';
+import {is, filter, reject, ifElse, invoker, identity, isNil, allPass, not, mapObjIndexed, isEmpty, always, compose, uniq, equals, all, prop, whereEq, where, defaultTo, path, values, type, flatten, any, clone, curry} from 'ramda';
 const rMap = require('ramda').map;
 export class ChannelPayloadFilter {
   /**
@@ -7,29 +7,62 @@ export class ChannelPayloadFilter {
    *
    *
    * @desc
-   * <p>Filters ChannelPayload objects using selectors and/or a data object containing filtering methods for any property.</p>
-   * <p>This is mainly used as the third parameter when binding actions to ViewStream methods. The local ViewStream method will only be called when the ChannelPayloadFilter returns true.</p>
+   * <p>Filters ChannelPayload objects using selectors and/or a data object containing properties and wither a value or method as a comparator</p>
+   * <h3>The ChannelPayloadFilter features</h3>
+   * <ul>
+   *   <li>Can be used by both Channels and ViewStreams</li>
+   *   <li>Selectors can be either a query string, an array or selector strings, or an actual dom element</li>
+   *   <li>Add either "" or undefined when not using a selector to filter a payload</li>
+   *   <li>This filter will first try and compare the values from the props() method of a ChannelPayload object</li>
+   *   <li>Data comparators can either be a the actual expected value, or the comparator can be any method that returns true/false</li>
+   *   <li>This can be used as the third parameter when binding actions to ViewStream methods.</li>
+   *   </ul>
    *
    * @constructor
    * @param {String|Array|HTMLElement} selector The matching element
    * @param {Object} data A json object containing filtering methods for channel props variables.
    *
    * @property {String|Array|HTMLElement} selector - = ''; The matching element.
-   * @property {Object} data - = {}; A json object containing filtering methods for channel props variables.
+   * @property {Object} data - = {}; A json object containing comprators for any expected property values.
    * @returns Boolean
+   *
+   *
    * @example
-   * TITLE['<h4>Filtering a ChannelPayload Using Selectors and a Data object</h4>']
-   *    let mySelectors = ['ul', 'li:first-child'];
-   *    let data = {
-   *      linkType: (type)=>type==='external'
+   * TITLE['<h4>Filtering using Selectors and a Property Comparator Within a ViewStream Instance</h4>']
+   *    const mySelectors = ['ul', 'li:first-child'];
+   *    const data = {
+   *      linkType: "external"
    *    };
-   *    let myFilter = new ChannelPayloadFilter(mySelectors, data);
+   *    const myFilter = new ChannelPayloadFilter(mySelectors, data);
    *
    *    addActionListeners() {
    *      return [
    *                ['CHANNEL_UI_CLICK_EVENT', 'onClickEvent', myFilter]
    *             ]
    *          }
+   *
+   * @example
+   * TITLE['<h4>Filtering Using Method and String Comparators Within a ViewStream Instance</h4>']
+   *    const data = {
+   *      type: "scrolling-element",
+   *      scrollNum:  (n)=>n>=1200 && n<=5000;
+   *    };
+   *    const myFilter = new ChannelPayloadFilter('', data);
+   *
+   *    addActionListeners() {
+   *      return [
+   *                ['CHANNEL_UI_CLICK_EVENT', 'onClickEvent', myFilter]
+   *             ]
+   *          }
+   *
+   *
+   * @example
+   * TITLE['<h4>A Simple Property Filtering Example Within a Channel Instance</h4>']
+   * // Filter for a button with a data type of 'link'
+   * const myFilter = new ChannelPayloadFilter('' {type: "link"});
+   * this.getChannel("CHANNEL_UI")
+   * .pipe(filter(myFilter))
+   * .subscribe(myChannelMethod);
    *
    */
   constructor(selector, data) {
@@ -78,14 +111,20 @@ export class ChannelPayloadFilter {
         console.warn('Spyne Warningd: The data values in ChannelActionFilters needs to be either all methods or all static values.  DATA: ', filterJson);
       }
 
-      // console.log("FILTER JSON: ",filterJson);
-      const isAllMethods  = all(equals('Function'), filterValsArr);
+      const createCurryComparator = compareStr => (str)=>str===compareStr;
+      const checkToConvertToFn = (val, key, obj)=>val = is(String, val)===true ? createCurryComparator(val) : val;
+      filterJson = rMap(checkToConvertToFn, filterJson);
+
+      // console.log("FILTER JSON: ",{filterJson, newJson});
+      //const isAllMethods  = all(equals('Function'), filterValsArr);
 
       // PULL OUT THE CHANNEL PAYLOAD OBJECT IN THE MAIN PAYLOAD
       // let payload = prop('channelPayload', eventData)
 
       // IF THERE ARE METHODS IN THE FILTERING JSON, THEN USE where or whereEq if Basic JSON
-      let fMethod = isAllMethods === true ? where(filterJson) : whereEq(filterJson);
+     // let fMethod = isAllMethods === true ? where(filterJson) : whereEq(filterJson);
+
+      let fMethod = where(filterJson);
       const getFilteringObj =  ifElse(prop('props'), invoker(0, 'props'), identity);
       return compose(fMethod, defaultTo({}), getFilteringObj);
     };
