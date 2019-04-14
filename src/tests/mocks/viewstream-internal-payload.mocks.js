@@ -7,7 +7,7 @@ const internalViewStreamPayload = {
     'url': 'https://github.com/spynejs/spyne'
   },
   'srcElement': {
-    'cid': 'header',
+    'vsid': 'header',
     'isLocalEvent': false,
     'viewName': 'HeaderView',
     'event': 'click',
@@ -39,7 +39,7 @@ const internvalRouteChannelPayload = {
     'routeType': 'slash'
   },
   'srcElement': {
-    'cid': 'header',
+    'vsid': 'header',
     'isLocalEvent': false,
     'viewName': 'HeaderView',
     'event': 'click',

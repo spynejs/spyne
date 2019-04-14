@@ -83,13 +83,13 @@ export class ViewStreamBroadcaster {
       data['payload'] = convertDomStringMapToObj(q.dataset);
       data.payload = omit(['channel'], data.payload);
       data['channel'] = channel;
-      // payload needs cid# to pass verification
+      // payload needs vsid# to pass verification
 
       // data['event'] = event;
       // data['el'] = q;
-      data['srcElement'] = {};// pick(['cid','viewName'], data);
+      data['srcElement'] = {};// pick(['vsid','viewName'], data);
       data.srcElement['id'] = this.props.id;
-      data.srcElement['cid'] = this.props.cid;
+      data.srcElement['vsid'] = this.props.vsid;
       data.srcElement['isLocalEvent'] = isLocalEvent;
       data.srcElement['viewName'] = this.props.name;
       data.srcElement['srcEvent'] = event;

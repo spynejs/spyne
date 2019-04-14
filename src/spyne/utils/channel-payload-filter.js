@@ -106,10 +106,10 @@ export class ChannelPayloadFilter {
       let typeArrFn = compose(values, rMap(type));
       let filterValsArr = typeArrFn(filterJson);
 
-      let sendMalFormedWarningBool = uniq(filterValsArr).length > 1;
+      /*let sendMalFormedWarningBool = uniq(filterValsArr).length > 1;
       if (sendMalFormedWarningBool === true) {
         console.warn('Spyne Warningd: The data values in ChannelActionFilters needs to be either all methods or all static values.  DATA: ', filterJson);
-      }
+      }*/
 
       const createCurryComparator = compareStr => (str)=>str===compareStr;
       const checkToConvertToFn = (val, key, obj)=>val = is(String, val)===true ? createCurryComparator(val) : val;

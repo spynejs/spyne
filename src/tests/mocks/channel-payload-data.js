@@ -33,7 +33,7 @@ const ChannelPayloadUIData = {
       'pageId': 'page-one'
     },
     'channel': 'UI',
-    'cid': 'cid-1703768',
+    'vsid': 'vsid-1703768',
     'viewName': 'AppView',
     'event': 'click',
     'el': 'h6.nav-btn'
@@ -89,7 +89,7 @@ const ChannelPayloadRouteData = {
       'val' : 6
     },
     'channel': 'ROUTE',
-    'cid': 'cid-1703768',
+    'vsid': 'vsid-1703768',
     'viewName': 'AppView',
     'event': 'click',
     'el': 'h6.nav-btn'

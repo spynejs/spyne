@@ -17,14 +17,14 @@ export class ViewStreamElement {
    * @constructor
    * @param {Observable} sink$
    * @param {Object} viewProps
-   * @param {String} cid
+   * @param {String} vsid
    * @param {String} vsName
    *
    */
-  constructor(sink$, viewProps = {}, cid = '', vsName = 'theName') {
+  constructor(sink$, viewProps = {}, vsid = '', vsName = 'theName') {
     this.addMixins();
     this._state = 'INIT';
-    this.cid = cid;
+    this.vsid = vsid;
     this.vsName = vsName;
     this.defaults = {
       debug:false,
@@ -43,7 +43,7 @@ export class ViewStreamElement {
 
     this.$dirs = ViewStreamObservable.createDirectionalFiltersObject();
     this.addDefaultDir = ViewStreamObservable.addDefaultDir;
-    this.sourceStreams = ViewStreamObservable.createDirectionalObservables(new Subject(), this.vsName, this.cid);
+    this.sourceStreams = ViewStreamObservable.createDirectionalObservables(new Subject(), this.vsName, this.vsid);
     this._source$ = this.sourceStreams.toInternal$; //  new Subject();
   }
   addActionListeners() {
@@ -138,7 +138,7 @@ export class ViewStreamElement {
   }
 
   onGarbageCollect(p) {
-    // console.log('MEDIATOR onGarbageCollect ', this.cid, this.vsName, p);
+    // console.log('MEDIATOR onGarbageCollect ', this.vsid, this.vsName, p);
     this.domItem.unmount();
 
     if (this.sourceStreams !== undefined) {
@@ -243,13 +243,13 @@ export class ViewStreamElement {
     let action = payload.action;
     let defaultToFn = defaultTo((data) => this.extendedMethods(data));
     let fn = defaultToFn(this.options.hashMethods[action]);
-    // console.log('MEDIATOR onObsSinkSubscribe before ', this.cid, action, payload);
+    // console.log('MEDIATOR onObsSinkSubscribe before ', this.vsid, action, payload);
     let data = fn(payload);
     // data = this.addDefaultDir(data);
     // console.log('add default dir ', data);
     let sendData = (d) => this._source$.next(d);
     if (data !== undefined) {
-      // console.log('MEDIATOR onObsSinkSubscribe ', this.cid, data, payload);
+      // console.log('MEDIATOR onObsSinkSubscribe ', this.vsid, data, payload);
       sendData(Object.freeze(data));
     }
   }

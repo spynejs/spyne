@@ -50,8 +50,8 @@ if (compose !== undefined && Observable !== undefined) {
   //  ===========================================================================
   viewInfoValidations = [
     {
-      error: 'needs cid number in srcElement',
-      predicate: compose(is(String), path(['data', 'srcElement', 'cid']))
+      error: 'needs vsid number in srcElement',
+      predicate: compose(is(String), path(['data', 'srcElement', 'vsid']))
     },
     {
       error: 'needs a viewName in srcElement',

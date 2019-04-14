@@ -47,10 +47,10 @@ export class ViewStreamObservable {
     return this.addDefaultDir(p);
   }
 
-  static createDirectionalObservables(obs$ = new Subject(), viewName, cid) {
-    if (viewName !== undefined && cid !== undefined) {
+  static createDirectionalObservables(obs$ = new Subject(), viewName, vsid) {
+    if (viewName !== undefined && vsid !== undefined) {
       obs$['viewName'] = viewName;
-      obs$['cid'] = cid;
+      obs$['vsid'] = vsid;
     }
 
     const filterStreams = val => propSatisfies(arrType => arrType.includes(val), '$dir');

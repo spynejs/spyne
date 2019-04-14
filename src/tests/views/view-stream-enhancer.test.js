@@ -6,7 +6,7 @@ import { Enhancer } from '../mocks/enhancer.test';
 class MyClass {
   constructor() {
     this.props = {
-      cid: 1234234
+      vsid: 1234234
     };
     this.loadEnhancer();
   }

@@ -8,7 +8,7 @@ const payloadNoEvent = {
     "channel": "UI",
     "srcElement": {
       "id": "channel-payload",
-      "cid": "cid-4599787",
+      "vsid": "vsid-4599787",
       "isLocalEvent": false,
       "viewName": "PageGuideSidebarItemView",
       "srcEvent": "click",
@@ -31,7 +31,7 @@ const payloadPreventDefault = {
     },
     "srcElement": {
       "id": "header",
-      "cid": "cid-3248706",
+      "vsid": "vsid-3248706",
       "isLocalEvent": false,
       "viewName": "HeaderView",
       "srcEvent": "click",
@@ -55,7 +55,7 @@ const payloadTwoEvents =  {
     },
     "srcElement": {
       "id": "header",
-      "cid": "cid-3248706",
+      "vsid": "vsid-3248706",
       "isLocalEvent": false,
       "viewName": "HeaderView",
       "srcEvent": "click",
@@ -79,7 +79,7 @@ const payloadStopPropagation = {
     },
     "srcElement": {
       "id": "header",
-      "cid": "cid-3248706",
+      "vsid": "vsid-3248706",
       "isLocalEvent": false,
       "viewName": "HeaderView",
       "srcEvent": "click",
@@ -102,7 +102,7 @@ const payloadEmptyEvent = {
     },
     "srcElement": {
       "id": "header",
-      "cid": "cid-3248706",
+      "vsid": "vsid-3248706",
       "isLocalEvent": false,
       "viewName": "HeaderView",
       "srcEvent": "click",

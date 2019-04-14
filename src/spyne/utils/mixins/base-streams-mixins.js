@@ -18,7 +18,7 @@ export function baseStreamsMixins() {
       const getProp = str => prop(str, this.props);
       const channel = channelName;
       let srcElement = {
-        cid: getProp('cid'),
+        vsid: getProp('vsid'),
         el: getProp('el'),
         viewName: getProp('name')
       };
@@ -34,7 +34,7 @@ export function baseStreamsMixins() {
     },
 
     createLifeStreamPayload: function(STEP, data = {}, type = 'parent') {
-      let viewId = `${this.props.name}: ${this.props.cid}`;
+      let viewId = `${this.props.name}: ${this.props.vsid}`;
       return new LifestreamPayload('LIFESTREAM', STEP, type, viewId, data).data;
     }*/
   };

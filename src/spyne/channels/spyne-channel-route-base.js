@@ -142,7 +142,7 @@ export class SpyneChannelRoute extends Channel {
 
   static removeSSID(payload){
     const routeLens = R.lensProp(['routeData']);
-    const omitSSID = R.over(routeLens, R.omit(['ssid']));
+    const omitSSID = R.over(routeLens, R.omit(['vsid']));
     return omitSSID(payload);;
   }
 

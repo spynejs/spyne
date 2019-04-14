@@ -129,10 +129,10 @@ export class ViewStream {
     this.checker = Math.random();
     this.addMixins();
     this.defaults = () => {
-      const cid = this.createId();
-      const id = props.id ? props.id : cid;
+      const vsid = this.createId();
+      const id = props.id ? props.id : vsid;
       return {
-        cid,
+        vsid,
         id,
         tagName: 'div',
         el: undefined,
@@ -166,7 +166,7 @@ export class ViewStream {
     this.props.action = 'LOADED';
     this.sink$ = new Subject();
     const ViewClass = this.props.viewClass;
-    this.view = new ViewClass(this.sink$, {}, this.props.cid,
+    this.view = new ViewClass(this.sink$, {}, this.props.vsid,
       this.constructor.name);// new this.props.viewClass(this.sink$);
     this.sourceStreams = this.view.sourceStreams;
     this._rawSource$ = this.view.getSourceStream();
@@ -352,7 +352,7 @@ export class ViewStream {
         }
         return y;
       };
-      return pick(['viewName', 'cid'], finalDest(x));
+      return pick(['viewName', 'vsid'], finalDest(x));
     };
     let childCompletedData = findName(p);
     this.tracer('onChildCompleted ', this.checker, p);
@@ -787,6 +787,10 @@ export class ViewStream {
 
   }
 
+  setDataVSID(){
+    this.props.el.dataset.vsid = this.props.vsid;// String(this.props.vsid).replace(/^(vsid-)(.*)$/, '$2');
+  }
+
   beforeAfterRender() {
 /*    let dm2 = function(el) {
       return function(str = '') {
@@ -795,6 +799,7 @@ export class ViewStream {
     };*/
 
     //this.props.el$ = dm2(this.props.el);
+    this.setDataVSID();
     this.props.el$ = ViewStreamSelector(this.props.el);
     // console.log('EL IS ', this.props.el$.elArr);
     // window.theEl$ = this.props.el$;
@@ -905,12 +910,12 @@ export class ViewStream {
       // Object.assign({$dir: directionArr}, clone(p))
     };
     const isLocalEventCheck = path(['srcElement', 'isLocalEvent']);
-    const cidCheck = path(['srcElement', 'cid']);
+    const cidCheck = path(['srcElement', 'vsid']);
     const cidMatches = p => {
-      let cid = cidCheck(p);
+      let vsid = cidCheck(p);
       let isLocalEvent = isLocalEventCheck(p);
-      const filterEvent = isLocalEvent !== true || cid === this.props.cid;
-      // console.log("checks ",cid,this.props.cid, isLocalEvent,filterEvent);
+      const filterEvent = isLocalEvent !== true || vsid === this.props.vsid;
+      // console.log("checks ",vsid,this.props.vsid, isLocalEvent,filterEvent);
       return filterEvent;
     };
 
@@ -945,8 +950,8 @@ export class ViewStream {
 
   sendInfoToChannel(channelName, payload = {}, action = 'VIEWSTREAM_EVENT') {
     let data = { payload, action };
-    data['srcElement'] = {};// pick(['cid','viewName'], data);
-    data.srcElement['cid'] = path(['props', 'cid'], this);
+    data['srcElement'] = {};// pick(['vsid','viewName'], data);
+    data.srcElement['vsid'] = path(['props', 'vsid'], this);
     data.srcElement['id'] = path(['props', 'id'], this);
    // data.srcElement['isLocalEvent'] = false;
     data.srcElement['viewName'] = this.props.name;
