@@ -3,7 +3,7 @@ import {prop} from 'ramda';
 
 export class SpyneChannelLifecycle extends Channel {
   /**
-   * @module SpyneChannelLifeCycle
+   * @module SpyneChannelLifecycle
    * @type core
    *
    * @desc

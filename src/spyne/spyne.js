@@ -14,25 +14,23 @@ import { deepMerge } from './utils/deep-merge';
 class SpyneApp {
   /**
    *
-   * SpyneApp initializes the app and creates a global Spyne object that can be used to contain global properties and has several methods
+   * SpyneApp creates the global Spyne object, and creates the following items
+   * <ul>
    *
-   * <h3>Initializing Internal Spyne Channels</h3>
-   * <p>Internal Spyne Channels extend the <a class='linker' data-channel="ROUTE"  data-event-prevent-default="true" data-menu-item="channel-base-class"  href="/guide/reference/channel-base-class" >Channel</a>.</br>
+   * <li>LINK['ChannelsController', 'channels-controller'] that directs the flow of data to all Channels</li>
+   * <li>LINK['SpyneChannelUI', 'spyne-channel-u-i'], that broadcast all user interaction events</li>
+   * <li>LINK['SpyneChannelRoute', 'spyne-channel-route'], that broadcast window location changes and is the only other channel that can be bound to user events</li>
+   * <li>LINK['SpyneChannelWindow', 'spyne-channel-window'], that broadcast all requested window and document events, such as scrolling, resizing and media queries</li>
+   * <li>LINK['SpyneChannelLifecycle', 'spyne-channel-lifecycle'], that broadcasts rendering and removing of ViewStream elements that have been directed to broadcast their lifecycle events</li>
+   * </ul>
    *
-   * And Spyne App automatically creates all internal Spyne channels when instantiated.
-   * There is one Internal channel for each type of information, <a class='linker' data-channel="ROUTE"  data-event-prevent-default="true" data-menu-item="spyne-channel-u-i"  href="/guide/reference/spyne-channel-u-i" >UI</a>., <a class='linker' data-channel="ROUTE"  data-event-prevent-default="true" data-menu-item="spyne-channel-window"  href="/guide/reference/spyne-channel-window" >WINDOW</a>., <a class='linker' data-channel="ROUTE"  data-event-prevent-default="true" data-menu-item="spyne-channel-route"  href="/guide/reference/spyne-channel-route" >ROUTE</a>. and <a class='linker' data-channel="ROUTE"  data-event-prevent-default="true" data-menu-item="spyne-channel-life-cycle"  href="/guide/reference/spyne-channel-life-cycle" >LIFECYCLE</a> <br/>These channels are not meant to be extended.</p>
    *
-   *     <h3>Each Channel have the following unique properties</h3>
-   * <ol>
-   *     <li>Each may have seperate type of configuration properties</li>
-   *     <li>Internal Channels listens for their respective event types</li>
-   *     <li>Internal Channels returns specific relevant properties in their channel payloads</li>
-   * </ol>
    * @module SpyneApp
    * @type core
    *
    * @constructor
    * @param {Object} config
+   * @property {Object} config - = {}; This global config object is mainly used to provide configuration details for two SpyneChannels, CHANNEL_ROUTE and CHANNEL_WINDOW.
    */
   constructor(config = {}) {
     this.channels = new ChannelsController();
@@ -89,6 +87,15 @@ class SpyneApp {
     this.channels.init();
   }
 
+  /**
+   * This is mostly used for debugging purposes
+   *
+   * @example
+   * TITLE['<h4>Listing the registereed Channels in the browser console</h4>']
+   * SpyneApp.listChannels();
+   *
+   * @returns A list of all registered channels
+   */
   static listChannels() {
     return Array.from(window.Spyne.channels.map.keys());
   }

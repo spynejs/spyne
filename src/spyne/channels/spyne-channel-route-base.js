@@ -35,15 +35,33 @@ export class SpyneChannelRoute extends Channel {
      *
      * @desc
      *
-     * <h3>This channel takes a fundamental approach to a routing system.</h3>
+     * <p>This Channel provides a powerful, intuitive system that uses a series of nested objects to format the window location and provide variables that describes the context of the window location</p>
+     * <h3>The Basic Roles of a Routing System</h3>
+     * <ol>
+     * <li>The role of a routing system is to provide an efficient system of updating the window location, while also converting the window location into variables that are specific to the site context.</li>
+     * <li>The window location is essentially a series of nested values that expresses the current context of the application.</li>
+     * <li>The user interacts with a site's menu ui to choose a desired context, which is reflected in the window location.</li>
+     * <li>However, the window location only reveals values, and not property names -- and providing a system that gives property names to all of a websites context is the main approach of the SpyneChanneRoute system</li>
+     * </ol>
+     * <h3>How SpyneChannelRoute Works</h3>
+     * <div class='btn btn-blue-ref btn-console' data-type="console" data-value="open" data-channel-type="route">CLICK TO OPEN ROUTE PANEL</div>
+     *
+     * <h3>The Spyne Routing System</h3>
+     * <ul>
+     * <li>Take a Routing config of nested 'routePath' objects, to translate the window location to and from the configuration variables</li>
+     * <li>Allows developers to just add just the required variables to update the window location</li>
+     * <li>Back, forth history is maintained</li>
+     * </ul>
+     *
+     * <h4>TODOS; OPEN UP THE ROUTE PANEL, show examples of how to update the location with ViewStream, and explain how only guide has nested properties</h4>
+     *
+     * </br> </br></br></br></br></br></br></br>
      * <p>The core of any routing system is two way translation of values:</p>
      * <ol>
      * <li>Transform the window location into usable properties</li>
      * <li>Combine variables to change the window location</li>
      * </ol>
-     * <p>This is in essence all of what the ROUTE channel does. </br>It combines values sent from a bound HTML Element, or sent from a ViewStream instance, and uses those properties to create the new window locaiton, building out any missing properties by using the nested route configuration file.
-     * </br>In the same way, the ROUTE Channel can transform the string of the window location into a JSON object containing the values that were set in the configuration file.
-     * Useful information such as changed, deleted and added properties are also sent in the payload.</p>
+     * <p>This is in essence all of what the ROUTE channel does.</p>
      *
      * <h5>The nested route configuration object allows for regular expressions.</h5>
      *
@@ -64,10 +82,8 @@ export class SpyneChannelRoute extends Channel {
      *
      * @constructor
      * @param {Object} config
-     * @property {String} config.type - = 'slash'; The one other option is 'query' which will use the query syntax for window locaiton.
-     * @property {Boolean} config.isHash - = false; If set to true, the window location will use the hashchange event.
-     * @property {Boolean} config.isHidden - = false; If set to true, the logic of the route channel will remain, however the window location will not change.
-     * @property {Object} config.routes - = {routePath: {routeName:'change'}; This nested Object is used to parse variables from the window location, and this also allows ui channels the ability to send only partial parts of the window location.
+     * @property {String} config.type - = 'slash'; This property determines the url structure by conforming the window pathname to either the slash, query or hash formats.
+     * @property {Object} config.routes - = {routePath: {routeName:'change'}; This nested Object is used to translate variables to and from the window location.
      *
      */
     props.sendCurrentPayload = true;
