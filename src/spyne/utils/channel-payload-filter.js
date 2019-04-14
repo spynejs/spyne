@@ -15,6 +15,7 @@ export class ChannelPayloadFilter {
    *   <li>Selectors can be a query string, an array of selector strings, or the selector can be an actual dom element.</li>
    *   <li>Selectors are not required and can be disregarded by adding "" or undefined as the selector property.</li>
    *   <li>The data object compares the values from the props() method of a ChannelPayload object</li>
+   *   <li>Internally, The data object is conformed to a spec object for ramda&rsquo;s EXT['where', '//ramdajs.com/docs/#where'] method</li>
    *   </ul>
    *
    * @constructor
