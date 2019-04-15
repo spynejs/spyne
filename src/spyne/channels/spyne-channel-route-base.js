@@ -35,22 +35,35 @@ export class SpyneChannelRoute extends Channel {
      *
      * @desc
      *
-     * <p>This Channel provides a powerful, intuitive system that uses a series of nested objects to format the window location and provide variables that describes the context of the window location</p>
-     * <h3>The Basic Roles of a Routing System</h3>
+     * <p>The SpyneChannelRoute has the two main duties:
+     * <ul>
+     *   <li>Map the requested window location to properties that are relevant to the application</li>
+     *   <li>Convert data properties into the window location</li>
+     *  </ul>
+     *  <p>Just as the window location is a series of nested values, this channels configuration file is a series of nested "routePath" objects, eaching containing a "routeKey" value that maps to a series of properties</p>
+     *  <p>Open the Route Console Window to see the practical use of expressing the window location and route properties through the use of the nested configuration file</p>
+     ** <p>This Channel uses a nested config file to expresses the window location as both a path string and also as properties that reveals the app's current context</p>
+     * CONVERTING THE USER WINDOW LOCATION REQUEST
+     * This maps the current window location to its respective properties by traversing the nested config file
+     *
+     * CONVERTING PROPERTIES TO WINDOW LOCATION
+     * This channel plucks relevant properties based on the config file and determines new locaiton by filling in the blanks
+     *
+     *
+     <h3>The Route config maps the window location with string or regex comparators</h3>
+     *
+     *
+     * <h3>Working with the Routes Config Object</h3>
      * <ol>
-     * <li>The role of a routing system is to provide an efficient system of updating the window location, while also converting the window location into variables that are specific to the site context.</li>
      * <li>The window location is essentially a series of nested values that expresses the current context of the application.</li>
      * <li>The user interacts with a site's menu ui to choose a desired context, which is reflected in the window location.</li>
-     * <li>However, the window location only reveals values, and not property names -- and providing a system that gives property names to all of a websites context is the main approach of the SpyneChanneRoute system</li>
      * </ol>
      * <h3>How SpyneChannelRoute Works</h3>
      * <div class='btn btn-blue-ref btn-console' data-type="console" data-value="open" data-channel-type="route">CLICK TO OPEN ROUTE PANEL</div>
      *
      * <h3>The Spyne Routing System</h3>
      * <ul>
-     * <li>Take a Routing config of nested 'routePath' objects, to translate the window location to and from the configuration variables</li>
      * <li>Allows developers to just add just the required variables to update the window location</li>
-     * <li>Back, forth history is maintained</li>
      * </ul>
      *
      * <h4>TODOS; OPEN UP THE ROUTE PANEL, show examples of how to update the location with ViewStream, and explain how only guide has nested properties</h4>
@@ -83,7 +96,7 @@ export class SpyneChannelRoute extends Channel {
      * @constructor
      * @param {Object} config
      * @property {String} config.type - = 'slash'; This property determines the url structure by conforming the window pathname to either the slash, query or hash formats.
-     * @property {Object} config.routes - = {routePath: {routeName:'change'}; This nested Object is used to translate variables to and from the window location.
+     * @property {Object} config.routes - = {routePath: {routeName:'change'}; This nested Object is used to contruct the window pathname and to express the window location as model variables.
      *
      */
     props.sendCurrentPayload = true;
