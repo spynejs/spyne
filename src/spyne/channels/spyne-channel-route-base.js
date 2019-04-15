@@ -37,9 +37,10 @@ export class SpyneChannelRoute extends Channel {
      *
      * <p>The SpyneChannelRoute has the two main duties:
      * <ul>
-     *   <li>Map the requested window location to properties that are relevant to the application</li>
-     *   <li>Convert data properties into the window location</li>
-     *  </ul>
+     *
+     *   <li>Listen to window location changes and tranlate the location pathname into a series of relevant properties</li>
+     *   <li>Combine data and the current location to update the window location path and to also send a payload of the properties that represent that location</li>
+     * </ul>
      *  <p>Just as the window location is a series of nested values, this channels configuration file is a series of nested "routePath" objects, eaching containing a "routeKey" value that maps to a series of properties</p>
      *  <p>Open the Route Console Window to see the practical use of expressing the window location and route properties through the use of the nested configuration file</p>
      ** <p>This Channel uses a nested config file to expresses the window location as both a path string and also as properties that reveals the app's current context</p>
