@@ -35,16 +35,9 @@ export class SpyneChannelRoute extends Channel {
      *
      * @desc
      *
-     *   <p>This channel uses a nested routes JSON object to provide logic and structure to the window location pathname. </p>
-     *   <h3>Configuring the Route Channel</h3>
-     *   <ol>
-     *     <li>Capture as every type of branching window locations that express all of the different context of the site</li>
-     *     <li>The location pathname is typically a series of consecutive strings separated by slashes. The order of the strings reveals the current context of the website.</li>
-     *     <li>The Routes configuration file is composed of a routesPath Object for every level of the pathname</li>
-     *     <li>The only required property for every routesPath object is the routesKey property</li>
-     *     <li>After the routeName property, there is key, value pairs that describe that return the value for the routeName or the value for the String for that level in the window pathname</li>
-     *     </ol>
-     *
+     *    <p>This channel looks at the window location as a series of nested strings that is separated by slashes, and sometimes be queries.</p>
+     *    <p>This channel expresses every level of those nested strings of the window location as nesting routeLevel objects</p>
+     *    <p>The Route Level Object is comprised of a routeName and several Route Options, which has all of the routing options that will be available for that particular level in the window location</p>
      *    <h3>The routeLevel object</h3>
      *    <ul>
      *      <li>This is the basic routeLevel object with its one requirement, routeName which value is a String</br>
@@ -69,6 +62,37 @@ export class SpyneChannelRoute extends Channel {
      *
      *          </pre>
      *
+     *    <block>
+     *      <h3>The Route Option</h3>
+     *      <p>The Route Option is a Key Value Pair that determines the routing data values and the window location string for that level</p>
+     *      <h4>The Route Option Key</h4>
+     *      <ul>
+     *        <li>The Key is always used to determine the routing data value</li>
+     *        <li>The Key can be a regex pattern, so that multiple values can contain the same branching logic, or the same window location string</li>
+     *
+     *        </ul>
+     *        <h4>The Route Option Value</h4>
+     *        <ul>
+     *          <li>When data is submitted to a Route Channel to create a new window location, this channel will use the value of the Route Option to determine the new window location</li>
+     *          <li>The Route Option is also used to conversely determine the data from just the current window location</li>
+     *          </ul>
+     *      </block>
+     *      <h3>How to Add More Routing Logic</h3>
+     *      <p>Create a custom channel that subscribes to the SpyneRouteChannel and have all components point to this more specific routing channel that adds more logic, such as specific actions when a page request is made, instead of a menuItem change</p>
+     *      <h3>How to Update the Route by Binding UI Elements to the SpyneRouteChannel</h3>
+     *      <h3>How to update the Route from ViewStream by usign the sendInfoToChannel method</h3>
+     *      <h3>How to udpate the Route from another Channel.
+     *
+     *   <p>This channel uses a nested routes JSON object to provide logic and structure to the window location pathname. </p>
+     *   <h3>Configuring the Route Channel</h3>
+     *   <ol>
+     *     <li>Capture as every type of branching window locations that express all of the different context of the site</li>
+     *     <li>The location pathname is typically a series of consecutive strings separated by slashes. The order of the strings reveals the current context of the website.</li>
+     *     <li>The Routes configuration file is composed of a routesPath Object for every level of the pathname</li>
+     *     <li>The only required property for every routesPath object is the routesKey property</li>
+     *     <li>After the routeName property, there is key, value pairs that describe that return the value for the routeName or the value for the String for that level in the window pathname</li>
+     *     </ol>
+     **
      *      <h4>The Route Options for a routeLevel object are a series of key value pairs </h4>
      *      <p>KEY {String|Regex Pattern} - determines the data value returned for that level</p>
      *      If KEY is a regex object then, the data value will window locaiton string that matched that key pattern
