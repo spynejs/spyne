@@ -1,5 +1,5 @@
 import { ChannelsController } from './channels/channels-controller';
-import { DomItem } from './views/dom-item';
+import { DomEl } from './views/dom-item';
 import { ViewStreamElement } from './views/view-stream-element';
 import { ViewStream } from './views/view-stream-base';
 import { ViewStreamBroadcaster } from './views/view-stream-broadcaster';
@@ -37,7 +37,7 @@ class SpyneApp {
     this.VERSION = '0.10.0';
     this.ViewStream = ViewStream;
     this.BasicView = ViewStreamElement;
-    this.DomItem = DomItem;
+    this.DomEl = DomEl;
     this.ViewStreamBroadcaster = ViewStreamBroadcaster;
     this.ChannelsPayload = ViewStreamPayload;
     this.ChannelsController = ChannelsController;
@@ -134,7 +134,7 @@ export {
   ViewStreamPayload,
   ChannelPayload,
     ChannelPayloadFilter,
-  DomItem,
+  DomEl,
   ViewStream,
   ViewStreamBroadcaster,
   SpyneTrait,

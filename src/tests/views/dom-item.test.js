@@ -1,4 +1,4 @@
-import { DomItem } from '../../spyne/views/dom-item';
+import { DomEl } from '../../spyne/views/dom-item';
 
 chai.use(require('chai-dom'));
 
@@ -10,13 +10,13 @@ describe('Demo', () => {
   });
 });
 
-describe('DomItem', () => {
+describe('DomEl', () => {
   it('dom item exists', () => {
-    expect(DomItem).to.exist;
+    expect(DomEl).to.exist;
   });
 
   it('dom item is a dom element', () => {
-    let domItem = new DomItem('h1', 'my dom element');
+    let domItem = new DomEl('h1', 'my dom element');
     let el = domItem.render();
     // assert.isFunction(domItem.click);
     expect(el).to.have.property('nodeName');

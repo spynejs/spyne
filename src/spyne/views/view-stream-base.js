@@ -117,7 +117,7 @@ export class ViewStream {
    * @property {boolean} props.sendLifecyleEvents = false; When set to true, the view will automatically send its rendering and disposing events to the CHANNEL_LIFECYCLE.
    * @property {string} props.id - = undefined; generates a random id if left undefined
    * @property {template} props.template - = undefined; html template
-   * @special {"name": "DomItem", "desc": "ViewStreams uses the DomItem class to render html tags and templates.", "link":"dom-item"}
+   * @special {"name": "DomEl", "desc": "ViewStreams uses the DomEl class to render html tags and templates.", "link":"dom-item"}
    * @special {"name": "ViewStreamSelector", "desc": "The <b>props.el$</b> property creates an instance of this class, used to query elements within the props.el element; also has methods to update css classes.", "link":"dom-item-selectors"}
    *
    *

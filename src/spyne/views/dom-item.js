@@ -1,14 +1,14 @@
 // import {createElement} from '../utils/dom-methods';
 import { baseCoreMixins } from '../utils/mixins/base-core-mixins';
-import { DomItemTemplate } from './dom-item-template';
+import { DomElTemplate } from './dom-item-template';
 import { deepMerge } from '../utils/deep-merge';
-// import {DomItemTemplate} from './template-renderer';
+// import {DomElTemplate} from './template-renderer';
 
 import {is, forEach, mapObjIndexed, forEachObjIndexed, pipe} from 'ramda';
 
-export class DomItem {
+export class DomEl {
   /**
-   * @module DomItem
+   * @module DomEl
    * @type util
    *
    * @desc
@@ -24,7 +24,7 @@ export class DomItem {
    * @property {String} props.tagName - = 'div'; Default for tagName.
    * @property {Object} props.attributes - = {}; This can be any valid HTML attribute for the given tagName.
    * @property {String|Object} props.content = undefined; This is either a String for an element or JSON data object for a template.
-   * @property {String|HTML} props.template = undefined; If a template is defined, the DomItem will use it.
+   * @property {String|HTML} props.template = undefined; If a template is defined, the DomEl will use it.
    *
    */
 
@@ -82,7 +82,7 @@ export class DomItem {
       let data = this.getProp('content');
       data = is(Object, data) ? data : {};
 
-      let frag = new DomItemTemplate(template, data).getTemplateNode();
+      let frag = new DomElTemplate(template, data).getTemplateNode();
       el.appendChild(frag);
       return el;
     };
