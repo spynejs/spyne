@@ -58,7 +58,7 @@ export class SpyneChannelRoute extends Channel {
      *            {
      *                routeLevel: {
      *                  routeName: 'myPropName',
-     *                  'valForData: 'val-for-location'
+     *                  routeOption: 'route-option'
      *                }
      *            }
      *
@@ -68,6 +68,18 @@ export class SpyneChannelRoute extends Channel {
      *      <h3>The Route Option</h3>
      *      <p>The Route Option is a Key Value Pair that determines the routing data values and the window location string for that level</p>
      *      <h4>The Route Option Key</h4>
+     *      <p>The Route Option is a key,value pair that is used to map properties to nested location strings and vice versa.</p>
+     *      <h5>When when used to match a property value, the Route Option returns the window nested location String</h5>
+     *      <pre>pageOption: 'nested-loc-string'</pre>
+     *        <h5>When used to match a nested portion of the window location, the Route Option returns the property name:</h5>
+     *        <pre>'nested-loc-string' : 'pageOption'</pre>
+     *
+     *        <p>Route Options are mostly needed to express every possible branching and nesting of the site and window location, respectively.</p>
+     *        <p>However, if you have an option such as {404: '.*'}, this will return {pageId: '404'} if specific options are not added for pages on that level, for this site, options for about and home page</p>
+     *        <h3>* Exceptions for window location value</h3>
+     *        <p>When the route channel receives an update request with the following data object, {pageId:'home'}, it will return the value for that route Option; for this site that is '^$|index.html'. To override the routeOption Value, the data object can be sent as, {pageId:'home', pageIdValue:''}.</p>
+     *
+     *
      *      <ul>
      *        <li>The Key is always used to determine the routing data value</li>
      *        <li>The Key can be a regex pattern, so that multiple values can contain the same branching logic, or the same window location string</li>
@@ -109,6 +121,14 @@ export class SpyneChannelRoute extends Channel {
      *   <p>The routes object is able to express every combination of the nested variables by providing a  'routeLevel' for every combination of the site.</p>
      *
      *   <article class='code-example' id='routes-config-example'></article>
+     *
+     *   <p>This route config contains the logic for the following string locations</p>
+     *
+     *   <p>/</p><p>{pageId: home}</p>
+     *   <p>about</p><p>{pageId: about}</p>
+     *   <p>guide/overview/</p><p>{pageId: about, section: overview}</p>
+     *   <p>guide/reference/spyne-channel-route</p><p>{pageId: about, section: reference, menuItem: spyneChannelRoute}</p>
+     *
      *
      * <p>The SpyneChannelRoute has the two main duties:
      * <ul>
