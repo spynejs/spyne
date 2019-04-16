@@ -129,7 +129,7 @@ export class SpyneChannelRoute extends Channel {
      * @constructor
      * @param {Object} config
      * @property {String} config.type - = 'slash'; This property determines the url structure by conforming the window pathname to either the slash, query or hash formats.
-     * @property {Object} config.routes - = {routePath: {routeName:'change'}; This nested Object is used to contruct the window pathname and to express the window location as model variables.
+     * @property {Object} config.routes - = {routePath: {routeKey:'change'}; This nested Object is used to contruct the window pathname and to express the window location as model variables.
      *
      */
     props.sendCurrentPayload = true;

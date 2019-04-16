@@ -73,7 +73,7 @@ export class SpyneUtilsChannelRoute {
   static getRouteArrData(routeArr, paramsArr) {
     let paths =  filter(includes(__, routeArr), paramsArr);
     const pathInnermost = SpyneUtilsChannelRoute.getLastArrVal(paths);
-    // console.log('arr and routeName ',{paths, pathInnermost});
+    // console.log('arr and routeKey ',{paths, pathInnermost});
     return { paths, pathInnermost };
   }
 
