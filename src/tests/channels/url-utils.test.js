@@ -68,7 +68,7 @@ describe('URL Utils - Params To Route', () => {
     it('should return multiple routeData in arr', () => {
       let data = RouteDataForTests.multiple.data;
       let correctRouteArr = RouteDataForTests.multiple.arr;
-      let route = routeConfig.routes.routePath;
+      let route = routeConfig.routes.routeLevel;
       let routeVal = SpyneUtilsChannelRouteUrl.createRouteArrayFromParams(data, route);
       expect(JSON.stringify(routeVal)).to.equal(correctRouteArr);
     });
@@ -76,7 +76,7 @@ describe('URL Utils - Params To Route', () => {
     it('should return single keyword in arr', () => {
       let data = RouteDataForTests.single.data;
       let correctRouteArr = RouteDataForTests.single.arr;
-      let route = routeConfig.routes.routePath;
+      let route = routeConfig.routes.routeLevel;
       let routeVal = SpyneUtilsChannelRouteUrl.createRouteArrayFromParams(data, route);
       expect(JSON.stringify(routeVal)).to.equal(correctRouteArr);
     });
@@ -84,7 +84,7 @@ describe('URL Utils - Params To Route', () => {
     it('should return home keyword in arr', () => {
       let data = RouteDataForTests.home.data;
       let correctRouteArr = RouteDataForTests.home.arr;
-      let route = routeConfig.routes.routePath;
+      let route = routeConfig.routes.routeLevel;
       let routeVal = SpyneUtilsChannelRouteUrl.createRouteArrayFromParams(data, route);
       expect(JSON.stringify(routeVal))
         .to.equal(JSON.stringify(correctRouteArr));
@@ -92,7 +92,7 @@ describe('URL Utils - Params To Route', () => {
     it('should return empty keyword in arr', () => {
       let data = RouteDataForTests.empty.data;
       let correctRouteArr = RouteDataForTests.empty.arr;
-      let route = routeConfig.routes.routePath;
+      let route = routeConfig.routes.routeLevel;
       let routeVal = SpyneUtilsChannelRouteUrl.createRouteArrayFromParams(data, route);
       // console.log('data empty ',JSON.stringify(routeVal),correctRouteArr);
       expect(1).to.equal(1);

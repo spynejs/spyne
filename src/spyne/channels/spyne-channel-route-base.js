@@ -36,34 +36,51 @@ export class SpyneChannelRoute extends Channel {
      * @desc
      *
      *   <p>This channel uses a nested routes JSON object to provide logic and structure to the window location pathname. </p>
-     *   <h3>The Routes Config Object</h3>
+     *   <h3>Configuring the Route Channel</h3>
      *   <ol>
+     *     <li>Capture as every type of branching window locations that express all of the different context of the site</li>
      *     <li>The location pathname is typically a series of consecutive strings separated by slashes. The order of the strings reveals the current context of the website.</li>
      *     <li>The Routes configuration file is composed of a routesPath Object for every level of the pathname</li>
      *     <li>The only required property for every routesPath object is the routesKey property</li>
-     *     <li>After the routeKey property, there is key, value pairs that describe that return the value for the routeKey or the value for the String for that level in the window pathname</li>
+     *     <li>After the routeName property, there is key, value pairs that describe that return the value for the routeName or the value for the String for that level in the window pathname</li>
      *     </ol>
      *
-     *    <h3>The routePath object</h3>
+     *    <h3>The routeLevel object</h3>
      *    <ul>
-     *      <li>This is the basic routePath object with its one requirement, routeKey which value is a String</br>
+     *      <li>This is the basic routeLevel object with its one requirement, routeName which value is a String</br>
      *        <pre>
      *            {
-     *                routePath: {
-     *                  routeKey: 'page',
-     *                  dataValue: 'path-name-value'
-     *
-     *                }
+     *                routeLevel: {
+     *                  routeName: 'myPropName'                }
      *            }
      *
      *          </pre>
      *
      *        </li>
+     *      <li>The Route Level Object is Only Useful when adding Route Options</li>
      *
+     *      <pre>
+     *            {
+     *                routeLevel: {
+     *                  routeName: 'myPropName',
+     *                  'valForData: 'val-for-location'
+     *                }
+     *            }
+     *
+     *          </pre>
+     *
+     *      <h4>The Route Options for a routeLevel object are a series of key value pairs </h4>
+     *      <p>KEY {String|Regex Pattern} - determines the data value returned for that level</p>
+     *      If KEY is a regex object then, the data value will window locaiton string that matched that key pattern
+     *
+     *      <h5>VAL Can Either be a String or a Branching routeLevel object</h5>
+     *      <p>VAL - {String|Regex Pattern} determines the window location string for the portion of the window location</p>
+     *      <p>VAL = {routeLevel Object}
+     *      </li>
      *
      *    </ul>
      *
-     *   <p>The routes object is able to express every combination of the nested variables by providing a  'routePath' for every combination of the site.</p>
+     *   <p>The routes object is able to express every combination of the nested variables by providing a  'routeLevel' for every combination of the site.</p>
      *
      *   <article class='code-example' id='routes-config-example'></article>
      *
@@ -73,7 +90,7 @@ export class SpyneChannelRoute extends Channel {
      *   <li>Listen to window location changes and translate the location pathname into a series of relevant properties</li>
      *   <li>Combine data and the current location to update the window location path and to also send a payload of the properties that represent that location</li>
      * </ul>
-     *  <p>Just as the window location is a series of nested values, this channels configuration file is a series of nested "routePath" objects, eaching containing a "routeKey" value that maps to a series of properties</p>
+     *  <p>Just as the window location is a series of nested values, this channels configuration file is a series of nested "routeLevel" objects, eaching containing a "routeName" value that maps to a series of properties</p>
      *  <p>Open the Route Console Window to see the practical use of expressing the window location and route properties through the use of the nested configuration file</p>
      ** <p>This Channel uses a nested config file to expresses the window location as both a path string and also as properties that reveals the app's current context</p>
      * CONVERTING THE USER WINDOW LOCATION REQUEST
@@ -129,7 +146,7 @@ export class SpyneChannelRoute extends Channel {
      * @constructor
      * @param {Object} config
      * @property {String} config.type - = 'slash'; This property determines the url structure by conforming the window pathname to either the slash, query or hash formats.
-     * @property {Object} config.routes - = {routePath: {routeKey:'change'}; This nested Object is used to contruct the window pathname and to express the window location as model variables.
+     * @property {Object} config.routes - = {routeLevel: {routeName:'change'}; This nested Object is used to contruct the window pathname and to express the window location as model variables.
      *
      */
     props.sendCurrentPayload = true;

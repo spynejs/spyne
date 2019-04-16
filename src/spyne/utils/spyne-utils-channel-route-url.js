@@ -21,7 +21,7 @@ export class SpyneUtilsChannelRouteUrl {
   }
 
   static checkIfParamValueMatchesRegex(paramValue, routeObj) {
-    const rejectParamKey = reject(equals('routeKey'));
+    const rejectParamKey = reject(equals('routeName'));
     const keysArr = compose(rejectParamKey, keys);
     const testForRegexMatch = str => test(new RegExp(str), paramValue);
     const checker = compose(find(testForRegexMatch), keysArr);
@@ -58,7 +58,7 @@ export class SpyneUtilsChannelRouteUrl {
     let urlArr = [];
     let loopThroughParam = (routeObj) => {
       let urlObj = {};
-      let keyword = routeObj.routeKey; // PARAM FORM SPYNE CONFIG
+      let keyword = routeObj.routeName; // PARAM FORM SPYNE CONFIG
       let paramValFromData = data[keyword] !== undefined ? data[keyword] : prop(keyword, paramsFromLoc); // PULL VALUE FOR THIS PARAM FROM DATA
       const paramValType = typeof (routeObj[paramValFromData]);
       // console.log({routeObj, paramValType, paramValFromData, keyword})
@@ -82,17 +82,17 @@ export class SpyneUtilsChannelRouteUrl {
 
       const isObject = is(Object, routeObj);
       const objectParamExists = has(paramValFromData, routeObj);
-      const objectContainsRoute = has('routePath', routeObj);
+      const objectContainsRoute = has('routeLevel', routeObj);
       const recursivelyCallLoopBool = objectParamExists && isObject;
       // console.log("CHECKS ", {isObject, objectParamExists, objectContainsRoute, recursivelyCallLoopBool})
       if (recursivelyCallLoopBool === true) {
         let newObj = routeObj[paramValFromData];
         // console.log("NEW OBJ ",{paramValFromData, routeObj, newObj});
-        if (has('routePath', newObj)) {
-          loopThroughParam(newObj.routePath);
+        if (has('routeLevel', newObj)) {
+          loopThroughParam(newObj.routeLevel);
         }
       } else if (objectContainsRoute === true && paramValFromData !== undefined) {
-        loopThroughParam(routeObj.routePath);
+        loopThroughParam(routeObj.routeLevel);
       }
     };
 
@@ -168,7 +168,7 @@ export class SpyneUtilsChannelRouteUrl {
   static convertParamsToRoute(data, r = window.Spyne.config.channels.ROUTE, t, locStr) {
     const urlType = t !== undefined ? t : r.type;
     const isHash = r.isHash;
-    let route = r.routes.routePath;
+    let route = r.routes.routeLevel;
     let locationStr = locStr !== undefined ? locStr : this.getLocationStrByType(urlType, isHash);
     let paramsFromCurrentLocation = this.convertRouteToParams(locationStr, r, urlType).routeData;
     let urlArr = this.createRouteArrayFromParams(data, route, urlType, paramsFromCurrentLocation);
@@ -268,11 +268,11 @@ export class SpyneUtilsChannelRouteUrl {
       latestObj = this.checkIfParamValueMatchesRegex(currentValue, latestObj);
 
       if (latestObj !== undefined) {
-        paths.push(latestObj.routeKey);
+        paths.push(latestObj.routeName);
         routedValuesArr.push(routeValueStr);
       }
-      let strPath = [currentValue, 'routePath'];
-      let routeParamPath = ['routePath'];
+      let strPath = [currentValue, 'routeLevel'];
+      let routeParamPath = ['routeLevel'];
       let objectFromStr = path(strPath, latestObj);
       let objectFromRouteParam = path(routeParamPath, latestObj);
 
@@ -296,7 +296,7 @@ export class SpyneUtilsChannelRouteUrl {
 
   static createDefaultParamFromEmptyStr(topLevelRoute, str) {
     let obj = {};
-    let keyword = topLevelRoute.routeKey;
+    let keyword = topLevelRoute.routeName;
     obj[keyword] = this.checkIfValueShouldMapToParam(topLevelRoute, str);
     return obj;
   }
@@ -326,7 +326,7 @@ export class SpyneUtilsChannelRouteUrl {
     }
     const type = t !== undefined ? t : routeConfig.type;
     const regexTokens = defaultTo({}, prop('regexTokens', routeConfig));
-    let topLevelRoute = routeConfig.routes.routePath;
+    let topLevelRoute = routeConfig.routes.routeLevel;
 
     if (type === 'query') {
       return this.convertQueryStrToParams(topLevelRoute, str);
