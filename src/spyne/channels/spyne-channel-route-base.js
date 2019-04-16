@@ -35,10 +35,42 @@ export class SpyneChannelRoute extends Channel {
      *
      * @desc
      *
+     *   <p>This channel uses a nested routes JSON object to provide logic and structure to the window location pathname. </p>
+     *   <h3>The Routes Config Object</h3>
+     *   <ol>
+     *     <li>The location pathname is typically a series of consecutive strings separated by slashes. The order of the strings reveals the current context of the website.</li>
+     *     <li>The Routes configuration file is composed of a routesPath Object for every level of the pathname</li>
+     *     <li>The only required property for every routesPath object is the routesKey property</li>
+     *     <li>After the routeKey property, there is key, value pairs that describe that return the value for the routeKey or the value for the String for that level in the window pathname</li>
+     *     </ol>
+     *
+     *    <h3>The routePath object</h3>
+     *    <ul>
+     *      <li>This is the basic routePath object with its one requirement, routeKey which value is a String</br>
+     *        <pre>
+     *            {
+     *                routePath: {
+     *                  routeKey: 'page',
+     *                  dataValue: 'path-name-value'
+     *
+     *                }
+     *            }
+     *
+     *          </pre>
+     *
+     *        </li>
+     *
+     *
+     *    </ul>
+     *
+     *   <p>The routes object is able to express every combination of the nested variables by providing a  'routePath' for every combination of the site.</p>
+     *
+     *   <article class='code-example' id='routes-config-example'></article>
+     *
      * <p>The SpyneChannelRoute has the two main duties:
      * <ul>
      *
-     *   <li>Listen to window location changes and tranlate the location pathname into a series of relevant properties</li>
+     *   <li>Listen to window location changes and translate the location pathname into a series of relevant properties</li>
      *   <li>Combine data and the current location to update the window location path and to also send a payload of the properties that represent that location</li>
      * </ul>
      *  <p>Just as the window location is a series of nested values, this channels configuration file is a series of nested "routePath" objects, eaching containing a "routeKey" value that maps to a series of properties</p>
