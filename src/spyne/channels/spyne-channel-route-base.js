@@ -38,6 +38,8 @@ export class SpyneChannelRoute extends Channel {
      *    <p>This channel looks at the window location as a series of nested strings that is separated by slashes, and sometimes be queries.</p>
      *    <p>This channel expresses every level of those nested strings of the window location as nesting routeLevel objects</p>
      *    <p>The Route Level Object is comprised of a routeName and several Route Options, which has all of the routing options that will be available for that particular level in the window location</p>
+     *    <h3>Adjusting the Routes Config Object</h3>
+     *    <p>Adjust the routes config nested routesLevel object to configure the window location to match the sites various branching context and to have the needed properties for the apps components</p>
      *    <h3>The routeLevel object</h3>
      *    <ul>
      *      <li>This is the basic routeLevel object with its one requirement, routeName which value is a String</br>
