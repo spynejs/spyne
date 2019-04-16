@@ -1,4 +1,4 @@
-import { DomElTemplate } from '../../spyne/views/dom-item-template';
+import { DomElTemplate } from '../../spyne/views/dom-el-template';
 import { ScriptTemplate, StringTemplate, starWarsData } from '../mocks/template-renderer.mocks';
 
 chai.use(require('chai-dom'));

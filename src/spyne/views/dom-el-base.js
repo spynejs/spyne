@@ -1,6 +1,6 @@
 // import {createElement} from '../utils/dom-methods';
 import { baseCoreMixins } from '../utils/mixins/base-core-mixins';
-import { DomElTemplate } from './dom-item-template';
+import { DomElTemplate } from './dom-el-template';
 import { deepMerge } from '../utils/deep-merge';
 // import {DomElTemplate} from './template-renderer';
 

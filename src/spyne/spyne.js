@@ -1,5 +1,5 @@
 import { ChannelsController } from './channels/channels-controller';
-import { DomEl } from './views/dom-item';
+import { DomEl } from './views/dom-el-base';
 import { ViewStreamElement } from './views/view-stream-element';
 import { ViewStream } from './views/view-stream-base';
 import { ViewStreamBroadcaster } from './views/view-stream-broadcaster';
