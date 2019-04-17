@@ -16,7 +16,7 @@ describe('DomEl', () => {
   });
 
   it('dom item is a dom element', () => {
-    let domItem = new DomEl('h1', 'my dom element');
+    let domItem = new DomEl({tagName: 'h1', data: 'my dom element'});
     let el = domItem.render();
     // assert.isFunction(domItem.click);
     expect(el).to.have.property('nodeName');

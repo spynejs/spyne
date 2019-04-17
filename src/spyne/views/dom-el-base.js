@@ -2,9 +2,12 @@
 import { baseCoreMixins } from '../utils/mixins/base-core-mixins';
 import { DomElTemplate } from './dom-el-template';
 import { deepMerge } from '../utils/deep-merge';
+import {defaultTo, pick} from 'ramda';
 // import {DomElTemplate} from './template-renderer';
 
 import {is, forEach, isEmpty, both, complement, mapObjIndexed, forEachObjIndexed, pipe} from 'ramda';
+import {ViewStreamElement} from './view-stream-element';
+import {getConstructorName} from '../utils/frp-tools';
 
 export class DomEl {
   /**
@@ -28,19 +31,30 @@ export class DomEl {
    *
    */
 
-  constructor(tagName = 'div', attributes = {}, data = undefined, template = undefined) {
-    let isSimpleView = both(is(String), complement(isEmpty))(attributes);
-    if (isSimpleView === true) {
-      data = attributes;
-      attributes = {};
-    }
-    this.props = {};// new Map();
-    this.setProp('tagName', tagName);
-    this.setProp('attrs', this.updateAttrs(attributes));
-    this.setProp('data', data);
-    this.setProp('template', template);
+  constructor(props={}) {
+    //let isSimpleView = both(is(String), complement(isEmpty))(attributes);
+   // if (isSimpleView === true) {
+    //  data = attributes;
+      // attributes = {};
 
-    this.setProp('fragment', document.createDocumentFragment());
+   // }
+    const checkDefault = (dflt, val)=>defaultTo(dflt)(val);
+
+    props.tagName = checkDefault('div', props.tagName);
+
+
+    props.attributes = props.attributes!==undefined ? props.attributes : this.getDomAttributes(props);
+    props.attrs = this.updateAttrs(props.attributes);
+
+    props.fragment =  document.createDocumentFragment()
+    this.props = props;
+
+    //this.setProp('tagName', tagName);
+    //this.setProp('attrs', this.updateAttrs(attributes));
+    //this.setProp('data', data);
+   // this.setProp('template', template);
+
+   // this.setProp('fragment', document.createDocumentFragment());
 
     this.addMixins();
   }
@@ -124,6 +138,9 @@ export class DomEl {
    */
   render() {
     this.execute();
+    this.props.template = undefined;
+    this.props.data = undefined;
+    this.props.attributes = undefined;
     return this.getProp('el');
   }
 
@@ -147,9 +164,8 @@ export class DomEl {
 
   unmount() {
     if (this.props !== undefined) {
-      // console.log('dom item unmounting ', this, this.props);
       this.getProp('el').remove();
-      this.props.clear();
+      this.props = undefined;
       this.gc();
     }
   }
@@ -169,4 +185,135 @@ export class DomEl {
     let coreMixins = baseCoreMixins();
     this.gc = coreMixins.gc.bind(this);
   }
+
+  getDomAttributes(props){
+    return pick(this.attributesArray, props);
+  }
+  get attributesArray() {
+    return [
+      'accept',
+      'accept-charset',
+      'accesskey',
+      'action',
+      'align',
+      'allow',
+      'alt',
+      'async',
+      'autocapitalize',
+      'autocomplete',
+      'autofocus',
+      'autoplay',
+      'bgcolor',
+      'border',
+      'buffered',
+      'challenge',
+      'charset',
+      'checked',
+      'cite',
+      'class',
+      'code',
+      'codebase',
+      'color',
+      'cols',
+      'colspan',
+      'content',
+      'contenteditable',
+      'contextmenu',
+      'controls',
+      'coords',
+      'crossorigin',
+      'csp',
+      'dataset',
+      'datetime',
+      'decoding',
+      'default',
+      'defer',
+      'dir',
+      'dirname',
+      'disabled',
+      'download',
+      'draggable',
+      'dropzone',
+      'enctype',
+      'for',
+      'form',
+      'formaction',
+      'headers',
+      'height',
+      'hidden',
+      'high',
+      'href',
+      'hreflang',
+      'http-equiv',
+      'icon',
+      'id',
+      'importance',
+      'integrity',
+      'ismap',
+      'itemprop',
+      'keytype',
+      'kind',
+      'label',
+      'lang',
+      'language',
+      'lazyload',
+      'list',
+      'loop',
+      'low',
+      'manifest',
+      'max',
+      'maxlength',
+      'minlength',
+      'media',
+      'method',
+      'min',
+      'multiple',
+      'muted',
+      'name',
+      'novalidate',
+      'open',
+      'optimum',
+      'pattern',
+      'ping',
+      'placeholder',
+      'poster',
+      'preload',
+      'radiogroup',
+      'readonly',
+      'referrerpolicy',
+      'rel',
+      'required',
+      'reversed',
+      'rows',
+      'rowspan',
+      'sandbox',
+      'scope',
+      'scoped',
+      'selected',
+      'shape',
+      'size',
+      'sizes',
+      'slot',
+      'span',
+      'spellcheck',
+      'src',
+      'srcdoc',
+      'srclang',
+      'srcset',
+      'start',
+      'step',
+      'style',
+      'summary',
+      'tabindex',
+      'target',
+      'title',
+      'translate',
+      'type',
+      'usemap',
+      'value',
+      'width',
+      'wrap'
+    ];
+  }
+
 }

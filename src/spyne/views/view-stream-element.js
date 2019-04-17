@@ -175,7 +175,7 @@ export class ViewStreamElement {
   onAttachChildToSelf(p) {
     let data = p.childRenderData;
     this.combineDomItems(data);
-    console.log("ATTACHING CHID TO SELF ===============")
+    //console.log("ATTACHING CHID TO SELF ===============")
     return {
       action: 'CHILD_ATTACHED',
       $dir: this.$dirs.PI
@@ -199,11 +199,13 @@ export class ViewStreamElement {
   }
 
   renderDomItem(d) {
-    let tagName, attrs, data, template;
-    [tagName,attrs,data,template]=d;
-    console.log("RENDER DOM EL ",{tagName, attrs, data,template,d});
+    let tagName, attributes, data, template;
+    [tagName,attributes,data,template]=d;
+    //console.log("RENDER DOM EL ",{tagName, attributes, data,template,d});
 
-    this.domItem = new DomEl(...d);
+    //this.domItem = new DomEl(...d);
+    this.domItem = new DomEl({tagName,attributes,data,template});
+
     return this.domItem;
   }
 
