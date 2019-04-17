@@ -13,13 +13,25 @@ export class SpyneChannelWindow extends Channel {
    * @type core
    *
    * @desc
-   * Internal channel that publishes all window events.
+   * The Window Channel will listen to window and document events that are set in its configuration file
    *
    * @constructor
+   * @param {String} CHANNEL_NAME
+   * @param {Object} config
+   * @property {Object} config - = {}; The config has several options used to listen to window and document events.
+   * @property {Array} config.events - = []; Any window and document events can be added here.
+   * @property {Object} config.mediaQueries - = {}; Media queries are added as key,value pairs; the key is the name of the boolean for the query, the value is the query itself.
+   * @property {Boolean} config.listenForResize - = true; This is default listening for resize event.
+   * @property {Boolean} config.listenForOrientation - = true; Listen for horizontal and landscape orientation changes on mobile devices.
+   * @property {Boolean} config.listenForMouseWheel - = false; If set to true, will listen for mouseWheel and will add direction and distance parameters.
+   * @property {Boolean} config.debounceMSTimeForResize - = 200; The time between resize events in milliseconds.
+   * @property {Boolean} config.debounceMSTimeForScroll - = 150; The time between scroll events in milliseconds.
+   *
+   *
    *
    */
-  constructor() {
-    super('CHANNEL_WINDOW');
+  constructor(CHANNEL_NAME="CHANNEL_WINDOW") {
+    super(CHANNEL_NAME);
     this.bindStaticMethods();
     // this.props.name = 'WINDOW';
   }
