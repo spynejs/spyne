@@ -37,8 +37,8 @@ export class SpyneChannelRoute extends Channel {
      *
      * <p>The SpyneChannelRoute has the two main duties:
      *  <ul>
-     *   <li>Listen to window location changes to translate the location pathname into a series of model properties.</li>
      *   <li>Combine data with the current window location to update the location's pathname.</li>
+     *   <li>Listen to window location changes to translate the location pathname into a series of model properties.</li>
      * </ul>
      * <p>In both cases, this channel sends a ChannelPayload containing updated route properties.</p>
      *
@@ -114,6 +114,7 @@ export class SpyneChannelRoute extends Channel {
      * @param {Object} config
      * @property {String} config.type - = 'slash'; This property determines the url structure by conforming the window pathname to either the slash, query or hash formats.
      * @property {Object} config.routes - = {routeLevel: {routeName:'change'}; This nested Object is used to contruct the window pathname and to express the window location as model variables.
+     * @property {String} CHANNEL_NAME - = 'CHANNEL_ROUTE';
      *
      */
     props.sendCurrentPayload = true;

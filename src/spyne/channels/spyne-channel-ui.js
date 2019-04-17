@@ -9,7 +9,10 @@ export class SpyneChannelUI extends Channel {
    * @type core
    *
    * @desc
-   * Internal Channel that publishes all UI Events.
+   * <p>This Channel listens to all User Events that have been set to broadcast by ViewStream instances, using the broadCastEvents method</p>
+   * <p>HTML Elements that have their data channel property set to "ROUTE" will broadcast their ui event to that channel instead.</p>
+   * <button class='modal-btn' data-type='modal-window' data-value='uiEvents'>View UI Events</button>
+   *
    *
    * @constructor
    * @param {String} name

@@ -4,7 +4,7 @@ import { DomElTemplate } from './dom-el-template';
 import { deepMerge } from '../utils/deep-merge';
 // import {DomElTemplate} from './template-renderer';
 
-import {is, forEach, mapObjIndexed, forEachObjIndexed, pipe} from 'ramda';
+import {is, forEach, isEmpty, both, complement, mapObjIndexed, forEachObjIndexed, pipe} from 'ramda';
 
 export class DomEl {
   /**
@@ -29,7 +29,7 @@ export class DomEl {
    */
 
   constructor(tagName = 'div', attributes = {}, content = undefined, template = undefined) {
-    let isSimpleView = is(String, attributes);
+    let isSimpleView = both(is(String), complement(isEmpty))(attributes);
     if (isSimpleView === true) {
       content = attributes;
       attributes = {};
