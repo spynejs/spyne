@@ -66,7 +66,8 @@ export class ViewStreamElement {
     this.props = this.props !== undefined ? this.props : {};
     let removeIsNil = (val) => val !== undefined;
     let attrs = filter(removeIsNil, pick(['id', 'className'], this.props));
-    return new DomEl(this.props.tagName, attrs, this.props.data, this.props.template);
+    let {tagName,data,template} = this.props;
+    return new DomEl(tagName, attrs, data, template);
   }
 
   onDisposeCompleted(d) {

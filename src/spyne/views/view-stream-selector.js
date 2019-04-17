@@ -168,11 +168,19 @@ function ViewStreamSelector(cxt, str) {
     return this;
   };
 
-/*
-  selector.setActiveItem = (c, sel) => {
-    return selector.toggleActiveEl(c, sel);
+  /**
+   * Attaches html to the Selector's element
+   * @param htmlElement
+   */
+  selector.appendChild=(htmlElement)=>{
+    if (selector.el.length!==0) {
+      selector.el.appendChild(htmlElement);
+    } else{
+      console.warn(`Spyne Warning: The selector, ${str} does not appear to be valid!`);
+    }
+
+    return selector.el;
   };
-*/
 
 
   /**
