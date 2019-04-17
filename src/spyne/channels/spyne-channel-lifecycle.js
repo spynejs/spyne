@@ -7,11 +7,15 @@ export class SpyneChannelLifecycle extends Channel {
    * @type core
    *
    * @desc
-   * Internal Channel that publishes ViewStream rendering and disposing events.
+   * Internal Channel that publishes rendering and disposing events of all ViewStreams whose property, proper.sendLifecycleEvents is set to true.
    *
+   * <h3>The two actions that are regsitered for this channel are:</h3>
+   * <ul>
+   * <li>CHANNEL_LIFECYCLE_RENDERED_EVENT</li>
+   * <li>CHANNEL_LIFECYCLE_REMOVED_EVENT</li>
+   *  </ul>
    * @constructor
-   * @param {String} name
-   * @param {Object} props
+   * @property {String} CHANNEL_NAME - = 'CHANNEL_LIFECYCLE';
    */
 
   constructor(props = {}) {

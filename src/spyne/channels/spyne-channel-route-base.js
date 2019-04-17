@@ -42,6 +42,12 @@ export class SpyneChannelRoute extends Channel {
      * </ul>
      * <p>In both cases, this channel sends a ChannelPayload containing updated route properties.</p>
      *
+     * <h3>The two actions that are regsitered for the Route channel are:</h3>
+     * <ul>
+     * <li>CHANNEL_ROUTE_DEEPLINK_EVENT</li>
+     * <li>CHANNEL_ROUTE_CHANGE_EVENT</li>
+     *  </ul>
+     *
      *    <h3>The Routes Configuration Object</h3>
      *    <p>Thr routes configuration object is used to map the location string to and from a route model.</p>
      *

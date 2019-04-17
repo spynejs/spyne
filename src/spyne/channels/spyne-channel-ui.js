@@ -15,8 +15,7 @@ export class SpyneChannelUI extends Channel {
    * <p>See LINK['ViewStream', 'view-stream'] for an example on how to bind HTML Elements to the UI Channel.</p>
    *
    * @constructor
-   * @param {String} name
-   * @param {Object} props
+   * @property {String} CHANNEL_NAME - = 'CHANNEL_UI';
    *
    *
    */

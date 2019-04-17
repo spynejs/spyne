@@ -27,7 +27,7 @@ export class SpyneChannelWindow extends Channel {
    * @property {Boolean} config.listenForMouseWheel - = false; If set to true, will listen for mouseWheel and will add direction and distance parameters.
    * @property {Boolean} config.debounceMSTimeForResize - = 200; The time between resize events in milliseconds.
    * @property {Boolean} config.debounceMSTimeForScroll - = 150; The time between scroll events in milliseconds.
-   *
+   * @property {String} CHANNEL_NAME - = 'CHANNEL_WINDOW';
    *
    *
    */
