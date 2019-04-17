@@ -86,7 +86,7 @@ export class ChannelFetch extends Channel {
   }
 
   createChannelPayloadItem(payload, action = `${this.props.name}_DATA_EVENT`) {
-    console.log("FETCH ",this.props.name, {action,payload});
+   // console.log("FETCH ",this.props.name, {action,payload});
     // return new ChannelPayload(this.props.name, action, payload);
     this.sendChannelPayload(action, payload);
   }
