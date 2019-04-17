@@ -199,6 +199,10 @@ export class ViewStreamElement {
   }
 
   renderDomItem(d) {
+    let tagName, attrs, data, template;
+    [tagName,attrs,data,template]=d;
+    console.log("RENDER DOM EL ",{tagName, attrs, data,template,d});
+
     this.domItem = new DomEl(...d);
     return this.domItem;
   }

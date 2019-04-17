@@ -19,40 +19,43 @@ export class DomEl {
    * @constructor
    * @param {string} tagName the tagname for this dom element.
    * @param {object} attributes any domElement attribute (except for class )
-   * @param {string|object} content string for text tags and json for templates
+   * @param {string|object} data string for text tags and json for templates
    * @param {template} template
    * @property {String} props.tagName - = 'div'; Default for tagName.
    * @property {Object} props.attributes - = {}; This can be any valid HTML attribute for the given tagName.
-   * @property {String|Object} props.content = undefined; This is either a String for an element or JSON data object for a template.
+   * @property {String|Object} props.data = undefined; This is either a String for an element or JSON data object for a template.
    * @property {String|HTML} props.template = undefined; If a template is defined, the DomEl will use it.
    *
    */
 
-  constructor(tagName = 'div', attributes = {}, content = undefined, template = undefined) {
+  constructor(tagName = 'div', attributes = {}, data = undefined, template = undefined) {
     let isSimpleView = both(is(String), complement(isEmpty))(attributes);
     if (isSimpleView === true) {
-      content = attributes;
+      data = attributes;
       attributes = {};
     }
-    this.props = new Map();
-    this.setProp('fragment', document.createDocumentFragment());
+    this.props = {};// new Map();
     this.setProp('tagName', tagName);
     this.setProp('attrs', this.updateAttrs(attributes));
-    this.setProp('content', content);
+    this.setProp('data', data);
     this.setProp('template', template);
+
+    this.setProp('fragment', document.createDocumentFragment());
+
     this.addMixins();
   }
 
   setProp(key, val) {
-    this.props.set(key, val);
+    //this.props.set(key, val);
+    this.props[key] = val;
   }
 
   getProp(val) {
-    return this.props.get(val);
+    return this.props[val];
   }
 
   get el() {
-    return this.props.get('el');
+    return this.props.el;
   }
 
   setElAttrs(el, params) {
@@ -79,7 +82,7 @@ export class DomEl {
     let template = this.getProp('template');
 
     let addTmpl = (template) => {
-      let data = this.getProp('content');
+      let data = this.getProp('data');
       data = is(Object, data) ? data : {};
 
       let frag = new DomElTemplate(template, data).getTemplateNode();
@@ -95,7 +98,7 @@ export class DomEl {
   }
 
   addContent(el) {
-    let text = (this.getProp('content'));
+    let text = (this.getProp('data'));
     let isText = is(String, text);
     if (isText === true) {
       let txt = document.createTextNode(text);
@@ -112,7 +115,7 @@ export class DomEl {
       this.addContent.bind(this)
     )(this.getProp('tagName'));
     // this.getProp('fragment').appendChild(el);
-    this.props.set('el', el);
+    this.props.el = el;
   }
 
   /**
