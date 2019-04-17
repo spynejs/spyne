@@ -35,12 +35,8 @@ export class SpyneChannelRoute extends Channel {
      *
      * @desc
      *
-     *    <h3>The SpyneChannelRoute Approach</h3>
-     *
-     *    <p>The window location acts as a natural model for a website, revealing its current context through a hierarchy of nested strings (except when organized as query strings).</p>
      *    <p>This channel uses a routes configuration object to map the location string to and from a route model.</p>
      *    <h3>The Routes Configuration Object</h3>
-     *     <p>This config object consists of nested routeLevel objects that corresponds to all of the branching possiblities of the window location.</p>
      *
      *     <pre>           {
      *                routeLevel: {
@@ -57,49 +53,43 @@ export class SpyneChannelRoute extends Channel {
      *            }
      *
      *          </pre>
+     *     <p>This config object consists of nested routeLevel objects that corresponds to all of the branching possiblities of the window location.</p>
+     *    <p>The routeName determines the model property for each level.</p>
+     *    <h3>Route Options</h3>
+     *    <p>A routeLevel may contain several route option key-value pairs, which is used to map between data and window location values</p>
+     *    <ul class='basic'>
+     *      <li>
+     *         <h5 class='basic'>The Route Option Key (or left value)</h5>
+     *         <ul class='decimal'>
+     *         <li>Maps the window location to route data properties</li>
+     *          <li>Can be a regex pattern so that multiple data properties can share the same branching logic</li>
+     *          </ul>
+     *      </li>
      *
-     *    <p>The routeName determines the model property for each level.</p><p>A routeLevel may contain several routeOptions key-value pairs, which is used to map between data and window location values</p>
+     *      <li>
+     *           <h5 class='basic'>The Route Option Value (or right value)</h5>
+     *           <ul class='decimal'>
+     *           <li>Maps properties to update the window location pathname</li>
+     *          <li>Determines the string value for its level of the window location</li>
+     *          <li>Can be a regex pattern so that multiple locations can map to same routeData property</li>
+     *          <li>Branching ends for the route option when this value is a either a String or a regex pattern</li>
+     *          <li>Branching continues for the route option when this value is a nested routeLevel object</li>
+     *          </ul>
+     *      </li>
+     *      </ul>
      *     <p></p><p>If the branching terminates for a particular location, for example, the home page does not branch, then a string is added.</p>
      *    <p>If the location branches, for example, this reference section, then a routeLevel Object is given as the value for that location</p>
-     *    <h3>Adjusting the Routes Config Object</h3>
-     *    <p>Adjust the routes config nested routesLevel object to configure the window location to match the sites various branching context and to have the needed properties for the apps components</p>
-     *    <h3>The routeLevel object</h3>
-     *    <ul>
-     *      <li>This is the basic routeLevel object with its one requirement, routeName which value is a String</br>
-     *        <pre>
-     *            {
-     *                routeLevel: {
-     *                  routeName: 'myPropName'                }
-     *            }
-     *
-     *          </pre>
-     *
-     *        </li>
-     *      <li>The Route Level Object is Only Useful when adding Route Options</li>
-     *
-     *      <pre>
-     *            {
-     *                routeLevel: {
-     *                  routeName: 'myPropName',
-     *                  routeOption: 'route-option'
-     *                }
-     *            }
-     *
-     *          </pre>
-     *
-     *    <block>
-     *      <h3>The Route Option</h3>
      *      <p>The Route Option is a Key Value Pair that determines the routing data values and the window location string for that level</p>
-     *      <h4>The Route Option Key</h4>
+     *      <h4 class='basic'>The Route Option Key</h4>
      *      <p>The Route Option is a key,value pair that is used to map properties to nested location strings and vice versa.</p>
-     *      <h5>When when used to match a property value, the Route Option returns the window nested location String</h5>
-     *      <pre>pageOption: 'nested-loc-string'</pre>
-     *        <h5>When used to match a nested portion of the window location, the Route Option returns the property name:</h5>
-     *        <pre>'nested-loc-string' : 'pageOption'</pre>
+     *      <h5 class='basic'>When when used to match a property value, the Route Option returns the window nested location String</h5>
+     *      <pre class='basic'>pageOption: 'nested-loc-string'</pre>
+     *        <h5 class='basic'>When used to match a nested portion of the window location, the Route Option returns the property name:</h5>
+     *        <pre class='basic'>'nested-loc-string' : 'pageOption'</pre>
      *
      *        <p>Route Options are mostly needed to express every possible branching and nesting of the site and window location, respectively.</p>
      *        <p>However, if you have an option such as {404: '.*'}, this will return {pageId: '404'} if specific options are not added for pages on that level, for this site, options for about and home page</p>
-     *        <h3>* Exceptions for window location value</h3>
+     *        <h3>Exceptions for window location value</h3>
      *        <p>When the route channel receives an update request with the following data object, {pageId:'home'}, it will return the value for that route Option; for this site that is '^$|index.html'. To override the routeOption Value, the data object can be sent as, {pageId:'home', pageIdValue:''}.</p>
      *
      *
@@ -108,7 +98,7 @@ export class SpyneChannelRoute extends Channel {
      *        <li>The Key can be a regex pattern, so that multiple values can contain the same branching logic, or the same window location string</li>
      *
      *        </ul>
-     *        <h4>The Route Option Value</h4>
+     *        <h4 class='basic'>The Route Option Value</h4>
      *        <ul>
      *          <li>When data is submitted to a Route Channel to create a new window location, this channel will use the value of the Route Option to determine the new window location</li>
      *          <li>The Route Option is also used to conversely determine the data from just the current window location</li>
@@ -134,7 +124,7 @@ export class SpyneChannelRoute extends Channel {
      *      <p>KEY {String|Regex Pattern} - determines the data value returned for that level</p>
      *      If KEY is a regex object then, the data value will window locaiton string that matched that key pattern
      *
-     *      <h5>VAL Can Either be a String or a Branching routeLevel object</h5>
+     *      <h5 class='basic'>VAL Can Either be a String or a Branching routeLevel object</h5>
      *      <p>VAL - {String|Regex Pattern} determines the window location string for the portion of the window location</p>
      *      <p>VAL = {routeLevel Object}
      *      </li>
