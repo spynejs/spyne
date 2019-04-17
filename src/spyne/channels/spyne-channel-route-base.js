@@ -95,12 +95,20 @@ export class SpyneChannelRoute extends Channel {
      *      <p>You can see this site routing in action by opening up the console's routes panel</p>
      *      <div class='btn btn-blue-ref btn-console' data-type="console" data-value="open" data-channel-type="route">CLICK TO OPEN ROUTE PANEL</div>
      *
-     *      </br></br></br></br></br></br></br>
-     *      <h3>How to Update the Route by Binding UI Elements to the SpyneRouteChannel</h3>
-     *      <h3>How to update the Route from ViewStream by usign the sendInfoToChannel method</h3>
-     *      <h3>How to udpate the Route from another Channel.<h3>
+     * @example
+     * TITLE["<h4>Binding UI ELements to the Route Channel</h4>"]
+     * // This also is an example of how to override the RouteOption value (useful when the value is a regex pattern)
+     * <div class='btn' data-channel="ROUTE" data-page-id='home' data-page-id-value=''>HOME</div>
      *
+     * @example
+     * TITLE["<h4>Updating the Route Channel using ViewStream&rsquo;s sendInfoToChannel</h4>"]
+     * const dataUpdateObj = {pageId:'guide', section:'reference', menuItem:'spyne-route-channel'};
+     * this.sendInfoToChannel("CHANNEL_ROUTE", dataUpdateObj);
      *
+     * @example
+     * TITLE["<h4>Updating the Route Channel using Channel&rsquo;s sendPayloadToRouteChannel</h4>"]
+     * const dataUpdateObj = {pageId:'guide', section:'reference', menuItem:'spyne-route-channel'};
+     * this.sendPayloadToRouteChannel(dataUpdateObj);
      *
      * @constructor
      * @param {Object} config
