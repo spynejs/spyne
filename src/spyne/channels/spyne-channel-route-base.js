@@ -35,9 +35,24 @@ export class SpyneChannelRoute extends Channel {
      *
      * @desc
      *
-     *    <p>This channel looks at the window location as a series of nested strings that is separated by slashes, and sometimes be queries.</p>
-     *    <p>This channel expresses every level of those nested strings of the window location as nesting routeLevel objects</p>
+     *    <h3>The SpyneChannelRoute Approach</h3>
+     *
+     *    <p>The window location acts as a natural model for a website, revealing its current context through a hierarchy of nested strings (except when organized as query strings).</p>
+     *    <p>This channel uses a configuration object to map the location string to and from a route model.</p>
+     *     <p>The config object consists of nested routeLevel objects that correspond to all possible location branches of the website.</p>
+     *     <p>The routeName property of each routeLevel determines the properties for the route model.</p>
+     *    <p>The window location of a acts as a natural model of website, revealing the current context through a hierarchy of nested strings, separated by slashes (except when organized as query strings).</p>
+     *    <p>This channel uses a config file to map the location to and and from route properties</p>
+     *    <p>A website's window location is essentially a series of nested strings that's separated by slashes (except when organized as query strings).</p>
+     *    <p>Together all of the nested strings of a location pathname reveals the current context of the site.</p>
+     *    <p>This channel's config file maps the nested strings of the site's window location to and from route properties.</p>
+     *
+     *    <h3>The Routes Configuration File</h3>
+     *    <p>This Route Channel's configuration Object is a series of nested routeLevel objects that correspponds to all of the branching possiblities of the window location.</p>
+     *
      *    <p>The Route Level Object is comprised of a routeName and several Route Options, which has all of the routing options that will be available for that particular level in the window location</p>
+     *    <p>If the branching terminates for a particular location, for example, the home page does not branch, then a string is added.</p>
+     *    <p>If the location branches, for example, this reference section, then a routeLevel Object is given as the value for that location</p>
      *    <h3>Adjusting the Routes Config Object</h3>
      *    <p>Adjust the routes config nested routesLevel object to configure the window location to match the sites various branching context and to have the needed properties for the apps components</p>
      *    <h3>The routeLevel object</h3>
