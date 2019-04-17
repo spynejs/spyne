@@ -35,6 +35,13 @@ export class SpyneChannelRoute extends Channel {
      *
      * @desc
      *
+     * <p>The SpyneChannelRoute has the two main duties:
+     * <ul>
+     *
+     *   <li>Listen to window location changes and translate the location pathname into a series of relevant properties</li>
+     *   <li>Combine data and the current location to update the window location path and to also send a payload of the properties that represent that location</li>
+     * </ul>
+     *
      *    <p>This channel uses a routes configuration object to map the location string to and from a route model.</p>
      *    <h3>The Routes Configuration Object</h3>
      *
@@ -62,6 +69,7 @@ export class SpyneChannelRoute extends Channel {
      *         <h5 class='basic'>The Route Option Key (or left value)</h5>
      *         <ul class='decimal'>
      *         <li>Maps the window location to route data properties</li>
+     *         <li>This channel can 'fill in the blanks' so that only the updated level routeNames are required to revise the window location</li>
      *          <li>Can be a regex pattern so that multiple data properties can share the same branching logic</li>
      *          </ul>
      *      </li>
@@ -77,129 +85,21 @@ export class SpyneChannelRoute extends Channel {
      *          </ul>
      *      </li>
      *      </ul>
-     *     <p></p><p>If the branching terminates for a particular location, for example, the home page does not branch, then a string is added.</p>
-     *    <p>If the location branches, for example, this reference section, then a routeLevel Object is given as the value for that location</p>
-     *      <p>The Route Option is a Key Value Pair that determines the routing data values and the window location string for that level</p>
-     *      <h4 class='basic'>The Route Option Key</h4>
-     *      <p>The Route Option is a key,value pair that is used to map properties to nested location strings and vice versa.</p>
-     *      <h5 class='basic'>When when used to match a property value, the Route Option returns the window nested location String</h5>
-     *      <pre class='basic'>pageOption: 'nested-loc-string'</pre>
-     *        <h5 class='basic'>When used to match a nested portion of the window location, the Route Option returns the property name:</h5>
-     *        <pre class='basic'>'nested-loc-string' : 'pageOption'</pre>
      *
-     *        <p>Route Options are mostly needed to express every possible branching and nesting of the site and window location, respectively.</p>
-     *        <p>However, if you have an option such as {404: '.*'}, this will return {pageId: '404'} if specific options are not added for pages on that level, for this site, options for about and home page</p>
-     *        <h3>Exceptions for window location value</h3>
-     *        <p>When the route channel receives an update request with the following data object, {pageId:'home'}, it will return the value for that route Option; for this site that is '^$|index.html'. To override the routeOption Value, the data object can be sent as, {pageId:'home', pageIdValue:''}.</p>
+     *      <h3>Enhancing The App's Routing Logic</h3>
+     *      <p>The best practice for a Spyne App is to have only one component, a custom channel, listen to the SpyneRouteChannel. All other components will listen to the custom route channel. This allows the custom route channel to enhance routing the logic with data and custom actions.</p>
+     *      <p>You can see this in action in the Spyne Starter App</p>
      *
+     *      <h4 class='basic'>Examining this Site's Route Configuration</h4>
+     *      <article class='code-example' id='routes-config-example'></article>
+     *      <p>You can see how this site routing in action by opening up the console's routes panel</p>
+     *      <div class='btn btn-blue-ref btn-console' data-type="console" data-value="open" data-channel-type="route">CLICK TO OPEN ROUTE PANEL</div>
      *
-     *      <ul>
-     *        <li>The Key is always used to determine the routing data value</li>
-     *        <li>The Key can be a regex pattern, so that multiple values can contain the same branching logic, or the same window location string</li>
-     *
-     *        </ul>
-     *        <h4 class='basic'>The Route Option Value</h4>
-     *        <ul>
-     *          <li>When data is submitted to a Route Channel to create a new window location, this channel will use the value of the Route Option to determine the new window location</li>
-     *          <li>The Route Option is also used to conversely determine the data from just the current window location</li>
-     *          </ul>
-     *      </block>
-     *      <h3>How to Add More Routing Logic</h3>
-     *      <p>Create a custom channel that subscribes to the SpyneRouteChannel and have all components point to this more specific routing channel that adds more logic, such as specific actions when a page request is made, instead of a menuItem change</p>
+     *      </br></br></br></br></br></br></br>
      *      <h3>How to Update the Route by Binding UI Elements to the SpyneRouteChannel</h3>
      *      <h3>How to update the Route from ViewStream by usign the sendInfoToChannel method</h3>
-     *      <h3>How to udpate the Route from another Channel.
+     *      <h3>How to udpate the Route from another Channel.<h3>
      *
-     *   <p>This channel uses a nested routes JSON object to provide logic and structure to the window location pathname. </p>
-     *   <h3>Configuring the Route Channel</h3>
-     *   <ol>
-     *     <li>Capture as every type of branching window locations that express all of the different context of the site</li>
-     *     <li>The location pathname is typically a series of consecutive strings separated by slashes. The order of the strings reveals the current context of the website.</li>
-     *     <li>The Routes configuration file is composed of a routesPath Object for every level of the pathname</li>
-     *     <li>The only required property for every routesPath object is the routesKey property</li>
-     *     <li>After the routeName property, there is key, value pairs that describe that return the value for the routeName or the value for the String for that level in the window pathname</li>
-     *     </ol>
-     **
-     *      <h4>The Route Options for a routeLevel object are a series of key value pairs </h4>
-     *      <p>KEY {String|Regex Pattern} - determines the data value returned for that level</p>
-     *      If KEY is a regex object then, the data value will window locaiton string that matched that key pattern
-     *
-     *      <h5 class='basic'>VAL Can Either be a String or a Branching routeLevel object</h5>
-     *      <p>VAL - {String|Regex Pattern} determines the window location string for the portion of the window location</p>
-     *      <p>VAL = {routeLevel Object}
-     *      </li>
-     *
-     *    </ul>
-     *
-     *   <p>The routes object is able to express every combination of the nested variables by providing a  'routeLevel' for every combination of the site.</p>
-     *
-     *   <article class='code-example' id='routes-config-example'></article>
-     *
-     *   <p>This route config contains the logic for the following string locations</p>
-     *
-     *   <p>/</p><p>{pageId: home}</p>
-     *   <p>about</p><p>{pageId: about}</p>
-     *   <p>guide/overview/</p><p>{pageId: about, section: overview}</p>
-     *   <p>guide/reference/spyne-channel-route</p><p>{pageId: about, section: reference, menuItem: spyneChannelRoute}</p>
-     *
-     *
-     * <p>The SpyneChannelRoute has the two main duties:
-     * <ul>
-     *
-     *   <li>Listen to window location changes and translate the location pathname into a series of relevant properties</li>
-     *   <li>Combine data and the current location to update the window location path and to also send a payload of the properties that represent that location</li>
-     * </ul>
-     *  <p>Just as the window location is a series of nested values, this channels configuration file is a series of nested "routeLevel" objects, eaching containing a "routeName" value that maps to a series of properties</p>
-     *  <p>Open the Route Console Window to see the practical use of expressing the window location and route properties through the use of the nested configuration file</p>
-     ** <p>This Channel uses a nested config file to expresses the window location as both a path string and also as properties that reveals the app's current context</p>
-     * CONVERTING THE USER WINDOW LOCATION REQUEST
-     * This maps the current window location to its respective properties by traversing the nested config file
-     *
-     * CONVERTING PROPERTIES TO WINDOW LOCATION
-     * This channel plucks relevant properties based on the config file and determines new locaiton by filling in the blanks
-     *
-     *
-     <h3>The Route config maps the window location with string or regex comparators</h3>
-     *
-     *
-     * <h3>Working with the Routes Config Object</h3>
-     * <ol>
-     * <li>The window location is essentially a series of nested values that expresses the current context of the application.</li>
-     * <li>The user interacts with a site's menu ui to choose a desired context, which is reflected in the window location.</li>
-     * </ol>
-     * <h3>How SpyneChannelRoute Works</h3>
-     * <div class='btn btn-blue-ref btn-console' data-type="console" data-value="open" data-channel-type="route">CLICK TO OPEN ROUTE PANEL</div>
-     *
-     * <h3>The Spyne Routing System</h3>
-     * <ul>
-     * <li>Allows developers to just add just the required variables to update the window location</li>
-     * </ul>
-     *
-     * <h4>TODOS; OPEN UP THE ROUTE PANEL, show examples of how to update the location with ViewStream, and explain how only guide has nested properties</h4>
-     *
-     * </br> </br></br></br></br></br></br></br>
-     * <p>The core of any routing system is two way translation of values:</p>
-     * <ol>
-     * <li>Transform the window location into usable properties</li>
-     * <li>Combine variables to change the window location</li>
-     * </ol>
-     * <p>This is in essence all of what the ROUTE channel does.</p>
-     *
-     * <h5>The nested route configuration object allows for regular expressions.</h5>
-     *
-     * <ul>
-     * <li>A simple example of two way translation.</li>
-     * <li>The key to making this powerful is a configuration file that does much of the work of the translation.</li>
-     *
-     * <h3>The Nested Routes Object</h3>
-     * <p>Like all Channels the ROUTE Channel publishes globally</p>
-     * <h4>Publishes all window.location events</h4>
-     * ROUTE combines the window location and history apis to automatically publish any window.location changes
-     * Using the config.routes Object, the Route Channel will parse the location and transform the location string into an object containing the relevant data.
-     *
-     * <h5>Allows HTML Elements and ViewStream instances to change window location by updating only the necessary properties.</h5>
-     * <ol>
-     * </ol>
      *
      *
      * @constructor
