@@ -14,6 +14,7 @@ export class SpyneChannelWindow extends Channel {
    *
    * @desc
    * The Window Channel will listen to window and document events that are set in its configuration file
+   * <div class='btn btn-blue-ref btn-console modal-btn'  data-type='modal-window' data-value='windowEvents'>View Window Events</div></br></br>
    *
    * @constructor
    * @param {String} CHANNEL_NAME
