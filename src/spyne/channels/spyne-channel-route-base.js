@@ -36,14 +36,14 @@ export class SpyneChannelRoute extends Channel {
      * @desc
      *
      * <p>The SpyneChannelRoute has the two main duties:
-     * <ul>
-     *
-     *   <li>Listen to window location changes and translate the location pathname into a series of relevant properties</li>
-     *   <li>Combine data and the current location to update the window location path and to also send a payload of the properties that represent that location</li>
+     *  <ul>
+     *   <li>Listen to window location changes to translate the location pathname into a series of model properties.</li>
+     *   <li>Combine data with the current window location to update the location's pathname.</li>
      * </ul>
+     * <p>In both cases, this channel sends a ChannelPayload containing updated route properties.</p>
      *
-     *    <p>This channel uses a routes configuration object to map the location string to and from a route model.</p>
      *    <h3>The Routes Configuration Object</h3>
+     *    <p>Thr routes configuration object is used to map the location string to and from a route model.</p>
      *
      *     <pre>           {
      *                routeLevel: {
@@ -60,10 +60,10 @@ export class SpyneChannelRoute extends Channel {
      *            }
      *
      *          </pre>
-     *     <p>This config object consists of nested routeLevel objects that corresponds to all of the branching possiblities of the window location.</p>
-     *    <p>The routeName determines the model property for each level.</p>
+     *     <p>This config object consists of nested routeLevel objects that corresponds to all of the branching possiblities for the app.</p>
+     *    <p>The routeName value is the property name for each routeLevel.</p>
      *    <h3>Route Options</h3>
-     *    <p>A routeLevel may contain several route option key-value pairs, which is used to map between data and window location values</p>
+     *    <p>A routeLevel may contain several route option key-value pairs, which is used to map between data and the window location.</p>
      *    <ul class='basic'>
      *      <li>
      *         <h5 class='basic'>The Route Option Key (or left value)</h5>
@@ -77,9 +77,9 @@ export class SpyneChannelRoute extends Channel {
      *      <li>
      *           <h5 class='basic'>The Route Option Value (or right value)</h5>
      *           <ul class='decimal'>
-     *           <li>Maps properties to update the window location pathname</li>
+     *           <li>Maps data properties to part of a window location</li>
      *          <li>Determines the string value for its level of the window location</li>
-     *          <li>Can be a regex pattern so that multiple locations can map to same routeData property</li>
+     *          <li>The value can be a regex pattern so that multiple locations can map to same routeData property</li>
      *          <li>Branching ends for the route option when this value is a either a String or a regex pattern</li>
      *          <li>Branching continues for the route option when this value is a nested routeLevel object</li>
      *          </ul>
@@ -87,12 +87,12 @@ export class SpyneChannelRoute extends Channel {
      *      </ul>
      *
      *      <h3>Enhancing The App's Routing Logic</h3>
-     *      <p>The best practice for a Spyne App is to have only one component, a custom channel, listen to the SpyneRouteChannel. All other components will listen to the custom route channel. This allows the custom route channel to enhance routing the logic with data and custom actions.</p>
-     *      <p>You can see this in action in the Spyne Starter App</p>
+     *      <p>The best practice for a Spyne App is to have one component, a custom channel, listen to the SpyneRouteChannel. All other components will then listen to the custom route channel. This allows the custom route channel to enhance routing logic with more data and custom actions.</p>
+     *      <p>You can see this custom routing channel in action in the Spyne Starter App</p>
      *
      *      <h4 class='basic'>Examining this Site's Route Configuration</h4>
      *      <article class='code-example' id='routes-config-example'></article>
-     *      <p>You can see how this site routing in action by opening up the console's routes panel</p>
+     *      <p>You can see this site routing in action by opening up the console's routes panel</p>
      *      <div class='btn btn-blue-ref btn-console' data-type="console" data-value="open" data-channel-type="route">CLICK TO OPEN ROUTE PANEL</div>
      *
      *      </br></br></br></br></br></br></br>
