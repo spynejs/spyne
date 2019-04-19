@@ -3,7 +3,7 @@
   "sideEffects": false,
   "version": "0.10.1",
   "description": "Modern, and efficient javascript frontend framework",
-  "main": "lib/spyne.js",
+  "main": "lib/spyne.min.js",
   "module": "src/spyne/spyne.js",
   "scripts": {
     "eslint-fix-dry" : "eslint 'src/spyne/**' --fix-dry-run",
