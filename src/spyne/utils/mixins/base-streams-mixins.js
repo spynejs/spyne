@@ -14,6 +14,7 @@ export function baseStreamsMixins() {
     sendUIPayload: function(obs, data) {
       return new ViewStreamPayload('CHANNEL_UI', obs, data, 'subscribe');
     },
+    /*
     sendInfoToChannel: function(channelName, payload) {
       const getProp = str => prop(str, this.props);
       const channel = channelName;
@@ -25,10 +26,10 @@ export function baseStreamsMixins() {
       let data = {
         payload, channel, srcElement
       };
-      /* eslint-disable new-cap */
       return new ViewStreamPayload(channelName, new of(''), data,
         'subscribe');
     },
+    */
 /*    sendLifeStreamPayload: function(obs, data) {
       return new ViewStreamPayload('LIFESTREAM', obs, data, 'subscribe');
     },

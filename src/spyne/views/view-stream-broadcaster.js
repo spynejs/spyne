@@ -91,7 +91,7 @@ export class ViewStreamBroadcaster {
       data.srcElement['id'] = this.props.id;
       data.srcElement['vsid'] = this.props.vsid;
       data.srcElement['isLocalEvent'] = isLocalEvent;
-      data.srcElement['viewName'] = this.props.name;
+      //data.srcElement['viewName'] = this.props.name;
       data.srcElement['srcEvent'] = event;
       data.srcElement['el'] = q;
       // select the correct payload

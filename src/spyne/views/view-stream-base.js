@@ -18,7 +18,7 @@ import { ViewStreamObservable } from '../utils/viewstream-observables';
 import {ViewStreamSelector} from './view-stream-selector';
 import { Subject, of } from 'rxjs';
 import { mergeMap, map, takeWhile, filter, tap, finalize } from 'rxjs/operators';
-import {pick, compose, both, isNil, toLower, either, findIndex, test, flatten ,prop, always, lte, defaultTo, propSatisfies, allPass, curry, is, path, omit, ifElse, clone,  mergeRight, where, equals} from 'ramda';
+import {pick, compose, both, isNil, toLower, either, findIndex, test, flatten ,prop,props, always, lte, defaultTo, propSatisfies, allPass, curry, is, path, omit, ifElse, clone,  mergeRight, where, equals} from 'ramda';
 
 export class ViewStream {
   /**
@@ -167,7 +167,7 @@ export class ViewStream {
     this.sink$ = new Subject();
     const ViewClass = this.props.viewClass;
     this.view = new ViewClass(this.sink$, {}, this.props.vsid,
-      this.constructor.name);// new this.props.viewClass(this.sink$);
+      this.props.id);// new this.props.viewClass(this.sink$);
     this.sourceStreams = this.view.sourceStreams;
     this._rawSource$ = this.view.getSourceStream();
     this._rawSource$['viewName'] = this.props.name;
@@ -352,7 +352,7 @@ export class ViewStream {
         }
         return y;
       };
-      return pick(['viewName', 'vsid'], finalDest(x));
+      return pick(['id', 'vsid'], finalDest(x));
     };
     let childCompletedData = findName(p);
     this.tracer('onChildCompleted ', this.checker, p);
@@ -950,11 +950,12 @@ export class ViewStream {
 
   sendInfoToChannel(channelName, payload = {}, action = 'VIEWSTREAM_EVENT') {
     let data = { payload, action };
-    data['srcElement'] = {};// pick(['vsid','viewName'], data);
-    data.srcElement['vsid'] = path(['props', 'vsid'], this);
-    data.srcElement['id'] = path(['props', 'id'], this);
+  //  data['srcElement'] = {};// pick(['vsid','viewName'], data);
+   // data.srcElement['vsid'] = path(['props', 'vsid'], this);
+   // data.srcElement['id'] = path(['props', 'id'], this);
+    data.srcElement = compose(pick(['id','vsid','class','tagName']), prop('props'))(this);
    // data.srcElement['isLocalEvent'] = false;
-    data.srcElement['viewName'] = this.props.name;
+    //data.srcElement['viewName'] = this.props.name;
     if (this.checkIfChannelExists(channelName) === true) {
       let obs$ = of(data);
       return new ViewStreamPayload(channelName, obs$, data);

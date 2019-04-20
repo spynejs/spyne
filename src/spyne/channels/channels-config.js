@@ -54,9 +54,9 @@ if (compose !== undefined && Observable !== undefined) {
       predicate: compose(is(String), path(['data', 'srcElement', 'vsid']))
     },
     {
-      error: 'needs a viewName in srcElement',
+      error: 'needs a id in srcElement',
       predicate: compose(is(String),
-        path(['data', 'srcElement', 'viewName']))
+        path(['data', 'srcElement', 'id']))
     }
   ];
 
