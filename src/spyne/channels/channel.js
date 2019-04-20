@@ -60,7 +60,7 @@ export class Channel {
     props.name = CHANNEL_NAME;
     this.props = props;
     this.props.isProxy = this.props.isProxy === undefined ? false : this.props.isProxy;
-    this.props.sendCurrentPayload = this.props.sendCurrentPayload === undefined ? false : this.props.sendCurrentPayload;
+    this.props.sendCachedPayload = this.props.sendCachedPayload === undefined ? false : this.props.sendCachedPayload;
     this.sendPayloadToRouteChannel = new RouteChannelUpdater(this);
     this.createChannelActionMethods();
     this.streamsController = window.Spyne.channels;// getGlobalParam('streamsController');
@@ -75,9 +75,9 @@ export class Channel {
     let proxyExists = this.streamsController.testStream(this.props.name);
 
     if (proxyExists === true) {
-      return this.streamsController.getProxySubject(this.props.name, this.props.sendCurrentPayload);
+      return this.streamsController.getProxySubject(this.props.name, this.props.sendCachedPayload);
     } else {
-      return this.props.sendCurrentPayload === true ? new ReplaySubject(1) : new Subject();
+      return this.props.sendCachedPayload === true ? new ReplaySubject(1) : new Subject();
     }
   }
 

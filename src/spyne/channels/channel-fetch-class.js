@@ -52,7 +52,7 @@ export class ChannelFetch extends Channel {
       `${name}_DATA_EVENT`,
       [`${name}_UPDATE_DATA_EVENT`, 'onFetchUpdate']
     ];
-    props.sendCurrentPayload = true;
+    props.sendCachedPayload = true;
     super(name, props);
   }
 

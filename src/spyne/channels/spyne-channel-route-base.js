@@ -123,7 +123,7 @@ export class SpyneChannelRoute extends Channel {
      * @property {String} CHANNEL_NAME - = 'CHANNEL_ROUTE';
      *
      */
-    props.sendCurrentPayload = true;
+    props.sendCachedPayload = true;
     super('CHANNEL_ROUTE', props);
     this.createChannelActionsObj();
     this.routeConfigJson = this.getRouteConfig();

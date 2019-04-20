@@ -21,7 +21,7 @@ export class SpyneChannelUI extends Channel {
    */
 
   constructor(name = 'CHANNEL_UI', props = {}) {
-    props.sendCurrentPayload = false;
+    props.sendCachedPayload = false;
     super(name, props);
     this.keyEventsLoaded = false;
     this.keyCodeArr = [];
