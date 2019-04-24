@@ -140,7 +140,9 @@ export class ViewStreamElement {
 
   onGarbageCollect(p) {
     // console.log('MEDIATOR onGarbageCollect ', this.vsid, this.vsName, p);
-    this.domItem.unmount();
+    if (this.domItem!==undefined) {
+      this.domItem.unmount();
+    }
 
     if (this.sourceStreams !== undefined) {
       this.sourceStreams.completeStream(['parent']);
