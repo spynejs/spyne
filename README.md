@@ -8,7 +8,7 @@ A Spyne app is built around two components, *Channels* and *ViewStreams*:
 
 Spyne has two dependencies, *rxjs* and *ramda*; however, knowlege of rxjs or ramda is not required to begin using Spyne.
 
-###View Documentation
+### View Documentation ###
 https://spynejs.org
 
 ## Live Examples ##
