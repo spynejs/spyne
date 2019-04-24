@@ -509,6 +509,10 @@ export class ViewStream {
 
   }
 
+  /**
+   *
+   * Begins the removal process of the ViewStream instance along with all of its chained ViewStream children.
+   */
   disposeViewStream(p) {
     // console.log('EXTIRPATER VS onDispose ', this.constructor.name);
     this.onBeforeDispose();
