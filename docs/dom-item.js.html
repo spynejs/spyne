@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>JSDoc: Source: dom-item.js</title>
+    <title>JSDoc: Source: dom-el-base.js</title>
     <link href="https://fonts.googleapis.com/css?family=Roboto+Slab" rel="stylesheet">
 
     <script src="scripts/prettify/prettify.js"> </script>
@@ -25,7 +25,7 @@
     <a class="page-title spyne" href='https://www.npmjs.com/package/spyne' target='blank'>spyne</a>
 
 <!--
-    <h1 class="page-title">Source: dom-item.js</h1>
+    <h1 class="page-title">Source: dom-el-base.js</h1>
 -->
 
     
@@ -37,8 +37,8 @@
         <article>
             <pre class="prettyprint source linenums"><code>// import {createElement} from '../utils/dom-methods';
 import {BaseCoreMixins} from '../utils/mixins/base-core-mixins';
-import { DomTemplateRenderer } from './template-renderer';
-// import {DomTemplateRenderer} from './template-renderer';
+import { DomItemTemplate } from './template-renderer';
+// import {DomItemTemplate} from './template-renderer';
 
 const R = require('ramda');
 
@@ -110,7 +110,7 @@ export class DomItem {
       let data = this.getProp('content');
       data = R.is(Object, data) ? data : {};
 
-      let frag = new DomTemplateRenderer(tmpl, data).getTemplateNode();
+      let frag = new DomItemTemplate(tmpl, data).getTemplateNode();
       el.appendChild(frag);
       return el;
     };

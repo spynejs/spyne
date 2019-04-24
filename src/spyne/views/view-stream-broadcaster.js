@@ -1,11 +1,21 @@
-import {baseStreamsMixins} from '../utils/mixins/base-streams-mixins';
-import {ifNilThenUpdate, convertDomStringMapToObj} from '../utils/frp-tools';
+import { baseStreamsMixins } from '../utils/mixins/base-streams-mixins';
+import { convertDomStringMapToObj } from '../utils/frp-tools';
 
-//import * as Rx from "rxjs-compat";
-import {Observable} from "rxjs";
-const R = require('ramda');
+import { fromEvent } from 'rxjs';
+import { map } from 'rxjs/operators';
+import {clone, omit, pick, path} from 'ramda';
 
 export class ViewStreamBroadcaster {
+  /**
+   * The class takes in all of the elements from the 'broadcastEvents' method and directs the events to either the UI or ROUTE channels
+   * @module ViewStreamBroadcaster
+   * @type internal
+   *
+   * @constructor
+   * @param {Object} props
+   * @param {Function} broadcastFn
+   */
+
   constructor(props, broadcastFn) {
     this.addMixins();
     this.props = props;
@@ -14,16 +24,15 @@ export class ViewStreamBroadcaster {
   }
 
   addDblClickEvt(q) {
-    let dblclick$ = Observable.fromEvent(q, 'click');
+    let dblclick$ = fromEvent(q, 'dblclick');
     // console.log('ADDING DBL CLICK ', q);
-    let stream$ = dblclick$.buffer(dblclick$.debounceTime(250))
-      .filter(p => p.length === 2)
-      .map(p => {
-        let data = R.clone(p[0]);
+    let stream$ = dblclick$.pipe(
+      map(p => {
+        let data = clone(p);
         // ADD DOUBLECLICK TO UI EVENTS
         data['typeOverRide'] = 'dblclick';
         return data;
-      });
+      }));
     return stream$;
   }
 
@@ -38,62 +47,64 @@ export class ViewStreamBroadcaster {
     };
     // spread operator to select variables from arrays
     let [selector, event, local] = args;
-    //console.log('args is ',args);
+    // console.log('args is ',args);
     // btn query
     // let query = this.props.el.querySelectorAll(selector);
     let channel; // hoist channel and later check if chnl exists
     let query = this.props.el.querySelectorAll(selector);
 
-    if (query.length<=0){
+    if (query.length <= 0) {
       let el = this.props.el;
-      const checkParentEls = (element)=>{
-        if (element === el){
-          query=[element];
+      const checkParentEls = (element) => {
+        if (element === el) {
+          query = [element];
         }
       };
 
       const pluckElFromParent = () => {
-        let elParent = el.parentElement;
+        let elParent = el.parentElement !== null ? el.parentElement : document;
         let elSelected = elParent.querySelectorAll(selector);
         elSelected.forEach = Array.prototype.forEach;
         elSelected.forEach(checkParentEls);
       };
 
       pluckElFromParent();
-
     }
 
-    let isLocalEvent = local!==undefined;
+    let isLocalEvent = local !== undefined;
     let addObservable = (q) => {
       // the  btn observable
       let observable = event !== 'dblClick'
-        ? Observable.fromEvent(q, event)
+        ? fromEvent(q, event, { preventDefault: () => true })
         : this.addDblClickEvt(q);
       // select channel and data values from either the array or the element's dom Map
-      channel =  q.dataset.channel;//ifNilThenUpdate(chnl, q.dataset.channel);
-     let data = {};// convertDomStringMapToObj(q.dataset);
+      channel = q.dataset.channel;// ifNilThenUpdate(chnl, q.dataset.channel);
+      let data = {};// convertDomStringMapToObj(q.dataset);
       data['payload'] = convertDomStringMapToObj(q.dataset);
-      data.payload = R.omit(['channel'], data.payload);
+      data.payload = omit(['channel'], data.payload);
       data['channel'] = channel;
-      // payload needs cid# to pass verification
+      // payload needs vsid# to pass verification
 
       // data['event'] = event;
       // data['el'] = q;
-      data['srcElement'] = {};// R.pick(['cid','viewName'], data);
-      data.srcElement['cid'] = this.props.id;
+      data['srcElement'] = {};// pick(['vsid','viewName'], data);
+      data.srcElement['id'] = this.props.id;
+      data.srcElement['vsid'] = this.props.vsid;
       data.srcElement['isLocalEvent'] = isLocalEvent;
-      data.srcElement['viewName'] = this.props.name;
-      data.srcElement['event'] = event;
+      //data.srcElement['viewName'] = this.props.name;
+      data.srcElement['srcEvent'] = event;
       data.srcElement['el'] = q;
       // select the correct payload
       let channelPayload = channel !== undefined ? channelPayloads[channel] : channelPayloads['UI'];
       // run payload
       channelPayload(observable, data);
     };
-    if (query === undefined || query.length <= 0) {
+    let isDevMode = path(['Spyne', 'config', 'devMode'], window) === true;
+    let queryIsNil = query === undefined || query.length <= 0;
+    if (queryIsNil === true && isDevMode === true) {
       console.warn(`Spyne Warning: The item ${selector}, does not appear to exist!`);
-      //query = this.props.el;
-     // addObservable(query, event);
+      // query = this.props.el;
+      // addObservable(query, event);
     } else {
       query.forEach = Array.prototype.forEach;
       query.forEach(addObservable);
@@ -113,6 +124,6 @@ export class ViewStreamBroadcaster {
     let streamMixins = baseStreamsMixins();
     this.sendUIPayload = streamMixins.sendUIPayload;
     this.sendRoutePayload = streamMixins.sendRoutePayload;
-    this.createLifeStreamPayload = streamMixins.createLifeStreamPayload;
+    //this.createLifeStreamPayload = streamMixins.createLifeStreamPayload;
   }
 }

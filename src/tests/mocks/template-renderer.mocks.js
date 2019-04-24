@@ -79,6 +79,6 @@ ScriptTemplate.appendChild(theDiv);
 
 const StringTemplate = '<div><h1>Hello, {{name}}, here are your favorite Star Wars characters</h1><ul>{{#characters}}<li>{{.*}}</li>{{/characters}}</ul><h2>And {{name}}, the movies were released on</h2><ul>{{#movies}}<li>{{title}} year:{{year}}</li>{{/movies}}</ul></div>';
 
-export {ScriptTemplate, StringTemplate, starWarsData};
+export { ScriptTemplate, StringTemplate, starWarsData };
 
 // const markup = `<div><h1>Hello {{name}}, here are your favorite Star Wars characters</h1><ul> {{#characters}} <li>{{.*}} </li>{{/characters}}</ul><h2>And {{name}}, the movies were released on</h2><ul>{{#movies}}<li>{{title}} year:{{year}}</li>{{/movies}}<ul></div>`;

@@ -18,25 +18,25 @@ const SpyneConfigData = {
       isHash: false,
       isHidden: true,
       routes: {
-        'route': {
-          'keyword': 'pageId',
+        'routeLevel': {
+          'routeName': 'pageId',
           'home': '',
           'page-one': {
-            'route': {
-              'keyword': 'imageNum',
-              'route': {
-                'keyword': 'author'
+            'routeLevel': {
+              'routeName': 'imageNum',
+              'routeLevel': {
+                'routeName': 'author'
               }
             }
           },
           'page-two': {
-            'route': {
-              'keyword': 'photogNum'
+            'routeLevel': {
+              'routeName': 'photogNum'
             }
           },
           'page-.*': {
-            'route': {
-              'keyword': 'randomNum'
+            'routeLevel': {
+              'routeName': 'randomNum'
             }
           }
         }
@@ -46,6 +46,41 @@ const SpyneConfigData = {
     }
   }
 
+};
+
+const routeConfigWithRegexOverride = {
+  'type': 'slash',
+  'isHash': false,
+  'isHidden': false,
+  'routes': {
+    'routeLevel': {
+      '404': '.*',
+      'routeName': 'pageId',
+      'home': '^$|index.html',
+      'about': 'about',
+      'guide': {
+        'routeLevel': {
+          'routeName': 'section',
+          'overview|reference': {
+            'routeLevel': {
+              'routeName': 'menuItem'
+            }
+          }
+        }
+      }
+    }
+  },
+  'regexTokens': {
+    '^$|index.html': ''
+  },
+  'paramsArr': [
+    '.*',
+    'pageId',
+    '^$|index.html',
+    'about',
+    'section',
+    'menuItem'
+  ]
 };
 
 const RouteDataForTests = {
@@ -138,6 +173,19 @@ const RouteDataForTests = {
 
 };
 
+const payloadDataForUrlUtils = {
+  'pageId': 'home',
+  'pageIdValue': '',
+  'section': '',
+  'menuItem': ''
+};
+
+const urlUtilsArr = [
+  {
+    'pageId': '^$|index.html'
+  }
+];
+
 const ViewStreamHashMethodsObj = {
   'DISPOSING':     () => {},
   'DISPOSE':     () => {},
@@ -153,4 +201,4 @@ const ViewStreamHashMethodsObj = {
   'UI_EVENT_DBLCLICK': () => {}
 };
 
-export {SpyneConfigData, RouteDataForTests, ViewStreamHashMethodsObj};
+export { SpyneConfigData, RouteDataForTests, ViewStreamHashMethodsObj, routeConfigWithRegexOverride, payloadDataForUrlUtils, urlUtilsArr };

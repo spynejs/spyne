@@ -1,19 +1,29 @@
-//import * as Rx from "rxjs-compat";
-import {Observable} from "rxjs";
-const R = require('ramda');
+import { fromEventPattern } from 'rxjs';
+import { map } from 'rxjs/operators';
+import {mapObjIndexed} from 'ramda';
 
-export class ChannelUtilsDom {
+export class SpyneUtilsChannelWindow {
+  /**
+   * @module SpyneUtilsChannelWindow
+   * @type internal
+   *
+   * @constructor
+   * @desc
+   * Internal utility methods for SpyneWindowChannel
+   *
+   *
+   */
   constructor() {
-    this.createDomObservableFromEvent = ChannelUtilsDom.createDomObservableFromEvent.bind(
+    this.createDomObservableFromEvent = SpyneUtilsChannelWindow.createDomObservableFromEvent.bind(
       this);
   }
 
   static createDomObservableFromEvent(eventName, mapFn, isPassive = true) {
     let addHandler = handler => window.addEventListener(eventName, handler,
-      {passive: isPassive});
+      { passive: isPassive });
     let removeHandler = () => { window[eventName] = (p) => p; };
-    mapFn = mapFn === undefined ? (p)=>p : mapFn;
-    return Observable.fromEventPattern(addHandler, removeHandler).map(mapFn);
+    mapFn = mapFn === undefined ? (p) => p : mapFn;
+    return fromEventPattern(addHandler, removeHandler).pipe(map(mapFn));
   }
 
   // MEDIA QUERIES
@@ -25,8 +35,8 @@ export class ChannelUtilsDom {
 
   static checkIfValidMediaQuery(mq, str) {
     const noSpaces = str => str.replace(/\s+/gm, '');
-    const isValidBool = mq.constructor.name === 'MediaQueryList' && noSpaces(mq.media) === noSpaces(str);
-    const warnMsg = str => console.warn(`Spyne Warning: the following query string, "${str}", does not match "${mq.media}" and may not be a valid Media Query item!`);
+    const isValidBool = mq.matches!==undefined  && noSpaces(mq.media) === noSpaces(str);
+    const warnMsg = str => console.warn(`Spyne Info: the following query string, "${str}", has been optimized to "${mq.media}" by the browser and may not be a valid Media Query item!`);
     if (isValidBool === false) {
       warnMsg(str);
     }
@@ -43,15 +53,16 @@ export class ChannelUtilsDom {
 
     let handlers = (q) => {
       return {
-        addHandler: (handler) => { q.onchange = handler; },
+        addHandler: (handler) => { q.addListener(handler); },
         removeHandler: (handler) => { q.onchange = () => {}; }
       };
     };
     let mediaQueryHandler = handlers(query);
-    return new Observable.fromEventPattern(
+    /* eslint-disable new-cap */
+    return new fromEventPattern(
       mediaQueryHandler.addHandler,
       mediaQueryHandler.removeHandler)
-      .map(mapKey);
+      .pipe(map(mapKey));
   }
 
   static createMergedObsFromObj(config) {
@@ -59,12 +70,12 @@ export class ChannelUtilsDom {
     let arr = [];
 
     const loopQueries = (val, key, obj) => {
-      let mq = ChannelUtilsDom.createMediaQuery(val);
-      arr.push(ChannelUtilsDom.createMediaQueryHandler(mq, key));
+      let mq = SpyneUtilsChannelWindow.createMediaQuery(val);
+      arr.push(SpyneUtilsChannelWindow.createMediaQueryHandler(mq, key));
       // return arr;
     };
 
-    R.mapObjIndexed(loopQueries, mediaQueriesObj);
+    mapObjIndexed(loopQueries, mediaQueriesObj);
     // let obs$ = Observable.merge(...arr);
     // console.log('arr is ',arr);
     return arr;

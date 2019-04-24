@@ -1,20 +1,29 @@
-// import {baseCoreMixins} from '../utils/mixins/base-core-mixins';
-import {uiValidations, routeValidations, lifestreamValidations} from './channels-config';
-import {validate} from '../utils/channel-config-validator';
-import {gc} from '../utils/gc';
-// import {Right, Left, findInObj} from '../utils/frp-tools';
-import {findInObj} from '../utils/frp-tools';
-// import * as Rx from "rxjs-compat";
+import { uiValidations } from '../channels/channels-config';
+import { validate } from '../utils/channel-config-validator';
+import { gc } from '../utils/gc';
 
- const R = require('ramda');
-export class ChannelsPayload {
+export class ViewStreamPayload {
+  /**
+   *
+   * Observables sent from ViewStreams to Channels are validated by this class
+   *
+   * @module ViewStreamPayload
+   * @type internal
+   *
+   * @constructor
+   * @param {String} name
+   * @param {Observable} observable
+   * @param {Object} data
+   * @param {String} action
+   * @param {Boolean} debug
+   */
   constructor(name, observable, data, action = 'subscribe', debug = false) {
     this.addMixins();
     this.options = {
-     "name" : name,
-      "observable": observable,
-      "data": data,
-      "action": action
+      'name' : name,
+      'observable': observable,
+      'data': data,
+      'action': action
     };
     this.getValidationChecks(name);
   }
@@ -22,20 +31,11 @@ export class ChannelsPayload {
     let left  = e => console.warn(e);
     let right = val => this.onRunValidations(val);
     const channelMap = window.Spyne.channels.map;
-    let obj = {
-      UI:         uiValidations,
-      ROUTE:      uiValidations,
-      LIFESTREAM: uiValidations
-    };
-   // console.log('channel map ',channelMap.has(n), n, channelMap);
-
-    if (channelMap.has(n) === true){
-      return right(uiValidations)
+    if (channelMap.has(n) === true) {
+      return right(uiValidations);
     } else {
-      return left ('payload Needs a Valid Stream Name!');//
+      return left('payload Needs a Valid Stream Name!');//
     }
-   /* return findInObj(obj, n, 'payload Needs a Valid Stream Name!')
-      .fold(left, right);*/
   }
   onRunValidations(checks) {
     validate(checks(), this.options).fold(
@@ -48,7 +48,7 @@ export class ChannelsPayload {
   sendToDirectorStream(payload) {
     let streamsController = window.Spyne.channels;// getGlobalParam('streamsController');
     let directorStream$ = streamsController.getStream('DISPATCHER');
-    //console.log('payload is ',payload);
+    // console.log('payload is ',payload);
     directorStream$.next(payload);
     this.gc();
   }

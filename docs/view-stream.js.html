@@ -25,7 +25,7 @@
     <a class="page-title spyne" href='https://www.npmjs.com/package/spyne' target='blank'>spyne</a>
 
 <!--
-    <h1 class="page-title">Source: view-stream.js</h1>
+    <h1 class="page-title">Source: view-stream-base.js</h1>
 -->
 
     
@@ -39,11 +39,11 @@
 import {BaseStreamsMixins} from '../utils/mixins/base-streams-mixins';
 import {ifNilThenUpdate, convertDomStringMapToObj} from '../utils/frp-tools';
 // import {gc} from '../utils/gc';
-import {ViewToDomMediator} from './basic-view';
+import {ViewStreamElement} from './basic-view';
 import {registeredStreamNames} from '../channels/channels-config';
 import {ViewStreamBroadcaster} from './view-stream-broadcaster';
-import {ChannelsPayload} from '../channels/channels-payload';
-import {LifecyleObservables} from '../utils/lifecycle-observables';
+import {ViewStreamPayload} from '../channels/channels-payload';
+import {ViewStreamObservable} from '../utils/lifecycle-observables';
 
 const Rx = require('rxjs');
 const R = require('ramda');
@@ -103,7 +103,7 @@ export class ViewStream {
         cid: this.createId(),
         id: id,
         hashId: `#${id}`,
-        viewClass: ViewToDomMediator,
+        viewClass: ViewStreamElement,
         extendedSourcesHashMethods: {},
         debug: false,
         tmpl: undefined,
@@ -112,9 +112,9 @@ export class ViewStream {
       };
     };
     this._state = {};
-    this.$dirs = LifecyleObservables.createDirectionalFiltersObject();
-    this.addDefaultDirection = LifecyleObservables.addDefaultDir;
-    this.addDownInternalDir = LifecyleObservables.addDownInternalDir;
+    this.$dirs = ViewStreamObservable.createDirectionalFiltersObject();
+    this.addDefaultDirection = ViewStreamObservable.addDefaultDir;
+    this.addDownInternalDir = ViewStreamObservable.addDownInternalDir;
     this.props = Object.assign({}, this.defaults(), props);
     this.props['domAttributes'] = R.pick(['id', 'class', 'dataset'], this.props);
 
@@ -322,7 +322,7 @@ export class ViewStream {
 
     /*
     let obs$1 = obs$
-      .map(LifecyleObservables.addDefaultDir);
+      .map(ViewStreamObservable.addDefaultDir);
 */
 
     let obj = {
@@ -418,7 +418,7 @@ export class ViewStream {
   setAttachData(attachType, query) {
     return {
       node: this.props.el,
-      type: 'ViewToDomMediator',
+      type: 'ViewStreamElement',
       attachType,
       query: this.props.el.querySelector(query)
     };
@@ -438,7 +438,7 @@ export class ViewStream {
   setAttachParentData(attachType, query, level) {
     return {
       node: this.getParentEls(this.props.el, level),
-      type: 'ViewToDomMediator',
+      type: 'ViewStreamElement',
       attachType,
       query: this.props.el.parentElement.querySelector(query)
     };
@@ -719,7 +719,7 @@ export class ViewStream {
     let viewName = this.props.name;
     let data = {cid, viewName, payload, action};
     let obs$ = Rx.Observable.of(data);
-    return new ChannelsPayload(channelName, obs$, data);
+    return new ViewStreamPayload(channelName, obs$, data);
   }
 
   //  =======================================================================================

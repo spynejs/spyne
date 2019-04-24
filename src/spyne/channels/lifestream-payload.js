@@ -1,16 +1,15 @@
 // import {baseCoreMixins} from '../utils/mixins/base-core-mixins';
-import {stepValidations, stepUpdateValidations, stepDisposeValidations} from './channels-config';
-import {validate} from '../utils/channel-config-validator';
-import {gc} from '../utils/gc';
+import { stepValidations, stepUpdateValidations, stepDisposeValidations } from './channels-config';
+import { validate } from '../utils/channel-config-validator';
+import { gc } from '../utils/gc';
 // import {Right, Left, findInObj} from '../utils/frp-tools';
-import {findInObj} from '../utils/frp-tools';
-// import * as Rx from "rxjs-compat";
+import { findInObj } from '../utils/frp-tools';
 
-// const R = require('ramda');
+// import * as R from 'ramda';
 export class LifestreamPayload {
   constructor(name, STEP, type, viewId, data = {}, debug = true) {
     this.addMixins();
-    this.options = {name, STEP, type, viewId, data};
+    this.options = { name, STEP, type, viewId, data };
     this.getValidationChecks(STEP);
   }
   get data() {

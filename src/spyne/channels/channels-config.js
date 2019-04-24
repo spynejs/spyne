@@ -1,14 +1,13 @@
 // import Spyne from '../spyne';
-import {arrFromMapKeys} from '../utils/frp-tools';
+import { arrFromMapKeys } from '../utils/frp-tools';
 
-const R = require('ramda');
-//import * as Rx from "rxjs-compat";
-const Observable = require("rxjs");
-const Subject = require("rxjs");
+import {compose, path, is} from 'ramda';
+const Observable = require('rxjs');
+const Subject = require('rxjs');
 
-//console.log('channels config loaded ',R,Rx);
+// console.log('channels config loaded ',R,Rx);
 let registeredStreamNames = () => ({
-  includes:  () => window.Spyne !== undefined ? arrFromMapKeys(window.Spyne.channels.map) : ['ROUTE', 'UI', 'WINDOW', 'DISPATCHER']
+  includes:  () => window.Spyne !== undefined ? arrFromMapKeys(window.Spyne.channels.map) : ['CHANNEL_ROUTE', 'CHANNEL_UI', 'CHANNEL_WINDOW', 'DISPATCHER']
 
 });
 
@@ -21,18 +20,14 @@ let getRxType = (obs) => obs().constructor.name;
 // let getObservableType = (obs) => obs.constructor.name;
 let confirmObservable = (obs) => obs.subscribe !== undefined;
 // let pullMainRoute = (str) => str.replace(/^(\/?)(.*)(\/)(.*)/g, '$2');
-let baseValidations= [], viewInfoValidations= [], uiValidations = [],
-    lifestreamValidations = [], stepValidations= [], stepDisposeValidations= [], stepUpdateValidations = [],
-    routeValidations= [], StreamsConfig = [];
+let baseValidations = []; let viewInfoValidations = []; let uiValidations = [];
+let lifestreamValidations = []; let stepValidations = []; let stepDisposeValidations = []; let stepUpdateValidations = [];
+let routeValidations = []; let StreamsConfig = [];
 
-
-
-
-if (R!== undefined && Observable!==undefined) {
-
+if (compose !== undefined && Observable !== undefined) {
 //  ===========================================================================
-// ALL VALIDATIONS ADD THE BASE VALIDATIONS THROUGH CONCATENATION
-//  ===========================================================================
+  // ALL VALIDATIONS ADD THE BASE VALIDATIONS THROUGH CONCATENATION
+  //  ===========================================================================
   baseValidations = [
     {
       error: `need to match a valid name within ${registeredStreamTypes}`,
@@ -50,30 +45,30 @@ if (R!== undefined && Observable!==undefined) {
     }
 
   ];
-//  ===========================================================================
-// THESE VALIDATIONS ARE CONCATENATED WHEN THE OBSERVABLE REFERS TO A VIEW
-//  ===========================================================================
+  //  ===========================================================================
+  // THESE VALIDATIONS ARE CONCATENATED WHEN THE OBSERVABLE REFERS TO A VIEW
+  //  ===========================================================================
   viewInfoValidations = [
     {
-      error: 'needs cid number in srcElement',
-      predicate: R.compose(R.is(String), R.path(['data', 'srcElement', 'cid']))
+      error: 'needs vsid number in srcElement',
+      predicate: compose(is(String), path(['data', 'srcElement', 'vsid']))
     },
     {
-      error: 'needs a viewName in srcElement',
-      predicate: R.compose(R.is(String),
-          R.path(['data', 'srcElement', 'viewName']))
+      error: 'needs a id in srcElement',
+      predicate: compose(is(String),
+        path(['data', 'srcElement', 'id']))
     }
   ];
 
-//  ===========================================================================
-// NO SPECIFIC UI VALIDATIONS AT THIS TIME -- IT JUST ADD OTHERS
-//  ===========================================================================
+  //  ===========================================================================
+  // NO SPECIFIC UI VALIDATIONS AT THIS TIME -- IT JUST ADD OTHERS
+  //  ===========================================================================
   uiValidations = function() {
     let uiValidations = [];
     return uiValidations.concat(baseValidations).concat(viewInfoValidations);
   };
-//  ===========================================================================
-// NO SPECIFIC LIFESTREAM VALIDATIONS AT THIS TIME -- IT JUST ADD OTHERS
+  //  ===========================================================================
+  // NO SPECIFIC LIFESTREAM VALIDATIONS AT THIS TIME -- IT JUST ADD OTHERS
   let lifeStreamValidations = [
 
     {
@@ -122,16 +117,16 @@ if (R!== undefined && Observable!==undefined) {
     ];
     return stepUpdateValidations.concat(lifeStreamValidations);
   };
-//  ===========================================================================
-// lifestreamValidations
-//  ===========================================================================
+  //  ===========================================================================
+  // lifestreamValidations
+  //  ===========================================================================
   lifestreamValidations = function() {
-    return lifeStreamValidations.concat(baseValidations).
-        concat(viewInfoValidations);
+    return lifeStreamValidations.concat(baseValidations)
+      .concat(viewInfoValidations);
   };
-//  ===========================================================================
-// HERE IS THE ROUTE VALIDATIONS
-//  ===========================================================================
+  //  ===========================================================================
+  // HERE IS THE ROUTE VALIDATIONS
+  //  ===========================================================================
   routeValidations = function() {
     let routeValidations = [
       /*
@@ -146,12 +141,12 @@ if (R!== undefined && Observable!==undefined) {
     ];
     return routeValidations.concat(baseValidations).concat(viewInfoValidations);
   };
-//  ===========================================================================
+  //  ===========================================================================
   /*
   * THE IDEA OF StreamsConfig IS TO COMPLETELY GENERATE ALL APP STREAMS USING THIS OBJECT
   * THIS HAS NOT BEEN IMPLEMENTED -- MAY BE ADDED IN A FUTURE VERSION
   */
-//  ===========================================================================
+  //  ===========================================================================
   StreamsConfig = function() {
     let streamValidations = [
       {
@@ -161,7 +156,7 @@ if (R!== undefined && Observable!==undefined) {
       {
         error: `param 'observable' must contain a valid Observable`,
         predicate: payload => registeredStreamTypes.includes(
-            getRxType(payload.observable))
+          getRxType(payload.observable))
       },
       {
         error: 'param action must be a registered action',

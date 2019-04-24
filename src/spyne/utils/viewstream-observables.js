@@ -1,11 +1,17 @@
-//import * as Rx from "rxjs-compat";
-import {Subject} from "rxjs";
-import { filter } from 'rxjs-compat';
-
-const R = require('ramda');
-export class LifecyleObservables {
+import { Subject } from 'rxjs';
+import { filter, map } from 'rxjs/operators';
+import {flip, mergeRight, clone, propSatisfies} from 'ramda';
+export class ViewStreamObservable {
   constructor(props) {
-    this.props.observableStreams = LifecyleObservables.createDirectionalObservables();
+    /**
+     * @module ViewStreamObservable
+     * @type internal
+     *
+     * @constructor
+     * @desc
+     * Internal observable that creates the ViewStream Observable that branches out to parent, internal and child directions
+     */
+    this.props.observableStreams = ViewStreamObservable.createDirectionalObservables();
   }
 
   static createDirectionalFiltersObject() {
@@ -23,47 +29,47 @@ export class LifecyleObservables {
   }
 
   static addDefaultDir(obj) {
-    const defaults = R.flip(R.merge);
-    return defaults({$dir:['internal']}, R.clone(obj));
+    const defaults = flip(mergeRight);
+    return defaults({ $dir:['internal'] }, clone(obj));
   }
 
   static addDownInternalDir(obj, arr = ['internal', 'down']) {
-    const defaults = R.flip(R.merge);
-    return defaults(R.clone(obj), {$dir:arr});
+    const defaults = flip(mergeRight);
+    return defaults(clone(obj), { $dir:arr });
   }
 
   static addChildAndInternalDir(obj, arr = ['child', 'down']) {
-    const defaults = R.flip(R.merge);
-    return defaults(R.clone(obj), {$dir:arr});
+    const defaults = flip(mergeRight);
+    return defaults(clone(obj), { $dir:arr });
   }
 
   static mapToDefaultDir(p) {
     return this.addDefaultDir(p);
   }
 
-  static createDirectionalObservables(obs$ = new Subject(), viewName, cid) {
-    if (viewName!==undefined && cid !==undefined){
-      obs$['viewName']=viewName;
-      obs$['cid']=cid;
+  static createDirectionalObservables(obs$ = new Subject(), viewName, vsid) {
+    if (viewName !== undefined && vsid !== undefined) {
+      obs$['viewName'] = viewName;
+      obs$['vsid'] = vsid;
     }
 
-    const filterStreams = val => R.propSatisfies(arrType => arrType.includes(val), '$dir');
+    const filterStreams = val => propSatisfies(arrType => arrType.includes(val), '$dir');
     const filterParent = filterStreams('parent');
     const filterChild = filterStreams('child');
     const filterInternal = filterStreams('internal');
 
-    const addfrom$ = relStr => R.merge({from$:relStr});
+    const addfrom$ = relStr => mergeRight({ from$:relStr });
     const addParentfrom$ = addfrom$('child');
     const addInternalfrom$ = addfrom$('internal');
     const addChildfrom$ = addfrom$('parent');
 
     const raw$ =  obs$
-      .filter((payload) => payload !== undefined && payload.action !== undefined);
+      .pipe(filter((payload) => payload !== undefined && payload.action !== undefined));
     // .filter(p => p.$dir !== undefined)
     // .do(p => console.log('payload : ', p.$dir, p));
-    const toInternal$ = obs$.filter(filterInternal).map(addInternalfrom$);
-    const toParent$ = obs$.filter(filterParent).map(addParentfrom$);
-    const toChild$ = obs$.filter(filterChild).map(addChildfrom$);
+    const toInternal$ = obs$.pipe(filter(filterInternal), map(addInternalfrom$));
+    const toParent$ = obs$.pipe(filter(filterParent), map(addParentfrom$));
+    const toChild$ = obs$.pipe(filter(filterChild), map(addChildfrom$));
     // const upObs$ = obs$.do(p => console.log('UP: ', p));
     const streamObj = {
       parent: toParent$,
@@ -93,7 +99,7 @@ export class LifecyleObservables {
         o.complete();
         o.isStopped = true;
       };
-      R.forEach(completeStream, [raw$, toInternal$, toParent$, toChild$]);
+      forEach(completeStream, [raw$, toInternal$, toParent$, toChild$]);
     };
 
     return {

@@ -1,6 +1,5 @@
-import {getAllMethodNames} from '../utils/frp-tools';
-
-const R = require('ramda');
+import { getAllMethodNames } from '../utils/frp-tools';
+import {concat, includes, filter, dropWhile, forEach} from 'ramda';
 
 export class ViewStreamEnhancerLoader {
   constructor(parent, enhancersArr) {
@@ -23,7 +22,7 @@ export class ViewStreamEnhancerLoader {
   }
 
   updateMap(name, arr) {
-    let allArr = R.concat(this.enhancersMap.get('ALL'), arr);
+    let allArr = concat(this.enhancersMap.get('ALL'), arr);
     this.enhancersMap.set(name, arr);
     this.enhancersMap.set('ALL', allArr);
   }
@@ -38,18 +37,18 @@ export class ViewStreamEnhancerLoader {
     let enhancer = new EnhancerClass(this.context);
 
     const validateMethods = arr => {
-      let methodsExistsFilter = R.contains(R.__, this.getMethodsArr('ALL'));
-      let dupedMethods = R.filter(methodsExistsFilter, arr);
+      let methodsExistsFilter = includes(__, this.getMethodsArr('ALL'));
+      let dupedMethods = filter(methodsExistsFilter, arr);
       dupedMethods.forEach(sendError);
       return dupedMethods;
     };
 
     let enhancerMethodsObj = enhancer.getEnhancerMethods();
     let dupedMethodsArr = validateMethods(enhancerMethodsObj.allMethods);
-    let dropDupedMethodsFromArr = R.dropWhile(
-      R.contains(R.__, dupedMethodsArr));
+    let dropDupedMethodsFromArr = dropWhile(
+      includes(__, dupedMethodsArr));
 
-    enhancerMethodsObj = R.map(dropDupedMethodsFromArr, enhancerMethodsObj);
+    enhancerMethodsObj = map(dropDupedMethodsFromArr, enhancerMethodsObj);
 
     this.updateMap(enhancer.name, enhancerMethodsObj.allMethods);
 
@@ -66,6 +65,6 @@ export class ViewStreamEnhancerLoader {
       enhancer.bindParentViewStream(enhancerMethodsObj, this.context);
     };
 
-    R.forEach(addEnhancerMethods, this.enhancersArr);
+    forEach(addEnhancerMethods, this.enhancersArr);
   }
 }

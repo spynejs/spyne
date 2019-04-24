@@ -33,7 +33,7 @@ const ChannelPayloadUIData = {
       'pageId': 'page-one'
     },
     'channel': 'UI',
-    'cid': 'cid-1703768',
+    'vsid': 'vsid-1703768',
     'viewName': 'AppView',
     'event': 'click',
     'el': 'h6.nav-btn'
@@ -82,19 +82,19 @@ const ChannelPayloadUIData = {
 };
 
 const ChannelPayloadRouteData = {
-  'observableData': {
+  'viewStreamInfo': {
     'payload': {
       'routeVal': 'page-one',
       'pageId': 'page-one',
       'val' : 6
     },
     'channel': 'ROUTE',
-    'cid': 'cid-1703768',
+    'vsid': 'vsid-1703768',
     'viewName': 'AppView',
     'event': 'click',
     'el': 'h6.nav-btn'
   },
-  'observableEvent': {
+  'viewStreamEvent': {
     'altKey': false,
     'bubbles': true,
     'cancelBubble': false,
@@ -137,4 +137,28 @@ const ChannelPayloadRouteData = {
   }
 };
 
-export {ChannelPayloadUIData, ChannelPayloadRouteData, DeepLinkData};
+const ChannelPayloadRouteDataRegexOverride = {
+  'isDeepLink': false,
+  'routeCount': 1,
+  'pathInnermost': 'pageId',
+  'paths': [
+    'pageId'
+  ],
+  'routeData': {
+    'pageId': 'home',
+    'pageIdValue': '',
+    'section': '',
+    'menuItem': ''
+  },
+  'routeValue': '^$|index.html',
+  'isHash': false,
+  'isHidden': false,
+  'routeType': 'slash',
+  'pathsAdded': [],
+  'pathsRemoved': [],
+  'pathsChanged': [
+    'pageId'
+  ]
+};
+
+export { ChannelPayloadUIData, ChannelPayloadRouteData, DeepLinkData, ChannelPayloadRouteDataRegexOverride };

@@ -9,7 +9,7 @@
     "payload": "CHANNEL_MODEL_UPDATE",
     "channel": "MODEL",
     "srcElement": {
-      "cid": "cid-91724",
+      "vsid": "vsid-91724",
       "el": {
         
       },

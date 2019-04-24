@@ -1,8 +1,7 @@
-import {ChannelsPayload} from '../../channels/channels-payload';
-import {LifestreamPayload} from '../../channels/lifestream-payload';
-const R = require('ramda');
-//import * as Rx from "rxjs-compat";
-import {Observable} from "rxjs";
+import { ViewStreamPayload } from '../../views/view-stream-payload';
+import { LifestreamPayload } from '../../channels/lifestream-payload';
+import { of } from 'rxjs';
+import {prop} from 'ramda';
 
 export function baseStreamsMixins() {
   return {
@@ -10,33 +9,34 @@ export function baseStreamsMixins() {
       console.log('stream mixin is ', str);
     },
     sendRoutePayload: function(obs, data) {
-      return new ChannelsPayload('ROUTE', obs, data, 'subscribe');
+      return new ViewStreamPayload('CHANNEL_ROUTE', obs, data, 'subscribe');
     },
     sendUIPayload: function(obs, data) {
-      return new ChannelsPayload('UI', obs, data, 'subscribe');
+      return new ViewStreamPayload('CHANNEL_UI', obs, data, 'subscribe');
     },
-    sendChannelPayload: function(channelName, payload) {
-      const getProp = str => R.prop(str, this.props);
+    /*
+    sendInfoToChannel: function(channelName, payload) {
+      const getProp = str => prop(str, this.props);
       const channel = channelName;
       let srcElement = {
-        cid: getProp('cid'),
+        vsid: getProp('vsid'),
         el: getProp('el'),
         viewName: getProp('name')
       };
       let data = {
         payload, channel, srcElement
       };
-
-      return new ChannelsPayload(channelName, new Observable.of(''), data,
+      return new ViewStreamPayload(channelName, new of(''), data,
         'subscribe');
     },
-    sendLifeStreamPayload: function(obs, data) {
-      return new ChannelsPayload('LIFESTREAM', obs, data, 'subscribe');
+    */
+/*    sendLifeStreamPayload: function(obs, data) {
+      return new ViewStreamPayload('LIFESTREAM', obs, data, 'subscribe');
     },
 
     createLifeStreamPayload: function(STEP, data = {}, type = 'parent') {
-      let viewId = `${this.props.name}: ${this.props.cid}`;
+      let viewId = `${this.props.name}: ${this.props.vsid}`;
       return new LifestreamPayload('LIFESTREAM', STEP, type, viewId, data).data;
-    }
+    }*/
   };
 }
