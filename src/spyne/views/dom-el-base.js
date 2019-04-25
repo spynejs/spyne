@@ -2,12 +2,11 @@
 import { baseCoreMixins } from '../utils/mixins/base-core-mixins';
 import { DomElTemplate } from './dom-el-template';
 import { deepMerge } from '../utils/deep-merge';
-import {defaultTo, pick} from 'ramda';
 // import {DomElTemplate} from './template-renderer';
 
-import {is, forEach, isEmpty, both, complement, mapObjIndexed, forEachObjIndexed, pipe} from 'ramda';
-import {ViewStreamElement} from './view-stream-element';
-import {getConstructorName} from '../utils/frp-tools';
+import {is, defaultTo, pick, mapObjIndexed, forEachObjIndexed, pipe} from 'ramda';
+//import {ViewStreamElement} from './view-stream-element';
+//import {getConstructorName} from '../utils/frp-tools';
 
 export class DomEl {
   /**

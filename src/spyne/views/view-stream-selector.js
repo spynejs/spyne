@@ -59,7 +59,9 @@ function getNodeListArray(cxt, str, verboseBool=false) {
 
 function setInlineCss(val, cxt, str) {
   let arr = getNodeListArray(cxt, str);
-  const addInlineCss = item => item.style.cssText = val;
+  const addInlineCss = item => {
+    item.style.cssText = val;
+  };
   arr.forEach(addInlineCss);
   return this;
 }
@@ -126,7 +128,9 @@ function ViewStreamSelector(cxt, str) {
    */
   selector.removeClass = (c) => {
     let arr = getNodeListArray(cxt, str);
-    const removeClass = item => item.classList.remove(c);
+    const removeClass = item => {
+      item.classList.remove(c);
+    };
     arr.forEach(removeClass);
     return this;
   };

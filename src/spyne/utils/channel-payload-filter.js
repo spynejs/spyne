@@ -1,4 +1,4 @@
-import {is, filter, reject, ifElse, invoker, identity, isNil, allPass, not, mapObjIndexed, isEmpty, always, compose, uniq, equals, all, prop, whereEq, where, defaultTo, path, values, type, flatten, any, clone, curry} from 'ramda';
+import {is, reject, ifElse, invoker, identity, isNil, allPass, not, isEmpty, always, compose,  equals, prop, where, defaultTo, path, flatten, any, curry} from 'ramda';
 const rMap = require('ramda').map;
 export class ChannelPayloadFilter {
   /**
@@ -70,7 +70,6 @@ export class ChannelPayloadFilter {
     const isNotEmpty = compose(not, isEmpty);
     const isNonEmptyStr = allPass([is(String), isNotEmpty]);
     const isNonEmptyArr = allPass([is(Array), isNotEmpty]);
-    const allEqTrue = all(equals(true));
     const addStringSelectorFilter =  isNonEmptyStr(selector) ? ChannelPayloadFilter.filterSelector([selector]) : undefined;
     const addArraySelectorFilter =   isNonEmptyArr(selector) ? ChannelPayloadFilter.filterSelector(selector) : undefined;
 
@@ -104,15 +103,16 @@ export class ChannelPayloadFilter {
       }
       //  CHECKS ALL VALUES IN JSON TO DETERMINE IF THERE ARE FILTERING METHODS
 
-      let typeArrFn = compose(values, rMap(type));
-      let filterValsArr = typeArrFn(filterJson);
+      //let typeArrFn = compose(values, rMap(type));
 
       /*let sendMalFormedWarningBool = uniq(filterValsArr).length > 1;
       if (sendMalFormedWarningBool === true) {
         console.warn('Spyne Warningd: The data values in ChannelActionFilters needs to be either all methods or all static values.  DATA: ', filterJson);
       }*/
 
-      const createCurryComparator = compareStr => (str)=>str===compareStr;
+      const createCurryComparator = compareStr => (str)=>{
+        return str===compareStr;
+      };
       const checkToConvertToFn = (val, key, obj)=>val = is(String, val)===true ? createCurryComparator(val) : val;
       filterJson = rMap(checkToConvertToFn, filterJson);
 

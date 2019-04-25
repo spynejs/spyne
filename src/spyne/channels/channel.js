@@ -3,9 +3,8 @@ import { ChannelPayload } from './channel-payload-class';
 import {RouteChannelUpdater} from '../utils/route-channel-updater';
 import { ReplaySubject, Subject } from 'rxjs';
 import { map } from 'rxjs/operators';
-import {ifElse, isString, identity, head, mergeAll, objOf, view, is, chain, lensIndex, always, fromPairs, path, equals, prop} from 'ramda';
+import {ifElse, identity, head, mergeAll, objOf, view, is, chain, lensIndex, always, fromPairs, path, equals, prop} from 'ramda';
 const rMap = require('ramda').map;
-const rMerge = require('ramda').mergeRight;
 
 export class Channel {
   /**

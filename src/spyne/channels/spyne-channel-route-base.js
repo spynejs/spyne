@@ -1,8 +1,9 @@
 import { Channel } from './channel';
 import { SpyneUtilsChannelRouteUrl } from '../utils/spyne-utils-channel-route-url';
 import { SpyneUtilsChannelRoute } from '../utils/spyne-utils-channel-route';
-import { BehaviorSubject, ReplaySubject, merge } from 'rxjs';
-import { map, filter } from 'rxjs/operators';
+import { ReplaySubject, merge } from 'rxjs';
+import { map } from 'rxjs/operators';
+import {lensProp, omit, over} from 'ramda';
 
 import {
   objOf,
@@ -11,7 +12,6 @@ import {
   keys,
   prop,
   equals,
-    find,
   head,
   compose,
   chain,
@@ -23,7 +23,7 @@ import {
   complement,
   curryN,
   __,
-  pathEq, test, replace,
+  test, replace,
 } from 'ramda';
 const ramdaFilter = require('ramda').filter;
 const rMerge = require('ramda').mergeRight;
@@ -56,7 +56,7 @@ export class SpyneChannelRoute extends Channel {
      *                  routeName: 'levelOneProp',
      *                  routeOption1: 'branching-ends-here',
      *                  routeOption2: {
-     *                  	routeLevel: {
+     *                     routeLevel: {
      *                             routeName: 'levelTwoProp',
      *                             optionLevel2: 'level-2-branch-ends-here'
      *
@@ -129,7 +129,6 @@ export class SpyneChannelRoute extends Channel {
     this.routeConfigJson = this.getRouteConfig();
     this.bindStaticMethods();
     this.navToStream$ = new ReplaySubject(1);
-    const filterUndefined = (e)=>e!==undefined;
     this.observer$ = this.navToStream$.pipe(map(info => this.onMapNext(info)));
     // let compareKeysFn = SpyneUtilsChannelRoute.compareRouteKeywords.bind(this);
     this.compareRouteKeywords = SpyneUtilsChannelRoute.compareRouteKeywords();
@@ -194,8 +193,8 @@ export class SpyneChannelRoute extends Channel {
   }
 
   static removeSSID(payload){
-    const routeLens = R.lensProp(['routeData']);
-    const omitSSID = R.over(routeLens, R.omit(['vsid']));
+    const routeLens = lensProp(['routeData']);
+    const omitSSID = over(routeLens, omit(['vsid']));
     return omitSSID(payload);;
   }
 

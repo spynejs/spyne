@@ -60,7 +60,9 @@ export class SpyneTrait {
     this.checkForMalformedMethods(methodsObj.allMethods);
       let obj = {};
     const bindMethodsToParentViewStream = (str, isStatic = false) => {
-      const addMethod = s =>  context[s] = constructorType[s].bind(context);
+      const addMethod = s =>  {
+        return context[s] = constructorType[s].bind(context);
+      };
       let constructorType = isStatic === true ? this.constructor : this;
       let propertyType = typeof (constructorType[str]);
       if (propertyType === 'function') {
@@ -70,8 +72,10 @@ export class SpyneTrait {
 
     const bindCurry = curryN(2, bindMethodsToParentViewStream);
     const bindStaticMethodsToParentViewStream = bindCurry(__, true);
-    let staticMethods = map(bindStaticMethodsToParentViewStream, methodsObj.staticMethods);
-    let mainMethods = map(bindMethodsToParentViewStream, methodsObj.methods);
+    // MAP STATIC METHODS
+    map(bindStaticMethodsToParentViewStream, methodsObj.staticMethods);
+    // MAP MAIN METHODS
+    map(bindMethodsToParentViewStream, methodsObj.methods);
     return obj;
   }
 

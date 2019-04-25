@@ -3,7 +3,7 @@ import { convertDomStringMapToObj } from '../utils/frp-tools';
 
 import { fromEvent } from 'rxjs';
 import { map } from 'rxjs/operators';
-import {clone, omit, pick, path} from 'ramda';
+import {clone, omit, path} from 'ramda';
 
 export class ViewStreamBroadcaster {
   /**
