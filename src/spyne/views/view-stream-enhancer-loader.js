@@ -1,5 +1,5 @@
 import { getAllMethodNames } from '../utils/frp-tools';
-import {concat, includes, filter, dropWhile, forEach} from 'ramda';
+import {concat, includes, __, filter, map, dropWhile, forEach} from 'ramda';
 
 export class ViewStreamEnhancerLoader {
   constructor(parent, enhancersArr) {

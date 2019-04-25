@@ -1,9 +1,7 @@
 import { baseCoreMixins } from '../utils/mixins/base-core-mixins';
-import { baseStreamsMixins } from '../utils/mixins/base-streams-mixins';
+//import { baseStreamsMixins } from '../utils/mixins/base-streams-mixins';
 import { deepMerge } from '../utils/deep-merge';
 import {
-  ifNilThenUpdate,
-  convertDomStringMapToObj,
   findStrOrRegexMatchStr,
   getConstructorName
 } from '../utils/frp-tools';
@@ -18,7 +16,7 @@ import { ViewStreamObservable } from '../utils/viewstream-observables';
 import {ViewStreamSelector} from './view-stream-selector';
 import { Subject, of } from 'rxjs';
 import { mergeMap, map, takeWhile, filter, tap, finalize } from 'rxjs/operators';
-import {pick, compose, both, isNil, toLower, either, findIndex, test, flatten ,prop,props, always, lte, defaultTo, propSatisfies, allPass, curry, is, path, omit, ifElse, clone,  mergeRight, where, equals} from 'ramda';
+import {pick, compose, isNil, toLower, either, findIndex, test, flatten ,prop, always, lte, defaultTo, propSatisfies, allPass, curry, is, path, omit, ifElse, clone,  mergeRight, where, equals} from 'ramda';
 
 export class ViewStream {
   /**
@@ -1137,7 +1135,7 @@ export class ViewStream {
     //  ==================================
     // BASE STREAM MIXINS
     //  ==================================
-    let streamMixins = baseStreamsMixins();
+    //let streamMixins = baseStreamsMixins();
 /*    this.sendUIPayload = streamMixins.sendUIPayload;
     this.sendRoutePayload = streamMixins.sendRoutePayload;
     this.createLifeStreamPayload = streamMixins.createLifeStreamPayload;*/

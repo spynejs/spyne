@@ -1,6 +1,6 @@
 import { Subject } from 'rxjs';
 import { filter, map } from 'rxjs/operators';
-import {flip, mergeRight, clone, propSatisfies} from 'ramda';
+import {flip, mergeRight, clone, forEach, propSatisfies} from 'ramda';
 export class ViewStreamObservable {
   constructor(props) {
     /**

@@ -1,4 +1,4 @@
-import{defaultTo, match, forEach, test, includes, without,complement, isEmpty, values, isNil, filter, __, keys, compose, head, map, pick, allPass, concat, uniq} from 'ramda';
+import{defaultTo, match, forEach, test, includes, without,complement, isEmpty, values, isNil, filter, __, keys, compose, head, map, cond, T, allPass, concat, uniq} from 'ramda';
 const isIOS = () => {
   let userAgent = window.navigator.userAgent.toLowerCase();
   // let safari = /safari/.test(userAgent);
@@ -84,8 +84,8 @@ const right = x => ({
 });
 
 const ifNilThenUpdate = (val, newVal) => {
-  let isNil = isNil(val);
-  return isNil ? newVal : val;
+  let isNilBool = isNil(val);
+  return isNilBool ? newVal : val;
 };
 
 const left = x => ({

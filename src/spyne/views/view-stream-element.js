@@ -1,10 +1,10 @@
-import { baseCoreMixins } from '../utils/mixins/base-core-mixins';
+//import { baseCoreMixins } from '../utils/mixins/base-core-mixins';
 import { DomEl } from './dom-el-base';
-import { ifNilThenUpdate, convertDomStringMapToObj } from '../utils/frp-tools';
+//import { ifNilThenUpdate, convertDomStringMapToObj } from '../utils/frp-tools';
 import { fadein, fadeout } from '../utils/viewstream-animations';
 import { ViewStreamObservable } from '../utils/viewstream-observables';
 import { deepMerge } from '../utils/deep-merge';
-import { Subject, Observable, bindCallback } from 'rxjs';
+import { Subject, bindCallback } from 'rxjs';
 import {filter, isNil, pick, props, defaultTo} from 'ramda';
 
 export class ViewStreamElement {
@@ -267,6 +267,6 @@ export class ViewStreamElement {
     //  ==================================
     // BASE CORE MIXINS
     //  ==================================
-    let coreMixins = baseCoreMixins();
+    //let coreMixins = baseCoreMixins();
   }
 }

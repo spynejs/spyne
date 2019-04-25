@@ -1,7 +1,7 @@
 import { Channel } from './channel';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-import {equals, path, compose,prop, pathEq, find, filter,replace, when, test, keys, either, omit, toUpper} from 'ramda';
+import {equals, path, compose,prop, filter,replace, lensProp, over, omit, test, keys, either, toUpper} from 'ramda';
 
 export class SpyneChannelUI extends Channel {
   /**
@@ -125,8 +125,8 @@ export class SpyneChannelUI extends Channel {
     console.log('key is ', evt);
   }
   static removeSSID(pl){
-    const routeLens = R.lensProp(['payload']);
-    const omitSSID = R.over(routeLens, R.omit(['vsid']));
+    const routeLens = lensProp(['payload']);
+    const omitSSID = over(routeLens, omit(['vsid']));
     return omitSSID(pl);
   }
 

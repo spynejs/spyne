@@ -1,6 +1,6 @@
 import { Channel } from './channel';
 import { ChannelFetchUtil } from '../utils/channel-fetch-util';
-import {path, pick, mergeRight, mergeDeepRight, defaultTo, reject, compose, isNil} from 'ramda';
+import {path, pick, mergeDeepRight, defaultTo, reject, compose, isNil} from 'ramda';
 
 export class ChannelFetch extends Channel {
   /**

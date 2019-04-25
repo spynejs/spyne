@@ -8,7 +8,7 @@ import { validate } from '../utils/channel-config-validator';
 
 import { Subject } from 'rxjs';
 import { ChannelProxy } from './channel-proxy';
-import {propEq, pluck, prop, key, filter, reject, compose, join} from 'ramda';
+import {propEq, pluck, prop, filter, reject, compose, join} from 'ramda';
 const rMap = require('ramda').map;
 
 // import * as R from 'ramda';
