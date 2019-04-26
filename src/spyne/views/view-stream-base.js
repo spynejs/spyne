@@ -761,7 +761,11 @@ export class ViewStream {
       if (this.isDevMode === true ){
         const pullActionsFromList = (arr)=>arr[0];
         let actionsArr = this.addActionListeners().map(pullActionsFromList);
-        const delayForProxyChannelResets = ()=>ViewStream.checkIfActionsAreRegistered.bind(this)(this.props.addedChannels, actionsArr);
+        const delayForProxyChannelResets = ()=>{
+          if (path(['props','addedChannels'], this) !== undefined) {
+            ViewStream.checkIfActionsAreRegistered.bind(this)(this.props.addedChannels, actionsArr);
+          }
+        };
         window.setTimeout(delayForProxyChannelResets, 500);
       }
   }
