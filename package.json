@@ -1,7 +1,7 @@
 {
   "name": "spyne",
   "sideEffects": false,
-  "version": "0.10.3",
+  "version": "0.10.4",
   "description": "Modern, and efficient javascript frontend framework",
   "main": "lib/spyne.min.js",
   "module": "src/spyne/spyne.js",
@@ -30,7 +30,7 @@
   },
   "keywords": [],
   "author": "Frank Batista",
-  "license": "ISC",
+  "license": "MIT",
   "devDependencies": {
     "@babel/core": "^7.4.0",
     "@babel/preset-env": "^7.4.1",
