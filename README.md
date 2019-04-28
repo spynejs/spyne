@@ -42,4 +42,5 @@ Spyne is based on the Data Context Interaction pattern, which in a nutshell is o
 
 
 Created by [Frank Batista](https://frankbatista.com)
+
 Copyright © 2018-2019 Frank Batista - Relevant Context
