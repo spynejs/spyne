@@ -544,7 +544,7 @@ export class ViewStream {
   }
 
   static isDevMode(){
-    return path(['Spyne', 'config', 'devMode'], window)===true;
+    return path(['Spyne', 'config', 'debug'], window)===true;
   }
 
   setAttachData(attachType, query) {

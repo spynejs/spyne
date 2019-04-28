@@ -14,7 +14,7 @@ function generateSpyneSelectorId(el) {
 }
 
 function isDevMode(){
-  return path(['Spyne', 'config', 'devMode'], window) === true;
+  return path(['Spyne', 'config', 'debug'], window) === true;
 }
 
 
@@ -246,6 +246,7 @@ function ViewStreamSelector(cxt, str) {
   Object.defineProperty(selector, 'exists', {get: () => getNodeListArray(cxt, str, false).length>=1});
   Object.defineProperty(selector, 'exist', {get: () => getNodeListArray(cxt, str, false).length>=1});
   Object.defineProperty(selector, 'nodeList', {get: () => getNodeListArray(cxt, str)});
+  Object.defineProperty(selector, 'inline', {set: (val) => setInlineCss(val, cxt, str)});
   Object.defineProperty(selector, 'inlineCss', {set: (val) => setInlineCss(val, cxt, str)});
 
   return selector;

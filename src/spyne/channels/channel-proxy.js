@@ -22,7 +22,7 @@ export class ChannelProxy extends Channel {
     this.subject$ = new Subject();
     this.replaySub$ = new ReplaySubject(1);
     this.observer$ = merge(this.subject$, this.replaySub$);
-	const isDevMode = path(['Spyne', 'config', 'devMode'], window) === true;
+	const isDevMode = path(['Spyne', 'config', 'debug'], window) === true;
     if (isDevMode === true){
       this.checkIfChannelIsStillProxy(name);
     }

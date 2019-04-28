@@ -99,7 +99,7 @@ export class ViewStreamBroadcaster {
       // run payload
       channelPayload(observable, data);
     };
-    let isDevMode = path(['Spyne', 'config', 'devMode'], window) === true;
+    let isDevMode = path(['Spyne', 'config', 'debug'], window) === true;
     let queryIsNil = query === undefined || query.length <= 0;
     if (queryIsNil === true && isDevMode === true) {
       console.warn(`Spyne Warning: The item ${selector}, does not appear to exist!`);
