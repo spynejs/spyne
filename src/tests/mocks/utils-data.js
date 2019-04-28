@@ -18,24 +18,24 @@ const SpyneConfigData = {
       isHash: false,
       isHidden: true,
       routes: {
-        'routeLevel': {
+        'routePath': {
           'routeName': 'pageId',
           'home': '',
           'page-one': {
-            'routeLevel': {
+            'routePath': {
               'routeName': 'imageNum',
-              'routeLevel': {
+              'routePath': {
                 'routeName': 'author'
               }
             }
           },
           'page-two': {
-            'routeLevel': {
+            'routePath': {
               'routeName': 'photogNum'
             }
           },
           'page-.*': {
-            'routeLevel': {
+            'routePath': {
               'routeName': 'randomNum'
             }
           }
@@ -53,16 +53,16 @@ const routeConfigWithRegexOverride = {
   'isHash': false,
   'isHidden': false,
   'routes': {
-    'routeLevel': {
+    'routePath': {
       '404': '.*',
       'routeName': 'pageId',
       'home': '^$|index.html',
       'about': 'about',
       'guide': {
-        'routeLevel': {
+        'routePath': {
           'routeName': 'section',
           'overview|reference': {
-            'routeLevel': {
+            'routePath': {
               'routeName': 'menuItem'
             }
           }

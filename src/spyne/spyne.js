@@ -66,7 +66,7 @@ class SpyneApp {
           isHash: false,
           isHidden: false,
           routes: {
-            'routeLevel' : {
+            'routePath' : {
               'routeName' : 'change'
             }
           }
