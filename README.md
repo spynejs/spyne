@@ -41,3 +41,5 @@ npm install spyne
 Spyne is based on the Data Context Interaction pattern, which in a nutshell is organized to adjust the Context (HTML tags) of a site by broadcasting Interactive (ViewStream) events and  by listening to Data (Channels).
 
 
+Created by [Frank Batista](https://frankbatista.com)
+Copyright © 2018-2019 Frank Batista - Relevant Context
