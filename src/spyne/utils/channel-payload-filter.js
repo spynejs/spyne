@@ -86,7 +86,7 @@ export class ChannelPayloadFilter {
       if (isEmpty(filtersArr)){
         filtersArr = [always(false)];
 
-        if (path(['Spyne', 'config', 'devMode'], window) === true){
+        if (path(['Spyne', 'config', 'debug'], window) === true){
           console.warn(`Spyne Warning: The Channel Filter, with selector: ${selector}, and data:${data} appears to be empty!`);
         }
 

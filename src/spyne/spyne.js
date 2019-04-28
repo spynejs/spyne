@@ -34,7 +34,7 @@ class SpyneApp {
    */
   constructor(config = {}) {
     this.channels = new ChannelsController();
-    this.VERSION = '0.10.4';
+    this.VERSION = '0.10.5';
     this.ViewStream = ViewStream;
     this.BasicView = ViewStreamElement;
     this.DomEl = DomEl;
@@ -46,7 +46,7 @@ class SpyneApp {
     window.Spyne = this;
     let defaultConfig = {
       channels: {
-        devMode: false,
+        debug: false,
         WINDOW: {
           mediqQueries: {
           /*  'test': '(max-width: 500px)',
@@ -66,7 +66,7 @@ class SpyneApp {
           isHash: false,
           isHidden: false,
           routes: {
-            'routeLevel' : {
+            'routePath' : {
               'routeName' : 'change'
             }
           }

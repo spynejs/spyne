@@ -52,11 +52,11 @@ export class SpyneChannelRoute extends Channel {
      *    <p>Thr routes configuration object is used to map the location string to and from a route model.</p>
      *
      *     <pre>           {
-     *                routeLevel: {
+     *                routePath: {
      *                  routeName: 'levelOneProp',
      *                  routeOption1: 'branching-ends-here',
      *                  routeOption2: {
-     *                     routeLevel: {
+     *                     routePath: {
      *                             routeName: 'levelTwoProp',
      *                             optionLevel2: 'level-2-branch-ends-here'
      *
@@ -66,10 +66,10 @@ export class SpyneChannelRoute extends Channel {
      *            }
      *
      *          </pre>
-     *     <p>This config object consists of nested routeLevel objects that corresponds to all of the branching possiblities for the app.</p>
-     *    <p>The routeName value is the property name for each routeLevel.</p>
+     *     <p>This config object consists of nested routePath objects that corresponds to all of the branching possiblities for the app.</p>
+     *    <p>The routeName value is the property name for each routePath.</p>
      *    <h3>Route Options</h3>
-     *    <p>A routeLevel may contain several route option key-value pairs, which is used to map between data and the window location.</p>
+     *    <p>A routePath may contain several route option key-value pairs, which is used to map between data and the window location.</p>
      *    <ul class='basic'>
      *      <li>
      *         <h5 class='basic'>The Route Option Key (or left value)</h5>
@@ -87,7 +87,7 @@ export class SpyneChannelRoute extends Channel {
      *          <li>Determines the string value for its level of the window location</li>
      *          <li>The value can be a regex pattern so that multiple locations can map to same routeData property</li>
      *          <li>Branching ends for the route option when this value is a either a String or a regex pattern</li>
-     *          <li>Branching continues for the route option when this value is a nested routeLevel object</li>
+     *          <li>Branching continues for the route option when this value is a nested routePath object</li>
      *          </ul>
      *      </li>
      *      </ul>
@@ -119,7 +119,7 @@ export class SpyneChannelRoute extends Channel {
      * @constructor
      * @param {Object} config
      * @property {String} config.type - = 'slash'; This property determines the url structure by conforming the window pathname to either the slash, query or hash formats.
-     * @property {Object} config.routes - = {routeLevel: {routeName:'change'}; This nested Object is used to contruct the window pathname and to express the window location as model variables.
+     * @property {Object} config.routes - = {routePath: {routeName:'change'}; This nested Object is used to contruct the window pathname and to express the window location as model variables.
      * @property {String} CHANNEL_NAME - = 'CHANNEL_ROUTE';
      *
      */
