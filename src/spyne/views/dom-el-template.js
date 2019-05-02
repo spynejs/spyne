@@ -128,6 +128,10 @@ export class DomElTemplate {
     if (isNil(elData) === true || isEmpty(elData)) {
       return '';
     }
-    return elData.map(mapStringData).join('');
+
+    if (elData.length===undefined) {
+          elData = [elData];
+      }
+      return elData.map(mapStringData).join('');
   }
 }

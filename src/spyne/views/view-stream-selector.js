@@ -53,7 +53,9 @@ function testSelectors(cxt, str, verboseBool) {
 
 function getNodeListArray(cxt, str, verboseBool=false) {
   let selector = str !== undefined ? `${cxt} ${str}` : cxt;
-  testSelectors(cxt, str, verboseBool);
+  if (verboseBool===true) {
+    testSelectors(cxt, str, verboseBool);
+  }
   return document.querySelectorAll(selector);
 }
 
@@ -184,6 +186,20 @@ function ViewStreamSelector(cxt, str) {
     }
 
     return selector.el;
+  };
+
+  /**
+   *
+   * Adds class with a delay of 1ms to allow css to register a transition.
+   * @param c
+   */
+  selector.addAnimClass = (c)=>{
+    const delayAddClass = ()=>{
+      let arr = getNodeListArray(cxt, str);
+      const addClass = item => item.classList.add(c);
+      arr.forEach(addClass);
+    };
+    window.setTimeout(delayAddClass, 1);
   };
 
 
