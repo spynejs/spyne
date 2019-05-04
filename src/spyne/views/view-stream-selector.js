@@ -174,6 +174,16 @@ function ViewStreamSelector(cxt, str) {
     return this;
   };
 
+
+  selector.toggle = (c, bool) => {
+    selector.toggleClass(c, bool);
+    return this;
+  };
+
+
+
+
+
   /**
    * Attaches html to the Selector's element
    * @param htmlElement

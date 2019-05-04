@@ -208,7 +208,7 @@ export class ViewStream {
     let createExtraStatesMethod = (arr) => {
       let [action, funcStr, actionFilter] = arr;
       if (is(String, actionFilter)) {
-        actionFilter = ChannelPayloadFilter(actionFilter);
+        actionFilter = new ChannelPayloadFilter(actionFilter);
       }
       this.props.extendedSourcesHashMethods[action] = channelFn(funcStr,
         actionFilter);
@@ -761,10 +761,13 @@ export class ViewStream {
   }
 
   addTraits(traits){
-    if (typeof('traits')!=='object'){
+    if (traits.constructor.name!=='Array'){
       traits = [traits];
     }
-    const addTrait=(TraitClass)=>new TraitClass(this);
+    const addTrait=(TraitClass)=>{
+      new TraitClass(this);
+    };
+
     traits.forEach(addTrait);
   }
 

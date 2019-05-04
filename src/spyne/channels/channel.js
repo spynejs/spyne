@@ -106,8 +106,26 @@ export class Channel {
     return this.observer$;
   }
 
+  checkForTraits(){
+    const addTraits = (traits)=>{
+      if (traits.constructor.name!=='Array'){
+        traits = [traits];
+      }
+      const addTrait=(TraitClass)=>{
+        new TraitClass(this);
+      };
+
+      traits.forEach(addTrait);
+    };
+
+    if (this.props.traits!==undefined){
+      addTraits(this.props.traits);
+    }
+  }
+
   // DO NOT OVERRIDE THIS METHOD
   initializeStream() {
+    this.checkForTraits();
     this.onChannelInitialized();
   }
 
