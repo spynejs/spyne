@@ -3,7 +3,7 @@ import { SpyneUtilsChannelRouteUrl } from '../utils/spyne-utils-channel-route-ur
 import { SpyneUtilsChannelRoute } from '../utils/spyne-utils-channel-route';
 import { ReplaySubject, merge } from 'rxjs';
 import { map } from 'rxjs/operators';
-import {lensProp, omit, over} from 'ramda';
+import {lensProp, omit, over,is} from 'ramda';
 
 import {
   objOf,
@@ -202,8 +202,16 @@ export class SpyneChannelRoute extends Channel {
     let action = actn !== undefined
       ? actn
       : this.channelActions.CHANNEL_ROUTE_CHANGE_EVENT;
-    let payload = this.getDataFromString(config);
-    // console.log('route dom ',action, payload);
+
+    // CHECK IF THIS IS A HISTORY EVENT BY USING THE routeCount PROPERTY
+    let eventCount = path(['state', 'routeCount'], evt);
+    let isHistoryCount = is(Number, eventCount) === true;
+    let payload = this.getDataFromString(config, isHistoryCount);
+     if (isHistoryCount===true){
+       payload.routeCount = eventCount;
+     }
+     // ===============================================================
+
     let keywordArrs = this.compareRouteKeywords.compare(payload.routeData, payload.paths);
     payload = rMerge(payload, keywordArrs);
     // console.log("SEND STREAM onIncomingDomEvent", payload, keywordArrs);;
@@ -293,17 +301,19 @@ export class SpyneChannelRoute extends Channel {
     return this._routeCount === 0;
   }
 
-  static getRouteCount() {
+  static getRouteCount(isHistory=false) {
     if (this._routeCount === undefined) {
       this._routeCount = 0;
       return this._routeCount;
     }
-    this._routeCount += 1;
+    if (isHistory===false) {
+      this._routeCount += 1;
+    }
     return this._routeCount;
   }
 
-  static getExtraPayloadParams(config = this.routeConfigJson) {
-    let routeCount = this.getRouteCount();
+  static getExtraPayloadParams(config = this.routeConfigJson, isHistory=false) {
+    let routeCount = this.getRouteCount(isHistory);
     let isDeepLink = this.getIsDeepLinkBool();
     let isHash = config.isHash;
     let isHidden = config.isHidden;
@@ -343,7 +353,7 @@ export class SpyneChannelRoute extends Channel {
     };
   }
 
-  static getDataFromString(config = this.routeConfigJson, actn) {
+  static getDataFromString(config = this.routeConfigJson, isHistory=false) {
     const type = config.type;
     const hashIsTrue = config.isHash === true;
     // type = config.isHash === true ? ''
@@ -351,7 +361,7 @@ export class SpyneChannelRoute extends Channel {
     let { paths, pathInnermost, routeData, routeValue } = SpyneChannelRoute.getParamsFromRouteStr(
       str, config, type);
     let { routeCount, isDeepLink, isHash, routeType, isHidden } = this.getExtraPayloadParams(
-      config);
+      config,isHistory);
 
     let obj = {
       isDeepLink,
@@ -431,18 +441,18 @@ export class SpyneChannelRoute extends Channel {
   setWindowLocation(channelPayload) {
     let { isHash, routeValue } = channelPayload;
     routeValue = this.checkEmptyRouteStr(routeValue, isHash);
-    // console.log("SET WINDOW LOCATION ",routeValue, channelPayload);
+     let {routeCount} = channelPayload;
     if (isHash === true) {
       let pathName = SpyneChannelRoute.removeLastSlash(window.location.pathname);
       routeValue = pathName + routeValue;
       // window.location.hash = routeValue;
       // console.log('ROUTE STR FOR HASH ', routeValue);
-      window.history.pushState({}, '', routeValue);
+      window.history.pushState({routeCount}, '', routeValue);
     } else {
       // routeValue =  when(isEmpty, always('/'))(routeValue);
       const checkForSlash = when(
         compose(complement(equals('/')), head), concat('/', __));
-      window.history.pushState({}, '', checkForSlash(routeValue));
+      window.history.pushState({routeCount}, '', checkForSlash(routeValue));
     }
   }
 
