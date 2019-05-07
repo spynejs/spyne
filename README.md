@@ -3,7 +3,7 @@
 
 A Spyne app is built around two components, *Channels* and *ViewStreams*:
 * Channels publishes data and events
-* ViewStreams renders DOM elements and append to one another to create smart view chains, that corresponds to the DOM tree that they generate.
+* ViewStreams renders DOM elements and append to one another to create smart view chains
 
 
 ### Getting Started ###
