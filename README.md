@@ -1,12 +1,10 @@
-#### Spyne is a full-featured, reactive framework designed to make frontend-applications easy to reason about. ####
-
-
+**Spyne is a full-featured, reactive framework designed to make frontend-applications easy to reason about.**<br/>
 A Spyne app is built around two components, *Channels* and *ViewStreams*:
 * Channels publishes data and events
 * ViewStreams renders DOM elements and append to one another to create smart view chains
 
 
-### Getting Started ###
+## Getting Started ##
 **View Documentation**<br/>
 https://spynejs.org
 
@@ -34,8 +32,8 @@ https://github.com/spynejs/spyne-example-app <br>
 
 
 ### Spyne and the DCI Pattern ###
-`
+```
 Spyne is based on the Data Context Interaction pattern, which in a nutshell is organized to adjust the Context (HTML tags) of a site by broadcasting Interactive (ViewStream) events and  by listening to Data (Channels).
-`
+```
 
 
