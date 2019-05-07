@@ -17,14 +17,12 @@ npm install spyne
 ### A Basic Spyne app ###
 ```
 import {SpyneApp, ViewStream} from 'spyne';
-
 const spyne = new SpyneApp();
 
 const app = new ViewStream({
    id: 'app'
 });
 app.appendToDom(document.body);
-
 app.appendView(
     new ViewStream({tagName: 'h1', 'data': 'Hello World!'})
 );
