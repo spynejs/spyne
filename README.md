@@ -1,3 +1,10 @@
+[![NPM version](https://img.shields.io/npm/v/spyne.svg?longCache=true&style=flat-square)](https://www.npmjs.com/package/spyne)
+[![Build](https://img.shields.io/travis/spynejs/spyne.svg?longCache=true&style=flat-square)](https://travis-ci.org/spynejs/spyne)
+[![Codecov](https://img.shields.io/codecov/c/github/spynejs/spyne.svg?style=flat-square)](https://codecov.io/github/spynejs/spyne)
+[![GitHub license](https://img.shields.io/github/license/spynejs/spyne.svg?longCache=true&style=flat-square)](https://github.com/spynejs/spyne/blob/master/LICENSE)
+
+
+
 **Spyne is a full-featured, reactive framework designed to make frontend-applications 'easy to reason about'.**<br/>
 A Spyne app is built around two components, *Channels* and *ViewStreams*:
 * Channels publishes data and events
