@@ -19,13 +19,14 @@ npm install spyne
 import {SpyneApp, ViewStream} from 'spyne';
 const spyne = new SpyneApp(); // Initialize Spyne
 
-// Create the root view
-const App = new ViewStream({
-    el: document.querySelector('body')
+// create the main view
+const app = new ViewStream({
+   id: 'app'
 });
+app.appendToDom(document.body);
 
-// Append a text view
-App.appendView(
+// append text
+app.appendView(
     new ViewStream({tagName: 'h1', 'data': 'Hello World!'})
 );
 
