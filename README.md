@@ -1,4 +1,4 @@
-### Spyne is a full-featured, reactive framework designed to make frontend-applications easy to reason about.
+#### Spyne is a full-featured, reactive framework designed to make frontend-applications easy to reason about. ####
 
 
 A Spyne app is built around two components, *Channels* and *ViewStreams*:
