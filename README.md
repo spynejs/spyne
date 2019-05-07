@@ -10,11 +10,11 @@ A Spyne app is built around two components, *Channels* and *ViewStreams*:
 **View Documentation**<br/>
 https://spynejs.org
 
-### Install ###
+#### Install ####
 ```
 npm install spyne
 ```
-### A Basic Spyne app ###
+**A Basic Spyne app**
 ```
 import {SpyneApp, ViewStream} from 'spyne';
 const spyne = new SpyneApp();
@@ -29,11 +29,13 @@ app.appendView(
 
 ```
 
-**Download or Fork Example Spyne App**<br/>
+**Download or Fork Example App**<br/>
 https://github.com/spynejs/spyne-example-app <br>
 
 
-## Spyne and the DCI Pattern ##
+### Spyne and the DCI Pattern ###
+`
 Spyne is based on the Data Context Interaction pattern, which in a nutshell is organized to adjust the Context (HTML tags) of a site by broadcasting Interactive (ViewStream) events and  by listening to Data (Channels).
+`
 
 
