@@ -17,9 +17,8 @@ npm install spyne
 ### A Basic Spyne app ###
 ```
 import {SpyneApp, ViewStream} from 'spyne';
-const spyne = new SpyneApp(); // Initialize Spyne
+const spyne = new SpyneApp();
 
-// create the main view
 const app = new ViewStream({
    id: 'app'
 });
