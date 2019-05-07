@@ -10,16 +10,13 @@ A Spyne app is built around two components, *Channels* and *ViewStreams*:
 #### View Documentation ####
 https://spynejs.org
 
-#### Download or Fork Example Spyne App ####
-https://github.com/spynejs/spyne-example-app <br>
-
 ### Install ###
 ```
 npm install spyne
 ```
 
 
-##### A Basic Spyne app #####
+#### A Basic Spyne app ####
 ```
 import {SpyneApp, ViewStream} from 'spyne';
 const spyne = new SpyneApp(); // Initialize Spyne
@@ -35,6 +32,11 @@ App.appendView(
 );
 
 ```
+
+#### Download or Fork Example Spyne App ####
+https://github.com/spynejs/spyne-example-app <br>
+
+
 
 
 
