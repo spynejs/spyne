@@ -1,43 +1,41 @@
-### Spyne is a full-featured, reactive framework designed to make frontend-applications easy to reason about.
+[![NPM version](https://img.shields.io/npm/v/spyne.svg?longCache=true&style=flat-square)](https://www.npmjs.com/package/spyne)
+[![GitHub license](https://img.shields.io/github/license/spynejs/spyne.svg?longCache=true&style=flat-square)](https://github.com/spynejs/spyne/blob/master/LICENSE)
 
 
+
+**Spyne is a full-featured, reactive framework designed to make frontend-applications 'easy to reason about'.**<br/>
 A Spyne app is built around two components, *Channels* and *ViewStreams*:
 * Channels publishes data and events
-* ViewStreams are components that append to one another to create smart view chains, and that reactively communicate with each other.
+* ViewStreams renders DOM elements and append to one another to create smart view chains
 
 
-Spyne has two dependencies, *rxjs* and *ramda*; however, knowlege of rxjs or ramda is not required to begin using Spyne.
-
-### View Documentation ###
+## Getting Started ##
+**View Documentation**<br/>
 https://spynejs.org
 
-#### Example App ####
-https://example.spynejs.org <br>
-
-
+#### Install ##
 ```
-const spyne = new SpyneApp(); // Initialize Spyne
+npm install spyne
+```
+**A Basic Spyne app**
+```
+import {SpyneApp, ViewStream} from 'spyne';
+const spyne = new SpyneApp();
 
-// Create the root view
-const App = new ViewStream({
-    el: document.querySelector('body')
+const app = new ViewStream({
+   id: 'app'
 });
-
-// Append a text view
-App.appendView(
+app.appendToDom(document.body);
+app.appendView(
     new ViewStream({tagName: 'h1', 'data': 'Hello World!'})
 );
 
 ```
 
-
-## Install ##
-```
-npm install spyne
-```
+**Download or Fork Example App**<br/>
+https://github.com/spynejs/spyne-example-app <br>
 
 
-## Spyne and the DCI Pattern ##
-Spyne is based on the Data Context Interaction pattern, which in a nutshell is organized to adjust the Context (HTML tags) of a site by broadcasting Interactive (ViewStream) events and  by listening to Data (Channels).
-
+**Spyne and the DCI Pattern**<br/>
+Spyne is based on the *Data Context Interaction* pattern, which in a nutshell is organized to adjust the Context (HTML tags) of a site by broadcasting Interactive (ViewStream) events and  by listening to Data (Channels).
 
