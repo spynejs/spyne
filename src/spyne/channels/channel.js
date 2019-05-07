@@ -1,7 +1,9 @@
 import { registeredStreamNames } from './channels-config';
 import { ChannelPayload } from './channel-payload-class';
+import { ChannelPayloadFilter} from '../utils/channel-payload-filter';
 import {RouteChannelUpdater} from '../utils/route-channel-updater';
 import { ReplaySubject, Subject } from 'rxjs';
+import {filter} from 'rxjs/operators';
 import { map } from 'rxjs/operators';
 import {ifElse, identity, head, mergeAll, objOf, view, is, chain, lensIndex, always, fromPairs, path, equals, prop} from 'ramda';
 const rMap = require('ramda').map;
@@ -304,11 +306,18 @@ export class Channel {
    *
    *
    */
-  getChannel(CHANNEL_NAME) {
+  getChannel(CHANNEL_NAME, payloadFilter) {
     let isValidChannel = c => registeredStreamNames().includes(c);
     let error = c => console.warn(
       `channel name ${c} is not within ${registeredStreamNames}`);
-    let startSubscribe = (c) => this.streamsController.getStream(c).observer;
+    let startSubscribe = (c) => {
+      let obs$ = this.streamsController.getStream(c).observer;
+        if (payloadFilter!==undefined){
+          return obs$.pipe(filter(payloadFilter));
+        }
+
+      return obs$;
+    };
     let fn = ifElse(isValidChannel, startSubscribe, error);
     return fn(CHANNEL_NAME);
   }
