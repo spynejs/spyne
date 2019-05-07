@@ -46,10 +46,11 @@ export class SpyneTrait {
       console.warn(`SPYNE WARNING: The following SpyneTrait ${this.constructor.name} needs a prefix`);
       return;
     }
-    let reStr = `^(${this.prefix})(.*)$`;
-    let re = new RegExp(reStr);
+    //let reStr = `^(${this.prefix})(.*)$`;
+    //let re = new RegExp(reStr);
+    const hasPrefix = (str)=>str.indexOf(this.prefix)===0;
 
-    let malformedMethodsArr = reject(test(re), methodsArr);
+    let malformedMethodsArr = reject(hasPrefix, methodsArr);
     if (malformedMethodsArr.length >= 1) {
       let warningStr = `Spyne Warning: The following method(s) in ${this.constructor.name} require the prefix, "${this.prefix}": [${malformedMethodsArr.join(', ')}];`;
       console.warn(warningStr);

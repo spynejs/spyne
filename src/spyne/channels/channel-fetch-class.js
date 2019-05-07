@@ -82,7 +82,6 @@ export class ChannelFetch extends Channel {
 
   onFetchReturned(streamItem) {
     let payload = this.createChannelPayloadItem(streamItem);
-    this.observer$.next(payload);
   }
 
   createChannelPayloadItem(payload, action = `${this.props.name}_DATA_EVENT`) {

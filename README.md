@@ -11,8 +11,8 @@ Spyne has two dependencies, *rxjs* and *ramda*; however, knowlege of rxjs or ram
 ### View Documentation ###
 https://spynejs.org
 
-## Live Examples ##
-http://todos.spynejs.org <br>
+#### Example App ####
+https://example.spynejs.org <br>
 
 
 ```
