@@ -3,19 +3,25 @@
 
 A Spyne app is built around two components, *Channels* and *ViewStreams*:
 * Channels publishes data and events
-* ViewStreams are components that append to one another to create smart view chains, and that reactively communicate with each other.
+* ViewStreams renders DOM elements and append to one another to create smart view chains, that corresponds to the DOM tree that they generate.
 
 
-Spyne has two dependencies, *rxjs* and *ramda*; however, knowlege of rxjs or ramda is not required to begin using Spyne.
-
-### View Documentation ###
+### Getting Started ###
+#### View Documentation ####
 https://spynejs.org
 
-#### Example App ####
-https://example.spynejs.org <br>
+#### Download or Fork Example Spyne App ####
+https://github.com/spynejs/spyne-example-app <br>
 
-
+### Install ###
 ```
+npm install spyne
+```
+
+
+##### A Basic Spyne app #####
+```
+import {SpyneApp, ViewStream} from 'spyne';
 const spyne = new SpyneApp(); // Initialize Spyne
 
 // Create the root view
@@ -30,11 +36,6 @@ App.appendView(
 
 ```
 
-
-## Install ##
-```
-npm install spyne
-```
 
 
 ## Spyne and the DCI Pattern ##
