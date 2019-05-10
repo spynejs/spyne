@@ -12,7 +12,7 @@ export class SpyneChannelLifecycle extends Channel {
    * <h3>The two actions that are regsitered for this channel are:</h3>
    * <ul>
    * <li>CHANNEL_LIFECYCLE_RENDERED_EVENT</li>
-   * <li>CHANNEL_LIFECYCLE_REMOVED_EVENT</li>
+   * <li>CHANNEL_LIFECYCLE_DISPOSED_EVENT</li>
    *  </ul>
    * @constructor
    * @property {String} CHANNEL_NAME - = 'CHANNEL_LIFECYCLE';
@@ -25,7 +25,7 @@ export class SpyneChannelLifecycle extends Channel {
   addRegisteredActions() {
     return [
       'CHANNEL_LIFECYCLE_RENDERED_EVENT',
-      'CHANNEL_LIFECYCLE_REMOVED_EVENT'
+      'CHANNEL_LIFECYCLE_DISPOSED_EVENT'
     ];
   }
 

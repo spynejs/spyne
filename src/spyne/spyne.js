@@ -34,7 +34,7 @@ class SpyneApp {
    */
   constructor(config = {}) {
     this.channels = new ChannelsController();
-    this.VERSION = '0.10.8';
+    this.VERSION = '0.10.10';
     this.ViewStream = ViewStream;
     this.BasicView = ViewStreamElement;
     this.DomEl = DomEl;
@@ -45,8 +45,12 @@ class SpyneApp {
     this.ChannelPayloadItem = ChannelPayload;
     window.Spyne = this;
     let defaultConfig = {
+      scrollLock: false,
+      scrollLockX: 0,
+      scrollLockY: 0,
+      debug: false,
+
       channels: {
-        debug: false,
         WINDOW: {
           mediqQueries: {
           /*  'test': '(max-width: 500px)',

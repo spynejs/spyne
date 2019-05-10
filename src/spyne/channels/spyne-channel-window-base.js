@@ -3,7 +3,7 @@ import { checkIfObjIsNotEmptyOrNil } from '../utils/frp-tools';
 import { SpyneUtilsChannelWindow } from '../utils/spyne-utils-channel-window';
 import { merge } from 'rxjs';
 import { map, debounceTime, skipWhile } from 'rxjs/operators';
-import {curry, pick, mapObjIndexed} from 'ramda';
+import {curry, pathEq, pick, mapObjIndexed} from 'ramda';
 const rMap = require('ramda').map;
 
 export class SpyneChannelWindow extends Channel {
@@ -124,6 +124,14 @@ export class SpyneChannelWindow extends Channel {
     return SpyneUtilsChannelWindow.createDomObservableFromEvent('scroll',
       SpyneChannelWindow.getScrollMapFn.bind(this))
       .pipe(
+          map(p=>{
+            if (pathEq(['Spyne', 'config', 'scrollLock'], true)(window)){
+              let x = window.Spyne.config.scrollLockX
+              let y = window.Spyne.config.scrollLockY;
+              window.scrollTo(x,y);
+            }
+            return p;
+          }),
         debounceTime(dTime),
         skipWhile(skipWhenDirIsMissing)
       );
@@ -263,6 +271,8 @@ export class SpyneChannelWindow extends Channel {
       'CHANNEL_WINDOW_RESET_EVENT',
       'CHANNEL_WINDOW_RESIZE_EVENT',
       'CHANNEL_WINDOW_SCROLL_EVENT',
+      'CHANNEL_WINDOW_SCROLL_LOCK_EVENT',
+     ['CHANNEL_WINDOW_SCROLL_LOCK_EVENT', 'onScrollLockEvent'],
       'CHANNEL_WINDOW_SUBMIT_EVENT',
       'CHANNEL_WINDOW_TRANSITIONCANCEL_EVENT',
       'CHANNEL_WINDOW_TRANSITIONEND_EVENT',
@@ -271,6 +281,20 @@ export class SpyneChannelWindow extends Channel {
       'CHANNEL_WINDOW_UNLOAD_EVENT',
       'CHANNEL_WINDOW_WHEEL_EVENT'
     ];
+  }
+
+  onScrollLockEvent(e){
+    const setScrollPos = ()=>{
+      window.Spyne.config.scrollLockX = window.scrollX;
+      window.Spyne.config.scrollLockY = window.scrollY;
+    };
+    let {action, scrollLock} = e.props();
+    window.Spyne.config.scrollLock = scrollLock;
+    if (scrollLock === true){
+      setScrollPos();
+    }
+
+    this.sendChannelPayload(action, {scrollLock});
   }
 
   bindStaticMethods() {
