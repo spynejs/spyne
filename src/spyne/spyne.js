@@ -48,9 +48,9 @@ class SpyneApp {
       scrollLock: false,
       scrollLockX: 0,
       scrollLockY: 0,
+      debug: false,
 
       channels: {
-        debug: false,
         WINDOW: {
           mediqQueries: {
           /*  'test': '(max-width: 500px)',
