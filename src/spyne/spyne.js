@@ -34,7 +34,7 @@ class SpyneApp {
    */
   constructor(config = {}) {
     this.channels = new ChannelsController();
-    this.VERSION = '0.10.8';
+    this.VERSION = '0.10.9';
     this.ViewStream = ViewStream;
     this.BasicView = ViewStreamElement;
     this.DomEl = DomEl;
@@ -45,6 +45,10 @@ class SpyneApp {
     this.ChannelPayloadItem = ChannelPayload;
     window.Spyne = this;
     let defaultConfig = {
+      scrollLock: false,
+      scrollLockX: 0,
+      scrollLockY: 0,
+
       channels: {
         debug: false,
         WINDOW: {
