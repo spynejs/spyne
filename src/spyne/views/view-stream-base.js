@@ -999,7 +999,7 @@ export class ViewStream {
     if (isRendered === true) {
       this.sendInfoToChannel('CHANNEL_LIFECYCLE', { action:'CHANNEL_LIFECYCLE_RENDERED_EVENT' }, 'CHANNEL_LIFECYCLE_RENDERED_EVENT');
     } else if (isDisposed === true) {
-      this.sendInfoToChannel('CHANNEL_LIFECYCLE', { action:'CHANNEL_LIFECYCLE_REMOVED_EVENT' }, 'CHANNEL_LIFECYCLE_REMOVED_EVENT');
+      this.sendInfoToChannel('CHANNEL_LIFECYCLE', { action:'CHANNEL_LIFECYCLE_DISPOSED_EVENT' }, 'CHANNEL_LIFECYCLE_DISPOSED_EVENT');
     }
   }
 
