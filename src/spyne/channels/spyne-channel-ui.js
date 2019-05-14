@@ -135,7 +135,8 @@ export class SpyneChannelUI extends Channel {
     let eqsName = equals(obj.name, this.props.name);
     obj.data = SpyneChannelUI.removeSSID(obj.data);
     //console.log("OBJECT DATA ",obj.data);
-    let dataObj = obsVal => ({ viewStreamInfo: obj.data, uiEvent: obsVal });
+    let {payload, srcElement} = obj.data;
+    let dataObj = obsVal => ({ payload, srcElement, event: obsVal });
     let onSuccess = (obj) => obj.observable.pipe(map(dataObj))
       .subscribe(this.onUIEvent.bind(this));
     let onError = () => {};
@@ -143,8 +144,8 @@ export class SpyneChannelUI extends Channel {
   }
 
   getActionState(val) {
-    let typeVal = path(['uiEvent', 'type']);
-    let typeOverRideVal = path(['uiEvent', 'typeOverRide']);
+    let typeVal = path(['event', 'type']);
+    let typeOverRideVal = path(['event', 'typeOverRide']);
     let eventType = compose(toUpper, either(typeOverRideVal, typeVal));
     let type = eventType(val);
     let mainAction = 'CHANNEL_UI';
@@ -153,10 +154,10 @@ export class SpyneChannelUI extends Channel {
 
   static checkForEventMethods(obs){
     const re = /^(event)([A-Z].*)([A-Z].*)$/gm;
-    const getMethods = compose(filter(test(re)), keys, path(['viewStreamInfo', 'payload']));
+    const getMethods = compose(filter(test(re)), keys, prop('payload'));
     const methodsArr = getMethods(obs);
     if (methodsArr.length>=1) {
-      const evt = prop('uiEvent', obs);
+      const evt = prop('event', obs);
       if (evt !== undefined) {
         const methodUpdate = (match,p1,p2,p3,p4)=>String(p2).toLowerCase()+p3+p4;
         const methodStrReplace = replace(/^(event)([A-Z])(.*)([A-Z].*)$/gm, methodUpdate);
@@ -171,22 +172,15 @@ export class SpyneChannelUI extends Channel {
     return obs;
   }
 
-/*
-  static checkToPreventDefaultEvent(obs) {
-    const checkDataForPreventDefault = pathEq(['viewStreamInfo', 'payload', 'eventPreventDefault'], 'true');
-    const setPreventDefault = function(evt) { if (evt !== undefined) evt.preventDefault(); };
-    const selectEvtAndPreventDefault = compose(setPreventDefault, prop('uiEvent'));
-    const checkForPreventDefault = when(checkDataForPreventDefault, selectEvtAndPreventDefault);
-    checkForPreventDefault(obs);
-  }
-*/
+
 
   onUIEvent(obs) {
     SpyneChannelUI.checkForEventMethods(obs);
+    console.log("UI OBS ",{obs});
     obs['action'] = this.getActionState(obs);
     const action = obs.action;// this.getActionState(obs);
-    const { payload, srcElement } = obs.viewStreamInfo;
-    const event = obs.uiEvent;
+    const { payload, srcElement } = obs;
+    const event = obs.event;
     this.sendChannelPayload(action, payload, srcElement, event);
   }
 }

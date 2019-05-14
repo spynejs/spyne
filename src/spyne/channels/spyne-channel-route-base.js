@@ -228,10 +228,10 @@ export class SpyneChannelRoute extends Channel {
 
   static checkForEventMethods(obs){
     const re = /^(event)([A-Z].*)([A-Z].*)$/gm;
-    const getMethods = compose(ramdaFilter(test(re)), keys, path(['viewStreamInfo', 'payload']));
+    const getMethods = compose(ramdaFilter(test(re)), keys, prop('payload'));
     const methodsArr = getMethods(obs);
     if (methodsArr.length>=1) {
-      const evt = prop('viewStreamEvent', obs);
+      const evt = prop('event', obs);
       if (evt !== undefined) {
         const methodUpdate = (match,p1,p2,p3,p4)=>String(p2).toLowerCase()+p3+p4;
         const methodStrReplace = replace(/^(event)([A-Z])(.*)([A-Z].*)$/gm, methodUpdate);
@@ -256,7 +256,7 @@ export class SpyneChannelRoute extends Channel {
         evt.preventDefault();
       }
     };
-    const selectEvtAndPreventDefault = compose(setPreventDefault, prop('viewStreamEvent'));
+    const selectEvtAndPreventDefault = compose(setPreventDefault, prop('event'));
     const checkForPreventDefault = when(checkDataForPreventDefault, selectEvtAndPreventDefault);
     checkForPreventDefault(obs);
   }
@@ -267,8 +267,8 @@ export class SpyneChannelRoute extends Channel {
     let action = this.channelActions.CHANNEL_ROUTE_CHANGE_EVENT;
     SpyneChannelRoute.checkForEventMethods(pl);
     let payload = this.getDataFromParams(pl);
-    let srcElement = path(['viewStreamInfo', 'srcElement'], pl);
-    let uiEvent = pl.viewStreamEvent;
+    let srcElement = prop('srcElement', pl);
+    let event = prop('event', pl);
     let changeLocationBool = !payload.isHidden;
     let keywordArrs = this.compareRouteKeywords.compare(payload.routeData, payload.paths);
     payload = rMerge(payload, keywordArrs);
@@ -277,7 +277,7 @@ export class SpyneChannelRoute extends Channel {
     // console.log("SEND STREAM onViewStreamInfo", payload);
     payload = SpyneChannelRoute.removeSSID(payload);
 
-    this.sendChannelPayload(action, payload, srcElement, uiEvent,
+    this.sendChannelPayload(action, payload, srcElement, event,
       this.navToStream$);
   }
 
@@ -322,7 +322,7 @@ export class SpyneChannelRoute extends Channel {
   }
 
   static getDataFromParams(pl, config = this.routeConfigJson) {
-    let routeData = path(['viewStreamInfo', 'payload'], pl);
+    let routeData = prop('payload', pl);
 
     let routeValue = this.getRouteStrFromParams(routeData, config);
 

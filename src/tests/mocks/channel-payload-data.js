@@ -82,7 +82,6 @@ const ChannelPayloadUIData = {
 };
 
 const ChannelPayloadRouteData = {
-  'viewStreamInfo': {
     'payload': {
       'routeVal': 'page-one',
       'pageId': 'page-one',
@@ -92,9 +91,9 @@ const ChannelPayloadRouteData = {
     'vsid': 'vsid-1703768',
     'viewName': 'AppView',
     'event': 'click',
-    'el': 'h6.nav-btn'
-  },
-  'viewStreamEvent': {
+    'el': 'h6.nav-btn',
+
+  'event': {
     'altKey': false,
     'bubbles': true,
     'cancelBubble': false,

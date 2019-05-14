@@ -220,11 +220,13 @@ export class Channel {
 
   onIncomingObservable(obj) {
     let eqsName = equals(obj.name, this.props.name);
+    let {action, payload, srcElement} = obj.data;
+   //console.log("INCOMING ",{action, payload, srcElement}, {obj});
     const mergeProps = (d) => mergeAll([d, { action: prop('action', d) }, prop('payload', d), prop('srcElement', d)]);
     let dataObj = obsVal => ({
       props: () => mergeProps(obj.data),
-      viewStreamInfo: obj.data,
-      viewStreamEvent: obsVal
+      action, payload, srcElement,
+      event: obsVal
     });
     let onSuccess = (obj) => obj.observable.pipe(map(dataObj))
       .subscribe(this.getActionMethodForObservable(obj));
