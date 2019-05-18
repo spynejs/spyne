@@ -176,7 +176,6 @@ export class SpyneChannelUI extends Channel {
 
   onUIEvent(obs) {
     SpyneChannelUI.checkForEventMethods(obs);
-    console.log("UI OBS ",{obs});
     obs['action'] = this.getActionState(obs);
     const action = obs.action;// this.getActionState(obs);
     const { payload, srcElement } = obs;
