@@ -63,4 +63,54 @@ describe('DomElTemplate', () => {
   });
 
 
+  it('DomElTemplate Template renders array of objects', ()=>{
+    let data =[
+      {name: 'jane'},
+      {name: 'joe'},
+      {name: 'john'}
+    ];
+    let template = "<ul>{{#}}<li>Welcome, {{name}}.</li>{{/}}</ul>";
+    let domElTemplate = new DomElTemplate(template, data);
+    let render = domElTemplate.renderDocFrag();
+    let lastItemTxt = render.firstElementChild.querySelectorAll('li')[2].innerText
+    expect(lastItemTxt).to.equal('Welcome, john.');
+  });
+
+  it('DomElTemplate Template renders array of objects and also nested objects', ()=>{
+    let data =[
+      {name: 'jane', hobbies: ['photography','driving','running']},
+      {name: 'joe',  hobbies: []},
+      {name: 'john', hobbies: ['vlogging','dancing'] }
+    ];
+    let template = "<ul>{{#}}<li>Welcome, {{name}}. and hobbies are {{hobbies}} </li>{{/}}</ul>";
+   // let template = "<ul>{{#}}<li>Welcome, {{name}}. <ol>{{#hobbies}}<li>{{.}}</li><{{/hobbies}}/ol></li>{{/}}</ul>";
+    let domElTemplate = new DomElTemplate(template, data);
+    let render = domElTemplate.renderDocFrag();
+
+    //console.log("render nested obj ",render.firstElementChild);
+    //let lastItemTxt = render.firstElementChild.querySelectorAll('li')[2].innerText
+   // expect(lastItemTxt).to.equal('Welcome, john.');
+    return true;
+  });
+
+  it('DomElTemplate Template renders array of nested objects', ()=>{
+    let data ={
+      users: [
+      {name: 'jane', details: {age:24, hair: 'brown'  }},
+      {name: 'joe',  details: {age:34, hair: 'blonde' }},
+      {name: 'john', details: {age:54, hair: 'green'  }}
+      ]
+    };
+    let template = "<ul>{{#users}}<li>Welcome, {{name}}. and details are {{details.age}} </li>{{/users}}</ul>";
+    // let template = "<ul>{{#}}<li>Welcome, {{name}}. <ol>{{#hobbies}}<li>{{.}}</li><{{/hobbies}}/ol></li>{{/}}</ul>";
+    let domElTemplate = new DomElTemplate(template, data);
+    let render = domElTemplate.renderDocFrag();
+
+    console.log("render nested obj ",render.firstElementChild);
+    //let lastItemTxt = render.firstElementChild.querySelectorAll('li')[2].innerText
+    // expect(lastItemTxt).to.equal('Welcome, john.');
+    return true;
+  });
+
+
 });

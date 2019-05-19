@@ -1,4 +1,4 @@
-import {includes, __, ifElse, reject, is, defaultTo, isNil, isEmpty} from 'ramda';
+import {includes, __, ifElse, compose,path,split, reject, is, defaultTo, isNil, isEmpty} from 'ramda';
 
 /**
  * @module DomElTemplate
@@ -109,7 +109,8 @@ export class DomElTemplate {
     };
     const parseObject = (obj, str) => {
       const loopObj = (str, p1, p2) => {
-        return obj[p2];
+        // DOT SYNTAX CHECK
+        return compose(path(__, obj), split('.'))(p2);
       };
       return str.replace(DomElTemplate.swapParamsForTagsRE(), loopObj);
     };
