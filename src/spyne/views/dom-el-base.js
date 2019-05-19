@@ -98,7 +98,7 @@ export class DomEl {
       let data = this.getProp('data');
       data = is(Object, data) ? data : {};
 
-      let frag = new DomElTemplate(template, data).getTemplateNode();
+      let frag = new DomElTemplate(template, data).renderDocFrag();
       el.appendChild(frag);
       return el;
     };

@@ -110,7 +110,7 @@ export class DomItem {
       let data = this.getProp('content');
       data = R.is(Object, data) ? data : {};
 
-      let frag = new DomItemTemplate(tmpl, data).getTemplateNode();
+      let frag = new DomItemTemplate(tmpl, data).renderDocFrag();
       el.appendChild(frag);
       return el;
     };

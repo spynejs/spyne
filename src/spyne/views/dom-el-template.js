@@ -76,7 +76,7 @@ export class DomElTemplate {
      *
      * @desc Returns a document fragment generated from the template and any added data.
      */
-  getTemplateNode() {
+  renderDocFrag() {
     const html = this.finalArr.join('');
     const el = document.createRange().createContextualFragment(html);
     window.setTimeout(this.removeThis(), 10);
