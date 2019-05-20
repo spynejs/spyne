@@ -93,7 +93,7 @@ export class DomElTemplate {
 
   addParams(str) {
     const replaceTags = (str, p1, p2, p3) => {
-      let dataVal = this.templateData[p2];
+      let dataVal = compose(path(__, this.templateData), split('.'))(p2);
       let defaultIsEmptyStr = defaultTo('');
       return defaultIsEmptyStr(dataVal);
     };
