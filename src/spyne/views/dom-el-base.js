@@ -16,7 +16,7 @@ export class DomEl {
    * @desc
    * <p>This is the ViewStream rendering engine.</p>
    * <p>This is the recommended process for creating HTMLElements that do not require the logic and overhead of a ViewStream instance.</p>
-   * <button class='modal-btn' data-type='modal-window' data-num=800 data-value='attributes'>View Attributes</button>
+   * <button class='modal-btn btn btn-blue-ref' data-type='modal-window' data-num=800 data-value='attributes'>View Attributes</button>
    *
    * @constructor
    * @param {string} tagName the tagname for this dom element.
@@ -98,7 +98,7 @@ export class DomEl {
       let data = this.getProp('data');
       data = is(Object, data) ? data : {};
 
-      let frag = new DomElTemplate(template, data).getTemplateNode();
+      let frag = new DomElTemplate(template, data).renderDocFrag();
       el.appendChild(frag);
       return el;
     };
