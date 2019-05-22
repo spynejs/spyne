@@ -91,6 +91,10 @@ export class Channel {
 
   }
 
+  onRegistered(){
+
+  }
+
   get isProxy() {
     return this.props.isProxy;
   }
@@ -129,6 +133,7 @@ export class Channel {
   initializeStream() {
     this.checkForTraits();
     this.onChannelInitialized();
+    this.onRegistered();
   }
 
   setTrace(bool) {

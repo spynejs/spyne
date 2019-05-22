@@ -144,7 +144,7 @@ export class SpyneChannelRoute extends Channel {
 
   }
 
-  onChannelInitialized() {
+  onRegistered() {
     this.checkConfigForHash();
     this.initStream();
   }

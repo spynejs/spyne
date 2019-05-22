@@ -21,7 +21,7 @@ export class RouteChannelUpdater{
         id, name, data
     });
 
-    vs.afterRender = ()=>{
+    vs.onRendered = ()=>{
       vs.sendInfoToChannel('CHANNEL_ROUTE', payload);
     };
 
