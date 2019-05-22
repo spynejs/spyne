@@ -56,7 +56,7 @@ export class ChannelFetch extends Channel {
     super(name, props);
   }
 
-  onChannelInitialized() {
+  onRegistered() {
     this.startFetch();
   }
 

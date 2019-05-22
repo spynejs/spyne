@@ -1,7 +1,7 @@
 {
   "name": "spyne",
   "sideEffects": false,
-  "version": "0.10.14",
+  "version": "0.10.15",
   "description": "Modern, and efficient javascript frontend framework",
   "main": "lib/spyne.min.js",
   "module": "src/spyne/spyne.js",
