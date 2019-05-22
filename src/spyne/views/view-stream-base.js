@@ -101,7 +101,7 @@ export class ViewStream {
    *     <li><a class='linker no-break' data-channel="ROUTE"  data-event-prevent-default="true" data-menu-item="channel-action-filter"  href="/guide/reference/channel-action-filter" >ChannelActionFilters</a> that allow for the prefiltering of actions</li>
    *     <li>The ability to limit UI event publishing to locally elements using the third 'local' parameter in broadcastEvents</li>
    *     <li>Automatic subscribing and unsubscribing of all observables using the <a class='linker no-break' data-channel="ROUTE"  data-event-prevent-default="true" data-menu-item="view-stream-add-channel"  href="/guide/reference/view-stream-add-channel" >addChannel</a> method</li>
-   *     <li><a class='linker no-break' data-channel="ROUTE"  data-event-prevent-default="true" data-menu-item="view-stream-after-render"  href="/guide/reference/view-stream-after-render" >afterRender</a> method allows for adding functionality</li>
+   *     <li><a class='linker no-break' data-channel="ROUTE"  data-event-prevent-default="true" data-menu-item="view-stream-after-render"  href="/guide/reference/view-stream-on-rendered" >onRendered</a> method allows for adding functionality</li>
    *     <li>communicate render and dispose events for an ViewStream method throught the <a class='linker no-break' data-channel="ROUTE"  data-event-prevent-default="true" data-is-manual-scroll='true' data-section='overview' data-menu-item="intro-channel-life-cycle"  href="/guide/overview/intro-channel-life-cycle" >LIFECYCLE_CHANNEL</a> method</li>
    *     <li>Automatic removing of all elements and properties from the DOM and from memory</li>
    *     </ul>
@@ -269,9 +269,9 @@ export class ViewStream {
       'EXTIRPATING': (p) => this.checkParentDispose(p),
       'EXTIRPATE': (p) => this.disposeViewStream(p),
       // 'CHILD_EXTIRPATE'                    : (p) => this.disposeViewStream(p),
-      'VS_SPAWNED': (p) => this.onRendered(p),
-      'VS_SPAWNED_AND_ATTACHED_TO_DOM': (p) => this.onRendered(p),
-      'VS_SPAWNED_AND_ATTACHED_TO_PARENT': (p) => this.onRendered(p),
+      'VS_SPAWNED': (p) => this.onVSRendered(p),
+      'VS_SPAWNED_AND_ATTACHED_TO_DOM': (p) => this.onVSRendered(p),
+      'VS_SPAWNED_AND_ATTACHED_TO_PARENT': (p) => this.onVSRendered(p),
       // 'CHILD_VS_SPAWNED'                   : (p) => this.attachChildToView(p),
       'READY_FOR_VS_DETRITUS_COLLECT': (p) => this.onReadyToGC(p),
       'VS_NULLITY': () => ({})
@@ -742,7 +742,7 @@ export class ViewStream {
     this.renderViewAndAttachToDom(node, 'dom', 'appendChild');
   }
 
-  onRendered(payload) {
+  onVSRendered(payload) {
     // console.log('VS_SPAWN: ', this.props.name, payload);
     if (payload.from$ === 'internal') {
       // this.props['el'] = payload.el.el;
@@ -755,6 +755,7 @@ export class ViewStream {
   postRender() {
     this.beforeAfterRender();
     this.afterRender();
+    this.onRendered();
     this.viewsStreamBroadcaster = new ViewStreamBroadcaster(this.props,
       this.broadcastEvents.bind(this));
       this.afterBroadcastEvents();
@@ -833,6 +834,16 @@ export class ViewStream {
   downStream() {
 
   }
+  /**
+   *
+   * This method is called as soon as the element has been rendered.
+   *
+   */
+
+  onRendered() {
+  }
+
+
 
   /**
    *
