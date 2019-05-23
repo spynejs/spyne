@@ -101,7 +101,7 @@ export class ViewStream {
    *     <li><a class='linker no-break' data-channel="ROUTE"  data-event-prevent-default="true" data-menu-item="channel-action-filter"  href="/guide/reference/channel-action-filter" >ChannelActionFilters</a> that allow for the prefiltering of actions</li>
    *     <li>The ability to limit UI event publishing to locally elements using the third 'local' parameter in broadcastEvents</li>
    *     <li>Automatic subscribing and unsubscribing of all observables using the <a class='linker no-break' data-channel="ROUTE"  data-event-prevent-default="true" data-menu-item="view-stream-add-channel"  href="/guide/reference/view-stream-add-channel" >addChannel</a> method</li>
-   *     <li><a class='linker no-break' data-channel="ROUTE"  data-event-prevent-default="true" data-menu-item="view-stream-after-render"  href="/guide/reference/view-stream-on-rendered" >onRendered</a> method allows for adding functionality</li>
+   *     <li><a class='linker no-break' data-channel="ROUTE"  data-event-prevent-default="true" data-menu-item="view-stream-on-rendered"  href="/guide/reference/view-stream-on-rendered" >onRendered</a> method is called when the ViewStream instance has rendered and allows for adding functionality</li>
    *     <li>communicate render and dispose events for an ViewStream method throught the <a class='linker no-break' data-channel="ROUTE"  data-event-prevent-default="true" data-is-manual-scroll='true' data-section='overview' data-menu-item="intro-channel-life-cycle"  href="/guide/overview/intro-channel-life-cycle" >LIFECYCLE_CHANNEL</a> method</li>
    *     <li>Automatic removing of all elements and properties from the DOM and from memory</li>
    *     </ul>
@@ -847,7 +847,7 @@ export class ViewStream {
 
   /**
    *
-   * This method is called as soon as the element has been rendered.
+   * (Deprecated. Use onRendered). This method is called as soon as the element has been rendered.
    *
    */
 
