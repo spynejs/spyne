@@ -31,7 +31,7 @@ const app = new ViewStream({
 });
 app.appendToDom(document.body);
 app.appendView(
-    new ViewStream({tagName: 'h1', 'data': 'Hello World!'})
+    new ViewStream({tagName: 'h1', data: 'Hello World!'})
 );
 
 ```
