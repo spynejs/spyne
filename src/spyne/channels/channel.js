@@ -84,13 +84,18 @@ export class Channel {
 
   //  OVERRIDE INITIALIZATION METHOD
   /**
-   * <p>This method is empty and is called as soon as the Channel has been registered.</p>
+   * <p>(Deprecated. Use onRegistered). This method is empty and is called as soon as the Channel has been registered.</p>
    * <p>Tasks such as subscribing to other channels, and sending initial payloads can be added here.</p>
    */
   onChannelInitialized() {
 
   }
 
+  //  OVERRIDE INITIALIZATION METHOD
+  /**
+   * <p>This method is empty and is called as soon as the Channel has been registered.</p>
+   * <p>Tasks such as subscribing to other channels, and sending initial payloads can be added here.</p>
+   */
   onRegistered(){
 
   }
