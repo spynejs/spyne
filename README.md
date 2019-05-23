@@ -20,7 +20,7 @@ https://spynejs.org
 ```
 npm install spyne
 ```
-**A Basic Spyne app**<br>
+**A Basic Spyne App**<br>
 [Edit in jsfiddle](https://jsfiddle.net/nybatista/0ouqhn1y/24/)
 ```
 import {SpyneApp, ViewStream} from 'spyne';
