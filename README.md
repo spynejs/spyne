@@ -1,15 +1,17 @@
 [![NPM version](https://img.shields.io/npm/v/spyne.svg?longCache=true&style=flat-square)](https://www.npmjs.com/package/spyne)
 [![GitHub license](https://img.shields.io/github/license/spynejs/spyne.svg?longCache=true&style=flat-square)](https://github.com/spynejs/spyne/blob/master/LICENSE)
-# Spyne
+# Spyne.js
 <em>Spyne is a full-featured, reactive framework that creates ‘easy to reason about’ code</em>
 
-### Spyne introduces several innovations to frontend frameworks:
+### Spyne.js’ key features includes:
 
-* ViewStreams and Channels communicate globally while remaining encapsulated
-* Chainable ViewStreams reactively maintain state
-* Events are first class citizens, and are streamed as data, in the form of Channels
-* Routing based on a configurable map object
-* Supercharges declarative 'backbonesque' style of coding with reactive and functional patterns, using [rxjs](https://rxjs-dev.firebaseapp.com) and [ramda](https://ramdajs.com)
+* Declarative style of coding with reactive and functional patterns, using [RxJs](https://rxjs-dev.firebaseapp.com) and [ramda](https://ramdajs.com)
+* Components are defined either as either a ViewStream object — the interactive-view layer, or as a Channel — the data layer.
+* Events are first class citizens, and are streamed as data, in the form of Spyne Channels.
+* ViewStreams and Channels communicate globally while remaining completely encapsulated.
+* ViewStream instances exchange observables when appending to one another, which creates smart DOM trees that reactively maintain state.
+* Application Routing is based on a configurable map object.
+
 
 
 ## Getting Started ##
@@ -35,13 +37,20 @@ app.appendView(
 );
 
 ```
+**Download or Fork Example App** (Tutorial to be added soon)<br/>
+https://github.com/spynejs/spyne-example-app <br>
+
 **Todos Example**<br/>
 https://todos.spynejs.org</br>
 
-**Download or Fork Example App**<br/>
-https://github.com/spynejs/spyne-example-app <br>
-
 
 **Spyne and the DCI Pattern**<br/>
-Spyne is based on the *Data Context Interaction* pattern, which in a nutshell is organized to adjust the Context (HTML tags) of a site by broadcasting Interactive (ViewStream) events and  by listening to Data (Channels).
+Spyne is based on the [*Data Context Interaction*](https://en.wikipedia.org/wiki/Data,_context_and_interaction) pattern, where ViewStreams renders the proper *Context* of the app by broadcasting *Interactive* events that affect the *Data*, which cycles back to ViewStreams resyncing the site to the expected *Context*.
+
+Spyne was just released as an open source project in May 2019, and any feedback would be greatly appreciated!<br>
+To suggest a feature or report a bug: https://github.com/spynejs/spyne/issues
+
+
+
+
 
