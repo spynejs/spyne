@@ -37,11 +37,11 @@ app.appendView(
 );
 
 ```
-**Todos Example**<br/>
-https://todos.spynejs.org</br>
-
 **Download or Fork Example App** (Tutorial to be added soon)<br/>
 https://github.com/spynejs/spyne-example-app <br>
+
+**Todos Example**<br/>
+https://todos.spynejs.org</br>
 
 
 **Spyne and the DCI Pattern**<br/>
