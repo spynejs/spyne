@@ -53,6 +53,8 @@ Spyne was just released as an open source project in May 2019, and any feedback 
 To suggest a feature or report a bug: https://github.com/spynejs/spyne/issues
 
 
+Created by [Frank Batista](https://frankbatista.com)
+
 
 
 
