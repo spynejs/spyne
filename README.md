@@ -1,16 +1,17 @@
 [![NPM version](https://img.shields.io/npm/v/spyne.svg?longCache=true&style=flat-square)](https://www.npmjs.com/package/spyne)
 [![GitHub license](https://img.shields.io/github/license/spynejs/spyne.svg?longCache=true&style=flat-square)](https://github.com/spynejs/spyne/blob/master/LICENSE)
-# Spyne
+# Spyne.js
 <em>Spyne is a full-featured, reactive framework that creates ‘easy to reason about’ code</em>
 
-### Spyne introduces several innovations to frontend development:
+### Spyne.js’ key features includes:
 
+* Declarative style of coding with reactive and functional patterns, using [RxJs](https://rxjs-dev.firebaseapp.com) and [ramda](https://ramdajs.com)
 * Components are defined either as either a ViewStream object — the interactive-view layer, or as a Channel — the data layer.
 * Events are first class citizens, and are streamed as data, in the form of Spyne Channels.
 * ViewStreams and Channels communicate globally while remaining completely encapsulated.
 * ViewStream instances exchange observables when appending to one another, which creates smart DOM trees that reactively maintain state.
 * Application Routing is based on a configurable map object.
-* Declarative style of coding with reactive and functional patterns, using [RxJs](https://rxjs-dev.firebaseapp.com) and [ramda](https://ramdajs.com)
+
 
 
 ## Getting Started ##
@@ -44,5 +45,5 @@ https://github.com/spynejs/spyne-example-app <br>
 
 
 **Spyne and the DCI Pattern**<br/>
-Spyne is based on the *Data Context Interaction* pattern, where ViewStreams renders the proper *Context* of the app by broadcasting *Interactive* events that affect the *Data*, which cycles back to ViewStreams resyncing the site to the expected *Context*.
+Spyne is based on the [*Data Context Interaction*](https://en.wikipedia.org/wiki/Data,_context_and_interaction) pattern, where ViewStreams renders the proper *Context* of the app by broadcasting *Interactive* events that affect the *Data*, which cycles back to ViewStreams resyncing the site to the expected *Context*.
 
