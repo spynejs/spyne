@@ -5,12 +5,14 @@
 
 ### Spyne.js’ key features includes:
 
-* Declarative style of coding with reactive and functional patterns, using its two dependencies, [RxJs](https://rxjs-dev.firebaseapp.com) and [ramda](https://ramdajs.com)
+* Declarative style of coding with reactive and functional patterns
 * Components are defined either as either a ViewStream object — the interactive-view layer, or as a Channel — the data layer.
 * Events are first class citizens, and are streamed as data, in the form of Spyne Channels.
 * ViewStreams and Channels communicate globally while remaining completely encapsulated.
 * ViewStream instances exchange observables when appending to one another, which creates smart DOM trees that reactively maintain state.
 * Application Routing is based on a configurable map object.
+* Has two dependencies, [RxJs](https://rxjs-dev.firebaseapp.com) and [ramda](https://ramdajs.com)
+
 
 
 
