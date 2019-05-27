@@ -51,3 +51,5 @@ Spyne is based on the [*Data Context Interaction*](https://en.wikipedia.org/wiki
 
 Spyne was just released as an open source project in May 2019, and any feedback would be greatly appreciated!<br>
 To suggest a feature or report a bug: https://github.com/spynejs/spyne/issues
+
+Created by [Frank Batista](https://frankbatista.com)
