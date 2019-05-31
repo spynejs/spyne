@@ -1,4 +1,4 @@
-import {mergeAll, compose, mergeDeepRight, mergeRight, includes, pickAll, __} from 'ramda';
+import {mergeAll, compose, mergeDeepRight, mergeRight, pathEq, includes, pickAll, __} from 'ramda';
 
 export class ChannelPayload {
   /**
@@ -38,6 +38,17 @@ export class ChannelPayload {
      *
      *
      */
+
+    const isDebugMode =  pathEq(['Spyne','config', 'debug'], true)(window);
+
+    if (isDebugMode === true){
+      if (payload.hasOwnProperty('payload')){
+        let payloadStr = JSON.stringify(payload);
+        console.warn(`Spyne Warning: the following payload contains a nested payload property which may create conflicts: Action: ${action}, ${payloadStr}`);
+      }
+    }
+
+
 
     channelPayloadItemObj.props = () => mergeAll([{payload:channelPayloadItemObj.payload},channelPayloadItemObj.payload, { channel }, { event: event }, channelPayloadItemObj.srcElement, { action: channelPayloadItemObj.action }]);
 
