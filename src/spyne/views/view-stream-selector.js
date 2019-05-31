@@ -226,7 +226,7 @@ function ViewStreamSelector(cxt, str) {
     if (isNodeElement(currentEl)===true) {
       arr.forEach(toggleBool);
     } else if (isDevMode()===true){
-      console.log("SEL IS ",sel,c);
+      //console.log("SEL IS ",sel,c);
       console.warn(`Spyne Warning: The selector, ${sel}, does not appear to be a valid item in setActiveItem: ${c}`);
     }
     return this;
