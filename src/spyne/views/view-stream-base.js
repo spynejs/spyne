@@ -24,12 +24,12 @@ export class ViewStream {
    * @type extendable
    *
    * @desc
-   * <p>ViewStreams are the core of this framework.</br>Taking analogy of Spyne, they are basically the nervous system of the application.</p>
+   * <p>ViewStream is the interactive-view layer.</p>
    * <h3>ViewStreams have three main tasks:</h3>
    * <ol>
    * <li>Render or reference an HTML element
-   * <li>Broadcast UI events
-   * <li>Provide tools to maintain state
+   * <li>Broadcast UI events and other DOM Info
+   * <li>Subscribe to data to maintain its state
    * </ol>
    *
    * <h4>Rendering</h4>
