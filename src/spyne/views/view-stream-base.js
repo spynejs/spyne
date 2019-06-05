@@ -615,6 +615,10 @@ export class ViewStream {
    *
    */
   appendToDom(node) {
+    console.log("append to dom ",this.props.vsid, this.props.el);
+    if (this.props.el !== undefined){
+      console.warn(`Spyne Warning: The ViewStream, ${this.props.name}, has an element, ${this.props.el}, that is already rendered and does not need to be appendedToDom. This may create unsusual side effects!`)
+    }
     this.renderViewAndAttachToDom(node, 'dom', 'appendChild');
   }
 
@@ -628,6 +632,9 @@ export class ViewStream {
    */
 
   prependToDom(node) {
+    if (this.props.el !== undefined){
+      console.warn(`Spyne Warning: The ViewStream, ${this.props.name}, has an element, ${this.props.el}, that is already rendered and does not need to be prependedToDom. This may create unsusual side effects!`)
+    }
     this.renderViewAndAttachToDom(node, 'dom', 'prependChild');
   }
 
