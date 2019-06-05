@@ -10,7 +10,7 @@
 * Intuitive <b>Channel</b> data layer harnesses the power of RxJs
 * Versatile process of extending components with pure, static functions
 * Spyne debugger assists in 'wiring' Channels and ViewStreams
-* Has two dependencies, [RxJs](https://rxjs-dev.firebaseapp.com) and [ramda](https://ramdajs.com)
+* Two dependencies, [RxJs](https://rxjs-dev.firebaseapp.com) and [ramda](https://ramdajs.com)
 
 
 
