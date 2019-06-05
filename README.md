@@ -1,7 +1,7 @@
 [![NPM version](https://img.shields.io/npm/v/spyne.svg?longCache=true&style=flat-square)](https://www.npmjs.com/package/spyne)
 [![GitHub license](https://img.shields.io/github/license/spynejs/spyne.svg?longCache=true&style=flat-square)](https://github.com/spynejs/spyne/blob/master/LICENSE)
 # Spyne.js
-<em>Spyne is a full-featured, reactive framework that creates ‘easy to reason about’ code</em>
+<em>Spyne is a full-featured, real DOM Javascript framework that allows developers to focus on advanced user experiences, instead of complicated codebases.</em>
 
 ### Spyne.js’ key features includes:
 
