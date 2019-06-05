@@ -24,12 +24,12 @@ export class ViewStream {
    * @type extendable
    *
    * @desc
-   * <p>ViewStreams are the core of this framework.</br>Taking analogy of Spyne, they are basically the nervous system of the application.</p>
+   * <p>ViewStream is the interactive-view layer.</p>
    * <h3>ViewStreams have three main tasks:</h3>
    * <ol>
    * <li>Render or reference an HTML element
-   * <li>Broadcast UI events
-   * <li>Provide tools to maintain state
+   * <li>Broadcast UI events and other DOM Info
+   * <li>Subscribe to data to maintain its state
    * </ol>
    *
    * <h4>Rendering</h4>
@@ -615,6 +615,10 @@ export class ViewStream {
    *
    */
   appendToDom(node) {
+    console.log("append to dom ",this.props.vsid, this.props.el);
+    if (this.props.el !== undefined){
+      console.warn(`Spyne Warning: The ViewStream, ${this.props.name}, has an element, ${this.props.el}, that is already rendered and does not need to be appendedToDom. This may create unsusual side effects!`)
+    }
     this.renderViewAndAttachToDom(node, 'dom', 'appendChild');
   }
 
@@ -628,6 +632,9 @@ export class ViewStream {
    */
 
   prependToDom(node) {
+    if (this.props.el !== undefined){
+      console.warn(`Spyne Warning: The ViewStream, ${this.props.name}, has an element, ${this.props.el}, that is already rendered and does not need to be prependedToDom. This may create unsusual side effects!`)
+    }
     this.renderViewAndAttachToDom(node, 'dom', 'prependChild');
   }
 

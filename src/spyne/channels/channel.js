@@ -15,7 +15,7 @@ export class Channel {
    *
    * @desc
    * <p>Channels broadcast specific types of data that is listened to by other Channels and by LINK['ViewStream', 'view-stream'] instances.</p>
-   * <p>Channels create data by subscribing to other Channels and by parsing ViewStream info that's sent to its LINK['onViewStreamInfo', 'channel-on-view-stream-info'] method.</p>
+   * <p>Channels create data by importing models, subscribing to other Channels and by parsing ViewStream info that's sent to its LINK['onViewStreamInfo', 'channel-on-view-stream-info'] method.</p>
    * <h3>The Basic Channel Structure</h3>
    * <ul>
    * <li>Channels requires a unique name, for example, <em>CHANNEL_MYCHANNEL</em>, which is used by the LINK['ChannelsController', 'channels-controller'] to direct the flow of Channel data.</li>
