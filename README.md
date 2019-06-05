@@ -24,19 +24,47 @@ https://spynejs.org
 ```
 npm install spyne
 ```
-**A Basic Spyne App**<br>
-[Edit in jsfiddle](https://jsfiddle.net/nybatista/0ouqhn1y/)
+**Hello World**<br>
+[Edit in codepen](https://codepen.io/nybatista/pen/Pvvweb)
 ```
-import {SpyneApp, ViewStream} from 'spyne';
-const spyne = new SpyneApp();
+const spyneApp = new spyne.SpyneApp({debug:true});
 
-const app = new ViewStream({
-   id: 'app'
-});
-app.appendToDom(document.body);
-app.appendView(
-    new ViewStream({tagName: 'h1', data: 'Hello World!'})
-);
+// CREATE CHANNEL THAT SENDS LAST PAYLOAD TO ANY SUBSCRIBER
+const channelHelloWorld = new spyne.Channel("CHANNEL_HELLO_WORLD", {sendCachedPayload:true});
+
+// REGISTER ACTIONS TO BE USED
+channelHelloWorld.addRegisteredActions = ()=>["CHANNEL_HELLO_WORLD_DEFAULT_EVENT"];
+
+// ADD TO LIST OF AVAILABLE CHANNELS
+spyneApp.registerChannel(channelHelloWorld)
+
+// SEND PAYLOAD
+channelHelloWorld.sendChannelPayload("CHANNEL_HELLO_WORLD_DEFAULT_EVENT", {text:"HELLO WORLD!"});
+
+
+class App extends spyne.ViewStream {
+  constructor(props = {}) {
+    props.tagName = 'h1';
+    super(props);
+  }
+  addActionListeners() {
+    return [
+      ['CHANNEL_HELLO_WORLD_.*_EVENT', 'onHelloWorld'],
+    ];
+  }
+  
+  onHelloWorld(e){
+     this.props.el.innerText = e.props().text;
+  }
+
+  onRendered() {
+     this.addChannel("CHANNEL_HELLO_WORLD");
+  }
+ 
+}
+
+ new App().appendToDom(document.body);
+
 
 ```
 **Download or Fork Example App** (Tutorial to be added soon)<br/>
@@ -52,6 +80,5 @@ Spyne is based on the [*Data Context Interaction*](https://en.wikipedia.org/wiki
 ### Feedback
 Spyne was just released as an open source project in May, 2019, and any feedback would be greatly appreciated!<br>
 To suggest a feature or report a bug: https://github.com/spynejs/spyne/issues
-
 
 Created by [Frank Batista](https://frankbatista.com)
