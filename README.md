@@ -40,6 +40,7 @@ spyneApp.registerChannel(channelHelloWorld)
 
 // SEND PAYLOAD
 channelHelloWorld.sendChannelPayload("CHANNEL_HELLO_WORLD_DEFAULT_EVENT", {text:"HELLO WORLD!"});
+
 class App extends spyne.ViewStream {
   constructor(props = {}) {
     props.tagName = 'h1';
