@@ -29,10 +29,10 @@ npm install spyne
 ```
 const spyneApp = new spyne.SpyneApp({debug:true});
 
-// CREATE CHANNEL THAT SENDS LAST PAYLOAD TO ANY SUBSCRIBER
+// SENDS LATEST PAYLOAD TO ANY SUBSCRIBER
 const channelHelloWorld = new spyne.Channel("CHANNEL_HELLO_WORLD", {sendCachedPayload:true});
 
-// REGISTER ACTIONS TO BE USED
+// REGISTER ACTION(S) TO BE USED
 channelHelloWorld.addRegisteredActions = ()=>["CHANNEL_HELLO_WORLD_DEFAULT_EVENT"];
 
 // ADD TO LIST OF AVAILABLE CHANNELS
@@ -52,11 +52,9 @@ class App extends spyne.ViewStream {
       ['CHANNEL_HELLO_WORLD_.*_EVENT', 'onHelloWorld'],
     ];
   }
-  
   onHelloWorld(e){
      this.props.el.innerText = e.props().text;
   }
-
   onRendered() {
      this.addChannel("CHANNEL_HELLO_WORLD");
   }
