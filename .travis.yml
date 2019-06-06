@@ -1,9 +1,9 @@
 language: node_js
-services:
-  - xvfb
 cache:
   directories:
     - ~/.npm
+services:
+  - xvfb    
 notifications:
   email: false
 node_js:
