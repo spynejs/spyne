@@ -1,6 +1,4 @@
 language: node_js
-before_install:
-  - xvfb
 cache:
   directories:
     - ~/.npm
@@ -10,6 +8,7 @@ node_js:
   - '8'
 before_script:
   - npm prune
+  - xvfb
 script:
   - npm run test:single
 after_success:
