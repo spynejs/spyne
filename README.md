@@ -72,5 +72,8 @@ https://todos.spynejs.org</br>
 Spyne was just released as an open source project in May, 2019, and any feedback would be greatly appreciated!<br>
 To suggest a feature or report a bug: https://github.com/spynejs/spyne/issues
 
+[<img src="https://bstacksupport.zendesk.com/attachments/token/PhEt6nTTBau6HVpyq3IJsmUIG/?name=browserstack-logo-600x315.png" title="BrowsersStack.com Logo" height="100">](https://browserstack.com)<br>
+BrowserStack.com supports open source projects like Spyne.js<br> 
+Unit and Integration tests will run on real browsers and devices using BrowserStack's Automate system.<br><br>
 
 Created by [Frank Batista](https://frankbatista.com)
