@@ -1,8 +1,9 @@
+# Spyne.js
+Spyne is a full-featured, Javascript framework that reactively renders to the Real DOM.
+
 [![NPM version](https://img.shields.io/npm/v/spyne.svg?longCache=true&style=flat-square)](https://www.npmjs.com/package/spyne)
 [![GitHub license](https://img.shields.io/github/license/spynejs/spyne.svg?longCache=true&style=flat-square)](https://github.com/spynejs/spyne/blob/master/LICENSE)
 [![Build Status](https://travis-ci.com/spynejs/spyne.svg?branch=master)](https://travis-ci.com/spynejs/spyne)
-# Spyne.js
-Spyne is a full-featured, Javascript framework that reactively renders to the Real DOM.
 
 ### Spyne.js’ key features includes:
 
