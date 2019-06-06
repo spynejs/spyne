@@ -2,7 +2,7 @@
 [![GitHub license](https://img.shields.io/github/license/spynejs/spyne.svg?longCache=true&style=flat-square)](https://github.com/spynejs/spyne/blob/master/LICENSE)
 [![Build Status](https://travis-ci.com/spynejs/spyne.svg?branch=master)](https://travis-ci.com/spynejs/spyne)
 # Spyne.js
-<em>Spyne is a full-featured, real DOM Javascript framework that allows developers to focus on advanced user experiences, instead of complicated codebases.</em>
+<em>Spyne is a full-featured, real DOM Javascript framework that allows developers to focus on advanced user experiences.
 
 ### Spyne.js’ key features includes:
 
