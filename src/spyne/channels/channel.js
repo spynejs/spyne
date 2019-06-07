@@ -14,15 +14,13 @@ export class Channel {
    * @type extendable
    *
    * @desc
-   * <p>Channels broadcast specific types of data that is listened to by other Channels and by LINK['ViewStream', 'view-stream'] instances.</p>
-   * <p>Channels create data by importing models, subscribing to other Channels and by parsing ViewStream info that's sent to its LINK['onViewStreamInfo', 'channel-on-view-stream-info'] method.</p>
+   * <p>Channels are Observables that is subscribed to by other Channels and by LINK['ViewStream', 'view-stream'] instances.</p>
+   * <p>Channels generate data by importing models, subscribing to other Channels and by parsing ViewStream info.</p>
    * <h3>The Basic Channel Structure</h3>
    * <ul>
-   * <li>Channels requires a unique name, for example, <em>CHANNEL_MYCHANNEL</em>, which is used by the LINK['ChannelsController', 'channels-controller'] to direct the flow of Channel data.</li>
-   * <li>Channels are instantiated and 'registered' after initializing a LINK['SpyneApp', 'spyne-app']; they remain persistent and are not deleted.</li>
-   * <li>Channels can send data at any time using the LINK['sendChannelPayload', 'channel-send-channel-payload'] method.</li>
-   * <li>Channels use the LINK['getChannel', 'channel-get-channel'] method to retrieve data from other channels by subscribing to its source EXT['rxjs Subject', '//rxjs-dev.firebaseapp.com/guide/subject']</li>
-   * <li>A Channel's LINK['onViewStreamInfo', 'channel-on-view-stream-info'] method is called whenever a ViewStream instances sends data to that channel.</li>
+   * <li>Channels requires a unique name, for example, <b>CHANNEL_MYCHANNEL</b>, which is used by the LINK['ChannelsController', 'channels-controller'] to direct the flow of Channel data.</li>
+   * <li>Channels are instantiated and 'registered' with the LINK['SpyneApp', 'spyne-app'].</li>
+   * <li>Channels remain persistent and are not deleted.</li>
    * </ul>
    * <h3>Other Channels that extend Channel</h3>
    * <ul>
@@ -30,12 +28,9 @@ export class Channel {
    * <li>ChannelFetch instances also extends Channel by using the ChannelFetchUtil to immediately publish the fetched response as a ChannelPayload.</li>
    * </ul>
    * <h3>Sending ChannelPayloads</h3>
-   *   <p>The main task of all channels is to send data and events using the <a class='linker' data-channel="ROUTE"  data-event-prevent-default="true" data-menu-item="channel-send-channel-payload"  href="/guide/reference/channel-send-channel-payload" >sendChannelPayload</a>
+   *   <p>Channels send data using the <a class='linker' data-channel="ROUTE"  data-event-prevent-default="true" data-menu-item="channel-send-channel-payload"  href="/guide/reference/channel-send-channel-payload" >sendChannelPayload</a>
    method.</p>
    *
-   *   <p><a class='linker' data-channel="ROUTE"  data-event-prevent-default="true" data-menu-item="channel-payload"  href="/guide/reference/channel-payload" >Channel Payloads</a>
-   require an action string to be sent as well, and all channel actions need to be registered within its channel by using the <a class='linker' data-channel="ROUTE"  data-event-prevent-default="true" data-menu-item="channel-add-registered-actions"  href="/guide/reference/channel-add-registered-actions" >addRegisteredActions</a>
-   method.</p>
    *
    * <h3>Receiving Data from ViewStream Instances</h3>
    * <p>ViewStreams can send data to any custom channel using the <a class='linker' data-channel="ROUTE"  data-event-prevent-default="true" data-menu-item="view-stream-send-into-to-channel"  href="/guide/reference/view-stream-send-info-to-channel" >sendInfoToChannel</a>
@@ -231,7 +226,7 @@ export class Channel {
   onIncomingObservable(obj) {
     let eqsName = equals(obj.name, this.props.name);
     let {action, payload, srcElement} = obj.data;
-   //console.log("INCOMING ",{action, payload, srcElement}, {obj});
+    //console.log("INCOMING ",{action, payload, srcElement}, {obj});
     const mergeProps = (d) => mergeAll([d, { action: prop('action', d) }, prop('payload', d), prop('srcElement', d)]);
     let dataObj = obsVal => ({
       props: () => mergeProps(obj.data),
@@ -239,7 +234,7 @@ export class Channel {
       event: obsVal
     });
     let onSuccess = (obj) => obj.observable.pipe(map(dataObj))
-      .subscribe(this.getActionMethodForObservable(obj));
+    .subscribe(this.getActionMethodForObservable(obj));
     let onError = () => {};
     return eqsName === true ? onSuccess(obj) : onError();
   }
@@ -321,12 +316,12 @@ export class Channel {
   getChannel(CHANNEL_NAME, payloadFilter) {
     let isValidChannel = c => registeredStreamNames().includes(c);
     let error = c => console.warn(
-      `channel name ${c} is not within ${registeredStreamNames}`);
+        `channel name ${c} is not within ${registeredStreamNames}`);
     let startSubscribe = (c) => {
       let obs$ = this.streamsController.getStream(c).observer;
-        if (payloadFilter!==undefined){
-          return obs$.pipe(filter(payloadFilter));
-        }
+      if (payloadFilter!==undefined){
+        return obs$.pipe(filter(payloadFilter));
+      }
 
       return obs$;
     };
