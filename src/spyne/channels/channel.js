@@ -14,18 +14,18 @@ export class Channel {
    * @type extendable
    *
    * @desc
-   * <p>Channels are Observables that is subscribed to by other Channels and by LINK['ViewStream', 'view-stream'] instances.</p>
-   * <p>Channels generate data by importing models, subscribing to other Channels and by parsing ViewStream info.</p>
+   * <p>The Channel component wraps methods and functionality around an RxJs Subject, to create a one-way data flow between itself and other Channels and ViewStreams.</p>
+   * <p>Channels get data by importing json objects, subscribing to other Channels and by parsing ViewStream info.</p>
    * <h3>The Basic Channel Structure</h3>
    * <ul>
-   * <li>Channels requires a unique name, for example, <b>CHANNEL_MYCHANNEL</b>, which is used by the LINK['ChannelsController', 'channels-controller'] to direct the flow of Channel data.</li>
+   * <li>Channels requires a unique name, for example, <b>CHANNEL_MYCHANNEL</b>, which components use to select and subscribe to any channel.</li>
    * <li>Channels are instantiated and 'registered' with the LINK['SpyneApp', 'spyne-app'].</li>
    * <li>Channels remain persistent and are not deleted.</li>
    * </ul>
-   * <h3>Other Channels that extend Channel</h3>
+   * <h3>Components that extend Channel</h3>
    * <ul>
-   * <li>The four Spyne Channels, LINK['SpyneChannelUI', 'spyne-channel-u-i'], LINK['SpyneChannelWindow', 'spyne-channel-window'], LINK['SpyneChannelRoute', 'spyne-channel-route'] and LINK['SpyneChannelLifecycle', 'spyne-channel-lifecycle'], all extend this Channel class.<br>Channel instances can subscribe to any combination of these four SpyneChannels.</li>
-   * <li>ChannelFetch instances also extends Channel by using the ChannelFetchUtil to immediately publish the fetched response as a ChannelPayload.</li>
+   * <li>The four Spyne Channels, LINK['SpyneChannelUI', 'spyne-channel-u-i'], LINK['SpyneChannelWindow', 'spyne-channel-window'], LINK['SpyneChannelRoute', 'spyne-channel-route'] and LINK['SpyneChannelLifecycle', 'spyne-channel-lifecycle'], all extend Channel.</li>
+   * <li>ChannelFetch also extends Channel, adds a ChannelFetchUtil component to immediately publish fetched responses.</li>
    * </ul>
    * <h3>Sending ChannelPayloads</h3>
    *   <p>Channels send data using the <a class='linker' data-channel="ROUTE"  data-event-prevent-default="true" data-menu-item="channel-send-channel-payload"  href="/guide/reference/channel-send-channel-payload" >sendChannelPayload</a>
@@ -47,7 +47,7 @@ export class Channel {
    * @param {Object} props This json object takes in parameters to initialize the channel
    * @property {String} CHANNEL_NAME - = undefined; This will be the registered name for this channel.
    * @property {Object} props - = {}; The props objects allows for custom properties for the channel.
-   * @property {Observable} observer - = new Subject(); This is the source rxjs Subject for the channel.
+   * @property {Object} props.sendCachedPayload - = false; Publishes its most current payload to late subscribers, when set to true.
    *
    */
   constructor(CHANNEL_NAME, props = {}) {
