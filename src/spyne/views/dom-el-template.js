@@ -2,7 +2,7 @@ import {includes, __, ifElse, compose,path,split, reject, is, defaultTo, isNil, 
 
 /**
  * @module DomElTemplate
- * @type internal
+ * @type util
  *
  * @constructor
  * @param {String|HTMLElement} template
