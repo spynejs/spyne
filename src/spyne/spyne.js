@@ -1,7 +1,7 @@
-import { ChannelsController } from './channels/channels-controller';
-import { DomEl } from './views/dom-el-base';
+import { ChannelsDelegator } from './channels/channels-delegator';
+import { DomEl } from './views/dom-el';
 import { ViewStreamElement } from './views/view-stream-element';
-import { ViewStream } from './views/view-stream-base';
+import { ViewStream } from './views/view-stream';
 import { ViewStreamBroadcaster } from './views/view-stream-broadcaster';
 import { SpyneTrait } from './utils/spyne-trait';
 import { ViewStreamPayload } from './views/view-stream-payload';
@@ -17,7 +17,7 @@ class SpyneApp {
    * SpyneApp creates the global Spyne object, and creates the following items
    * <ul>
    *
-   * <li>LINK['ChannelsController', 'channels-controller'] that directs the flow of data to all Channels</li>
+   * <li>LINK['ChannelsDelegator', 'channels-controller'] that directs the flow of data to all Channels</li>
    * <li>LINK['SpyneChannelUI', 'spyne-channel-u-i'], that broadcast all user interaction events</li>
    * <li>LINK['SpyneChannelRoute', 'spyne-channel-route'], that broadcast window location changes and is the only other channel that can be bound to user events</li>
    * <li>LINK['SpyneChannelWindow', 'spyne-channel-window'], that broadcast all requested window and document events, such as scrolling, resizing and media queries</li>
@@ -33,14 +33,14 @@ class SpyneApp {
    * @property {Object} config - = {}; This global config object is mainly used to provide configuration details for two SpyneChannels, CHANNEL_ROUTE and CHANNEL_WINDOW.
    */
   constructor(config = {}) {
-    this.channels = new ChannelsController();
+    this.channels = new ChannelsDelegator();
     this.VERSION = '0.10.18';
     this.ViewStream = ViewStream;
     this.BasicView = ViewStreamElement;
     this.DomEl = DomEl;
     this.ViewStreamBroadcaster = ViewStreamBroadcaster;
     this.ChannelsPayload = ViewStreamPayload;
-    this.ChannelsController = ChannelsController;
+    this.ChannelsController = ChannelsDelegator;
     this.ChannelsBase = Channel;
     this.ChannelPayloadItem = ChannelPayload;
     window.Spyne = this;
@@ -134,7 +134,7 @@ export {
   ViewStreamElement,
   Channel,
   ChannelFetch,
-  ChannelsController,
+  ChannelsDelegator,
   ViewStreamPayload,
   ChannelPayload,
     ChannelPayloadFilter,

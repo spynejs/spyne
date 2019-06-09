@@ -1,8 +1,8 @@
 // import {baseCoreMixins}    from '../utils/mixins/base-core-mixins';
 // import {BaseStreamsMixins} from '../utils/mixins/base-streams-mixins';
-import { SpyneChannelRoute } from './spyne-channel-route-base';
+import { SpyneChannelRoute } from './spyne-channel-route';
 import { SpyneChannelUI } from './spyne-channel-ui';
-import { SpyneChannelWindow } from './spyne-channel-window-base';
+import { SpyneChannelWindow } from './spyne-channel-window';
 import { SpyneChannelLifecycle } from './spyne-channel-lifecycle';
 import { validate } from '../utils/channel-config-validator';
 
@@ -13,9 +13,9 @@ const rMap = require('ramda').map;
 
 // import * as R from 'ramda';
 
-export class ChannelsController {
+export class ChannelsDelegator {
   /**
-   * @module ChannelsController
+   * @module ChannelsDelegator
    * @type internal
    *
    * @desc
@@ -33,8 +33,8 @@ export class ChannelsController {
     // console.log('Rx is ',Rx);
     // console.log('RX IS ', Subject);
     this.map.set('DISPATCHER', new Subject());
-    this.listRegisteredChannels = ChannelsController.listRegisteredChannels.bind(this);
-    this.getChannelsList = ChannelsController.getChannelsList.bind(this);
+    this.listRegisteredChannels = ChannelsDelegator.listRegisteredChannels.bind(this);
+    this.getChannelsList = ChannelsDelegator.getChannelsList.bind(this);
     //window.setTimeout(this.checkForMissingChannels.bind(this), 8000);
   }
 
