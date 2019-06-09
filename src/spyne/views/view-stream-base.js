@@ -24,21 +24,21 @@ export class ViewStream {
    * @type extendable
    *
    * @desc
-   * <p>ViewStream is the interactive-view layer.</p>
-   * <h3>ViewStreams have three main tasks:</h3>
+   * <p>ViewStream is an interactive view component that communicates with connected ViewStream instances to reactively render and tear down entire DOM branches.</p>
+   * <h3>The ViewStreams component tasks are:</h3>
    * <ol>
    * <li>Render or reference an HTML element
    * <li>Broadcast UI events and other DOM Info
    * <li>Subscribe to data to maintain its state
+   * <li>Sync its own UI component
    * </ol>
    *
    * <h4>Rendering</h4>
-   * <p>ViewStream will progressively enhance the rendering of its element based on the values defined within the <i>props</i> property.</p>
+   * <p>ViewStream progressively enhance the rendering of its element based on the values within <i>props</i> property.</p>
    * <ul>
    *     <li>A ViewStream instance will reference an element instead of rendering when the <i>el</i> property is defined at instantiation.</li>
    *     <li>An empty div is returned when no values are assigned to its <i>props</i> property.</li>
-   *     <li>A single element is rendered when only the tagName and data (as String) are defined.</li>
-   *     <li>The instance will render a template when that property is defined and will populate the template if the data property is defined as an object.</li>
+   *     <li>The instance will render a template when that property is defined.</li>
    *     <li>ViewStreams will apply any HTML attributes defined within  <i>props</i> to the rendered element, for example, <i>src</i> for img and video tags.</li>
    *
    *     </ul>
