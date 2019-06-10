@@ -104,7 +104,7 @@ export class ViewStream {
    * @property {domItem} props.el - = undefined;  Assigns an existing DOM element. Defined attributes will be added to the element.
    * @property {string|object} props.data - = undefined;  Adds text to the element, or populates a template when defined as JSON.
    * @property {boolean} props.sendLifecyleEvents = false; Broadcast lifecycle events of render and dispose to CHANNEL_LIFECYCLE.
-   * @property {string} props.id - = random id string;
+   * @property {string} props.id - = undefined; Generates a random id if left undefined.
    * @property {Array|SpyntTrait} props.traits - = undefined; Add a single SpyneTrait or array of SpyneTrait components, whose methods will bound to the instance.
    * @property {template} props.template - = undefined; String, String literal or HTML template.
    * @special {"name": "DomEl", "desc": "ViewStreams uses the DomEl class to render html tags and templates.", "link":"dom-item"}
