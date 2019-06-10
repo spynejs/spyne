@@ -24,22 +24,23 @@ export class ViewStream {
    * @type extendable
    *
    * @desc
-   * <p>ViewStream is an interactive view component that communicates with connected ViewStream instances to reactively render and tear down entire DOM branches.</p>
-   * <h3>The ViewStreams component tasks are:</h3>
-   * <ol>
-   * <li>Render or reference an HTML element
-   * <li>Broadcast UI events and other DOM Info
-   * <li>Subscribe to data to maintain its state
-   * <li>Sync its own UI component
-   * </ol>
+   *
+   * <p>ViewStream is the interactive-view component, and is comprised of several internal components, each with a particular concern:</p>
+   <ul class='basic'>
+   <li>LINK['ViewStreamElement', 'view-stream-element']: The “View” in ViewStream. Creates the HTML Element based on values from the props object, and is responsible for rendering and disposing of its view.
+   <li>LINK['ViewStreamObservable', 'view-stream-observable']: The “Stream” in ViewStream. Creates an observable that forks into three streams: the first is between ViewStream and its ViewStreamElement, the second stream is to a parent ViewStream instance, and and the third stream is to all appended ViewStream children..
+   <li>LINK['ViewStreamBroadcaster', 'view-stream-broadcaster']: Takes the nested array from the BroadcastEvents method and creates RxJs observables that are delegated to either the CHANNEL_UI or CHANNEL_ROUTE
+   <li>LINK['ViewStreamSelector', 'view-stream-selector']: Provides selector and CSS utility methods.
+    </ul>
+   *
    *
    * <h4>Rendering</h4>
-   * <p>ViewStream progressively enhance the rendering of its element based on the values within <i>props</i> property.</p>
-   * <ul>
-   *     <li>A ViewStream instance will reference an element instead of rendering when the <i>el</i> property is defined at instantiation.</li>
-   *     <li>An empty div is returned when no values are assigned to its <i>props</i> property.</li>
-   *     <li>The instance will render a template when that property is defined.</li>
-   *     <li>ViewStreams will apply any HTML attributes defined within  <i>props</i> to the rendered element, for example, <i>src</i> for img and video tags.</li>
+   * <p>ViewStream renders its element and any content based on the values within the <i>props</i> property.</p>
+   * <ul class='bullet'>
+   *     <li>By default ViewStream renders an empty div</li>
+   *     <li>Templates can be provided as a String or String literal of HTML tags, or as an HTML Element</li>
+   *     <li>ViewStreams will apply any HTML attributes defined within <i>props</i> to the rendered element</li>
+   *     <li>An existing element can be assigned to the props.el</li>
    *
    *     </ul>
    *
@@ -87,35 +88,25 @@ export class ViewStream {
    * </div>
    *
    *
-   * <h4>Context (State) Management</h4>
-   * <p>There are several properties, methods and structures that allow ViewStream instances to maintain state, with code that is DRY and easy to reason about.
-   *  The key innovation is the swapping of ViewStream internal observables to create a smart chain of views that reactively render and dispose entire branches with little or no code.</br>
-   *  The following items assist in maintaining state:
-   * </p>
+   * <h4>Binding Data to Maintain State</h4>
+   * <p>ViewStream has several methods and features for instances to receive the exact data, at the right time, to maintain state:</p>
    * <ul>
-   *     <li>all properties contained in one element, <i>props</i></li>
-   *     <li>The <i>props.el$</i> object, an instance of <a class='linker no-break' data-channel="ROUTE"  data-event-prevent-default="true" data-menu-item="view-stream-selector"  href="/guide/reference/view-stream-selector" >ViewStreamSelector</a>, that has special selector and class manipulation methods</li>
-   *     <li>The swapping of observables when appending ViewStream instances to one another</li>
-   *     <li>The consolidation of channel actions into the <a class='linker no-break' data-channel="ROUTE"  data-event-prevent-default="true" data-menu-item="view-stream-add-action-listeners"  href="/guide/reference/view-stream-add=action-listeners" >addActionListeners</a> method, that directs events to custom methods</li>
-   *     <li><a class='linker no-break' data-channel="ROUTE"  data-event-prevent-default="true" data-menu-item="spyne-trait"  href="/guide/reference/spyne-trait" >SpyneTraits</a> that allow for the enhancing and exchanging of methods</li>
-   *     <li><a class='linker no-break' data-channel="ROUTE"  data-event-prevent-default="true" data-menu-item="channel-action-filter"  href="/guide/reference/channel-action-filter" >ChannelActionFilters</a> that allow for the prefiltering of actions</li>
-   *     <li>The ability to limit UI event publishing to locally elements using the third 'local' parameter in broadcastEvents</li>
-   *     <li>Automatic subscribing and unsubscribing of all observables using the <a class='linker no-break' data-channel="ROUTE"  data-event-prevent-default="true" data-menu-item="view-stream-add-channel"  href="/guide/reference/view-stream-add-channel" >addChannel</a> method</li>
-   *     <li><a class='linker no-break' data-channel="ROUTE"  data-event-prevent-default="true" data-menu-item="view-stream-on-rendered"  href="/guide/reference/view-stream-on-rendered" >onRendered</a> method is called when the ViewStream instance has rendered and allows for adding functionality</li>
-   *     <li>communicate render and dispose events for an ViewStream method throught the <a class='linker no-break' data-channel="ROUTE"  data-event-prevent-default="true" data-is-manual-scroll='true' data-section='overview' data-menu-item="intro-channel-life-cycle"  href="/guide/overview/intro-channel-life-cycle" >LIFECYCLE_CHANNEL</a> method</li>
-   *     <li>Automatic removing of all elements and properties from the DOM and from memory</li>
-   *     </ul>
-   *
+   *     <li>Channel actions are bound to local methods using the <a class='linker no-break' data-channel="ROUTE"  data-event-prevent-default="true" data-menu-item="view-stream-add-action-listeners"  href="/guide/reference/view-stream-add=action-listeners" >addActionListeners</a> method.</li>
+   *     <li><a class='linker no-break' data-channel="ROUTE"  data-event-prevent-default="true" data-menu-item="channel-action-filter"  href="/guide/reference/channel-action-filter" >ChannelActionFilters</a> calibrates the flow of data from Channel Actions before that data is sent to its bound local method.</li>
+   *     <li>The single <b>props</b> property allows all instances to be evaluated with a consistent interface.</li>
+   *     <li><b>props.el$</b> <a class='linker no-break' data-channel="ROUTE"  data-event-prevent-default="true" data-menu-item="view-stream-selector"  href="/guide/reference/view-stream-selector" >Selector</a> has special methods to adjust state with styles and CSS.</li>
+   *    <li><a class='linker no-break' data-channel="ROUTE"  data-event-prevent-default="true" data-menu-item="spyne-trait"  href="/guide/reference/spyne-trait" >SpyneTraits</a> can enhance instances with functionality based on individual actions.</li>
+
    *
    * @constructor
    * @param {object} props This json object takes in parameters to generate or reference the dom element
-   * @property {string} props.tagName - = 'div'; This can be any dom tag
-   * @property {domItem} props.el - = undefined; if defined, ViewStream will connect to that element. If undefined, the instance will create its element based on the defined properties, and assign that element to this property.
-   * @property {string|object} props.data - = undefined;  string for innerText or Json object for html template
-   * @property {boolean} props.sendLifecyleEvents = false; When set to true, the view will automatically send its rendering and disposing events to the CHANNEL_LIFECYCLE.
-   * @property {string} props.id - = undefined; generates a random id if left undefined
-   * @property {Array|SpyntTrait} props.traits - = undefined; will autoadd any SpyneTraits listed.
-   * @property {template} props.template - = undefined; html template
+   * @property {string} props.tagName - = 'div'; Defines the HTML Element.
+   * @property {domItem} props.el - = undefined;  Assigns an existing DOM element. Defined attributes will be added to the element.
+   * @property {string|object} props.data - = undefined;  Adds text to the element, or populates a template when defined as JSON.
+   * @property {boolean} props.sendLifecyleEvents = false; Broadcast lifecycle events of render and dispose to CHANNEL_LIFECYCLE.
+   * @property {string} props.id - = random id string;
+   * @property {Array|SpyntTrait} props.traits - = undefined; Add a single SpyneTrait or array of SpyneTrait components, whose methods will bound to the instance.
+   * @property {template} props.template - = undefined; String, String literal or HTML template.
    * @special {"name": "DomEl", "desc": "ViewStreams uses the DomEl class to render html tags and templates.", "link":"dom-item"}
    * @special {"name": "ViewStreamSelector", "desc": "The <b>props.el$</b> property creates an instance of this class, used to query elements within the props.el element; also has methods to update css classes.", "link":"dom-item-selectors"}
    *

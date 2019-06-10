@@ -1,4 +1,4 @@
-import {includes, __, ifElse, compose,path,split, reject, is, defaultTo, isNil, isEmpty} from 'ramda';
+import {includes, __, ifElse, compose,path,split,prop, reject, is, defaultTo, isNil, isEmpty} from 'ramda';
 
 /**
  * @module DomElTemplate
@@ -209,7 +209,9 @@ export class DomElTemplate {
   }
 
   formatTemplate(template) {
-    return typeof (template) === 'string' ? template : template.text;
+    return prop('nodeType', template)>=0 ? template.outerHTML : template;
+
+    //return typeof (template) === 'string' ? template : template.text;
   }
 
   addParams(str) {
