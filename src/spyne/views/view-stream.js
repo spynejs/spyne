@@ -29,8 +29,9 @@ export class ViewStream {
    <ul class='basic'>
    <li>LINK['ViewStreamElement', 'view-stream-element']: The “View” in ViewStream. Creates the HTML Element based on values from the props object, and is responsible for rendering and disposing of its view.
    <li>LINK['ViewStreamObservable', 'view-stream-observable']: The “Stream” in ViewStream. Creates an observable that forks into three streams: the first is between ViewStream and its ViewStreamElement, the second stream is to a parent ViewStream instance, and and the third stream is to all appended ViewStream children..
-   <li>LINK['ViewStreamBroadcaster', 'view-stream-broadcaster']: Takes the nested array from the BroadcastEvents method and creates RxJs observables that are delegated to either the CHANNEL_UI or CHANNEL_ROUTE
+   <li>LINK['ViewStreamBroadcaster', 'view-stream-broadcaster']: Takes the nested array from the <i>BroadcastEvents</i> method and creates RxJs observables that are delegated to either the CHANNEL_UI or CHANNEL_ROUTE
    <li>LINK['ViewStreamSelector', 'view-stream-selector']: Provides selector and CSS utility methods.
+   <li>LINK['ViewStreamPayload', 'view-stream-payload']: Payload format for sending data to Channels using the <i>sendInfoToChannel</i> method.
     </ul>
    *
    *
@@ -104,8 +105,8 @@ export class ViewStream {
    * @property {domItem} props.el - = undefined;  Assigns an existing DOM element. Defined attributes will be added to the element.
    * @property {string|object} props.data - = undefined;  Adds text to the element, or populates a template when defined as JSON.
    * @property {boolean} props.sendLifecyleEvents = false; Broadcast lifecycle events of render and dispose to CHANNEL_LIFECYCLE.
-   * @property {string} props.id - = undefined; Generates a random id if left undefined.
-   * @property {Array|SpyntTrait} props.traits - = undefined; Add a single SpyneTrait or array of SpyneTrait components, whose methods will bound to the instance.
+   * @property {string} props.id - = undefined; Generates a random id when undefined.
+   * @property {Array|SpyntTrait} props.traits - = undefined; Add a single SpyneTrait or array of SpyneTrait components.
    * @property {template} props.template - = undefined; String, String literal or HTML template.
    * @special {"name": "DomEl", "desc": "ViewStreams uses the DomEl class to render html tags and templates.", "link":"dom-item"}
    * @special {"name": "ViewStreamSelector", "desc": "The <b>props.el$</b> property creates an instance of this class, used to query elements within the props.el element; also has methods to update css classes.", "link":"dom-item-selectors"}
@@ -210,12 +211,12 @@ export class ViewStream {
   }
 
   /**
-   * This method will direct data from channels to methods,
-   * The method takes a nested array.
-   * The firset element is the name of the action.
-   * The second value is the name of the method that will be called when the action is published.
-   * A third option value is a selector string (if the action is based on an event from an HTMLElement, or this could be an instance of the <a class='linker' data-channel="ROUTE"  data-event-prevent-default="true" data-menu-item="channel-action-filter"  href="/guide/reference/channel-action-filter" >ChannelPayloadFilter</a>.
-   *
+   * Binds channel actions to local methods, formatted as array values.
+   * <ul>
+   * <li><b>First value:</b> Action name, as a string or as a basic Regular Expression.
+   * <li><b>Second value:</b> The method to be called when the action is published.
+   * <li><b>Third optional value:</b> This is a filter option that can be a selector string. or an instance of the LINK['channelPayloadFilter', 'channel-payload-filter'].
+   * </ul>
    * @example
    *   addActionListeners() {
    *     return [
