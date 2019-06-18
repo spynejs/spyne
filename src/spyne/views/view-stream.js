@@ -25,10 +25,12 @@ export class ViewStream {
    *
    * @desc
    *
-   * <p>ViewStream is the interactive-view component, and is comprised of several internal components, each with a particular concern:</p>
+   * <p>ViewStream is the interactive-view component, and its core functionality is comprised of two internal components: </p>
    <ul class='basic'>
    <li>LINK['ViewStreamElement', 'view-stream-element']: The “View” in ViewStream. Creates the HTML Element based on values from the props object, and is responsible for rendering and disposing of its view.
-   <li>LINK['ViewStreamObservable', 'view-stream-observable']: The “Stream” in ViewStream. Creates an observable that forks into three streams: the first is between ViewStream and its ViewStreamElement, the second stream is to a parent ViewStream instance, and and the third stream is to all appended ViewStream children..
+   <li>LINK['ViewStreamObservable', 'view-stream-observable']: The “Stream” in ViewStream. Creates an observable that forks into three streams: the first is between ViewStream and its ViewStreamElement, the second stream is to a parent ViewStream instance, and and the third stream is to all appended ViewStream children.</ul>
+   <p>Other components used in ViewStream:</p>
+   <ul>
    <li>LINK['ViewStreamBroadcaster', 'view-stream-broadcaster']: Takes the nested array from the <i>BroadcastEvents</i> method and creates RxJs observables that are delegated to either the CHANNEL_UI or CHANNEL_ROUTE
    <li>LINK['ViewStreamSelector', 'view-stream-selector']: Provides selector and CSS utility methods.
    <li>LINK['ViewStreamPayload', 'view-stream-payload']: Payload format for sending data to Channels using the <i>sendInfoToChannel</i> method.

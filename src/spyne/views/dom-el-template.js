@@ -209,9 +209,9 @@ export class DomElTemplate {
   }
 
   formatTemplate(template) {
-    return prop('nodeType', template)>=0 ? template.outerHTML : template;
+    return prop('nodeName', template)==='SCRIPT' ? template.innerHTML : template;
 
-    //return typeof (template) === 'string' ? template : template.text;
+   // return typeof (template) === 'string' ? template : template.text;
   }
 
   addParams(str) {
