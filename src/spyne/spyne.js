@@ -1,6 +1,7 @@
 import { ChannelsDelegator } from './channels/channels-delegator';
 import { DomEl } from './views/dom-el';
 import { ViewStreamElement } from './views/view-stream-element';
+import { ViewStreamSelector} from './views/view-stream-selector';
 import { ViewStream } from './views/view-stream';
 import { ViewStreamBroadcaster } from './views/view-stream-broadcaster';
 import { SpyneTrait } from './utils/spyne-trait';
@@ -34,7 +35,7 @@ class SpyneApp {
    */
   constructor(config = {}) {
     this.channels = new ChannelsDelegator();
-    this.VERSION = '0.10.20';
+    this.VERSION = '0.10.22';
     this.ViewStream = ViewStream;
     this.BasicView = ViewStreamElement;
     this.DomEl = DomEl;
@@ -140,6 +141,7 @@ export {
     ChannelPayloadFilter,
   DomEl,
   ViewStream,
+    ViewStreamSelector,
   ViewStreamBroadcaster,
   SpyneTrait,
   SpyneApp,

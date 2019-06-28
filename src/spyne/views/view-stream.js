@@ -181,7 +181,7 @@ export class ViewStream {
 
   checkIfElementAlreadyExists() {
     const elIsDomElement = compose(lte(0), defaultTo(-1), prop('nodeType'));
-    const elIsRendered = el => document.contains(el);
+    const elIsRendered = el => document.body.contains(el);
     const elIsReadyBool = propSatisfies(
       allPass([elIsRendered, elIsDomElement]), 'el');
 
