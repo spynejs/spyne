@@ -9,7 +9,8 @@ describe('channel dom util tests', () => {
     it('should create media query', () => {
       let queryStr = domData.mediqQueries.test;
       let mq = SpyneUtilsChannelWindow.createMediaQuery(queryStr);
-      expect(mq.constructor.name).to.equal('MediaQueryList');
+      let mqMatchesQuery = SpyneUtilsChannelWindow.checkIfValidMediaQuery(mq, queryStr);
+      expect(mqMatchesQuery).to.be.equal(true);
     });
 
     it('should create media query observable', () => {

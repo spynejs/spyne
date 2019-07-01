@@ -33,6 +33,7 @@ module.exports = function(config) {
 
     // list of files / patterns to load in the browser
     files: [
+      {pattern: './node_modules/spynejs-polyfill/ie.js', watched:false},
       {pattern: './node_modules/ramda/dist/ramda.min.js', watched:false},
 
       { pattern: './node_modules/rxjs/*.js', included:false,   watched: false },
@@ -129,17 +130,28 @@ module.exports = function(config) {
 
 
     customLaunchers: {
-      ChromeHeadlessNoSandbox: {
-        base: 'ChromeHeadless',
-        flags: ['--no-sandbox']
+
+       ChromeHeadlessNoSandbox: {
+       base: 'ChromeHeadless',
+       flags: ['--no-sandbox']
+     },
+
+      VirtualBoxIE11onWin7: {
+        base: 'VirtualBoxIE11',
+        keepAlive: true,
+        snapshot: 'pristine',
+        uuid: '0552dac4-c8f0-4d29-b81a-ae70026505c5'
       }
+
+
+
     },
 
 
 
     // start these browsers
     // available browser launchers: https://npmjs.org/browse/keyword/karma-launcher
-    browsers: ['Chrome'],
+    browsers: ['Chrome','VirtualBoxIE11onWin7'],
 
 
     // Continuous Integration mode

@@ -1,4 +1,4 @@
-import {head, compose, path, lte, defaultTo, prop} from 'ramda';
+import {head, compose, reject, split, isEmpty, path, lte, defaultTo, prop} from 'ramda';
 
 
 function generateSpyneSelectorId(el) {
@@ -144,8 +144,21 @@ function ViewStreamSelector(cxt, str) {
    */
   selector.setClass = (c) => {
     let arr = getNodeListArray(cxt, str);
-    const removeClass = item => item.classList = c;
-    arr.forEach(removeClass);
+     /**
+    * NON IE CLEANER SOLUTION
+    * const removeClass = item => item.classList = c;
+    *  arr.forEach(removeClass);
+    */
+
+    const setTheClass = item => {
+      let removeClassStrArr = compose(reject(isEmpty), split(' '))(item.className);
+      let classStrArr = c.split(" ");
+      const remover = s => item.classList.remove(s);
+      const adder = str=>item.classList.add(str);
+       removeClassStrArr.forEach(remover);
+       classStrArr.forEach(adder);
+    };
+    arr.forEach(setTheClass);
     return this;
   };
 
@@ -222,7 +235,7 @@ function ViewStreamSelector(cxt, str) {
   selector.setActiveItem = (c, sel) => {
     let arr = getNodeListArray(cxt, str);
     let currentEl = typeof (sel) === 'string' ? getElOrList(cxt, sel) : sel;
-    const toggleBool = item => item.classList.toggle(c, item.isEqualNode(currentEl));
+    const toggleBool = item => item.isEqualNode(currentEl) ? item.classList.add(c) : item.classList.remove(c);
     if (isNodeElement(currentEl)===true) {
       arr.forEach(toggleBool);
     } else if (isDevMode()===true){

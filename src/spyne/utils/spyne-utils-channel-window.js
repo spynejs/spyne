@@ -35,7 +35,7 @@ export class SpyneUtilsChannelWindow {
 
   static checkIfValidMediaQuery(mq, str) {
     const noSpaces = str => str.replace(/\s+/gm, '');
-    const isValidBool = mq.matches!==undefined  && noSpaces(mq.media) === noSpaces(str);
+    const isValidBool = mq.matches!==undefined  && noSpaces(mq.media).indexOf(noSpaces(str))>=0;
     const warnMsg = str => console.warn(`Spyne Info: the following query string, "${str}", has been optimized to "${mq.media}" by the browser and may not be a valid Media Query item!`);
     if (isValidBool === false) {
       warnMsg(str);

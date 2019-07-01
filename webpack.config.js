@@ -51,7 +51,7 @@ const config = {
 
   module: {
     rules: [
-/*      {
+      {
         test: /(\.js)$/,
         loader: 'babel-loader',
         options: {
@@ -69,7 +69,7 @@ const config = {
           ]
         },
         exclude: /(node_modules)/
-      }*/
+      }
       /*,
       {
         test: /(\.js)$/,
