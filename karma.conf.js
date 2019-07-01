@@ -16,6 +16,34 @@ module.exports = function(config) {
     config.browsers = ['Chrome_travis_ci'];
   }
 
+
+
+
+  webpackConfig.module.rules.push(
+      {
+       test: /(\.js)$/,
+       loader: 'babel-loader',
+       options: {
+         "babelrc" : false,
+         "presets": [
+           ["@babel/preset-env", {
+             "targets": {
+               "ie" : 10,
+                 "browsers": ["last 2 versions"]
+
+             },
+             "modules": false,
+             "loose": true
+           }]
+         ]
+       },
+       exclude: /(node_modules)/
+       }
+
+  );
+  console.log("CONFIG KARMA ",webpackConfig);
+
+
   config.set({
 
     // base path that will be used to resolve all patterns (eg. files, exclude)

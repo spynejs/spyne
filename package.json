@@ -17,7 +17,7 @@
     "stats": "webpack --profile --json --optimize-minimize  --mode production --env build  > stats.json",
     "docs": "jsdoc --readme README.md -d docs  -c docs/jsdoc.config.json -r",
     "esdocs": "esdoc -d esdocs  -c esdocs/esdoc.config.json -r",
-    "test": "karma start",
+    "test": "karma start --browsers Chrome",
     "test:single": "npm test -- --single-run",
     "watch:test": "npm test -- --auto-watch --no-single-run",
     "test:mocha": "mocha tests"

@@ -23,7 +23,7 @@ describe('DomElTemplate', () => {
     let template = "<h1>The cat says {{cat}}";
     let domElTmpl = new DomElTemplate(template, data);
     let render = domElTmpl.renderDocFrag();
-    console.log("RENDER IS ",render.firstElementChild);
+    //console.log("RENDER IS ",render.firstElementChild);
     expect(render.firstElementChild.innerText).to.equal('The cat says meow');
   });
 

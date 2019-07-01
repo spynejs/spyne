@@ -35,6 +35,9 @@ if (env === 'build') {
   outputFile = libraryName + '.js';
 }
 
+console.log("CONFIG IS ",process.env.BABEL_ENV );
+
+
 const config = {
   entry: path.join(__dirname, '/src/spyne/spyne.js'),
   devtool: '',
@@ -51,7 +54,7 @@ const config = {
 
   module: {
     rules: [
-      {
+     /* {
         test: /(\.js)$/,
         loader: 'babel-loader',
         options: {
@@ -69,7 +72,7 @@ const config = {
           ]
         },
         exclude: /(node_modules)/
-      }
+      }*/
       /*,
       {
         test: /(\.js)$/,
@@ -87,4 +90,5 @@ const config = {
   },
   plugins: spynePlugins
 };
+
 module.exports = config;
