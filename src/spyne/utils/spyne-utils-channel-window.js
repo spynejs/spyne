@@ -18,10 +18,10 @@ export class SpyneUtilsChannelWindow {
       this);
   }
 
-  static createDomObservableFromEvent(eventName, mapFn, isPassive = true) {
-    let addHandler = handler => window.addEventListener(eventName, handler,
+  static createDomObservableFromEvent(eventName, mapFn, isPassive = true, element=window) {
+    let addHandler = handler => element.addEventListener(eventName, handler,
       { passive: isPassive });
-    let removeHandler = () => { window[eventName] = (p) => p; };
+    let removeHandler = () => { element[eventName] = (p) => p; };
     mapFn = mapFn === undefined ? (p) => p : mapFn;
     return fromEventPattern(addHandler, removeHandler).pipe(map(mapFn));
   }

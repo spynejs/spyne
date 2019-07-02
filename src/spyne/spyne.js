@@ -35,7 +35,7 @@ class SpyneApp {
    */
   constructor(config = {}) {
     this.channels = new ChannelsDelegator();
-    this.VERSION = '0.10.23';
+    this.VERSION = '0.10.24';
     this.ViewStream = ViewStream;
     this.BasicView = ViewStreamElement;
     this.DomEl = DomEl;
@@ -60,7 +60,7 @@ class SpyneApp {
           events: [],
           listenForResize: true,
           listenForOrientation: true,
-          listenForScroll: true,
+          listenForScroll: false,
           listenForMouseWheel: false,
           debounceMSTimeForResize: 200,
           debounceMSTimeForScroll: 150

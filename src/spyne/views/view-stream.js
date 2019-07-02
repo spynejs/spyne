@@ -119,7 +119,7 @@ export class ViewStream {
    *
    */
   constructor(props = {}) {
-    this.checker = Math.random();
+    this.vsnum = Math.random();
     this.addMixins();
     this.defaults = () => {
       const vsid = this.createId();
@@ -351,7 +351,7 @@ export class ViewStream {
       return pick(['id', 'vsid'], finalDest(x));
     };
     let childCompletedData = findName(p);
-    this.tracer('onChildCompleted ', this.checker, p);
+    this.tracer('onChildCompleted ', this.vsnum, p);
     // console.log('obj is ',childCompletedName,obj,this.props);
     this.onChildDisposed(childCompletedData, p);
     return childCompletedData;
@@ -422,7 +422,7 @@ export class ViewStream {
       autoClosesBool,
       rel
     };
-    this.tracer('updateSourceSubscription ', this.checker, obj);
+    this.tracer('updateSourceSubscription ', this.vsnum, obj);
     this.uberSource$.next(obj);
   }
 
@@ -801,7 +801,7 @@ export class ViewStream {
             let channelSyntax = channelsArr.length === 1 ? "from added channel" : "from added dchannels";
             console.warn(`Spyne Warning: The action, ${strMatch}, in ${this.props.name}, does not match any of the registered actions ${channelSyntax}, ${channelsArr.join(', ')}`)
           }
-         //  const checker = ()=> R.test(new RegExp(str), "CHANNEL_ROUTE_TEST_EVENT")
+         //  const vsnum = ()=> R.test(new RegExp(str), "CHANNEL_ROUTE_TEST_EVENT")
         }
         let getAllActionsArr = getAllActions(channelsArr);
         actionsArr.forEach(checkForMatch);

@@ -3,7 +3,9 @@ import { checkIfObjIsNotEmptyOrNil } from '../utils/frp-tools';
 import { SpyneUtilsChannelWindow } from '../utils/spyne-utils-channel-window';
 import { merge } from 'rxjs';
 import { map, debounceTime, skipWhile } from 'rxjs/operators';
-import {curry, pathEq, pick, mapObjIndexed} from 'ramda';
+import {curry, pathEq, pick, partialRight, mapObjIndexed} from 'ramda';
+import {deepMerge} from '../utils/deep-merge';
+
 const rMap = require('ramda').map;
 
 export class SpyneChannelWindow extends Channel {
@@ -39,23 +41,30 @@ export class SpyneChannelWindow extends Channel {
 
   initializeStream() {
     this.domChannelConfig = window.Spyne.config.channels.WINDOW;
-    this.currentScrollY = window.scrollY;
     let obs$Arr = this.getActiveObservables();
     let dom$ = merge(...obs$Arr);
-
     dom$.subscribe(p => {
       let { action, payload, srcElement, event } = p;
       this.sendChannelPayload(action, payload, srcElement, event);
     });
   }
 
-  static getScrollMapFn(event) {
-    let action = this.channelActions.CHANNEL_WINDOW_SCROLL_EVENT;
-    let scrollY = window.scrollY;
-    let scrollDistance = this.currentScrollY - scrollY;
-    let scrollDir = scrollDistance >= 0 ? 'up' : 'down';
-    this.currentScrollY = scrollY;
-    let payload = { scrollY, scrollDistance, scrollDir };
+  static getScrollData(){
+    let currentScrollY = 0;
+
+    const getScrollData = (scrollY)=>{
+      let scrollDistance = currentScrollY - scrollY
+      let scrollDir = scrollDistance >= 0 ? 'up' : 'down';
+        currentScrollY = scrollY;
+        return {scrollY, scrollDistance, scrollDir};
+    };
+    return getScrollData;
+  }
+
+  static getScrollMapFn(event, interval, action, scrollDataFn, scrollElement) {
+    let scrollY = scrollElement.scrollY;
+    let payload = scrollDataFn(scrollY);
+    let {scrollDistance} = payload;
     let srcElement = event.srcElement;
     return { action, payload, srcElement, scrollDistance, event };
   }
@@ -112,20 +121,33 @@ export class SpyneChannelWindow extends Channel {
   }
 
   createMouseWheelObservable(config) {
-    const debounceTime = config.debounceMSTimeForScroll;
+    const debounceT = config.debounceMSTimeForScroll;
 
     return SpyneUtilsChannelWindow.createDomObservableFromEvent('mousewheel',
-      SpyneChannelWindow.getMouseWheelMapFn.bind(this)).debounceTime(debounceTime);
+      SpyneChannelWindow.getMouseWheelMapFn.bind(this))
+    .pipe(
+        debounceTime(debounceT)
+    );
   }
 
-  createScrollObservable(config) {
+  createScrollObservable(config, scrollElement=window) {
     const skipWhenDirIsMissing = evt => evt.scrollDistance === 0;
     const dTime = config.debounceMSTimeForScroll;
+
+
+    const isWindow = scrollElement === window;
+    const action = isWindow ? 'CHANNEL_WINDOW_SCROLL_EVENT' : 'CHANNEL_WINDOW_ELEMENT_SCROLL_EVENT';
+
+
+    const scrollDataFn =SpyneChannelWindow.getScrollData();
+
+    const scrollMapFn =partialRight(SpyneChannelWindow.getScrollMapFn, [action, scrollDataFn, scrollElement]).bind(this);
+
     return SpyneUtilsChannelWindow.createDomObservableFromEvent('scroll',
-      SpyneChannelWindow.getScrollMapFn.bind(this))
+        scrollMapFn)
       .pipe(
           map(p=>{
-            if (pathEq(['Spyne', 'config', 'scrollLock'], true)(window)){
+            if (pathEq(['Spyne', 'config', 'scrollLock'], true)(scrollElement)){
               let x = window.Spyne.config.scrollLockX
               let y = window.Spyne.config.scrollLockY;
               window.scrollTo(x,y);
@@ -270,6 +292,8 @@ export class SpyneChannelWindow extends Channel {
       'CHANNEL_WINDOW_POPSTATE_EVENT',
       'CHANNEL_WINDOW_RESET_EVENT',
       'CHANNEL_WINDOW_RESIZE_EVENT',
+      'CHANNEL_WINDOW_ELEMENT_SCROLL_EVENT',
+      ['CHANNEL_WINDOW_SET_ELEMENT_TO_SCROLL_EVENT', 'onSetElementToScroll'],
       'CHANNEL_WINDOW_SCROLL_EVENT',
       'CHANNEL_WINDOW_SCROLL_LOCK_EVENT',
      ['CHANNEL_WINDOW_SCROLL_LOCK_EVENT', 'onScrollLockEvent'],
@@ -295,6 +319,17 @@ export class SpyneChannelWindow extends Channel {
     }
 
     this.sendChannelPayload(action, {scrollLock});
+  }
+
+  onSetElementToScroll(e){
+
+    let {config, scrollElement} = e.props();
+    config = deepMerge(this.domChannelConfig, config);
+
+    this.createScrollObservable(config, scrollElement);
+    console.log("set to scroll ",{scrollElement,config});
+
+
   }
 
   bindStaticMethods() {
