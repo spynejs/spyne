@@ -43,31 +43,15 @@ export class SpyneChannelWindow extends Channel {
     this.domChannelConfig = window.Spyne.config.channels.WINDOW;
     let obs$Arr = this.getActiveObservables();
     let dom$ = merge(...obs$Arr);
+    this.dom$ = dom$;
     dom$.subscribe(p => {
       let { action, payload, srcElement, event } = p;
       this.sendChannelPayload(action, payload, srcElement, event);
     });
   }
 
-  static getScrollData(){
-    let currentScrollY = 0;
 
-    const getScrollData = (scrollY)=>{
-      let scrollDistance = currentScrollY - scrollY
-      let scrollDir = scrollDistance >= 0 ? 'up' : 'down';
-        currentScrollY = scrollY;
-        return {scrollY, scrollDistance, scrollDir};
-    };
-    return getScrollData;
-  }
 
-  static getScrollMapFn(event, interval, action, scrollDataFn, scrollElement) {
-    let scrollY = scrollElement.scrollY;
-    let payload = scrollDataFn(scrollY);
-    let {scrollDistance} = payload;
-    let srcElement = event.srcElement;
-    return { action, payload, srcElement, scrollDistance, event };
-  }
 
   static getMouseWheelMapFn(event) {
     let action = this.channelActions.CHANNEL_WINDOW_MOUSEWHEEL_EVENT;
@@ -130,18 +114,46 @@ export class SpyneChannelWindow extends Channel {
     );
   }
 
+  static getScrollData(){
+    let currentScrollY = 0;
+
+    const getScrollData = (scrollY)=>{
+      let scrollDistance = currentScrollY - scrollY
+      let scrollDir = scrollDistance >= 0 ? 'up' : 'down';
+      currentScrollY = scrollY;
+      return {scrollY, scrollDistance, scrollDir};
+    };
+    return getScrollData;
+  }
+
+
+  static getScrollMapFn(event, interval, action, scrollDataFn, scrollElement) {
+    let scrollY = scrollElement.pageYOffset !== undefined ? scrollElement.pageYOffset : scrollElement.scrollTop;
+    let payload = scrollDataFn(scrollY);
+    let {scrollDistance} = payload;
+    let srcElement = event.srcElement;
+    return { action, payload, srcElement, scrollDistance, event };
+  }
+
   createScrollObservable(config, scrollElement=window) {
     const skipWhenDirIsMissing = evt => evt.scrollDistance === 0;
     const dTime = config.debounceMSTimeForScroll;
 
 
     const isWindow = scrollElement === window;
+
+    const scrollElForVals = config.scrollElForVals !== undefined ? config.scrollElForVals : scrollElement;
     const action = isWindow ? 'CHANNEL_WINDOW_SCROLL_EVENT' : 'CHANNEL_WINDOW_ELEMENT_SCROLL_EVENT';
 
 
     const scrollDataFn =SpyneChannelWindow.getScrollData();
+     // console.log("SCROLL ELEMENT ",action,scrollElement, scrollElForVals);
+    const scrollMapFn =partialRight(SpyneChannelWindow.getScrollMapFn, [action, scrollDataFn, scrollElForVals]).bind(this);
 
-    const scrollMapFn =partialRight(SpyneChannelWindow.getScrollMapFn, [action, scrollDataFn, scrollElement]).bind(this);
+    /**
+     * TODO: curry createDomObservableFromEvent so that element can be other than window.
+     *
+     */
 
     return SpyneUtilsChannelWindow.createDomObservableFromEvent('scroll',
         scrollMapFn)
@@ -326,8 +338,11 @@ export class SpyneChannelWindow extends Channel {
     let {config, scrollElement} = e.props();
     config = deepMerge(this.domChannelConfig, config);
 
-    this.createScrollObservable(config, scrollElement);
-    console.log("set to scroll ",{scrollElement,config});
+    this.createScrollObservable(config, scrollElement)
+    .subscribe(p => {
+      let { action, payload, srcElement, event } = p;
+      this.sendChannelPayload(action, payload, srcElement, event);
+    });
 
 
   }
