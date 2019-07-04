@@ -85,5 +85,5 @@ BrowserStack.com supports open source projects like Spyne.js<br>
 Unit and Integration tests will run on real browsers and devices using BrowserStack's Automate system.<br><br>
 
 
-Copyright (c) 2017-Present Frank Batista, RelevantContext LLC                   
+Copyright (c) 2017-Present Frank Batista, Relevant Context LLC                   
 
