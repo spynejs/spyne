@@ -3,6 +3,7 @@ const webpack = require('webpack');
 const PACKAGE = require('./package');
 const env = require('yargs').argv.env; // use --env with webpack 2
 const libraryName = 'spyne';
+let moduleRulesArr = [];
 let devToolValue = 'eval-source-map';
 let outputFile;
 let externalsArr =[];
@@ -33,6 +34,28 @@ if (env === 'build') {
   ];
 } else {
   outputFile = libraryName + '.js';
+  moduleRulesArr.push(
+      {
+        test: /(\.js)$/,
+        loader: 'babel-loader',
+        options: {
+          "babelrc" : false,
+          "presets": [
+            ["@babel/preset-env", {
+              "targets": {
+                "ie" : 10,
+                "browsers": ["last 2 versions"]
+
+              },
+              "modules": false,
+              "loose": true
+            }]
+          ]
+        },
+        exclude: /(node_modules)/
+      }
+
+  )
 }
 
 console.log("CONFIG IS ",process.env.BABEL_ENV );
@@ -53,36 +76,7 @@ const config = {
   externals: externalsArr,
 
   module: {
-    rules: [
-     /* {
-        test: /(\.js)$/,
-        loader: 'babel-loader',
-        options: {
-          "babelrc" : false,
-          "presets": [
-            ["@babel/preset-env", {
-              "targets": {
-                "ie" : 10,
-                  "browsers": ["last 2 versions"]
-
-              },
-              "modules": false,
-              "loose": true
-            }]
-          ]
-        },
-        exclude: /(node_modules)/
-      }*/
-      /*,
-      {
-        test: /(\.js)$/,
-        loader: 'eslint-loader',
-        exclude: [/node_modules/,/(src\/tests)/],
-        options: {
-          fix: true
-        }
-      }*/
-    ]
+    rules: moduleRulesArr
   },
   resolve: {
     modules: [path.resolve('./node_modules')],
