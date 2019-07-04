@@ -84,4 +84,6 @@ To suggest a feature or report a bug: https://github.com/spynejs/spyne/issues
 BrowserStack.com supports open source projects like Spyne.js<br> 
 Unit and Integration tests will run on real browsers and devices using BrowserStack's Automate system.<br><br>
 
-Created by [Frank Batista](https://frankbatista.com)
+
+Copyright (c) 2017-Present Frank Batista, RelevantContext LLC                   
+
