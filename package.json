@@ -2,7 +2,7 @@
   "name": "spyne",
   "sideEffects": false,
   "version": "0.10.25",
-  "description": "Modern, and efficient javascript frontend framework",
+  "description": "Reactive Real-DOM Framework for Advanced Javascript applications",
   "main": "lib/spyne.min.js",
   "module": "src/spyne/spyne.js",
   "scripts": {
