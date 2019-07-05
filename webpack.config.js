@@ -1,6 +1,7 @@
 const path = require('path');
 const webpack = require('webpack');
 const PACKAGE = require('./package');
+const version = PACKAGE.version;
 const env = require('yargs').argv.env; // use --env with webpack 2
 const libraryName = 'spyne';
 let moduleRulesArr = [];
@@ -18,7 +19,11 @@ const loaderOptionsPlugin = new webpack.LoaderOptionsPlugin({ options: {
   }
 });
 
-let spynePlugins = [loaderOptionsPlugin];
+let bannerPlugin = new webpack.BannerPlugin({
+    banner: `spynejs ${version}\nhttps://sypnejs.org\n(c) 2017-present Frank Batista`
+})
+
+let spynePlugins = [bannerPlugin,loaderOptionsPlugin];
 
 if (env === 'build') {
   outputFile = libraryName + '.min.js';
