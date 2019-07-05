@@ -1,7 +1,7 @@
 {
   "name": "spyne",
   "sideEffects": false,
-  "version": "0.10.25",
+  "version": "0.10.26",
   "description": "Reactive Real-DOM Framework for Advanced Javascript applications",
   "main": "lib/spyne.min.js",
   "module": "src/spyne/spyne.js",
@@ -28,7 +28,7 @@
   },
   "keywords": [],
   "author": "Frank Batista",
-  "license": "MIT",
+  "license": "LGPL",
   "devDependencies": {
     "@babel/core": "^7.4.5",
     "@babel/preset-env": "^7.4.5",
