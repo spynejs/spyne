@@ -51,7 +51,6 @@ describe('URL Utils - Params To Route', () => {
       let data = RouteDataForTests.singleBasic.data;
       let slashStr = RouteDataForTests.singleBasic.slash;
       let paramsFromRoute = SpyneUtilsChannelRouteUrl.convertRouteToParams(slashStr, routeConfig);
-      // console.log('data query multiple1 ',slashStr,paramsFromRoute.routeData);
       expect(JSON.stringify(paramsFromRoute.routeData)).to.equal(JSON.stringify(data));
     });
 
@@ -131,7 +130,6 @@ describe('URL Utils - Params To Route', () => {
       data = R.omit(['pageId', 'imageNum'], data);
       let correctRouteQuery = 'page-one';
       let routeVal = SpyneUtilsChannelRouteUrl.convertParamsToRoute(data, routeConfig, 'slash', correctRouteQuery);
-      // console.log('data query multiple 1',data, correctRouteQuery, routeVal);
       expect(routeVal).to.equal(correctRouteQuery);
     });
 

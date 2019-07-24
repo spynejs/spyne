@@ -266,8 +266,11 @@ export class SpyneUtilsChannelRouteUrl {
       let routeValueStr = this.checkIfValueShouldMapToParam(latestObj, currentValue, regexTokens);
 
       latestObj = this.checkIfParamValueMatchesRegex(currentValue, latestObj);
+      const prevPathNotEqCurrentPath = (str)=>str!==last(paths);
 
-      if (latestObj !== undefined) {
+      const isEmptyOrNil = either(isEmpty,isNil);
+
+      if (latestObj !== undefined && prevPathNotEqCurrentPath(latestObj.routeName) && isEmptyOrNil(routeValueStr)===false) {
         paths.push(latestObj.routeName);
         routedValuesArr.push(routeValueStr);
       }
@@ -321,6 +324,7 @@ export class SpyneUtilsChannelRouteUrl {
   }
 
   static convertRouteToParams(str, routeConfig, t) {
+    const addSlash = (url)=>url.replace(/\/$|$/, '/');
     if (routeConfig === undefined) {
       return {};
     }
@@ -331,6 +335,7 @@ export class SpyneUtilsChannelRouteUrl {
     if (type === 'query') {
       return this.convertQueryStrToParams(topLevelRoute, str);
     }
+    str = addSlash(str);
 
     return this.convertSlashRouteStrToParamsObj(topLevelRoute, str, regexTokens);
   }

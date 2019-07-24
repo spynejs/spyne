@@ -53,10 +53,21 @@ function testSelectors(cxt, str, verboseBool) {
 
 function getNodeListArray(cxt, str, verboseBool=false) {
   let selector = str !== undefined ? `${cxt} ${str}` : cxt;
+
+
+  const returnSelectorIfValid = (selector) => {
+        try { document.querySelectorAll(selector) } catch (e) { return [] }
+        return  document.querySelectorAll(selector);
+      };
+
+
+
+
+
   if (verboseBool===true) {
     testSelectors(cxt, str, verboseBool);
   }
-  return document.querySelectorAll(selector);
+  return returnSelectorIfValid(selector)
 }
 
 function setInlineCss(val, cxt, str) {
@@ -163,7 +174,7 @@ function ViewStreamSelector(cxt, str) {
   };
 
   selector.unmount = () => {
-    console.log('unmounting selector ', this);
+    //console.log('unmounting selector ', this);
   };
 
 
@@ -181,7 +192,7 @@ function ViewStreamSelector(cxt, str) {
     let arr = getNodeListArray(cxt, str);
     const toggleClass = item => {
       bool = bool !== undefined ? bool : !item.classList.contains(c);
-      item.classList.toggle(c, bool);
+      bool ?  item.classList.add(c) : item.classList.remove(c);
     };
     arr.forEach(toggleClass);
     return this;
