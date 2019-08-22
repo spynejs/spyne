@@ -1,4 +1,4 @@
-import {is, reject, ifElse, invoker, identity, isNil, allPass, not, isEmpty, always, compose,  equals, prop, where, defaultTo, path, flatten, any,type, curry} from 'ramda';
+import {is, reject, ifElse, invoker, identity, isNil, allPass, tap, forEachObjIndexed, not, isEmpty, always, compose,  equals, prop, where, defaultTo, path, flatten, any,type, curry} from 'ramda';
 const rMap = require('ramda').map;
 export class ChannelPayloadFilter {
   /**
@@ -66,7 +66,7 @@ export class ChannelPayloadFilter {
    * .subscribe(myChannelMethod);
    *
    */
-  constructor(selector, data) {
+  constructor(selector, data, debug=false) {
     const isNotEmpty = compose(not, isEmpty);
     const isNonEmptyStr = allPass([is(String), isNotEmpty]);
     const isNonEmptyArr = allPass([is(Array), isNotEmpty]);
@@ -74,9 +74,10 @@ export class ChannelPayloadFilter {
     const addArraySelectorFilter =   isNonEmptyArr(selector) ? ChannelPayloadFilter.filterSelector(selector) : undefined;
 
 
-    const addDataFilter = is(Object, data) ? ChannelPayloadFilter.filterData(data) : undefined;
+    const addDataFilter = is(Object, data) ? ChannelPayloadFilter.filterData(data, debug) : undefined;
 
     //console.log("IS STRING ",{selector, addStringSelectorFilter, addArraySelectorFilter, addDataFilter},isNonEmptyStr(selector))
+
 
 
     let filtersArr = reject(isNil, [addStringSelectorFilter, addArraySelectorFilter, addDataFilter]);
@@ -95,12 +96,15 @@ export class ChannelPayloadFilter {
     return allPass(filtersArr);
   }
 
-  static filterData(filterJson) {
+  static filterData(filterJson, debugFilter=false) {
+    const debug = debugFilter;
     let compareData = () => {
       // DO NOT ALLOW AN EMPTY OBJECT TO RETURN TRUEs
       if (isEmpty(filterJson)) {
         return always(false);
       }
+
+      console.log("FILTER JSON ",filterJson);
       //  CHECKS ALL VALUES IN JSON TO DETERMINE IF THERE ARE FILTERING METHODS
 
       //let typeArrFn = compose(values, rMap(type));
@@ -125,9 +129,25 @@ export class ChannelPayloadFilter {
       // IF THERE ARE METHODS IN THE FILTERING JSON, THEN USE where or whereEq if Basic JSON
      // let fMethod = isAllMethods === true ? where(filterJson) : whereEq(filterJson);
 
+      // TAP LOGGER
+
+      const tapLogger = (comparedObj)=>{
+        if (debug===false){
+          return comparedObj;
+        }
+        const propsBooleans = {};
+        const mapBools = (value,key)=>propsBooleans[key] = value(prop(key, comparedObj));
+        forEachObjIndexed(mapBools, filterJson);
+        console.log("%c CHANNEL PAYLOAD FILTER DEBUGGER: ", "color:orange;",{propsBooleans, comparedObj});
+
+        return comparedObj;
+        };
+
+      // END TAP LOGGER
+
       let fMethod = where(filterJson);
       const getFilteringObj =  ifElse(prop('props'), invoker(0, 'props'), identity);
-      return compose(fMethod, defaultTo({}), getFilteringObj);
+      return compose( fMethod, tapLogger, defaultTo({}),  getFilteringObj);
     };
 
     return compareData();

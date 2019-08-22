@@ -39,7 +39,7 @@ if (env === 'build') {
   ];
 } else {
   outputFile = libraryName + '.js';
-  moduleRulesArr.push(
+   moduleRulesArr.push(
       {
         test: /(\.js)$/,
         loader: 'babel-loader',

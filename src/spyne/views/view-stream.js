@@ -136,6 +136,7 @@ export class ViewStream {
         animateOutTime: 0.5,
         sendLifecyleEvents: false,
         hashId: `#${id}`,
+        id$: `#${id}`,
         viewClass: ViewStreamElement,
         extendedSourcesHashMethods: {},
         debug: false,
