@@ -1,7 +1,7 @@
 {
   "name": "spyne",
   "sideEffects": false,
-  "version": "0.10.29",
+  "version": "0.11.00",
   "description": "Reactive Real-DOM Framework for Advanced Javascript applications",
   "main": "lib/spyne.min.js",
   "module": "src/spyne/spyne.js",
@@ -94,12 +94,12 @@
     "webpack-shell-plugin": "^0.5.0",
     "yargs": "13.3.0"
   },
-  "czConfig": {
-    "path": "node_modules/cz-conventional-changelog"
-  },
   "config": {
     "ghooks": {
       "pre-commit": "npm run test:single"
+    },
+    "commitizen": {
+      "path": "cz-conventional-changelog"
     }
   },
   "dependencies": {

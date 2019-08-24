@@ -203,7 +203,7 @@ export class ViewStream {
     let createExtraStatesMethod = (arr) => {
       let [action, funcStr, actionFilter] = arr;
       if (is(String, actionFilter)) {
-        actionFilter = new ChannelPayloadFilter(actionFilter);
+        actionFilter = new ChannelPayloadFilter({selector:actionFilter});
       }
       this.props.extendedSourcesHashMethods[action] = channelFn(funcStr,
         actionFilter);

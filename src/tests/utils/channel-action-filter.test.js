@@ -29,49 +29,49 @@ describe('channel action filter', () => {
   });
 
   it('String selector only with no data', () => {
-    let filter = new ChannelPayloadFilter('#header ul li:last-child');
+    let filter = new ChannelPayloadFilter({selector: '#header ul li:last-child'});
     let filterVal = filter(payload);
     // console.log(filterVal, 'filter val string');
     expect(filterVal).to.eq(true);
   });
 
   it('Selectors array contains match but no data', () => {
-    let filter = new ChannelPayloadFilter(['#header ul li:last-child', '#header ul li:first-child' ]);
+    let filter = new ChannelPayloadFilter({selector:['#header ul li:last-child', '#header ul li:first-child' ]});
     let filterVal = filter(payload);
     expect(filterVal).to.eq(true);
   });
 
   it('Static Data and String Selector returns true', () => {
-    let str = '#header ul li:last-child';
-    let data = {
+    let selector = '#header ul li:last-child';
+    let propFilters = {
       type:'link',
       linkType:  'external'
     };
-    let filter = new ChannelPayloadFilter(str, data);
+    let filter = new ChannelPayloadFilter({propFilters, selector});
     let filterVal = filter(payload);
 
     expect(filterVal).to.eq(true);
   });
 
   it('Dynamic Data and String Selector returns true', () => {
-    let str = '#header ul li:last-child';
-    let data = {
+    let selector = '#header ul li:last-child';
+    let propFilters = {
       type: (str) => str === 'link',
       linkType:  R.test(/ext.*nal/)
     };
-    let filter = new ChannelPayloadFilter(str, data);
+    let filter = new ChannelPayloadFilter({propFilters, selector});
     let filterVal = filter(payload);
 
     expect(filterVal).to.eq(true);
   });
 
   it('Dynamic Data with no selector returns true', () => {
-    let str = '#header ul li:last-child';
-    let data = {
+    let selector = '#header ul li:last-child';
+    let propFilters = {
       type: (str) => str === 'link',
       linkType:  R.test(/ext.*nal/)
     };
-    let filter = new ChannelPayloadFilter(undefined, data);
+    let filter = new ChannelPayloadFilter({propFilters, selector});
     let filterVal = filter(payload);
 
     expect(filterVal).to.eq(true);
