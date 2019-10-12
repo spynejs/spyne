@@ -240,7 +240,8 @@ export class SpyneUtilsChannelRouteUrl {
       // PULL INVERTED OBJECT TO SEE IF STR MATCHES
       let getParamInverted = compose(head, defaultTo([]), prop(param));
       let paramInverted = getParamInverted(invertedObj);
-      let re =  /^(\w*)$/;
+      // spyne 11.0.1;
+      let re =  /^([-\$\w]*)$/;
       let keyMatch =  re.test(paramInverted);
 
       if (keyMatch === true && is(String, paramInverted) === true) {
