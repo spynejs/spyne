@@ -8,6 +8,7 @@ import { SpyneTrait } from './utils/spyne-trait';
 import { ViewStreamPayload } from './views/view-stream-payload';
 import { Channel } from './channels/channel';
 import { ChannelFetch } from './channels/channel-fetch-class';
+import {ChannelFetchUtil} from './utils/channel-fetch-util';
 import { ChannelPayload } from './channels/channel-payload-class';
 import {ChannelPayloadFilter} from './utils/channel-payload-filter';
 import { deepMerge } from './utils/deep-merge';
@@ -35,7 +36,7 @@ class SpyneApp {
    */
   constructor(config = {}) {
     this.channels = new ChannelsDelegator();
-    this.VERSION = '0.11.0.1';
+    this.VERSION = '0.11.1';
     this.ViewStream = ViewStream;
     this.BasicView = ViewStreamElement;
     this.DomEl = DomEl;
@@ -135,6 +136,7 @@ export {
   ViewStreamElement,
   Channel,
   ChannelFetch,
+    ChannelFetchUtil,
   ChannelsDelegator,
   ViewStreamPayload,
   ChannelPayload,

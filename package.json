@@ -1,7 +1,7 @@
 {
   "name": "spyne",
   "sideEffects": false,
-  "version": "0.11.00",
+  "version": "0.11.1",
   "description": "Reactive Real-DOM Framework for Advanced Javascript applications",
   "main": "lib/spyne.min.js",
   "module": "src/spyne/spyne.js",
@@ -11,7 +11,7 @@
     "eslint-fix-tests": "eslint --fix  'src/tests/**'",
     "report-coverage": "nyc report --reporter=text-lcov > coverage.lcov && codecov",
     "commit": "git-cz",
-    "build": "webpack --mode production   --env build --display-modules  ",
+    "buil d": "webpack --mode production   --env build --display-modules  ",
     "start": "webpack-dev-server --hot ",
     "dev": "webpack --mode development --progress --colors --watch --env dev ",
     "stats": "webpack --profile --json --optimize-minimize  --mode production --env build  > stats.json",

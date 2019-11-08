@@ -104,10 +104,8 @@ export class SpyneUtilsChannelRouteUrl {
   static createSlashString(arr) {
     const arrClear = reject(isNil);
     const notUndefined = when(complement(isNil, __), join('/'));
-
-    const joiner = compose(notUndefined, arrClear, flatten,
-      map(values));
-
+    const stripRegex = replace(/^(\^*)(.*|^\$)(\$)$/, "$2");
+    const joiner = compose(stripRegex, notUndefined, arrClear, flatten, map(values));
     return joiner(arr);
   }
 
