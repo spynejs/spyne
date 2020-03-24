@@ -36,7 +36,18 @@ class SpyneApp {
    */
   constructor(config = {}) {
     this.channels = new ChannelsDelegator();
-    this.VERSION = '0.11.3';
+    this.VERSION = '0.11.4';
+/*!
+ * Spyne 0.11.4
+ * https://spynejs.org
+ *
+ * @license Copyright 2017-2020, Frank Batista, Relevant Context, LLC. All rights reserved.
+ * Spyne is licensed under the GNU Lesser General Public License v3.0
+ *
+ * @author: Frank Batista,
+ * @email:  frbatista.nyc@gmail.com
+*/
+/* eslint-disable */
     this.ViewStream = ViewStream;
     this.BasicView = ViewStreamElement;
     this.DomEl = DomEl;
@@ -46,15 +57,6 @@ class SpyneApp {
     this.ChannelsBase = Channel;
     this.ChannelPayloadItem = ChannelPayload;
     window.Spyne = this;
-    /*!
-     * Spyne 0.11.3
-     * https://spynejs.org
-     *
-     * @license Copyright 2017-2020, Frank Batista, Relevant Context, LLC. All rights reserved.
-     * Spyne is licensed under the GNU Lesser General Public License v3.0
-
-     * @author: Frank Batista, frbatista.nyc@gmail.com
-    */
     let defaultConfig = {
       scrollLock: false,
       scrollLockX: 0,

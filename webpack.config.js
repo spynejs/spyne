@@ -23,7 +23,7 @@ let bannerPlugin = new webpack.BannerPlugin({
     banner: `spynejs ${version}\nhttps://sypnejs.org\n(c) 2017-present Frank Batista`
 })
 
-let spynePlugins = [bannerPlugin,loaderOptionsPlugin];
+let spynePlugins = [loaderOptionsPlugin];
 
 if (env === 'build') {
   outputFile = libraryName + '.min.js';
