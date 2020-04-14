@@ -1,4 +1,4 @@
-import {mergeAll, compose, mergeDeepRight, mergeRight, pathEq, includes, pickAll, __} from 'ramda';
+import {mergeAll,clone, compose, mergeDeepRight, mergeRight, pathEq, includes, pickAll, __} from 'ramda';
 
 export class ChannelPayload {
   /**
@@ -25,9 +25,10 @@ export class ChannelPayload {
     let channel = channelName;
 
     let channelPayloadItemObj = { channelName, action, payload, srcElement, event };
+    Object.defineProperty(channelPayloadItemObj, 'payload', {get: () => clone(payload)});
 
     /**
-     * This is a convenience method that helps with descructuring by merging all properties.
+     * This is a convenience method that helps with destructuring by merging all properties.
      *
      * @returns
      * JSON Object

@@ -21,6 +21,17 @@ describe('Dom Item Selector', () => {
      expect(elNodesEqual).to.eq(true);
   });
 
+  it('should return array containing the same el', ()=>{
+    let el = document.querySelector('body');
+    let liSelStr = "ul#my-list";
+    let listEl = document.querySelector(liSelStr);
+    let elNode = ViewStreamSelector(el,liSelStr).arr;
+    let elNodesEqual = listEl.isEqualNode(elNode[0]);
+    expect(elNodesEqual).to.eq(true);
+  });
+
+
+
   it('should return the same el from selector', ()=>{
     let el = document.querySelector("ul#my-list");
     let el$ = ViewStreamSelector("ul#my-list");

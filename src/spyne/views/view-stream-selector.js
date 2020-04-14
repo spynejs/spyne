@@ -62,9 +62,6 @@ function getNodeListArray(cxt, str, verboseBool=false) {
       };
 
 
-
-
-
   if (verboseBool===true) {
     testSelectors(cxt, str, verboseBool);
   }
@@ -297,6 +294,20 @@ function ViewStreamSelector(cxt, str) {
   Object.defineProperty(selector, 'exists', {get: () => getNodeListArray(cxt, str, false).length>=1});
   Object.defineProperty(selector, 'exist', {get: () => getNodeListArray(cxt, str, false).length>=1});
   Object.defineProperty(selector, 'nodeList', {get: () => getNodeListArray(cxt, str)});
+  Object.defineProperty(selector, 'arr', {get: () => {
+    let el = getElOrList(cxt, str, true);
+    if (el === undefined) {
+      return [];
+    } else if (el.length===undefined){
+     return [el];
+    } else {
+      return Array.from(el);
+    }
+
+    }});
+
+
+
   Object.defineProperty(selector, 'inline', {set: (val) => setInlineCss(val, cxt, str)});
   Object.defineProperty(selector, 'inlineCss', {set: (val) => setInlineCss(val, cxt, str)});
 
