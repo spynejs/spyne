@@ -274,8 +274,7 @@ export class SpyneChannelRoute extends Channel {
     payload = rMerge(payload, keywordArrs);
     // this.checkForRouteParamsOverrides(payload);
     this.sendRouteStream(payload, changeLocationBool);
-     console.log("SEND STREAM onViewStreamInfo", payload);
-     console.time('cloneTest');
+     //console.log("SEND STREAM onViewStreamInfo", payload);
     payload = SpyneChannelRoute.removeSSID(payload);
 
     this.sendChannelPayload(action, payload, srcElement, event,
