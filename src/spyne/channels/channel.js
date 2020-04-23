@@ -350,17 +350,20 @@ export class Channel {
    * Wraps window.setTimeout with a check to see if "this" ViewStream element and its props property still exists
    * @property {function} fn - = 'function'; The local method that is to be called.
    * @property {number} ms - = 0;  The time, in milleseconds, for the timeout.
+   * @property {boolean} bind - = false;  When true, will bind the method to 'this'.
    *
    */
 
-  setTimeout(fn, ms){
+  setTimeout(fn, ms=0, bind=false){
     const timeoutMethod = (...args)=>{
       if (this!==undefined && this.props!==undefined){
-        apply(fn, args);
+        const methodFn = bind===true ? fn.bind(this) : fn;
+        apply(methodFn, args);
       }
     }
     window.setTimeout(timeoutMethod, ms);
   }
+
 
 
 
