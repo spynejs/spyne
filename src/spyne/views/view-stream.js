@@ -16,7 +16,7 @@ import { ViewStreamObservable } from '../utils/viewstream-observables';
 import {ViewStreamSelector} from './view-stream-selector';
 import { Subject, of } from 'rxjs';
 import { mergeMap, map, takeWhile, filter, tap, finalize } from 'rxjs/operators';
-import {pick, compose, isNil, toLower, either, findIndex, test, flatten ,prop, always, lte, defaultTo, propSatisfies, allPass, curry, is, path, omit, ifElse, clone,  mergeRight, where, equals} from 'ramda';
+import {pick, compose, isNil, toLower, either, findIndex, partial, apply, test, flatten ,prop, always, lte, defaultTo, propSatisfies, allPass, curry, is, path, omit, ifElse, clone,  mergeRight, where, equals} from 'ramda';
 
 export class ViewStream {
   /**
@@ -505,6 +505,24 @@ export class ViewStream {
   onBeforeDispose() {
 
   }
+
+  /**
+   *
+   * Wraps window.setTimeout with a check to see if "this" ViewStream element and its props property still exists
+   * @property {function} fn - = 'function'; The local method that is to be called.
+   * @property {number} ms - = 0;  The time, in milleseconds, for the timeout.
+   *
+   */
+
+  setTimeout(fn, ms){
+    const timeoutMethod = (...args)=>{
+      if (this!==undefined && this.props!==undefined){
+        apply(fn, args);
+      }
+    }
+    window.setTimeout(timeoutMethod, ms);
+  }
+
 
   /**
    *

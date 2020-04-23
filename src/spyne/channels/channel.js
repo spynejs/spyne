@@ -5,7 +5,23 @@ import {RouteChannelUpdater} from '../utils/route-channel-updater';
 import { ReplaySubject, Subject } from 'rxjs';
 import {filter} from 'rxjs/operators';
 import { map } from 'rxjs/operators';
-import {ifElse, identity, head, mergeAll, objOf, view, is, chain, lensIndex, always, fromPairs, path, equals, prop} from 'ramda';
+import {
+  ifElse,
+  identity,
+  head,
+  mergeAll,
+  objOf,
+  view,
+  is,
+  chain,
+  lensIndex,
+  always,
+  fromPairs,
+  path,
+  equals,
+  prop,
+  apply,
+} from 'ramda';
 const rMap = require('ramda').map;
 
 export class Channel {
@@ -328,4 +344,24 @@ export class Channel {
     let fn = ifElse(isValidChannel, startSubscribe, error);
     return fn(CHANNEL_NAME);
   }
+
+  /**
+   *
+   * Wraps window.setTimeout with a check to see if "this" ViewStream element and its props property still exists
+   * @property {function} fn - = 'function'; The local method that is to be called.
+   * @property {number} ms - = 0;  The time, in milleseconds, for the timeout.
+   *
+   */
+
+  setTimeout(fn, ms){
+    const timeoutMethod = (...args)=>{
+      if (this!==undefined && this.props!==undefined){
+        apply(fn, args);
+      }
+    }
+    window.setTimeout(timeoutMethod, ms);
+  }
+
+
+
 }
