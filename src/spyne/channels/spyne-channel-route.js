@@ -3,7 +3,7 @@ import { SpyneUtilsChannelRouteUrl } from '../utils/spyne-utils-channel-route-ur
 import { SpyneUtilsChannelRoute } from '../utils/spyne-utils-channel-route';
 import { ReplaySubject, merge } from 'rxjs';
 import { map } from 'rxjs/operators';
-import {lensProp, omit, over,is} from 'ramda';
+import {lensProp, omit, over, mergeRight, is, evolve} from 'ramda';
 
 import {
   objOf,
@@ -159,8 +159,16 @@ export class SpyneChannelRoute extends Channel {
   addRegisteredActions() {
     return [
       'CHANNEL_ROUTE_DEEPLINK_EVENT',
-      'CHANNEL_ROUTE_CHANGE_EVENT'
+      'CHANNEL_ROUTE_CHANGE_EVENT',
+      ['CHANNEL_ROUTE_UPDATE_CONFIG_EVENT', 'updateRouteConfig']
     ];
+  }
+
+  updateRouteConfig(e){
+    // THE PAYLOAD FROM ROUTES UPDATE NEED TO PROVIDE THE ROUTES JSON AS routes
+    const {routes} = e.props();
+    window.Spyne.config.channels.ROUTE = mergeRight(window.Spyne.config.channels.ROUTE, routes);
+    this.getRouteConfig();
   }
 
   getRouteConfig() {
@@ -173,6 +181,7 @@ export class SpyneChannelRoute extends Channel {
     let arr = SpyneUtilsChannelRoute.flattenConfigObject(routeConfig.routes);
     // console.log("FLATTENED CONFIG ",arr);
     routeConfig['paramsArr'] = arr;
+    //console.log("ROUTE CONFIG IS ",routeConfig);
     return routeConfig;
   }
 
