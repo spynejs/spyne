@@ -3,9 +3,14 @@ import { SpyneUtilsChannelRouteUrl } from '../utils/spyne-utils-channel-route-ur
 import { SpyneUtilsChannelRoute } from '../utils/spyne-utils-channel-route';
 import { ReplaySubject, merge } from 'rxjs';
 import { map } from 'rxjs/operators';
-import {lensProp, omit, over, mergeRight, is, evolve} from 'ramda';
 
 import {
+  clone,
+  pick,
+  omit,
+  over,
+  mergeRight,
+  is,
   objOf,
   mergeAll,
   path,
@@ -14,6 +19,7 @@ import {
   equals,
   head,
   compose,
+  lensProp,
   chain,
   pickAll,
   defaultTo,
@@ -165,10 +171,12 @@ export class SpyneChannelRoute extends Channel {
   }
 
   updateRouteConfig(e){
-    // THE PAYLOAD FROM ROUTES UPDATE NEED TO PROVIDE THE ROUTES JSON AS routes
-    const {routes} = e.props();
-    window.Spyne.config.channels.ROUTE = mergeRight(window.Spyne.config.channels.ROUTE, routes);
-    this.getRouteConfig();
+    window.Spyne.config.channels.ROUTE =  compose(mergeRight(window.Spyne.config.channels.ROUTE),
+                                          pick(['isHash', 'isHidden', 'routes','type']),
+                                          prop('payload'))(e);
+
+      this.getRouteConfig();
+
   }
 
   getRouteConfig() {
