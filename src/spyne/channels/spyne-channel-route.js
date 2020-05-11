@@ -166,6 +166,7 @@ export class SpyneChannelRoute extends Channel {
     return [
       'CHANNEL_ROUTE_DEEPLINK_EVENT',
       'CHANNEL_ROUTE_CHANGE_EVENT',
+      'CHANNEL_ROUTE_CONFIG_UPDATED_EVENT',
       ['CHANNEL_ROUTE_UPDATE_CONFIG_EVENT', 'updateRouteConfig']
     ];
   }
@@ -175,8 +176,10 @@ export class SpyneChannelRoute extends Channel {
                                           pick(['isHash', 'isHidden', 'routes','type']),
                                           prop('payload'))(e);
 
-      this.getRouteConfig();
-
+      const routeConfig = this.getRouteConfig();
+      const action = 'CHANNEL_ROUTE_CONFIG_UPDATED_EVENT';
+     this.sendChannelPayload(action, routeConfig, {}, {},
+        this.navToStream$);
   }
 
   getRouteConfig() {
