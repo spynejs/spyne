@@ -172,13 +172,19 @@ export class SpyneChannelRoute extends Channel {
   }
 
   updateRouteConfig(e){
+
     window.Spyne.config.channels.ROUTE =  compose(mergeRight(window.Spyne.config.channels.ROUTE),
                                           pick(['isHash', 'isHidden', 'routes','type']),
                                           prop('payload'))(e);
 
-      const routeConfig = this.getRouteConfig();
-      const action = 'CHANNEL_ROUTE_CONFIG_UPDATED_EVENT';
-     this.sendChannelPayload(action, routeConfig, {}, {},
+     const routeConfig = this.getRouteConfig();
+     const action = 'CHANNEL_ROUTE_CONFIG_UPDATED_EVENT';
+
+    this.routeConfigJson = routeConfig;
+    this.bindStaticMethodsWithConfigData();
+
+
+    this.sendChannelPayload(action, routeConfig, {}, {},
         this.navToStream$);
   }
 
@@ -207,7 +213,7 @@ export class SpyneChannelRoute extends Channel {
   }
 
   onMapNext(data, firstLoaded = false) {
-    console.log("MAP NEXT ",{firstLoaded, data});
+   // console.log("MAP NEXT ",{firstLoaded, data});
     data['action'] = 'CHANNEL_ROUTE_CHANGE_EVENT';
     return data;
   }
@@ -492,8 +498,13 @@ export class SpyneChannelRoute extends Channel {
     this.getDataFromParams = SpyneChannelRoute.getDataFromParams.bind(this);
     this.getRouteCount = SpyneChannelRoute.getRouteCount.bind(this);
     this.getExtraPayloadParams = SpyneChannelRoute.getExtraPayloadParams.bind(this);
+    this.bindStaticMethodsWithConfigData();
+  }
+
+  bindStaticMethodsWithConfigData(){
     const curriedGetRoute = curryN(3, SpyneChannelRoute.getRouteStrFromParams);
     this.getRouteStrFromParams = curriedGetRoute(__, this.routeConfigJson,
-      this.routeConfigJson.type);
+        this.routeConfigJson.type);
   }
+
 }
