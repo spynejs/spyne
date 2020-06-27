@@ -15,7 +15,7 @@ import { ChannelPayloadFilter } from '../utils/channel-payload-filter';
 import { ViewStreamObservable } from '../utils/viewstream-observables';
 import {ViewStreamSelector} from './view-stream-selector';
 import { Subject, of } from 'rxjs';
-import { mergeMap, map, takeWhile, filter, tap, finalize } from 'rxjs/operators';
+import { mergeMap, map, takeWhile, filter, tap, skip, finalize } from 'rxjs/operators';
 import {pick, compose, isNil, toLower, either, findIndex, partial, apply, test, flatten ,prop, always, lte, defaultTo, propSatisfies, allPass, curry, is, path, omit, ifElse, clone,  mergeRight, where, equals} from 'ramda';
 
 export class ViewStream {
@@ -955,7 +955,15 @@ export class ViewStream {
    *
    * */
 
-  addChannel(str, sendDownStream = false, bool = false) {
+  addChannel(str, skipFirst=false, sendDownStream = false, bool = false) {
+
+
+
+    if (skipFirst === true){
+
+    }
+
+
     const directionArr = sendDownStream === true ? this.$dirs.CI : this.$dirs.I;
     const mapDirection = p => {
       let p2 = defaultTo({}, clone(p));
@@ -973,7 +981,12 @@ export class ViewStream {
       return filterEvent;
     };
 
-    let channel$ = this.getChannel(str).pipe(map(mapDirection), filter(cidMatches));
+    const pipeArr = [map(mapDirection), filter(cidMatches)]
+    if (skipFirst === true){
+      pipeArr.unshift(skip(1));
+    }
+
+    let channel$ = this.getChannel(str).pipe(...pipeArr);
     this.updateSourceSubscription(channel$, false);
     this.props.addedChannels.push(str);
   }

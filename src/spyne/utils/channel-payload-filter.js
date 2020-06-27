@@ -68,7 +68,9 @@ export class ChannelPayloadFilter {
    *
    */
   constructor(filters={}) {
-
+    if (filters.props!==undefined) {
+      filters['propFilters'] = prop('props', filters);
+    }
     let {selector,propFilters,label} = filters;
     //console.log("VALUES OF FILTERS ",{selector,propFilters,label});
     const isNotEmpty = compose(not, isEmpty);

@@ -323,8 +323,8 @@ export class SpyneChannelRoute extends Channel {
     return 'CHANNEL_ROUTE_CHANGE_EVENT';
   }
 
-  static getIsDeepLinkBool() {
-    return this._routeCount === 0;
+  static getIsDeepLinkBool(isHistory) {
+    return isHistory === false && this._routeCount === 0;
   }
 
   static getRouteCount(isHistory=false) {
@@ -340,7 +340,8 @@ export class SpyneChannelRoute extends Channel {
 
   static getExtraPayloadParams(config = this.routeConfigJson, isHistory=false) {
     let routeCount = this.getRouteCount(isHistory);
-    let isDeepLink = this.getIsDeepLinkBool();
+    let isDeepLink = this.getIsDeepLinkBool(isHistory);
+    //console.log("GETTING DEEP LINK ", {routeCount, isDeepLink,isHistory, config})
     let isHash = config.isHash;
     let isHidden = config.isHidden;
     let routeType = config.type;
