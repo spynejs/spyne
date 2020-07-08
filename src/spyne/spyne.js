@@ -1,5 +1,5 @@
 import { ChannelsDelegator } from './channels/channels-delegator';
-import { DomEl } from './views/dom-el';
+import { DomElement, DomEl } from './views/dom-element';
 import { ViewStreamElement } from './views/view-stream-element';
 import { ViewStreamSelector} from './views/view-stream-selector';
 import { ViewStream } from './views/view-stream';
@@ -36,9 +36,9 @@ class SpyneApp {
    */
   constructor(config = {}) {
     this.channels = new ChannelsDelegator();
-    this.VERSION = '0.13.2';
+    this.VERSION = '0.14.1';
 /*!
- * Spyne 0.13.2
+ * Spyne 0.14.1
  * https://spynejs.org
  *
  * @license Copyright 2017-2020, Frank Batista, Relevant Context, LLC. All rights reserved.
@@ -50,7 +50,7 @@ class SpyneApp {
 /* eslint-disable */
     this.ViewStream = ViewStream;
     this.BasicView = ViewStreamElement;
-    this.DomEl = DomEl;
+    this.DomEl = DomElement;
     this.ViewStreamBroadcaster = ViewStreamBroadcaster;
     this.ChannelsPayload = ViewStreamPayload;
     this.ChannelsController = ChannelsDelegator;
@@ -66,8 +66,7 @@ class SpyneApp {
       channels: {
         WINDOW: {
           mediqQueries: {
-          /*  'test': '(max-width: 500px)',
-            'newTest': '(max-width: 800px)' */
+
           },
           events: [],
           listenForResize: true,
@@ -152,7 +151,8 @@ export {
   ViewStreamPayload,
   ChannelPayload,
     ChannelPayloadFilter,
-  DomEl,
+  DomElement,
+    DomEl,
   ViewStream,
     ViewStreamSelector,
   ViewStreamBroadcaster,

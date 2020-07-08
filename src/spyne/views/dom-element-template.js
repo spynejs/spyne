@@ -8,7 +8,7 @@ import {includes, __, ifElse, compose,path,split,prop, reject, is, defaultTo, is
  * @param {String|HTMLElement} template
  * @param {Object} data
  *
- * @desc DomEl uses this class when rendering templates.
+ * @desc DomElement uses this class when rendering templates.
  *
  * @example
  * TITLE["<h4>Accessing properties using a double bracket {{&nbsp;&nbsp;&nbsp;}} expression</h4>"]
@@ -132,7 +132,7 @@ import {includes, __, ifElse, compose,path,split,prop, reject, is, defaultTo, is
  *
  */
 
-export class DomElTemplate {
+export class DomElementTemplate {
   constructor(template, data) {
     this.template = this.formatTemplate(template);
 
@@ -149,13 +149,13 @@ export class DomElTemplate {
 
     this.templateData = data;
 
-    let strArr = DomElTemplate.getStringArray(this.template);
+    let strArr = DomElementTemplate.getStringArray(this.template);
 
-    let strMatches = this.template.match(DomElTemplate.findTmplLoopsRE());
+    let strMatches = this.template.match(DomElementTemplate.findTmplLoopsRE());
     strMatches = strMatches === null ? [] : strMatches;
 
     const mapTmplLoop = (str, data) => str.replace(
-      DomElTemplate.parseTmplLoopsRE(),
+      DomElementTemplate.parseTmplLoopsRE(),
       this.parseTheTmplLoop.bind(this));
     const findTmplLoopsPred = includes(__, strMatches);
 
@@ -168,7 +168,7 @@ export class DomElTemplate {
   }
 
   static getStringArray(template) {
-    let strArr = template.split(DomElTemplate.findTmplLoopsRE());
+    let strArr = template.split(DomElementTemplate.findTmplLoopsRE());
     const emptyRE = /^([\\n\s\W]+)$/;
     const filterOutEmptyStrings = s => s.match(emptyRE);
     return reject(filterOutEmptyStrings, strArr);
@@ -221,21 +221,21 @@ export class DomElTemplate {
       return defaultIsEmptyStr(dataVal);
     };
 
-    return str.replace(DomElTemplate.swapParamsForTagsRE(), replaceTags);
+    return str.replace(DomElementTemplate.swapParamsForTagsRE(), replaceTags);
   }
 
   parseTheTmplLoop(str, p1, p2, p3) {
     const subStr = p3;
     let elData = this.templateData[p2];
     const parseString = (item, str) => {
-      return str.replace(DomElTemplate.swapParamsForTagsRE(), item);
+      return str.replace(DomElementTemplate.swapParamsForTagsRE(), item);
     };
     const parseObject = (obj, str) => {
       const loopObj = (str, p1, p2) => {
         // DOT SYNTAX CHECK
         return compose(path(__, obj), split('.'))(p2);
       };
-      return str.replace(DomElTemplate.swapParamsForTagsRE(), loopObj);
+      return str.replace(DomElementTemplate.swapParamsForTagsRE(), loopObj);
     };
     const mapStringData = (d) => {
       if (typeof (d) === 'string') {

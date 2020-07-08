@@ -16,7 +16,9 @@ import { ViewStreamObservable } from '../utils/viewstream-observables';
 import {ViewStreamSelector} from './view-stream-selector';
 import { Subject, of } from 'rxjs';
 import { mergeMap, map, takeWhile, filter, tap, skip, finalize } from 'rxjs/operators';
-import {pick, compose, isNil, toLower, either, findIndex, partial, apply, test, flatten ,prop, always, lte, defaultTo, propSatisfies, allPass, curry, is, path, omit, ifElse, clone,  mergeRight, where, equals} from 'ramda';
+import {pick, compose, isNil, all, isEmpty, forEach, toLower, either, findIndex, partial, apply, test, flatten ,prop, always, lte, defaultTo, propSatisfies, allPass, curry, nth, is,slice, path, omit, ifElse, lensPath, view, clone,  mergeRight, where, equals} from 'ramda';
+
+const rMap = require('ramda').map;
 
 export class ViewStream {
   /**
@@ -110,7 +112,7 @@ export class ViewStream {
    * @property {string} props.id - = undefined; Generates a random id when undefined.
    * @property {Array|SpyntTrait} props.traits - = undefined; Add a single SpyneTrait or array of SpyneTrait components.
    * @property {template} props.template - = undefined; String, String literal or HTML template.
-   * @special {"name": "DomEl", "desc": "ViewStreams uses the DomEl class to render html tags and templates.", "link":"dom-item"}
+   * @special {"name": "DomElement", "desc": "ViewStreams uses the DomElement class to render html tags and templates.", "link":"dom-item"}
    * @special {"name": "ViewStreamSelector", "desc": "The <b>props.el$</b> property creates an instance of this class, used to query elements within the props.el element; also has methods to update css classes.", "link":"dom-item-selectors"}
    *
    *
@@ -778,6 +780,16 @@ export class ViewStream {
     this.beforeAfterRender();
     this.afterRender();
     this.onRendered();
+
+    if (this.isDevMode === true ){
+      const eventsArr = this.broadcastEvents();
+      const isValidArr = ViewStream.isValidNestedArr(eventsArr)
+      if (isValidArr === false){
+        console.warn(`Spyne Warning: The array returned from broadcastEvents in ${this.props.name}, '${JSON.stringify(eventsArr)}', does not appear to be properly formatted!`);
+      }
+
+    }
+
     this.viewsStreamBroadcaster = new ViewStreamBroadcaster(this.props,
       this.broadcastEvents.bind(this));
       this.afterBroadcastEvents();
@@ -792,19 +804,43 @@ export class ViewStream {
     };
 
     traits.forEach(addTrait);
+
+    if (this.isDevMode === true){
+      const actionsArr = this.addActionListeners();
+    }
+
   }
 
   afterBroadcastEvents(){
 
       if (this.isDevMode === true ){
         const pullActionsFromList = (arr)=>arr[0];
-        let actionsArr = this.addActionListeners().map(pullActionsFromList);
+        const nestedActionsArr = this.addActionListeners();
+
+        let actionsArr = nestedActionsArr.map(pullActionsFromList);
+
+        const isValidArr = ViewStream.isValidNestedArr(nestedActionsArr);
+
+        if (isValidArr === false){
+          console.warn(`Spyne Warning: The array returned from addActionsListeners in ${this.props.name}, '${JSON.stringify(nestedActionsArr)}', does not appear to be properly formatted!`);
+        } else {
+          const checkForExistingMethod = (arr)=>{
+            const method = defaultTo('', arr[1]);
+            const isMethod = is(Function, this[method]);
+            if (isMethod === false){
+              console.warn(`Spyne Warning: The method in addActionListeners nested Array, '${JSON.stringify(arr)}', in ${this.props.name}, does not appear to exist!`);
+            }
+
+          }
+          compose(forEach(checkForExistingMethod), defaultTo([]))(nestedActionsArr);
+        }
+
         const delayForProxyChannelResets = ()=>{
           if (path(['props','addedChannels'], this) !== undefined) {
             ViewStream.checkIfActionsAreRegistered.bind(this)(this.props.addedChannels, actionsArr);
           }
         };
-        window.setTimeout(delayForProxyChannelResets, 500);
+        this.setTimeout(delayForProxyChannelResets, 500);
       }
   }
   static checkIfActionsAreRegistered(channelsArr=[], actionsArr){
@@ -892,6 +928,18 @@ export class ViewStream {
    *
    *
    * */
+
+
+  static isValidNestedArr(eventsArr){
+    const isTrue = equals(true);
+    const allIsTrue = all(isTrue);
+    const isString = is(String);
+    const isValidArr = compose(allIsTrue, rMap(isString), slice(0,2), defaultTo([]));
+    const mapEventsArrFn = compose( allIsTrue, rMap(isValidArr), defaultTo([]));
+    return mapEventsArrFn(eventsArr);
+  }
+
+
 
   broadcastEvents() {
     // ADD BUTTON EVENTS AS NESTED ARRAYS
@@ -1017,12 +1065,7 @@ export class ViewStream {
 
   sendInfoToChannel(channelName, payload = {}, action = 'VIEWSTREAM_EVENT') {
     let data = { payload, action };
-  //  data['srcElement'] = {};// pick(['vsid','viewName'], data);
-   // data.srcElement['vsid'] = path(['props', 'vsid'], this);
-   // data.srcElement['id'] = path(['props', 'id'], this);
     data.srcElement = compose(pick(['id','vsid','class','tagName']), prop('props'))(this);
-   // data.srcElement['isLocalEvent'] = false;
-    //data.srcElement['viewName'] = this.props.name;
     if (this.checkIfChannelExists(channelName) === true) {
       let obs$ = of(data);
       return new ViewStreamPayload(channelName, obs$, data);
@@ -1229,16 +1272,5 @@ export class ViewStream {
     //  ==================================
     let coreMixins = baseCoreMixins();
     this.createId = coreMixins.createId;
-/*    this.createpropsMap = coreMixins.createpropsMap;
-    this.convertDomStringMapToObj = convertDomStringMapToObj;
-    this.ifNilThenUpdate = ifNilThenUpdate;*/
-    // this.gc = gc.bind(this);
-    //  ==================================
-    // BASE STREAM MIXINS
-    //  ==================================
-    //let streamMixins = baseStreamsMixins();
-/*    this.sendUIPayload = streamMixins.sendUIPayload;
-    this.sendRoutePayload = streamMixins.sendRoutePayload;
-    this.createLifeStreamPayload = streamMixins.createLifeStreamPayload;*/
   }
 }

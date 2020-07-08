@@ -1,13 +1,13 @@
-import { DomEl } from '../../spyne/views/dom-el';
+import { DomElement } from '../../spyne/views/dom-element';
 chai.use(require('chai-dom'));
 
 describe('DomEl', () => {
   it('dom item exists', () => {
-    expect(DomEl).to.exist;
+    expect(DomElement).to.exist;
   });
 
   it('dom item is a dom element', () => {
-    let domItem = new DomEl({tagName: 'h1', data: 'my dom element'});
+    let domItem = new DomElement({tagName: 'h1', data: 'my dom element'});
     let el = domItem.render();
     // assert.isFunction(domItem.click);
     expect(el).to.have.property('nodeName');
@@ -19,35 +19,35 @@ describe('DomEl', () => {
 
 describe("DomElRendering", ()=> {
 
-    it('DomEl Template show render data value', ()=>{
+    it('DomElement Template show render data value', ()=>{
       let data = {cat:'meow'};
       let template = "<h1>The cat says {{cat}}";
-      let domEl = new DomEl({data, template});
+      let domEl = new DomElement({data, template});
       let render = domEl.render();
       expect(render.innerText).to.equal('The cat says meow');
     });
 
-    it('DomEl Template show loop object values', ()=>{
+    it('DomElement Template show loop object values', ()=>{
       let data = {dog: {
         sound: 'woof'
         }};
       let template = "<h1>The dog says {{#dog}}{{sound}}{{/dog}}";
-      let domEl = new DomEl({data, template});
+      let domEl = new DomElement({data, template});
       let render = domEl.render();
       expect(render.innerText).to.equal('The dog says woof');
     });
 
-    it('DomEl Template show not render null objects', ()=>{
+    it('DomElement Template show not render null objects', ()=>{
       let data = {cat: {
           sound: 'woof'
         }};
       let template = "<article>{{#dog}}<h1>The dog says {{sound}}</h1>{{/dog}}</article>";
-      let domEl = new DomEl({data, template});
+      let domEl = new DomElement({data, template});
       let render = domEl.render();
       expect(render.innerText).to.equal('');
     });
 
-    it('DomEl Template show not render null values', ()=>{
+    it('DomElement Template show not render null values', ()=>{
       let data = {animals: [
             { name: 'dog',
               sound:'woof'
@@ -57,7 +57,7 @@ describe("DomElRendering", ()=> {
             }
         ]};
       let template = "<article>{{#animals}}<h1>The {{name}} says {{sound}}</h1>{{/animals}}</article>";
-      let domEl = new DomEl({data, template});
+      let domEl = new DomElement({data, template});
       let render = domEl.render();
       let renderStr = render.querySelectorAll('h1')[1].innerText;
       expect(renderStr).to.equal('The cat says meow');

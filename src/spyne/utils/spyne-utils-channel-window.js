@@ -30,7 +30,7 @@ export class SpyneUtilsChannelWindow {
   static createMediaQuery(str) {
     const mq = window.matchMedia(str);
     this.checkIfValidMediaQuery(mq, str);
-    return mq;
+    return mq !== false ? mq : false;
   }
 
   static checkIfValidMediaQuery(mq, str) {
@@ -71,8 +71,10 @@ export class SpyneUtilsChannelWindow {
 
     const loopQueries = (val, key, obj) => {
       let mq = SpyneUtilsChannelWindow.createMediaQuery(val);
-      arr.push(SpyneUtilsChannelWindow.createMediaQueryHandler(mq, key));
-      // return arr;
+      if (mq!==false) {
+        arr.push(SpyneUtilsChannelWindow.createMediaQueryHandler(mq, key));
+      }
+       return arr;
     };
 
     mapObjIndexed(loopQueries, mediaQueriesObj);

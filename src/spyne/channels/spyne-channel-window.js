@@ -3,7 +3,7 @@ import { checkIfObjIsNotEmptyOrNil } from '../utils/frp-tools';
 import { SpyneUtilsChannelWindow } from '../utils/spyne-utils-channel-window';
 import { merge } from 'rxjs';
 import { map, debounceTime, skipWhile } from 'rxjs/operators';
-import {curry, pathEq, pick, partialRight, mapObjIndexed} from 'ramda';
+import {curry, pathEq, pick, partialRight, mapObjIndexed, apply} from 'ramda';
 import {deepMerge} from '../utils/deep-merge';
 
 const rMap = require('ramda').map;
@@ -251,7 +251,8 @@ export class SpyneChannelWindow extends Channel {
 
   getMediaQueryObservable(config) {
     let arr = this.createMergedObsFromObj(config);
-    let obs$ = merge(arr[0], arr[1]);
+    console.log("ARR IS ",{arr});
+    let obs$ = apply(merge, arr);
     return obs$.pipe(map(this.getMediaQueryMapFn.bind(this)));
   }
 

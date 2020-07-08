@@ -48,6 +48,11 @@ export class ChannelFetch extends Channel {
 
 
   constructor(name, props = {}) {
+
+    // ALLOW FOR GENERIC MAP PROPERTY
+    if (props.map!==undefined){
+      props.mapFn = props.map;
+    }
     props.extendedActionsArr = [
       `${name}_DATA_EVENT`,
       [`${name}_UPDATE_DATA_EVENT`, 'onFetchUpdate']

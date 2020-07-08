@@ -1,16 +1,16 @@
 // import {createElement} from '../utils/dom-methods';
 import { baseCoreMixins } from '../utils/mixins/base-core-mixins';
-import { DomElTemplate } from './dom-el-template';
+import { DomElementTemplate } from './dom-element-template';
 import { deepMerge } from '../utils/deep-merge';
-// import {DomElTemplate} from './template-renderer';
+// import {DomElementTemplate} from './template-renderer';
 
 import {is, defaultTo, pick, mapObjIndexed, forEachObjIndexed, pipe} from 'ramda';
 //import {ViewStreamElement} from './view-stream-element';
 //import {getConstructorName} from '../utils/frp-tools';
 
-export class DomEl {
+class DomElement {
   /**
-   * @module DomEl
+   * @module DomElement
    * @type util
    *
    * @desc
@@ -26,7 +26,7 @@ export class DomEl {
    * @property {String} props.tagName - = 'div'; Default for tagName.
    * @property {Object} props.attributes - = {}; This can be any valid HTML attribute for the given tagName.
    * @property {String|Object} props.data = undefined; This is either a String for an element or JSON data object for a template.
-   * @property {String|HTML} props.template = undefined; If a template is defined, the DomEl will use it.
+   * @property {String|HTML} props.template = undefined; If a template is defined, the DomElement will use it.
    *
    */
 
@@ -98,7 +98,7 @@ export class DomEl {
       let data = this.getProp('data');
       data = is(Object, data) ? data : {};
 
-      let frag = new DomElTemplate(template, data).renderDocFrag();
+      let frag = new DomElementTemplate(template, data).renderDocFrag();
       el.appendChild(frag);
       return el;
     };
@@ -316,3 +316,5 @@ export class DomEl {
   }
 
 }
+const DomEl = DomElement;
+export {DomElement, DomEl}
