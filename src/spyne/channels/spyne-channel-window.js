@@ -251,7 +251,7 @@ export class SpyneChannelWindow extends Channel {
 
   getMediaQueryObservable(config) {
     let arr = this.createMergedObsFromObj(config);
-    console.log("ARR IS ",{arr});
+    //console.log("ARR IS ",{arr});
     let obs$ = apply(merge, arr);
     return obs$.pipe(map(this.getMediaQueryMapFn.bind(this)));
   }
