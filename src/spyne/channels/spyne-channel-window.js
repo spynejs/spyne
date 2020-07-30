@@ -36,6 +36,7 @@ export class SpyneChannelWindow extends Channel {
   constructor(CHANNEL_NAME="CHANNEL_WINDOW") {
     super(CHANNEL_NAME);
     this.bindStaticMethods();
+    this.currentScrollY=0;
     // this.props.name = 'WINDOW';
   }
 
@@ -126,9 +127,13 @@ export class SpyneChannelWindow extends Channel {
     return getScrollData;
   }
 
+  static getScrollY(scrollElement){
+    return scrollElement.pageYOffset !== undefined ? scrollElement.pageYOffset : scrollElement.scrollTop;
+  }
+
 
   static getScrollMapFn(event, interval, action, scrollDataFn, scrollElement) {
-    let scrollY = scrollElement.pageYOffset !== undefined ? scrollElement.pageYOffset : scrollElement.scrollTop;
+    let scrollY = SpyneChannelWindow.getScrollY(scrollElement);
     let payload = scrollDataFn(scrollY);
     let {scrollDistance} = payload;
     let srcElement = event.srcElement;
@@ -158,16 +163,22 @@ export class SpyneChannelWindow extends Channel {
     return SpyneUtilsChannelWindow.createDomObservableFromEvent('scroll',
         scrollMapFn)
       .pipe(
-          map(p=>{
+         /* map(p=>{
             if (pathEq(['Spyne', 'config', 'scrollLock'], true)(scrollElement)){
               let x = window.Spyne.config.scrollLockX
               let y = window.Spyne.config.scrollLockY;
               window.scrollTo(x,y);
             }
             return p;
-          }),
+          }),*/
         debounceTime(dTime),
-        skipWhile(skipWhenDirIsMissing)
+        skipWhile(skipWhenDirIsMissing),
+        map(p=>{
+          const newScrollY = SpyneChannelWindow.getScrollY(window);
+          p.payload['scrollDistanceAbs'] = Math.abs(this.currentScrollY-newScrollY);
+          this.currentScrollY=newScrollY;
+          return p;
+        })
       );
   }
 
