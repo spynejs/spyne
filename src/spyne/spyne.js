@@ -36,9 +36,9 @@ class SpyneApp {
    */
   constructor(config = {}) {
     this.channels = new ChannelsDelegator();
-    this.VERSION = '0.14.5';
+    this.VERSION = '0.14.6';
 /*!
- * Spyne 0.14.5
+ * Spyne 0.14.6
  * https://spynejs.org
  *
  * @license Copyright 2017-2020, Frank Batista, Relevant Context, LLC. All rights reserved.
