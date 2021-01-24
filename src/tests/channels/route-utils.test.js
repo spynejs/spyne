@@ -1,14 +1,14 @@
 // const assert = require('assert');
 
 import { SpyneUtilsChannelRoute } from '../../spyne/utils/spyne-utils-channel-route';
-
+import {postProcessedRouteData, preProcessedRouteData, mainConfigPreProcessedData, mainConfigPostProcessedData} from '../mocks/routes-data';
 import {
   SpyneConfigData,
   RouteDataForTests,
   windowLocationData
 } from '../mocks/utils-data';
 import { SpyneChannelRoute } from '../../spyne/channels/spyne-channel-route';
-
+const R = require('ramda');
 const ObjtoStr = JSON.stringify;
 
 const routeConfig = SpyneConfigData.channels.ROUTE;
@@ -70,4 +70,16 @@ describe('it should compare two objects for updated keys', () => {
     let compare2 = checkUpdatedKeys.compare(obj2, routeKeywordsArr);
     expect(compare2.pathsChanged).to.deep.equal(['section', 'menuItem']);
   });
+
+
+  it('should conform empty str and and 404s, convert arrays to route config', ()=>{
+    const revisedConfig = SpyneUtilsChannelRoute.conformRouteObject(preProcessedRouteData);
+    //console.log("R2b IS ",JSON.stringify(revisedConfig));
+    //console.log("R2b IS ",revisedConfig.routes.routePath.about.routePath.contact);
+    //return true;
+    expect(revisedConfig).to.deep.equal(postProcessedRouteData);
+  })
+
+
+
 });

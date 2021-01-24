@@ -119,7 +119,7 @@ describe('DomElTemplate', () => {
     let render = domElTemplate.renderDocFrag();
     let favFoodInnerText = render.firstElementChild
 
-    console.log("render obj w looped arr ", favFoodInnerText);
+    //console.log("render obj w looped arr ", favFoodInnerText);
     return true;
   });
 
@@ -137,7 +137,7 @@ describe('DomElTemplate', () => {
     let domElTemplate = new DomElementTemplate(template, data);
     let render = domElTemplate.renderDocFrag();
 
-    console.log("render nested array of objs ",render.firstElementChild);
+    //console.log("render nested array of objs ",render.firstElementChild);
     //let lastItemTxt = render.firstElementChild.querySelectorAll('li')[2].innerText
     // expect(lastItemTxt).to.equal('Welcome, john.');
     return true;
@@ -157,7 +157,7 @@ describe('DomElTemplate', () => {
     let domElTemplate = new DomElementTemplate(template, data);
     let render = domElTemplate.renderDocFrag();
 
-    console.log("render nested obj ",render.firstElementChild);
+    //console.log("render nested obj ",render.firstElementChild);
     //let lastItemTxt = render.firstElementChild.querySelectorAll('li')[2].innerText
     // expect(lastItemTxt).to.equal('Welcome, john.');
     return true;

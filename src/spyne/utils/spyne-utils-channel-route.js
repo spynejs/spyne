@@ -1,5 +1,5 @@
 import { fromEventPattern } from 'rxjs';
-import {last, pick, prop, pickAll, equals, compose, keys, filter, propEq, uniq, map, __, chain, includes, fromPairs, toPairs, values} from 'ramda';
+import {last, mapObjIndexed, clone, pick, prop, pickAll, path, equals, compose, keys, filter, propEq, uniq, map, __, chain,is, includes, fromPairs, mergeDeepRight, toPairs, values} from 'ramda';
 
 export class SpyneUtilsChannelRoute {
   constructor() {
@@ -93,6 +93,53 @@ export class SpyneUtilsChannelRoute {
      *
      */
     return values(fromPairs(go(obj)));
+  }
+
+  static conformRouteObject(channelRouteObj={}, add404Props=false){
+    const channelsRoutePath = path(['channels', 'ROUTE'], channelRouteObj);
+    let {add404s} = channelsRoutePath !== undefined ? channelsRoutePath : channelRouteObj;
+    add404s = add404s || add404Props;
+    //console.log("add 404s is1 ",{add404s, channelsRoutePath})
+    const parseRoutePath = (a) => {
+      let val = a[1];
+      const isArr = is(Array, val);
+      if (val === ""){
+        a[1] = "^$";
+      } else if (isArr){
+        a[1] = val.join('|');;
+      }
+      return a;
+    }
+
+
+    const transduceConfig = (arr)=>{
+      let [key, val] = arr;
+      const obj404 = add404s ? {"404": ".+"} : {};
+      const isObj = is(Object, val);
+      const isArr = is(Array, val);
+      const iterObj = isObj === true && isArr === false;
+      const isRoutePath = key === 'routePath';
+      if (iterObj) {
+        arr[1] = configMapperFn(arr[1]);
+        if (isRoutePath){
+          arr[1] =  compose(mergeDeepRight(obj404), fromPairs, map(parseRoutePath), toPairs)( arr[1]);
+        }
+      }
+      return arr;
+    }
+
+    const configMapperFn = compose(fromPairs, map(transduceConfig), toPairs);
+
+
+    if (channelsRoutePath !== undefined){
+      channelRouteObj.channels.ROUTE = configMapperFn(channelRouteObj.channels.ROUTE)
+      return channelRouteObj;
+    }
+
+    return configMapperFn(channelRouteObj);
+
+
+
   }
 
   static getLocationData() {

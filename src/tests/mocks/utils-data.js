@@ -111,6 +111,19 @@ const RouteDataForTests = {
 
   },
 
+  multipleRegexComplex: {
+
+    data: {
+      'pageId': 'work'
+    },
+    arr: '[{"pageId":"work"},{"randomNum":"2"}]',
+    slash: 'photos/2',
+    hash: '#photos/2',
+    query: '?pageId=photos&randomNum=2'
+
+  },
+
+
   multipleWrong: {
 
     data: {

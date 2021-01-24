@@ -11,6 +11,7 @@ import { ChannelFetch } from './channels/channel-fetch-class';
 import {ChannelFetchUtil} from './utils/channel-fetch-util';
 import { ChannelPayload } from './channels/channel-payload-class';
 import {ChannelPayloadFilter} from './utils/channel-payload-filter';
+import {SpyneUtilsChannelRoute} from './utils/spyne-utils-channel-route';
 import { deepMerge } from './utils/deep-merge';
 
 class SpyneApp {
@@ -36,9 +37,9 @@ class SpyneApp {
    */
   constructor(config = {}) {
     this.channels = new ChannelsDelegator();
-    this.VERSION = '0.14.6';
+    this.VERSION = '0.14.7';
 /*!
- * Spyne 0.14.6
+ * Spyne 0.14.7
  * https://spynejs.org
  *
  * @license Copyright 2017-2020, Frank Batista, Relevant Context, LLC. All rights reserved.
@@ -81,6 +82,7 @@ class SpyneApp {
           type: 'slash',
           isHash: false,
           isHidden: false,
+          add404s: false,
           routes: {
             'routePath' : {
               'routeName' : 'change'
@@ -91,8 +93,12 @@ class SpyneApp {
       }
     };
     if (config !== undefined) {
-      window.Spyne['config'] = deepMerge(defaultConfig, config);
+      config = SpyneUtilsChannelRoute.conformRouteObject(config);
+      window.Spyne['config'] = deepMerge(defaultConfig, config)
     }
+
+
+
     this.getChannelActions = (str) => window.Spyne.channels.getChannelActions(str);
     this.registerChannel = (val) => this.channels.registerStream(val);
     this.registerDataChannel = (obs$) => this.channels.registerStream(obs$);

@@ -177,6 +177,10 @@ export class SpyneChannelRoute extends Channel {
                                           pick(['isHash', 'isHidden', 'routes','type']),
                                           prop('payload'))(e);
 
+    // ADD 404S, EMPTY REGEX AND CONVERT ARRAYS
+    window.Spyne.config = SpyneUtilsChannelRoute.conformRouteObject(window.Spyne.config);
+
+
      const routeConfig = this.getRouteConfig();
      const action = 'CHANNEL_ROUTE_CONFIG_UPDATED_EVENT';
 

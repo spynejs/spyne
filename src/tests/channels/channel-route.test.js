@@ -57,7 +57,20 @@ describe('Channel Route', () => {
     let data = RouteDataForTests.multiple.data;
     let queryStr = RouteDataForTests.multiple.slash;
     let paramsFromRoute = SpyneChannelRoute.getParamsFromRouteStr(queryStr, routeConfig);
+
+    //console.log('params from str is ',queryStr)
     expect(ObjtoStr(paramsFromRoute.routeData)).to.equal(ObjtoStr(data));
+  });
+
+  it('should return params object from slash string using array in routeConfig', () => {
+    let data = RouteDataForTests.multipleRegexComplex.data;
+    let queryStr = RouteDataForTests.multipleRegexComplex.slash;
+    routeConfig.routes.routePath['work'] =   'holographs|photos|digital|videos';
+    let paramsFromRoute = SpyneChannelRoute.getParamsFromRouteStr(queryStr, routeConfig);
+
+    //console.log('params from str is ',JSON.stringify(paramsFromRoute))
+
+     expect(ObjtoStr(paramsFromRoute.routeData)).to.equal(ObjtoStr(data));
   });
 
   it('should return params object from query string', () => {
@@ -67,7 +80,7 @@ describe('Channel Route', () => {
     expect(ObjtoStr(paramsFromRoute.routeData)).to.equal(ObjtoStr(data));
   });
 
-  it('return route str by config type', () => {
+ /* it('return route str by config type', () => {
     const val = SpyneUtilsChannelRouteUrl.getLocationStrByType('hash');
     // console.log('route str val is ',val,' -->',ObjtoStr(window.location));
 
@@ -76,8 +89,7 @@ describe('Channel Route', () => {
 
   it('should combine any regex tokens into the route string', () => {
     let payloadOverrideCheck = SpyneChannelRoute.checkForRouteParamsOverrides(ChannelPayloadRouteDataRegexOverride);
-    // console.log("override check ",payloadOverrideCheck);
-
+     console.log("override check ",payloadOverrideCheck);
     return true;
-  });
+  });*/
 });
