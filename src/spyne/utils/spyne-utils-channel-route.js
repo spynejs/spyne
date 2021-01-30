@@ -1,5 +1,7 @@
 import { fromEventPattern } from 'rxjs';
-import {last, mapObjIndexed, clone, pick, prop, pickAll, path, equals, compose, keys, filter, propEq, uniq, map, __, chain,is, includes, fromPairs, mergeDeepRight, toPairs, values} from 'ramda';
+import {last, mapObjIndexed, flatten, clone, pick, prop, propOr, pickAll, path, equals, compose, keys, filter, propEq, uniq, map, __, chain,is, includes, fromPairs, mergeDeepRight, reverse, test, omit, reduceRight, nth, toPairs, values} from 'ramda';
+import {SpyneUtilsChannelRouteUrl} from './spyne-utils-channel-route-url';
+import {RouteDataForTests} from '../../tests/mocks/utils-data';
 
 export class SpyneUtilsChannelRoute {
   constructor() {
@@ -87,13 +89,89 @@ export class SpyneUtilsChannelRoute {
     }, toPairs(obj_));
 
     // console.log("FLATTEN: ",values(fromPairs(go(obj))));
-
-    /**
-     * TODO: PARSE PAIRS TO ALLOW FOR ARRAYS OR REGEX IN ROUTE CONFIG
-     *
-     */
     return values(fromPairs(go(obj)));
   }
+
+
+
+  static addRouteDatasets(channelRouteObj){
+   // channelRouteObj.type='query';
+
+    const {type, isHash} = channelRouteObj;
+
+    // create href and check to see if need to convert to hash href links
+    const getHREF = (obj)=>{
+      const santizeHREF = str => {
+        const hrefRE = /^(.*\/)([\w\-]*\/?)(.*)$/gm
+        //const hrefRE = /^(.*\/)([\w-]*)(.*)$/gm;
+       str = str.replace(hrefRE, "$1$2");
+       // str = String(str).replace('^$', "");
+        return str;
+      }
+
+      const headStrVal = type === 'query' ? "" : isHash === true ? "#" : "/";
+      const hrefStr =  SpyneUtilsChannelRouteUrl.convertParamsToRoute(obj, channelRouteObj);
+      return headStrVal+santizeHREF(hrefStr);
+    }
+
+    // remove special chars from href
+    const sanitizeStr = (str)=>String(str).replace(/([^A-Za-z0-9-_])/g, "");
+
+
+    // test whether to use key or val
+    const isValidStrRE = /^([A-Za-z0-9_\-])+$/m;
+
+    const createInitialValFn = (accMain=[], routePathObj, objAcc={})=>{
+      let {routeName} = routePathObj;
+
+
+      const propsReducer = (acc, arrPair)=>{
+        const [key, val] = arrPair;
+        const isObject = is(Object, val);
+
+        const getLinkText = str => test(isValidStrRE, str) ? String(str).toUpperCase() : key;
+
+        if (key === 'routeName' || key === '404'){
+          return acc;
+        }
+
+        routeName = routeName ||  prop('routeName', val);
+       // console.log("THE KEY IS ",{key,val,routeName})
+
+        let o = clone(objAcc);
+        o[routeName] =sanitizeStr(key);
+
+        if (isObject === true){
+          if (keys(o).length===1){
+            const subRouteName = path(['routePath', 'routeName'], val);
+            if (subRouteName){
+              const oBase = clone(o);
+              oBase[subRouteName] = "";
+              oBase['nav-level'] = keys(objAcc).length;
+              oBase['text'] = getLinkText(key);
+              oBase['href'] = getHREF(oBase);
+              acc.push(oBase);
+            }
+          }
+          o = createInitialValFn(accMain, val, o);
+        } else {
+          o['text'] = getLinkText(key);
+          o['href'] = getHREF(o);
+        }
+        o['nav-level'] = keys(objAcc).length;
+        acc.push(o);
+        return acc;
+
+      }
+
+      return toPairs(routePathObj).reduce(propsReducer, []);
+
+    }
+
+    let reducedArr = createInitialValFn([], channelRouteObj.routes);
+    return flatten(reducedArr);
+  }
+
 
   static conformRouteObject(channelRouteObj={}, add404Props=false){
     const channelsRoutePath = path(['channels', 'ROUTE'], channelRouteObj);
@@ -129,12 +207,16 @@ export class SpyneUtilsChannelRoute {
     }
 
     const configMapperFn = compose(fromPairs, map(transduceConfig), toPairs);
+    //console.log('route obj ',channelRouteObj);
 
 
     if (channelsRoutePath !== undefined){
       channelRouteObj.channels.ROUTE = configMapperFn(channelRouteObj.channels.ROUTE)
+      channelRouteObj.channels.ROUTE.linkDatasets = SpyneUtilsChannelRoute.addRouteDatasets(channelRouteObj.channels.ROUTE);
       return channelRouteObj;
     }
+
+
 
     return configMapperFn(channelRouteObj);
 
