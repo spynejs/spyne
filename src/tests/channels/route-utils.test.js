@@ -81,11 +81,22 @@ describe('it should compare two objects for updated keys', () => {
   it('should create route datasets ',()=>{
     const channelsRouteObj = R.prop('routes', postProcessedRouteData);
 
-    const routeDatasets = SpyneUtilsChannelRoute.addRouteDatasets(postProcessedRouteData);
+    channelsRouteObj.routePath['bio-.*'] = {
+      'routePath' : {
+        '404' : '.+',
+        'routeName' : 'bioId',
+        'bioLastName' : '.*'
+      }
+    };
 
-    //console.log('route data sets \n',JSON.stringify(routeDatasets));
+    const routeDatasetsAndProps = SpyneUtilsChannelRoute.addRouteDatasets(postProcessedRouteData);
+
+    const {routeDatasetsArr} = routeDatasetsAndProps;
+    const {routeNamesArr} = routeDatasetsAndProps;
+
+    //console.log(routeNamesArr,' route data sets \n',JSON.stringify(routeDatasetsArr) );
     //return true;
-    expect(routeDatasets).to.deep.equal(reducedRoutesArr);
+    expect(routeDatasetsArr).to.deep.equal(reducedRoutesArr);
 
   })
 

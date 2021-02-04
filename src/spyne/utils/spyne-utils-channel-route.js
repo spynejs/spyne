@@ -1,5 +1,5 @@
 import { fromEventPattern } from 'rxjs';
-import {last, mapObjIndexed, flatten, clone, pick, prop, propOr, pickAll, path, equals, compose, keys, filter, propEq, uniq, map, __, chain,is, includes, fromPairs, mergeDeepRight, reverse, test, omit, reduceRight, nth, toPairs, values} from 'ramda';
+import {last, mapObjIndexed, flatten, clone, pick, prop, propOr, pickAll, path, equals, compose, keys, filter, propEq, uniq, map, __, chain,is, includes, fromPairs, reject, mergeDeepRight, mergeRight, reverse, test, omit, reduceRight, nth, toPairs, values} from 'ramda';
 import {SpyneUtilsChannelRouteUrl} from './spyne-utils-channel-route-url';
 import {RouteDataForTests} from '../../tests/mocks/utils-data';
 
@@ -147,18 +147,18 @@ export class SpyneUtilsChannelRoute {
             if (subRouteName){
               const oBase = clone(o);
               oBase[subRouteName] = "";
-              oBase['nav-level'] = keys(objAcc).length;
-              oBase['text'] = getLinkText(key);
+              oBase['navLevel'] = keys(objAcc).length;
+              oBase['title'] = getLinkText(key);
               oBase['href'] = getHREF(oBase);
               acc.push(oBase);
             }
           }
           o = createInitialValFn(accMain, val, o);
         } else {
-          o['text'] = getLinkText(key);
+          o['title'] = getLinkText(key);
           o['href'] = getHREF(o);
         }
-        o['nav-level'] = keys(objAcc).length;
+        o['navLevel'] = keys(objAcc).length;
         acc.push(o);
         return acc;
 
@@ -169,7 +169,17 @@ export class SpyneUtilsChannelRoute {
     }
 
     let reducedArr = createInitialValFn([], channelRouteObj.routes);
-    return flatten(reducedArr);
+    const routeDatasetsArr = flatten(reducedArr);
+
+    const getNavProps = (datasetsArr) => {
+      const exclude = reject(includes(__, ['title', 'href', 'navLevel']))
+      const getMainKeys = compose(uniq,exclude, flatten, map(keys))
+      return getMainKeys(datasetsArr);
+    }
+    const routeNamesArr = getNavProps(routeDatasetsArr);
+    //console.log('validate route names arr is ',routeNamesArr);
+
+    return {routeDatasetsArr, routeNamesArr};
   }
 
 
@@ -212,7 +222,10 @@ export class SpyneUtilsChannelRoute {
 
     if (channelsRoutePath !== undefined){
       channelRouteObj.channels.ROUTE = configMapperFn(channelRouteObj.channels.ROUTE)
-      channelRouteObj.channels.ROUTE.linkDatasets = SpyneUtilsChannelRoute.addRouteDatasets(channelRouteObj.channels.ROUTE);
+      const extraRouteData = SpyneUtilsChannelRoute.addRouteDatasets(channelRouteObj.channels.ROUTE);
+      channelRouteObj.channels.ROUTE = mergeRight(channelRouteObj.channels.ROUTE, extraRouteData);
+      //console.log("CHANNEL ROUTE OBJ ",channelRouteObj.channels.ROUTE);
+      //channelRouteObj.channels.ROUTE.linkDatasets = SpyneUtilsChannelRoute.addRouteDatasets(channelRouteObj.channels.ROUTE);
       return channelRouteObj;
     }
 

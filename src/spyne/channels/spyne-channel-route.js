@@ -10,6 +10,7 @@ import {
   omit,
   over,
   mergeRight,
+  mergeDeepRight,
   is,
   objOf,
   mergeAll,
@@ -173,11 +174,14 @@ export class SpyneChannelRoute extends Channel {
 
   updateRouteConfig(e){
 
-    window.Spyne.config.channels.ROUTE =  compose(mergeRight(window.Spyne.config.channels.ROUTE),
-                                          pick(['isHash', 'isHidden', 'routes','type']),
-                                          prop('payload'))(e);
+    const newRoutesObj  = pick(['isHash', 'isHidden', 'routes','type'], e.payload);
+
+    window.Spyne.config.channels.ROUTE =  mergeRight(window.Spyne.config.channels.ROUTE, newRoutesObj);
+
+    const clonedRoute = clone(window.Spyne.config.channels.ROUTE);
 
     // ADD 404S, EMPTY REGEX AND CONVERT ARRAYS
+
     window.Spyne.config = SpyneUtilsChannelRoute.conformRouteObject(window.Spyne.config);
 
 

@@ -216,67 +216,80 @@ const reduceProcessedRouteData = {
 const reducedRoutesArr = [
   {
     "pageId": "home",
-    "text": "HOME",
+    "title": "HOME",
     "href": "/",
-    "nav-level": 1
+    "navLevel": 1
   },
   {
     "pageId": "work",
     "topicId": "",
-    "nav-level": 1,
-    "text": "WORK",
+    "navLevel": 1,
+    "title": "WORK",
     "href": "/work"
   },
   {
     "pageId": "work",
     "topicId": "services",
-    "text": "SERVICES",
+    "title": "SERVICES",
     "href": "/work/services",
-    "nav-level": 2
+    "navLevel": 2
   },
   {
     "pageId": "work",
     "topicId": "portfolio",
-    "text": "PORTFOLIO",
+    "title": "PORTFOLIO",
     "href": "/work/portfolio",
-    "nav-level": 2
+    "navLevel": 2
   },
   {
     "pageId": "work",
     "topicId": "blog",
-    "text": "BLOG",
+    "title": "BLOG",
     "href": "/work/blog",
-    "nav-level": 2
+    "navLevel": 2
   },
   {
     "pageId": "work",
     "topicId": "items",
     "itemId": "contact",
-    "text": "CONTACT",
+    "title": "CONTACT",
     "href": "/work/items/contact",
-    "nav-level": 3
+    "navLevel": 3
   },
   {
     "pageId": "work",
     "topicId": "items",
     "itemId": "base",
-    "text": "BASE",
+    "title": "BASE",
     "href": "/work/items/",
-    "nav-level": 3
+    "navLevel": 3
   },
   {
     "pageId": "about",
     "topicId": "",
-    "nav-level": 1,
-    "text": "ABOUT",
+    "navLevel": 1,
+    "title": "ABOUT",
     "href": "/about"
   },
   {
     "pageId": "about",
     "topicId": "contact",
-    "text": "CONTACT",
+    "title": "CONTACT",
     "href": "/about/smith",
-    "nav-level": 2
+    "navLevel": 2
+  }, {
+    "bioId": "",
+    "href": "/bio-",
+    "navLevel": 1,
+    "pageId": "bio-",
+    "title": "bio-.*"
+  },
+  {
+    "bioId": "bioLastName",
+    "href": "/bio-/",
+    "navLevel": 2,
+    "pageId": "bio-",
+    "title": "BIOLASTNAME"
   }
 ]
 
