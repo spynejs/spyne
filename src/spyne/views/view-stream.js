@@ -855,7 +855,7 @@ export class ViewStream {
           let re = new RegExp(strMatch);
           let actionIndex = findIndex(test(re), getAllActionsArr)
           if (actionIndex<0){
-            let channelSyntax = channelsArr.length === 1 ? "from added channel" : "from added dchannels";
+            let channelSyntax = channelsArr.length === 1 ? "from added channel. \nDid you forget to add the Channel to this ViewStream?" : "from added channels. \nDid you forget to add the Channel to this ViewStream?";
             console.warn(`Spyne Warning: The action, ${strMatch}, in ${this.props.name}, does not match any of the registered actions ${channelSyntax}, ${channelsArr.join(', ')}`)
           }
          //  const vsnum = ()=> R.test(new RegExp(str), "CHANNEL_ROUTE_TEST_EVENT")
