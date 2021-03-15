@@ -1,9 +1,10 @@
-import {head, compose, path, lte, defaultTo, prop} from 'ramda';
+import {head, compose, reject, split, isEmpty, path, lte, defaultTo, prop} from 'ramda';
 
 
 function generateSpyneSelectorId(el) {
   //const num = () => Math.floor(Math.random(10000000) * 10000000);
-  const num = () => Math.random().toString(36).substring(2, 8);;
+  //const num = () => Math.random().toString(36).substring(2, 8);;
+  const num = () => Math.random().toString(36).replace(/\d/gm, '').substring(1,8);
   let vsid = `${num()}`;
   if (el.dataset.vsid === undefined) {
     el.dataset.vsid = vsid;
@@ -53,10 +54,18 @@ function testSelectors(cxt, str, verboseBool) {
 
 function getNodeListArray(cxt, str, verboseBool=false) {
   let selector = str !== undefined ? `${cxt} ${str}` : cxt;
+
+
+  const returnSelectorIfValid = (selector) => {
+        try { document.querySelectorAll(selector) } catch (e) { return [] }
+        return  document.querySelectorAll(selector);
+      };
+
+
   if (verboseBool===true) {
     testSelectors(cxt, str, verboseBool);
   }
-  return document.querySelectorAll(selector);
+  return returnSelectorIfValid(selector)
 }
 
 function setInlineCss(val, cxt, str) {
@@ -71,7 +80,7 @@ function setInlineCss(val, cxt, str) {
 /**
  *
  * @module ViewStreamSelector
- * @type internal
+ * @type util
  *
  * @param {String|El} cxt The main element
  * @param {String|El} The selector as a String
@@ -144,13 +153,26 @@ function ViewStreamSelector(cxt, str) {
    */
   selector.setClass = (c) => {
     let arr = getNodeListArray(cxt, str);
-    const removeClass = item => item.classList = c;
-    arr.forEach(removeClass);
+     /**
+    * NON IE CLEANER SOLUTION
+    * const removeClass = item => item.classList = c;
+    *  arr.forEach(removeClass);
+    */
+
+    const setTheClass = item => {
+      let removeClassStrArr = compose(reject(isEmpty), split(' '))(item.className);
+      let classStrArr = c.split(" ");
+      const remover = s => item.classList.remove(s);
+      const adder = str=>item.classList.add(str);
+       removeClassStrArr.forEach(remover);
+       classStrArr.forEach(adder);
+    };
+    arr.forEach(setTheClass);
     return this;
   };
 
   selector.unmount = () => {
-    console.log('unmounting selector ', this);
+    //console.log('unmounting selector ', this);
   };
 
 
@@ -168,7 +190,7 @@ function ViewStreamSelector(cxt, str) {
     let arr = getNodeListArray(cxt, str);
     const toggleClass = item => {
       bool = bool !== undefined ? bool : !item.classList.contains(c);
-      item.classList.toggle(c, bool);
+      bool ?  item.classList.add(c) : item.classList.remove(c);
     };
     arr.forEach(toggleClass);
     return this;
@@ -222,7 +244,7 @@ function ViewStreamSelector(cxt, str) {
   selector.setActiveItem = (c, sel) => {
     let arr = getNodeListArray(cxt, str);
     let currentEl = typeof (sel) === 'string' ? getElOrList(cxt, sel) : sel;
-    const toggleBool = item => item.classList.toggle(c, item.isEqualNode(currentEl));
+    const toggleBool = item => item.isEqualNode(currentEl) ? item.classList.add(c) : item.classList.remove(c);
     if (isNodeElement(currentEl)===true) {
       arr.forEach(toggleBool);
     } else if (isDevMode()===true){
@@ -268,10 +290,25 @@ function ViewStreamSelector(cxt, str) {
 
 
   Object.defineProperty(selector, 'el', {get: () => getElOrList(cxt, str, true)});
-  Object.defineProperty(selector, 'length', {get: () => getNodeListArray(cxt, str, false).length});
+  Object.defineProperty(selector, 'els', {get: () => getNodeListArray(cxt, str)});
+  Object.defineProperty(selector, 'len', {get: () => getNodeListArray(cxt, str, false).length});
   Object.defineProperty(selector, 'exists', {get: () => getNodeListArray(cxt, str, false).length>=1});
   Object.defineProperty(selector, 'exist', {get: () => getNodeListArray(cxt, str, false).length>=1});
   Object.defineProperty(selector, 'nodeList', {get: () => getNodeListArray(cxt, str)});
+  Object.defineProperty(selector, 'arr', {get: () => {
+    let el = getElOrList(cxt, str, true);
+    if (el === undefined) {
+      return [];
+    } else if (el.length===undefined){
+     return [el];
+    } else {
+      return Array.from(el);
+    }
+
+    }});
+
+
+
   Object.defineProperty(selector, 'inline', {set: (val) => setInlineCss(val, cxt, str)});
   Object.defineProperty(selector, 'inlineCss', {set: (val) => setInlineCss(val, cxt, str)});
 

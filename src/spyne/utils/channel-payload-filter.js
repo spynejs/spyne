@@ -1,4 +1,4 @@
-import {is, reject, ifElse, invoker, identity, isNil, allPass, not, isEmpty, always, compose,  equals, prop, where, defaultTo, path, flatten, any, curry} from 'ramda';
+import {is, reject, ifElse, invoker, identity, isNil, allPass, tap, forEachObjIndexed, not, isEmpty, always, compose,  equals, prop, where, defaultTo, path, flatten, any,type, curry} from 'ramda';
 const rMap = require('ramda').map;
 export class ChannelPayloadFilter {
   /**
@@ -19,21 +19,22 @@ export class ChannelPayloadFilter {
    *   </ul>
    *
    * @constructor
-   * @param {String|Array|HTMLElement} selector The matching element
-   * @param {Object} data A json object containing filtering methods for channel props variables.
+   * @param {Object} filters Object that contains the selector, props, and label params.
+   * @property {String|Array|HTMLElement} selector The matching element
+   * @property {Object} propFilters A json object containing filtering methods for channel props variables.
    *
    * @property {String|Array|HTMLElement} selector - = ''; The matching element.
-   * @property {Object} data - = {}; A json object containing comprators for any expected property values.
+   * @property {Object} propFilters - = {}; A json object containing comprators for any expected property values.
    * @returns Boolean
    *
    *
    * @example
    * TITLE['<h4>Filtering using Selectors and a Property Comparator Within a ViewStream Instance</h4>']
    *    const mySelectors = ['ul', 'li:first-child'];
-   *    const data = {
+   *    const propFilters = {
    *      linkType: "external"
    *    };
-   *    const myFilter = new ChannelPayloadFilter(mySelectors, data);
+   *    const myFilter = new ChannelPayloadFilter(mySelectors, propFilters);
    *
    *    addActionListeners() {
    *      return [
@@ -43,11 +44,11 @@ export class ChannelPayloadFilter {
    *
    * @example
    * TITLE['<h4>Filtering Using Method and String Comparators Within a ViewStream Instance</h4>']
-   *    const data = {
+   *    const propFilters = {
    *      type: "scrolling-element",
    *      scrollNum:  (n)=>n>=1200 && n<=5000;
    *    };
-   *    const myFilter = new ChannelPayloadFilter('', data);
+   *    const myFilter = new ChannelPayloadFilter('', propFilters);
    *
    *    addActionListeners() {
    *      return [
@@ -66,7 +67,12 @@ export class ChannelPayloadFilter {
    * .subscribe(myChannelMethod);
    *
    */
-  constructor(selector, data) {
+  constructor(filters={}) {
+    if (filters.props!==undefined) {
+      filters['propFilters'] = prop('props', filters);
+    }
+    let {selector,propFilters,label} = filters;
+    //console.log("VALUES OF FILTERS ",{selector,propFilters,label});
     const isNotEmpty = compose(not, isEmpty);
     const isNonEmptyStr = allPass([is(String), isNotEmpty]);
     const isNonEmptyArr = allPass([is(Array), isNotEmpty]);
@@ -74,9 +80,10 @@ export class ChannelPayloadFilter {
     const addArraySelectorFilter =   isNonEmptyArr(selector) ? ChannelPayloadFilter.filterSelector(selector) : undefined;
 
 
-    const addDataFilter = is(Object, data) ? ChannelPayloadFilter.filterData(data) : undefined;
+    const addDataFilter = is(Object, propFilters) ? ChannelPayloadFilter.filterData(propFilters, label) : undefined;
 
     //console.log("IS STRING ",{selector, addStringSelectorFilter, addArraySelectorFilter, addDataFilter},isNonEmptyStr(selector))
+
 
 
     let filtersArr = reject(isNil, [addStringSelectorFilter, addArraySelectorFilter, addDataFilter]);
@@ -87,7 +94,7 @@ export class ChannelPayloadFilter {
         filtersArr = [always(false)];
 
         if (path(['Spyne', 'config', 'debug'], window) === true){
-          console.warn(`Spyne Warning: The Channel Filter, with selector: ${selector}, and data:${data} appears to be empty!`);
+          console.warn(`Spyne Warning: The Channel Filter, with selector: ${selector}, and propFilters:${propFilters} appears to be empty!`);
         }
 
       }
@@ -95,12 +102,15 @@ export class ChannelPayloadFilter {
     return allPass(filtersArr);
   }
 
-  static filterData(filterJson) {
+  static filterData(filterJson, filterLabel) {
+    const label = filterLabel;
     let compareData = () => {
       // DO NOT ALLOW AN EMPTY OBJECT TO RETURN TRUEs
       if (isEmpty(filterJson)) {
         return always(false);
       }
+
+      //console.log("FILTER JSON ",filterJson);
       //  CHECKS ALL VALUES IN JSON TO DETERMINE IF THERE ARE FILTERING METHODS
 
       //let typeArrFn = compose(values, rMap(type));
@@ -125,16 +135,37 @@ export class ChannelPayloadFilter {
       // IF THERE ARE METHODS IN THE FILTERING JSON, THEN USE where or whereEq if Basic JSON
      // let fMethod = isAllMethods === true ? where(filterJson) : whereEq(filterJson);
 
+      // TAP LOGGER
+
+      const tapLogger = (comparedObj)=>{
+        if (label===undefined){
+          return comparedObj;
+        }
+        const propsBooleans = {};
+        const mapBools = (value,key)=>propsBooleans[key] = value(prop(key, comparedObj));
+        forEachObjIndexed(mapBools, filterJson);
+        console.log(`%c CHANNEL PAYLOAD FILTER DEBUGGER '${label}': `, "color:orange;",{propsBooleans, comparedObj});
+
+        return comparedObj;
+        };
+
+      // END TAP LOGGER
+
       let fMethod = where(filterJson);
       const getFilteringObj =  ifElse(prop('props'), invoker(0, 'props'), identity);
-      return compose(fMethod, defaultTo({}), getFilteringObj);
+      return compose( fMethod, tapLogger, defaultTo({}),  getFilteringObj);
     };
 
     return compareData();
   }
 
   static checkPayloadSelector(arr, payload) {
-    // ELEMENT FROM PAYLOAD
+    // ELEMENT FROM PAYLOADs
+
+    let payloadIsNotProps = compose(equals('Function'),type, prop('props')  )(payload);
+    payload = payloadIsNotProps === true ? payload.props() : payload;
+
+
     let el = path(['el'], payload);
 
     // RETURN BOOLEAN MATCH WITH PAYLOAD EL

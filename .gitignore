@@ -7,4 +7,5 @@ libs/public
 stats.json
 admin/
 src/assets/media
-.nyc_output*%  
+.nyc_output*%
+coverage/*

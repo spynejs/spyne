@@ -1,5 +1,7 @@
 import { fromEventPattern } from 'rxjs';
-import {last, pick, prop, pickAll, equals, compose, keys, filter, propEq, uniq, map, __, chain, includes, fromPairs, toPairs, values} from 'ramda';
+import {last, mapObjIndexed, flatten, clone, pick, prop, propOr, pickAll, path, equals, compose, keys, filter, propEq, uniq, map, __, chain,is, includes, fromPairs, reject, mergeDeepRight, mergeRight, reverse, test, omit, reduceRight, nth, toPairs, values} from 'ramda';
+import {SpyneUtilsChannelRouteUrl} from './spyne-utils-channel-route-url';
+import {RouteDataForTests} from '../../tests/mocks/utils-data';
 
 export class SpyneUtilsChannelRoute {
   constructor() {
@@ -87,12 +89,152 @@ export class SpyneUtilsChannelRoute {
     }, toPairs(obj_));
 
     // console.log("FLATTEN: ",values(fromPairs(go(obj))));
-
-    /**
-     * TODO: PARSE PAIRS TO ALLOW FOR ARRAYS OR REGEX IN ROUTE CONFIG
-     *
-     */
     return values(fromPairs(go(obj)));
+  }
+
+
+
+  static addRouteDatasets(channelRouteObj){
+   // channelRouteObj.type='query';
+
+    const {type, isHash} = channelRouteObj;
+
+    // create href and check to see if need to convert to hash href links
+    const getHREF = (obj)=>{
+      const santizeHREF = str => {
+        const hrefRE = /^(.*\/)([\w\-]*\/?)(.*)$/gm
+        //const hrefRE = /^(.*\/)([\w-]*)(.*)$/gm;
+       str = str.replace(hrefRE, "$1$2");
+       // str = String(str).replace('^$', "");
+        return str;
+      }
+
+      const headStrVal = type === 'query' ? "" : isHash === true ? "#" : "/";
+      const hrefStr =  SpyneUtilsChannelRouteUrl.convertParamsToRoute(obj, channelRouteObj);
+      return headStrVal+santizeHREF(hrefStr);
+    }
+
+    // remove special chars from href
+    const sanitizeStr = (str)=>String(str).replace(/([^A-Za-z0-9-_])/g, "");
+
+
+    // test whether to use key or val
+    const isValidStrRE = /^([A-Za-z0-9_\-])+$/m;
+
+    const createInitialValFn = (accMain=[], routePathObj, objAcc={})=>{
+      let {routeName} = routePathObj;
+
+
+      const propsReducer = (acc, arrPair)=>{
+        const [key, val] = arrPair;
+        const isObject = is(Object, val);
+
+        const getLinkText = str => test(isValidStrRE, str) ? String(str).toUpperCase() : key;
+
+        if (key === 'routeName' || key === '404'){
+          return acc;
+        }
+
+        routeName = routeName ||  prop('routeName', val);
+       // console.log("THE KEY IS ",{key,val,routeName})
+
+        let o = clone(objAcc);
+        o[routeName] =sanitizeStr(key);
+
+        if (isObject === true){
+          if (keys(o).length===1){
+            const subRouteName = path(['routePath', 'routeName'], val);
+            if (subRouteName){
+              const oBase = clone(o);
+              oBase[subRouteName] = "";
+              oBase['navLevel'] = keys(objAcc).length;
+              oBase['title'] = getLinkText(key);
+              oBase['href'] = getHREF(oBase);
+              acc.push(oBase);
+            }
+          }
+          o = createInitialValFn(accMain, val, o);
+        } else {
+          o['title'] = getLinkText(key);
+          o['href'] = getHREF(o);
+        }
+        o['navLevel'] = keys(objAcc).length;
+        acc.push(o);
+        return acc;
+
+      }
+
+      return toPairs(routePathObj).reduce(propsReducer, []);
+
+    }
+
+    let reducedArr = createInitialValFn([], channelRouteObj.routes);
+    const routeDatasetsArr = flatten(reducedArr);
+
+    const getNavProps = (datasetsArr) => {
+      const exclude = reject(includes(__, ['title', 'href', 'navLevel']))
+      const getMainKeys = compose(uniq,exclude, flatten, map(keys))
+      return getMainKeys(datasetsArr);
+    }
+    const routeNamesArr = getNavProps(routeDatasetsArr);
+    //console.log('validate route names arr is ',routeNamesArr);
+
+    return {routeDatasetsArr, routeNamesArr};
+  }
+
+
+  static conformRouteObject(channelRouteObj={}, add404Props=false){
+    const channelsRoutePath = path(['channels', 'ROUTE'], channelRouteObj);
+    let {add404s} = channelsRoutePath !== undefined ? channelsRoutePath : channelRouteObj;
+    add404s = add404s || add404Props;
+    //console.log("add 404s is1 ",{add404s, channelsRoutePath})
+    const parseRoutePath = (a) => {
+      let val = a[1];
+      const isArr = is(Array, val);
+      if (val === ""){
+        a[1] = "^$";
+      } else if (isArr){
+        a[1] = val.join('|');;
+      }
+      return a;
+    }
+
+
+    const transduceConfig = (arr)=>{
+      let [key, val] = arr;
+      const obj404 = add404s ? {"404": ".+"} : {};
+      const isObj = is(Object, val);
+      const isArr = is(Array, val);
+      const iterObj = isObj === true && isArr === false;
+      const isRoutePath = key === 'routePath';
+      if (iterObj) {
+        arr[1] = configMapperFn(arr[1]);
+        if (isRoutePath){
+          arr[1] =  compose(mergeDeepRight(obj404), fromPairs, map(parseRoutePath), toPairs)( arr[1]);
+        }
+      }
+      return arr;
+    }
+
+    const configMapperFn = compose(fromPairs, map(transduceConfig), toPairs);
+    //console.log('route obj ',channelRouteObj);
+
+
+    if (channelsRoutePath !== undefined){
+      channelRouteObj.channels.ROUTE = configMapperFn(channelRouteObj.channels.ROUTE)
+      const extraRouteData = SpyneUtilsChannelRoute.addRouteDatasets(channelRouteObj.channels.ROUTE);
+      channelRouteObj.channels.ROUTE = mergeRight(channelRouteObj.channels.ROUTE, extraRouteData);
+      //console.log("CHANNEL ROUTE OBJ ",channelRouteObj.channels.ROUTE);
+      //channelRouteObj.channels.ROUTE.linkDatasets = SpyneUtilsChannelRoute.addRouteDatasets(channelRouteObj.channels.ROUTE);
+      return channelRouteObj;
+    }
+
+
+
+    return configMapperFn(channelRouteObj);
+
+
+
   }
 
   static getLocationData() {

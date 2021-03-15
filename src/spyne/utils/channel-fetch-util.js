@@ -144,7 +144,7 @@ export class ChannelFetchUtil {
     return {
       method: 'GET',
       headers: {
-        'Content-type': 'application/json; charset=UTF-8'
+        "Accept": "application/json, text/plain, */*"
       }
     };
   }

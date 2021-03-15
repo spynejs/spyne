@@ -1,14 +1,15 @@
 // const assert = require('assert');
 
 import { SpyneUtilsChannelRoute } from '../../spyne/utils/spyne-utils-channel-route';
-
+import {postProcessedRouteData, preProcessedRouteData,reduceProcessedRouteData,reducedRoutesArr, mainConfigPreProcessedData, mainConfigPostProcessedData} from '../mocks/routes-data';
 import {
   SpyneConfigData,
   RouteDataForTests,
   windowLocationData
 } from '../mocks/utils-data';
-import { SpyneChannelRoute } from '../../spyne/channels/spyne-channel-route-base';
-
+import { SpyneChannelRoute } from '../../spyne/channels/spyne-channel-route';
+import {path} from 'ramda';
+const R = require('ramda');
 const ObjtoStr = JSON.stringify;
 
 const routeConfig = SpyneConfigData.channels.ROUTE;
@@ -70,4 +71,35 @@ describe('it should compare two objects for updated keys', () => {
     let compare2 = checkUpdatedKeys.compare(obj2, routeKeywordsArr);
     expect(compare2.pathsChanged).to.deep.equal(['section', 'menuItem']);
   });
+
+
+  it('should conform empty str and and 404s, convert arrays to route config', ()=>{
+    const revisedConfig = SpyneUtilsChannelRoute.conformRouteObject(preProcessedRouteData);
+    expect(revisedConfig).to.deep.equal(postProcessedRouteData);
+  })
+
+  it('should create route datasets ',()=>{
+    const channelsRouteObj = R.prop('routes', postProcessedRouteData);
+
+    channelsRouteObj.routePath['bio-.*'] = {
+      'routePath' : {
+        '404' : '.+',
+        'routeName' : 'bioId',
+        'bioLastName' : '.*'
+      }
+    };
+
+    const routeDatasetsAndProps = SpyneUtilsChannelRoute.addRouteDatasets(postProcessedRouteData);
+
+    const {routeDatasetsArr} = routeDatasetsAndProps;
+    const {routeNamesArr} = routeDatasetsAndProps;
+
+    //console.log(routeNamesArr,' route data sets \n',JSON.stringify(routeDatasetsArr) );
+    //return true;
+    expect(routeDatasetsArr).to.deep.equal(reducedRoutesArr);
+
+  })
+
+
+
 });

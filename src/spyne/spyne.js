@@ -1,14 +1,17 @@
-import { ChannelsController } from './channels/channels-controller';
-import { DomEl } from './views/dom-el-base';
+import { ChannelsDelegator } from './channels/channels-delegator';
+import { DomElement, DomEl } from './views/dom-element';
 import { ViewStreamElement } from './views/view-stream-element';
-import { ViewStream } from './views/view-stream-base';
+import { ViewStreamSelector} from './views/view-stream-selector';
+import { ViewStream } from './views/view-stream';
 import { ViewStreamBroadcaster } from './views/view-stream-broadcaster';
 import { SpyneTrait } from './utils/spyne-trait';
 import { ViewStreamPayload } from './views/view-stream-payload';
 import { Channel } from './channels/channel';
 import { ChannelFetch } from './channels/channel-fetch-class';
+import {ChannelFetchUtil} from './utils/channel-fetch-util';
 import { ChannelPayload } from './channels/channel-payload-class';
 import {ChannelPayloadFilter} from './utils/channel-payload-filter';
+import {SpyneUtilsChannelRoute} from './utils/spyne-utils-channel-route';
 import { deepMerge } from './utils/deep-merge';
 
 class SpyneApp {
@@ -17,7 +20,7 @@ class SpyneApp {
    * SpyneApp creates the global Spyne object, and creates the following items
    * <ul>
    *
-   * <li>LINK['ChannelsController', 'channels-controller'] that directs the flow of data to all Channels</li>
+   * <li>LINK['ChannelsDelegator', 'channels-controller'] that directs the flow of data to all Channels</li>
    * <li>LINK['SpyneChannelUI', 'spyne-channel-u-i'], that broadcast all user interaction events</li>
    * <li>LINK['SpyneChannelRoute', 'spyne-channel-route'], that broadcast window location changes and is the only other channel that can be bound to user events</li>
    * <li>LINK['SpyneChannelWindow', 'spyne-channel-window'], that broadcast all requested window and document events, such as scrolling, resizing and media queries</li>
@@ -33,14 +36,25 @@ class SpyneApp {
    * @property {Object} config - = {}; This global config object is mainly used to provide configuration details for two SpyneChannels, CHANNEL_ROUTE and CHANNEL_WINDOW.
    */
   constructor(config = {}) {
-    this.channels = new ChannelsController();
-    this.VERSION = '0.10.18';
+    this.channels = new ChannelsDelegator();
+    this.VERSION = '0.14.8';
+/*!
+ * Spyne 0.14.8
+ * https://spynejs.org
+ *
+ * @license Copyright 2017-2020, Frank Batista, Relevant Context, LLC. All rights reserved.
+ * Spyne is licensed under the GNU Lesser General Public License v3.0
+ *
+ * @author: Frank Batista,
+ * @email:  frbatista.nyc@gmail.com
+*/
+/* eslint-disable */
     this.ViewStream = ViewStream;
     this.BasicView = ViewStreamElement;
-    this.DomEl = DomEl;
+    this.DomEl = DomElement;
     this.ViewStreamBroadcaster = ViewStreamBroadcaster;
     this.ChannelsPayload = ViewStreamPayload;
-    this.ChannelsController = ChannelsController;
+    this.ChannelsController = ChannelsDelegator;
     this.ChannelsBase = Channel;
     this.ChannelPayloadItem = ChannelPayload;
     window.Spyne = this;
@@ -53,13 +67,12 @@ class SpyneApp {
       channels: {
         WINDOW: {
           mediqQueries: {
-          /*  'test': '(max-width: 500px)',
-            'newTest': '(max-width: 800px)' */
+
           },
           events: [],
           listenForResize: true,
           listenForOrientation: true,
-          listenForScroll: true,
+          listenForScroll: false,
           listenForMouseWheel: false,
           debounceMSTimeForResize: 200,
           debounceMSTimeForScroll: 150
@@ -69,6 +82,7 @@ class SpyneApp {
           type: 'slash',
           isHash: false,
           isHidden: false,
+          add404s: false,
           routes: {
             'routePath' : {
               'routeName' : 'change'
@@ -79,8 +93,12 @@ class SpyneApp {
       }
     };
     if (config !== undefined) {
-      window.Spyne['config'] = deepMerge(defaultConfig, config);
+      config = SpyneUtilsChannelRoute.conformRouteObject(config);
+      window.Spyne['config'] = deepMerge(defaultConfig, config)
     }
+
+
+
     this.getChannelActions = (str) => window.Spyne.channels.getChannelActions(str);
     this.registerChannel = (val) => this.channels.registerStream(val);
     this.registerDataChannel = (obs$) => this.channels.registerStream(obs$);
@@ -134,12 +152,15 @@ export {
   ViewStreamElement,
   Channel,
   ChannelFetch,
-  ChannelsController,
+    ChannelFetchUtil,
+  ChannelsDelegator,
   ViewStreamPayload,
   ChannelPayload,
     ChannelPayloadFilter,
-  DomEl,
+  DomElement,
+    DomEl,
   ViewStream,
+    ViewStreamSelector,
   ViewStreamBroadcaster,
   SpyneTrait,
   SpyneApp,

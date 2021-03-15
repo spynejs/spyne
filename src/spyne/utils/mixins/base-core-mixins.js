@@ -17,7 +17,8 @@ export function baseCoreMixins() {
     },
     createId: function() {
       //let num = Math.floor(Math.random(10000000) * 10000000);
-      const num = () => Math.random().toString(36).substring(2, 8);;
+      //const num = () => Math.random().toString(36).substring(2, 8);;
+      const num = () => Math.random().toString(36).replace(/\d/gm, '').substring(1,8);
       return num();
       //return `vsid-${num()}`;
     },

@@ -1,5 +1,5 @@
 //import { baseCoreMixins } from '../utils/mixins/base-core-mixins';
-import { DomEl } from './dom-el-base';
+import { DomElement } from './dom-element';
 //import { ifNilThenUpdate, convertDomStringMapToObj } from '../utils/frp-tools';
 import { fadein, fadeout } from '../utils/viewstream-animations';
 import { ViewStreamObservable } from '../utils/viewstream-observables';
@@ -67,7 +67,7 @@ export class ViewStreamElement {
     let removeIsNil = (val) => val !== undefined;
     let attrs = filter(removeIsNil, pick(['id', 'className'], this.props));
     let {tagName,data,template} = this.props;
-    return new DomEl(tagName, attrs, data, template);
+    return new DomElement(tagName, attrs, data, template);
   }
 
   onDisposeCompleted(d) {
@@ -205,8 +205,8 @@ export class ViewStreamElement {
     [tagName,attributes,data,template]=d;
     //console.log("RENDER DOM EL ",{tagName, attributes, data,template,d});
 
-    //this.domItem = new DomEl(...d);
-    this.domItem = new DomEl({tagName,attributes,data,template});
+    //this.domItem = new DomElement(...d);
+    this.domItem = new DomElement({tagName,attributes,data,template});
 
     return this.domItem;
   }
@@ -232,7 +232,7 @@ export class ViewStreamElement {
    */
   onRenderAndAttachToDom(d) {
     let getEl = (data) => this.renderDomItem(data);
-    // let getEl = (data) => new DomEl(...data);
+    // let getEl = (data) => new DomElement(...data);
     d.attachData['el'] = getEl(props(['tagName', 'domAttributes', 'data', 'template'], d));
     this.combineDomItems(d.attachData);
     return {
@@ -244,7 +244,7 @@ export class ViewStreamElement {
 
   /**
    *
-   * The ViewStream directs all relevant actions to the DomEl to render and dispose of itself
+   * The ViewStream directs all relevant actions to the DomElement to render and dispose of itself
    *
    * @param {Object} payload
    */

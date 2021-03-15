@@ -18,10 +18,10 @@ export class SpyneUtilsChannelWindow {
       this);
   }
 
-  static createDomObservableFromEvent(eventName, mapFn, isPassive = true) {
-    let addHandler = handler => window.addEventListener(eventName, handler,
+  static createDomObservableFromEvent(eventName, mapFn, isPassive = true, element=window) {
+    let addHandler = handler => element.addEventListener(eventName, handler,
       { passive: isPassive });
-    let removeHandler = () => { window[eventName] = (p) => p; };
+    let removeHandler = () => { element[eventName] = (p) => p; };
     mapFn = mapFn === undefined ? (p) => p : mapFn;
     return fromEventPattern(addHandler, removeHandler).pipe(map(mapFn));
   }
@@ -30,12 +30,12 @@ export class SpyneUtilsChannelWindow {
   static createMediaQuery(str) {
     const mq = window.matchMedia(str);
     this.checkIfValidMediaQuery(mq, str);
-    return mq;
+    return mq !== false ? mq : false;
   }
 
   static checkIfValidMediaQuery(mq, str) {
     const noSpaces = str => str.replace(/\s+/gm, '');
-    const isValidBool = mq.matches!==undefined  && noSpaces(mq.media) === noSpaces(str);
+    const isValidBool = mq.matches!==undefined  && noSpaces(mq.media).indexOf(noSpaces(str))>=0;
     const warnMsg = str => console.warn(`Spyne Info: the following query string, "${str}", has been optimized to "${mq.media}" by the browser and may not be a valid Media Query item!`);
     if (isValidBool === false) {
       warnMsg(str);
@@ -71,8 +71,10 @@ export class SpyneUtilsChannelWindow {
 
     const loopQueries = (val, key, obj) => {
       let mq = SpyneUtilsChannelWindow.createMediaQuery(val);
-      arr.push(SpyneUtilsChannelWindow.createMediaQueryHandler(mq, key));
-      // return arr;
+      if (mq!==false) {
+        arr.push(SpyneUtilsChannelWindow.createMediaQueryHandler(mq, key));
+      }
+       return arr;
     };
 
     mapObjIndexed(loopQueries, mediaQueriesObj);

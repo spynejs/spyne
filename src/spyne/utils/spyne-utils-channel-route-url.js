@@ -104,10 +104,8 @@ export class SpyneUtilsChannelRouteUrl {
   static createSlashString(arr) {
     const arrClear = reject(isNil);
     const notUndefined = when(complement(isNil, __), join('/'));
-
-    const joiner = compose(notUndefined, arrClear, flatten,
-      map(values));
-
+    const stripRegex = replace(/^(\^*)(.*|^\$)(\$)$/, "$2");
+    const joiner = compose(stripRegex, notUndefined, arrClear, flatten, map(values));
     return joiner(arr);
   }
 
@@ -240,7 +238,8 @@ export class SpyneUtilsChannelRouteUrl {
       // PULL INVERTED OBJECT TO SEE IF STR MATCHES
       let getParamInverted = compose(head, defaultTo([]), prop(param));
       let paramInverted = getParamInverted(invertedObj);
-      let re =  /^(\w*)$/;
+      // spyne 11.0.1;
+      let re =  /^([-\$\w]*)$/;
       let keyMatch =  re.test(paramInverted);
 
       if (keyMatch === true && is(String, paramInverted) === true) {
@@ -266,8 +265,11 @@ export class SpyneUtilsChannelRouteUrl {
       let routeValueStr = this.checkIfValueShouldMapToParam(latestObj, currentValue, regexTokens);
 
       latestObj = this.checkIfParamValueMatchesRegex(currentValue, latestObj);
+      const prevPathNotEqCurrentPath = (str)=>str!==last(paths);
 
-      if (latestObj !== undefined) {
+      const isEmptyOrNil = either(isEmpty,isNil);
+
+      if (latestObj !== undefined && prevPathNotEqCurrentPath(latestObj.routeName) && isEmptyOrNil(routeValueStr)===false) {
         paths.push(latestObj.routeName);
         routedValuesArr.push(routeValueStr);
       }
@@ -321,6 +323,7 @@ export class SpyneUtilsChannelRouteUrl {
   }
 
   static convertRouteToParams(str, routeConfig, t) {
+    const addSlash = (url)=>url.replace(/\/$|$/, '/');
     if (routeConfig === undefined) {
       return {};
     }
@@ -331,6 +334,7 @@ export class SpyneUtilsChannelRouteUrl {
     if (type === 'query') {
       return this.convertQueryStrToParams(topLevelRoute, str);
     }
+    str = addSlash(str);
 
     return this.convertSlashRouteStrToParamsObj(topLevelRoute, str, regexTokens);
   }

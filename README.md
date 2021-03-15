@@ -1,8 +1,9 @@
+# Spyne.js
+Spyne is a full-featured, Javascript framework that reactively renders to the Real DOM.
+
 [![NPM version](https://img.shields.io/npm/v/spyne.svg?longCache=true&style=flat-square)](https://www.npmjs.com/package/spyne)
 [![GitHub license](https://img.shields.io/github/license/spynejs/spyne.svg?longCache=true&style=flat-square)](https://github.com/spynejs/spyne/blob/master/LICENSE)
 [![Build Status](https://travis-ci.com/spynejs/spyne.svg?branch=master)](https://travis-ci.com/spynejs/spyne)
-# Spyne.js
-<em>Spyne is a full-featured, real DOM Javascript framework that allows developers to focus on advanced user experiences, instead of complicated codebases.</em>
 
 ### Spyne.js’ key features includes:
 
@@ -27,39 +28,46 @@ npm install spyne
 **Hello World**<br>
 [Edit in codepen](https://codepen.io/nybatista/pen/Pvvweb)
 ```
+// INIT SPYNE APP
 const spyneApp = new spyne.SpyneApp({debug:true});
 
-// SENDS LATEST PAYLOAD TO ANY SUBSCRIBER
-const channelHelloWorld = new spyne.Channel("CHANNEL_HELLO_WORLD", {sendCachedPayload:true});
+// PROPERTIES
+const channelName    = 'CHANNEL_HELLO_WORLD';
+const channelAction  = 'CHANNEL_HELLO_WORLD_DEFAULT_EVENT';
+const channelConfig  = {sendCachedPayload:true};
+const channelPayload = {text: "Hello World!"}
 
-// REGISTER ACTION(S) TO BE USED
-channelHelloWorld.addRegisteredActions = ()=>["CHANNEL_HELLO_WORLD_DEFAULT_EVENT"];
+// CHANNEL INIT
+let helloWorld$ = new spyne.Channel(channelName, channelConfig);
+// REGISTER ACTION
+helloWorld$.addRegisteredActions = ()=>[channelAction];
+// REGISTER CHANNEL
+spyneApp.registerChannel(helloWorld$)
+// SEND CHANNEL PAYLOAD
+helloWorld$.sendChannelPayload(channelAction, channelPayload);
 
-// ADD TO LIST OF AVAILABLE CHANNELS
-spyneApp.registerChannel(channelHelloWorld)
-
-// SEND PAYLOAD
-channelHelloWorld.sendChannelPayload("CHANNEL_HELLO_WORLD_DEFAULT_EVENT", {text:"HELLO WORLD!"});
-
+// VIEWSTREAM
 class App extends spyne.ViewStream {
-  constructor(props = {}) {
-    props.tagName = 'h1';
-    super(props);
+  constructor() {
+    super();
   }
   addActionListeners() {
     return [
-      ['CHANNEL_HELLO_WORLD_.*_EVENT', 'onHelloWorld'],
+      [channelAction, 'onHelloWorld'],
     ];
   }
   onHelloWorld(e){
      this.props.el.innerText = e.props().text;
   }
   onRendered() {
-     this.addChannel("CHANNEL_HELLO_WORLD");
+     this.addChannel(channelName);
   }
  
 }
- new App().appendToDom(document.body);
+
+new App().appendToDom(document.body);
+
+
  
 ```
 **Download or Fork Example App** (Tutorial to be added soon)<br/>
@@ -76,4 +84,6 @@ To suggest a feature or report a bug: https://github.com/spynejs/spyne/issues
 BrowserStack.com supports open source projects like Spyne.js<br> 
 Unit and Integration tests will run on real browsers and devices using BrowserStack's Automate system.<br><br>
 
-Created by [Frank Batista](https://frankbatista.com)
+
+Copyright (c) 2017-Present Frank Batista, Relevant Context LLC                   
+
