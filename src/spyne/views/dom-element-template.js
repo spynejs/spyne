@@ -199,6 +199,12 @@ export class DomElementTemplate {
      */
   renderDocFrag() {
     const html = this.finalArr.join('');
+      /*
+      * TODO: ADD A REGEX TEXT FOR TR, TD, COLGROUP - THEN ADD TABLE PARENT AND RETURN NODELIST ARRAY INSTEAD OF DOCFRAG EL
+      *
+      *
+      * */
+
     const el = document.createRange().createContextualFragment(html);
     window.setTimeout(this.removeThis(), 10);
     return el;
