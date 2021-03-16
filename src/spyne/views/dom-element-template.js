@@ -1,5 +1,5 @@
 import {includes, __, ifElse, compose,path,split,prop, reject, is, defaultTo, isNil, isEmpty} from 'ramda';
-
+import {testDomTemplateForTableTags} from "../utils/viewstream-dom-utils";
 /**
  * @module DomElTemplate
  * @type util
@@ -197,18 +197,18 @@ export class DomElementTemplate {
      *
      * @desc Returns a document fragment generated from the template and any added data.
      */
+
+
   renderDocFrag() {
     const html = this.finalArr.join('');
-      /*
-      * TODO: ADD A REGEX TEXT FOR TR, TD, COLGROUP - THEN ADD TABLE PARENT AND RETURN NODELIST ARRAY INSTEAD OF DOCFRAG EL
-      *
-      *
-      * */
-
-    const el = document.createRange().createContextualFragment(html);
+    const isTableSubTag =   /^([^>]*?)(<){1}(\b)(thead|col|colgroup|tbody|td|tfoot|tr|th)(\b)([^\0]*)$/.test(html);
+    const el = isTableSubTag ? html : document.createRange().createContextualFragment(html);
     window.setTimeout(this.removeThis(), 10);
     return el;
+
   }
+
+
 
   getTemplateString() {
     return this.finalArr.join('');

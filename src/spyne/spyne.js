@@ -37,9 +37,9 @@ class SpyneApp {
    */
   constructor(config = {}) {
     this.channels = new ChannelsDelegator();
-    this.VERSION = '0.14.8';
+    this.VERSION = '0.14.10';
 /*!
- * Spyne 0.14.8
+ * Spyne 0.14.10
  * https://spynejs.org
  *
  * @license Copyright 2017-2020, Frank Batista, Relevant Context, LLC. All rights reserved.
@@ -60,10 +60,12 @@ class SpyneApp {
     window.Spyne = this;
     let defaultConfig = {
       scrollLock: false,
-      scrollLockX: 0,
+      scrollLockX: 31,
       scrollLockY: 0,
       debug: false,
-
+      utils: {
+        tableRE: /^([^>]*?)(<){1}(\b)(thead|col|colgroup|tbody|td|tfoot|tr|th)(\b)([^\0]*)$/
+      },
       channels: {
         WINDOW: {
           mediqQueries: {

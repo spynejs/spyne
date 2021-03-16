@@ -71,6 +71,7 @@ export class Channel {
     this.createChannelActionsObj(CHANNEL_NAME, props.extendedActionsArr);
     props.name = CHANNEL_NAME;
     this.props = props;
+    this.props.isRegistered = false;
     this.props.isProxy = this.props.isProxy === undefined ? false : this.props.isProxy;
     this.props.sendCachedPayload = this.props.sendCachedPayload === undefined ? false : this.props.sendCachedPayload;
     this.sendPayloadToRouteChannel = new RouteChannelUpdater(this);
@@ -150,6 +151,7 @@ export class Channel {
     this.checkForTraits();
     this.onChannelInitialized();
     this.onRegistered();
+    this.props.isRegistered = true;
   }
 
   setTrace(bool) {

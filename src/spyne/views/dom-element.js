@@ -97,9 +97,9 @@ class DomElement {
     let addTmpl = (template) => {
       let data = this.getProp('data');
       data = is(Object, data) ? data : {};
-
       let frag = new DomElementTemplate(template, data).renderDocFrag();
-      el.appendChild(frag);
+      const fragIsString = is(String, frag);
+      fragIsString ? el.innerHTML = frag : el.appendChild(frag);
       return el;
     };
     let doNothing = (el) => el;
