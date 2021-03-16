@@ -1,4 +1,15 @@
-import {mergeAll,clone, compose, mergeDeepRight, mergeRight, pathEq, includes, pickAll, __} from 'ramda';
+import {
+  mergeAll,
+  clone,
+  compose,
+  mergeDeepRight,
+  mergeRight,
+  pathEq,
+  includes,
+  pickAll,
+  __,
+  path, assocPath,
+} from 'ramda';
 
 export class ChannelPayload {
   /**
@@ -24,8 +35,15 @@ export class ChannelPayload {
   constructor(channelName, action, payload, srcElement, event) {
     let channel = channelName;
 
-    let channelPayloadItemObj = { channelName, action, payload, srcElement, event };
-    Object.defineProperty(channelPayloadItemObj, 'payload', {get: () => clone(payload)});
+
+    const payloadPath = ['Spyne', 'config', 'channels', channelName];
+    const payloadPathAll = ['Spyne', 'config', 'channels', channelName, 'payload'];
+    window.Spyne.config.channels[channelName]['payload']=payload;
+
+   
+
+    let channelPayloadItemObj = { channelName, action, payload:{}, srcElement, event };
+    Object.defineProperty(channelPayloadItemObj, 'payload', {get: () => path(payloadPathAll, window)});
 
     /**
      * This is a convenience method that helps with destructuring by merging all properties.

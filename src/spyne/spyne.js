@@ -37,9 +37,9 @@ class SpyneApp {
    */
   constructor(config = {}) {
     this.channels = new ChannelsDelegator();
-    this.VERSION = '0.14.10';
+    this.VERSION = '0.15.0';
 /*!
- * Spyne 0.14.10
+ * Spyne 0.15.0
  * https://spynejs.org
  *
  * @license Copyright 2017-2020, Frank Batista, Relevant Context, LLC. All rights reserved.
@@ -91,7 +91,10 @@ class SpyneApp {
             }
           }
 
-        }
+        },
+
+        CHANNEL_ROUTE: {},
+        CHANNEL_UI: {},
       }
     };
     if (config !== undefined) {

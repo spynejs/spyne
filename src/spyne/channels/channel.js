@@ -18,6 +18,7 @@ import {
   always,
   fromPairs,
   path,
+ assocPath,
   equals,
   prop,
   apply,
@@ -152,6 +153,8 @@ export class Channel {
     this.onChannelInitialized();
     this.onRegistered();
     this.props.isRegistered = true;
+
+
   }
 
   setTrace(bool) {
@@ -308,6 +311,8 @@ export class Channel {
    */
   sendChannelPayload(action, payload, srcElement = {}, event = {}, obs$ = this.observer$) {
     // MAKES ALL CHANNEL BASE AND DATA STREAMS CONSISTENT
+
+
     let channelPayloadItem = new ChannelPayload(this.props.name, action, payload, srcElement, event);
     // console.log("CHANNEL STREEM ITEM ",channelPayloadItem);
 

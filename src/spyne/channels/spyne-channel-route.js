@@ -301,6 +301,9 @@ export class SpyneChannelRoute extends Channel {
     let action = this.channelActions.CHANNEL_ROUTE_CHANGE_EVENT;
     SpyneChannelRoute.checkForEventMethods(pl);
     let payload = this.getDataFromParams(pl);
+
+    console.log("LOADING ROUTE FROM LINK ", {pl, payload})
+
     let srcElement = prop('srcElement', pl);
     let event = prop('event', pl);
     let changeLocationBool = !payload.isHidden;
