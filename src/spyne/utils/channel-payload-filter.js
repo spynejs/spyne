@@ -68,6 +68,17 @@ export class ChannelPayloadFilter {
    *
    */
   constructor(filters={}) {
+    /**
+     *
+     * TODO: ADD BACK SEPARATE SELECTOR VALUEK --> IF FIRST IS STRING OR ARRAY THEN SELECTOR, FIRST OBJ IS PROPS, label is third and is string
+     * // first is strOrArrSelectors, obj, label --> if strOrArrSelectors is Object, then no str and is props
+     *
+     *
+     */
+
+
+
+
     if (filters.props!==undefined) {
       filters['propFilters'] = prop('props', filters);
     }

@@ -297,12 +297,34 @@ export class SpyneChannelRoute extends Channel {
 */
 
 
+  checkForEndRoute(pl){
+    /**TODO: ADD TESTS FOR DIFFERENT VARIATIONS: SPECIFICALLY FIND KEY:VAL PAIR IN ROUTE CONFIG, THEN FIND NEXT PROP*/
+
+    const {endRoute} = pl
+    if (!endRoute){
+      return pl;
+    }
+
+    const {routeNamesArr} = this.routeConfigJson;
+    const {payload} = pl;
+    const {pathInnermost, routeData} = payload;
+    const routePropIndex = routeNamesArr.indexOf(pathInnermost);
+    const getNextProp = routePropIndex >=0 && routeNamesArr.length >= routePropIndex+1;
+    const createNextProp = (str) => {
+      pl[str]="";
+      return pl;
+    }
+
+    return getNextProp ? createNextProp(routeNamesArr[routePropIndex+1]) : pl;
+
+  }
+
   onViewStreamInfo(pl) {
     let action = this.channelActions.CHANNEL_ROUTE_CHANGE_EVENT;
     SpyneChannelRoute.checkForEventMethods(pl);
     let payload = this.getDataFromParams(pl);
 
-    console.log("LOADING ROUTE FROM LINK ", {pl, payload})
+    console.log("LOADING ROUTE FROM LINK ", {pl, payload}, clone(pl))
 
     let srcElement = prop('srcElement', pl);
     let event = prop('event', pl);

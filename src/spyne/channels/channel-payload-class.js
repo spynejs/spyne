@@ -36,14 +36,14 @@ export class ChannelPayload {
     let channel = channelName;
 
 
-    const payloadPath = ['Spyne', 'config', 'channels', channelName];
+    //const payloadPath = ['Spyne', 'config', 'channels', channelName];
     const payloadPathAll = ['Spyne', 'config', 'channels', channelName, 'payload'];
     window.Spyne.config.channels[channelName]['payload']=payload;
 
-   
+
 
     let channelPayloadItemObj = { channelName, action, payload:{}, srcElement, event };
-    Object.defineProperty(channelPayloadItemObj, 'payload', {get: () => path(payloadPathAll, window)});
+    Object.defineProperty(channelPayloadItemObj, 'payload', {get: () => compose(clone, path(payloadPathAll))(window)});
 
     /**
      * This is a convenience method that helps with destructuring by merging all properties.
