@@ -66,6 +66,9 @@ class SpyneApp {
       utils: {
         tableRE: /^([^>]*?)(<){1}(\b)(thead|col|colgroup|tbody|td|tfoot|tr|th)(\b)([^\0]*)$/
       },
+      tmp:{
+
+      },
       channels: {
         WINDOW: {
           mediqQueries: {

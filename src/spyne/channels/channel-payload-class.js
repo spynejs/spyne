@@ -1,13 +1,17 @@
 import {
   mergeAll,
   clone,
+    flatten,
   compose,
+    repeat,
   mergeDeepRight,
   mergeRight,
   pathEq,
   includes,
   pickAll,
+    findIndex,
   __,
+    range,
   path, assocPath,
 } from 'ramda';
 
@@ -35,11 +39,54 @@ export class ChannelPayload {
   constructor(channelName, action, payload, srcElement, event) {
     let channel = channelName;
 
+    let payloadIndex = -1;
 
-    //const payloadPath = ['Spyne', 'config', 'channels', channelName];
-    const payloadPathAll = ['Spyne', 'config', 'channels', channelName, 'payload'];
-    window.Spyne.config.channels[channelName]['payload']=payload;
+    const emptyArrayIndexes=(arr, rangeArr)=>{
 
+      const gcArr = (o,i)=>{
+        if (rangeArr.indexOf(i)>=0){
+          return undefined;
+        }
+        return o;
+      }
+      return arr.map(gcArr);
+    }
+
+
+    if (window.Spyne.config.channels[channelName]['payload']===undefined){
+      window.Spyne.config.channels[channelName]['payload'] = [];
+    }
+
+    const getRangeArr = (start, rangeNum=5, length=10)=>{
+     const rangeArr =  compose(flatten,repeat(__, 2), range(0))(length)
+      return rangeArr.splice(start, rangeNum);
+    }
+
+
+
+
+    let channelPayloadTmpDir =  window.Spyne.config.channels[channelName]['payload'];
+    if (channelPayloadTmpDir.length>=5) {
+      const pred = o => o === undefined;
+      const index = findIndex(pred, window.Spyne.config.channels[channelName]['payload'])
+      const startIndex = index >= 0 ? index : 1;
+      const rangeArr = getRangeArr(startIndex, 3, channelPayloadTmpDir.length);
+      window.Spyne.config.channels[channelName]['payload'] = emptyArrayIndexes(window.Spyne.config.channels[channelName]['payload'],rangeArr);
+      payloadIndex = startIndex;
+      //console.log("PAYLOAD TEST  ",{channelName, index, startIndex, rangeArr, payloadIndex}, window.Spyne.config.channels[channelName]['payload'])
+      window.Spyne.config.channels[channelName]['payload'][payloadIndex] = payload;
+    } else {
+      window.Spyne.config.channels[channelName]['payload'].push(payload);
+      payloadIndex = channelPayloadTmpDir.length-1;
+    }
+
+
+
+
+
+
+
+    const payloadPathAll = ['Spyne', 'config', 'channels', channelName, 'payload', payloadIndex];
 
 
     let channelPayloadItemObj = { channelName, action, payload:{}, srcElement, event };
