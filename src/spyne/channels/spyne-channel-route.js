@@ -7,6 +7,7 @@ import { map } from 'rxjs/operators';
 import {
   clone,
   pick,
+    find,
   omit,
   over,
   mergeRight,
@@ -28,9 +29,10 @@ import {
   concat,
   when,
   complement,
+    reverse,
   curryN,
   __,
-  test, replace,
+  test, replace, fromPairs, toPairs, forEach, reduceRight, reduce
 } from 'ramda';
 const ramdaFilter = require('ramda').filter;
 const rMerge = require('ramda').mergeRight;
@@ -297,34 +299,88 @@ export class SpyneChannelRoute extends Channel {
 */
 
 
-  checkForEndRoute(pl){
-    /**TODO: ADD TESTS FOR DIFFERENT VARIATIONS: SPECIFICALLY FIND KEY:VAL PAIR IN ROUTE CONFIG, THEN FIND NEXT PROP*/
+  static checkForEndRoute(pl, routeConfigJson = this.routeConfigJson){
 
-    const {endRoute} = pl
-    if (!endRoute){
+    const endRoute = compose(equals("true"), path(['payload', 'endRoute']))(pl);
+    //console.log('pl and aend route',{endRoute, pl})
+
+    if (endRoute!==true){
       return pl;
     }
+    const win = window || {};
+    const debug = compose(equals(true), path(['Spyne','config', 'debug']))(win);
 
-    const {routeNamesArr} = this.routeConfigJson;
-    const {payload} = pl;
-    const {pathInnermost, routeData} = payload;
-    const routePropIndex = routeNamesArr.indexOf(pathInnermost);
-    const getNextProp = routePropIndex >=0 && routeNamesArr.length >= routePropIndex+1;
-    const createNextProp = (str) => {
-      pl[str]="";
-      return pl;
-    }
+      const {payload} = pl;
 
-    return getNextProp ? createNextProp(routeNamesArr[routePropIndex+1]) : pl;
+
+      const getPropVal = (routePath) => {
+        const routeName = prop('routeName', routePath);
+        if (routeName){
+          const keysArr = compose(keys, omit(['routeName']))(routePath);
+          let routeNameVal = payload[routeName]
+          const pred = arrStr => new RegExp(`^${arrStr}$`).test(routeNameVal);
+          const routeVal = find(pred, keysArr);
+           // console.log('route val is ',{routeVal, keysArr})
+          return routeVal;
+
+        }
+      }
+
+      let iter = 0;
+      const onReduceRoutePaths = (acc=[], arr)=>{
+        const [key, val] = arr;
+        const {routePath} = val;
+        const routeName = prop('routeName', routePath);
+        const routeNameVal = getPropVal(routePath);
+        const isObj = is(Object, val);
+        const isArr = is(Array, val);
+        const iterObj = isObj === true && isArr === false;
+        iter = iter+1;
+        if (iterObj) {
+          const nextRoutePath = routePath[routeNameVal];
+          //console.log('key is ',{iter,acc,key, routeName, routeNameVal, iterObj, nextRoutePath});
+          if (nextRoutePath){
+              compose(reverse, reduce(onReduceRoutePaths, acc), toPairs)({nextRoutePath})
+          } else{
+            //console.log("KEY IS ",{iter,key, routeName, routeNameVal})
+            if (iter===1){
+              if (debug) {
+                console.warn(`Spyne Warning: use of end route method should add start route value of "${routeName}".`)
+              }
+            } else {
+              acc.push(routeName)
+            }
+          }
+         // compose(reduce(onReduceRoutePaths), toPairs)(nextRoutePath);
+        }
+        return acc;
+
+      }
+
+      const {routes} = routeConfigJson;
+
+      const endRouteValArr = compose(reverse, reduce(onReduceRoutePaths, []), toPairs)({routes});
+        //console.log('end route val arr ',endRouteValArr);
+        if(endRouteValArr.length===1){
+          const endRouteVal = endRouteValArr[0];
+          pl.payload[endRouteVal] = "";
+        } else{
+          if (debug) {
+           // console.warn(`Spyne Warning: the end route param did not yield any results for ${JSON.stringify(payload)} `);
+          }
+        }
+
+    return pl;
 
   }
 
   onViewStreamInfo(pl) {
     let action = this.channelActions.CHANNEL_ROUTE_CHANGE_EVENT;
     SpyneChannelRoute.checkForEventMethods(pl);
+    pl = this.checkForEndRoute(pl);
     let payload = this.getDataFromParams(pl);
-
-    console.log("LOADING ROUTE FROM LINK ", {pl, payload}, clone(pl))
+    const {routeConfigJson} = this;
+    //console.log("LOADING ROUTE FROM LINK ", {pl, payload,routeConfigJson})
 
     let srcElement = prop('srcElement', pl);
     let event = prop('event', pl);
@@ -521,6 +577,7 @@ export class SpyneChannelRoute extends Channel {
   }
 
   bindStaticMethods() {
+    this.checkForEndRoute = SpyneChannelRoute.checkForEndRoute.bind(this);
     this.getIsDeepLinkBool = SpyneChannelRoute.getIsDeepLinkBool.bind(this);
     this.getDataFromLocationStr = SpyneChannelRoute.getDataFromLocationStr.bind(
       this);

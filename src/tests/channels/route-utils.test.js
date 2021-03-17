@@ -16,7 +16,7 @@ const routeConfig = SpyneConfigData.channels.ROUTE;
 
 describe('Route Utils', () => {
   it('flattenConfigObjects should return array of params', () => {
-    const finalArr = ['pageId', '', 'imageNum', 'author', 'photogNum', 'randomNum'];
+    const finalArr = [ "pageId", "", "imageNum", "author", "hemingway", "author", "hemingway", "imageNum", "pixels", "photogNum", "randomNum", "32"];
     let arr = SpyneUtilsChannelRoute.flattenConfigObject(routeConfig.routes);
     // return true;
     expect(arr).to.deep.equal(finalArr);

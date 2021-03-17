@@ -6,10 +6,11 @@ import { ChannelPayloadRouteData, ChannelPayloadRouteDataRegexOverride } from '.
 import {
   SpyneConfigData,
   RouteDataForTests,
+  routeConfigWithRegexOverride,
   windowLocationData
 } from '../mocks/utils-data';
 import { SpyneChannelRoute } from '../../spyne/channels/spyne-channel-route';
-
+const R = require('ramda');
 const ObjtoStr = JSON.stringify;
 
 chai.use(require('chai-dom'));
@@ -79,6 +80,80 @@ describe('Channel Route', () => {
     let paramsFromRoute = SpyneChannelRoute.getParamsFromRouteStr(queryStr, routeConfig, 'query');
     expect(ObjtoStr(paramsFromRoute.routeData)).to.equal(ObjtoStr(data));
   });
+
+ describe("It shouold add automatically add next param", ()=>{
+
+   const pl =
+       {
+         payload: {
+           "eventPreventDefault": "true",
+           "imageNum": "work",
+           "pageId": "page-one",
+           "text": "WORK",
+           "endRoute": "true",
+           "topicId": ""
+         }
+
+       }
+
+   const plNoPageId =
+       {
+         payload: {
+           "eventPreventDefault": "true",
+           "imageNum": "work",
+           "text": "WORK",
+           "endRoute": "true",
+           "topicId": ""
+         }
+
+       }
+   const {ROUTE} = SpyneConfigData.channels;
+   const {routeNamesArr} = ROUTE;
+   const routeConfigJson = ROUTE;
+
+   it('should find the author param based on endRoute bool', ()=>{
+     const updateForEndRoute = SpyneChannelRoute.checkForEndRoute(pl, routeConfigJson);
+     const {author} = updateForEndRoute.payload;
+     expect(author).to.equal('');
+
+   })
+
+   it('should find the ramdonNum param based on endRoute bool', ()=>{
+     const newPl = R.clone(pl);
+     newPl.payload.pageId='page-three';
+     const updateForEndRoute = SpyneChannelRoute.checkForEndRoute(newPl, routeConfigJson);
+     const {randomNum} = updateForEndRoute.payload;
+     expect(randomNum).to.equal('');
+
+   })
+
+
+   it('should not yield any results and send warning', ()=>{
+     const newPl = R.clone(pl);
+     newPl.payload.pageId='page-three';
+     newPl.payload.randomNum = "thirty-two";
+     const updateForEndRoute = SpyneChannelRoute.checkForEndRoute(newPl, routeConfigJson);
+     expect(updateForEndRoute).to.deep.equal(newPl);
+
+
+   })
+   it('should determine first param is missing', ()=>{
+     const updateForEndRoute = SpyneChannelRoute.checkForEndRoute(plNoPageId, routeConfigJson);
+     //console.log('updateForEndRoute ',updateForEndRoute)
+     expect(updateForEndRoute).to.deep.equal(plNoPageId);
+
+   })
+   it('should determine first param is missing and last param is entered', ()=>{
+     const newPl = R.clone(plNoPageId);
+     newPl.payload.randomNum = "thirty-two";
+     const updateForEndRoute = SpyneChannelRoute.checkForEndRoute(newPl, routeConfigJson);
+     //console.log('updateForEndRoute ',updateForEndRoute)
+     expect(updateForEndRoute).to.deep.equal(newPl);
+
+   })
+
+
+ })
 
  /* it('return route str by config type', () => {
     const val = SpyneUtilsChannelRouteUrl.getLocationStrByType('hash');

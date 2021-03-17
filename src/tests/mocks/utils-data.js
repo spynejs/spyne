@@ -13,6 +13,7 @@ const SpyneConfigData = {
     },
 
     ROUTE: {
+      routeNamesArr: ['pageId', '', 'imageNum', 'author', 'photogNum', 'pixels'],
       paramsArr: ['pageId', '', 'imageNum', 'author', 'photogNum'],
       type: 'slash', /* "slash", "query" */
       isHash: false,
@@ -24,8 +25,23 @@ const SpyneConfigData = {
           'page-one': {
             'routePath': {
               'routeName': 'imageNum',
+              "work" : {
+                'routePath': {
+                  'routeName': 'author',
+                  'hemingway': 'hemingway'
+                }
+                },
               'routePath': {
-                'routeName': 'author'
+                'routeName': 'author',
+                'hemingway': 'hemingway'
+              }
+            }
+          },
+          'page-one-up': {
+            'routePath': {
+              'routeName': 'imageNum',
+              'routePath': {
+                'routeName': 'pixels'
               }
             }
           },
@@ -36,7 +52,8 @@ const SpyneConfigData = {
           },
           'page-.*': {
             'routePath': {
-              'routeName': 'randomNum'
+              'routeName': 'randomNum',
+              "thirty-two" : "32"
             }
           }
         }
@@ -73,6 +90,7 @@ const routeConfigWithRegexOverride = {
   'regexTokens': {
     '^$|index.html': ''
   },
+  'routeNamesArr' : ['pageId', 'section', 'menuItem'],
   'paramsArr': [
     '.*',
     'pageId',
