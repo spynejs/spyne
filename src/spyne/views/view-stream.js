@@ -394,14 +394,11 @@ export class ViewStream {
     return childCompletedData;
   }
 
-  removeDataFromTmpDir(vsid){
-    console.log("CALLED REMOVE TEMP DIR ",{vsid});
+  static removeDataFromTmpDir(vsid){
     const tmpDir = path(['Spyne', 'config', 'tmp'], window);
     const tmpDirExists = tmpDir[vsid] !== undefined;
-
     if(tmpDirExists){
-      console.log('remove from tmp dir ', {tmpDirExists, vsid});
-
+      //console.log('remove from tmp dir ', {tmpDirExists, vsid});
       delete window.Spyne.config.tmp[vsid];
     }
   }
@@ -1111,31 +1108,41 @@ export class ViewStream {
    */
 
   sendInfoToChannel(channelName, pl = {}, action = 'VIEWSTREAM_EVENT') {
-    const payload2 = {};
     const payload = pl;
-    const payloadPath = ['Spyne', 'config', 'tmp'];
-    const payloadPathAll = ['Spyne', 'config', 'tmp', this.props.vsid];
-    const tmpDir = path(payloadPath, window);
-    tmpDir[this.props.vsid] = pl;
-    const vsid = this.props.vsid;
 
 
     let data = { payload, action };
-        Object.defineProperties(data, {
-            payload: {
-              get: ()=> compose(clone, path(payloadPathAll))(window)
 
-            }
-        })
 
     data.srcElement = compose(pick(['id','vsid','class','tagName']), prop('props'))(this);
     if (this.checkIfChannelExists(channelName) === true) {
-      let obs$ = of(data);
+      if (/CHANNEL_LIFECYCLE/.test(action)===false){
+        const payloadPath = ['Spyne', 'config', 'tmp'];
+        const payloadPathAll = ['Spyne', 'config', 'tmp', this.props.vsid];
+        const tmpDir = path(payloadPath, window);
+        tmpDir[this.props.vsid] = pl;
+        const vsid = this.props.vsid;
 
-      const removePayload = ()=>this.removeDataFromTmpDir(this.props.vsid);
-      this.setTimeout(removePayload, 10)
-      return new ViewStreamPayload(channelName, obs$, data);
-    }
+        Object.defineProperties(data, {
+          payload: {
+            get: ()=> compose(clone, path(payloadPathAll))(window)
+
+          }
+        })
+
+        const removePayload = ()=>ViewStream.removeDataFromTmpDir(vsid);
+        window.requestAnimationFrame(removePayload)
+
+      }
+        let obs$ = of(data);
+        return new ViewStreamPayload(channelName, obs$, data);
+
+      }
+
+
+
+
+
 
   }
 
