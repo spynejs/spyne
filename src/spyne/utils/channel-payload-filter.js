@@ -1,5 +1,13 @@
-import {is, reject, ifElse, invoker, identity, isNil, allPass, tap, forEachObjIndexed, not, isEmpty, always, compose,  equals, prop, where, defaultTo, path, flatten, any,type, curry} from 'ramda';
+import {is, reject, ifElse, invoker, identity, isNil, allPass, tap, forEachObjIndexed, not, isEmpty, always, compose,  equals, prop, where, defaultTo, mergeAll, __, omit, path, clone, flatten, any,type, curry} from 'ramda';
 const rMap = require('ramda').map;
+
+const isNotArr = compose(not, is(Array));
+const isNotEmpty = compose(not, isEmpty);
+const isNonEmptyStr = allPass([is(String), isNotEmpty]);
+const isNonEmptyArr = allPass([is(Array), isNotEmpty]);
+const isObjectFn = compose(allPass([isNotArr, is(Object)]))
+const isNonEmptyObjectFn = compose(allPass([isNotEmpty, isNotArr, is(Object)]))
+
 export class ChannelPayloadFilter {
   /**
    * @module ChannelPayloadFilter
@@ -19,8 +27,8 @@ export class ChannelPayloadFilter {
    *   </ul>
    *
    * @constructor
-   * @param {Object} filters Object that contains the selector, props, and label params.
    * @property {String|Array|HTMLElement} selector The matching element
+   * @param {Object} filters Object that contains the selector, props, and debugLabel params.
    * @property {Object} propFilters A json object containing filtering methods for channel props variables.
    *
    * @property {String|Array|HTMLElement} selector - = ''; The matching element.
@@ -67,31 +75,52 @@ export class ChannelPayloadFilter {
    * .subscribe(myChannelMethod);
    *
    */
-  constructor(filters={}) {
+  constructor(selector, filters={}, debugLabel, testMode) {
     /**
      *
-     * TODO: ADD BACK SEPARATE SELECTOR VALUEK --> IF FIRST IS STRING OR ARRAY THEN SELECTOR, FIRST OBJ IS PROPS, label is third and is string
-     * // first is strOrArrSelectors, obj, label --> if strOrArrSelectors is Object, then no str and is props
+     * TODO: ADD BACK SEPARATE SELECTOR VALUEK --> IF FIRST IS STRING OR ARRAY THEN SELECTOR, FIRST OBJ IS PROPS, debugLabel is third and is string
+     * // first is strOrArrSelectors, obj, debugLabel --> if strOrArrSelectors is Object, then no str and is props
      *
      *
      */
 
 
+    const selectorIsObj = isObjectFn(selector);
 
+    if(selectorIsObj){
+      filters = selector;
+      selector = prop('selector', filters);
+      testMode = prop("testMode", filters);
+      if (prop('label', filters)){
+        debugLabel = filters.label;
+      } else {
+        debugLabel = prop('debugLabel', filters);
+      }
 
-    if (filters.props!==undefined) {
-      filters['propFilters'] = prop('props', filters);
     }
-    let {selector,propFilters,label} = filters;
-    //console.log("VALUES OF FILTERS ",{selector,propFilters,label});
-    const isNotEmpty = compose(not, isEmpty);
-    const isNonEmptyStr = allPass([is(String), isNotEmpty]);
-    const isNonEmptyArr = allPass([is(Array), isNotEmpty]);
+
+
+
+    let props = omit(['debugLabel', 'label', 'selector', 'props', 'testMode', 'propFilters'], filters)
+    if (filters.props!==undefined) {
+      props = mergeAll([filters.props, props])
+
+    } else if (filters.propFilters!==undefined) {
+      props = mergeAll([filters.propFilters, props])
+    }
+
+    filters['propFilters'] = props;
+
+    let {propFilters} = filters;
+    //console.log("selector filters ", {selector, filters})
+
+    // let {selector,propFilters,debugLabel} = filters;
+
     const addStringSelectorFilter =  isNonEmptyStr(selector) ? ChannelPayloadFilter.filterSelector([selector]) : undefined;
     const addArraySelectorFilter =   isNonEmptyArr(selector) ? ChannelPayloadFilter.filterSelector(selector) : undefined;
 
 
-    const addDataFilter = is(Object, propFilters) ? ChannelPayloadFilter.filterData(propFilters, label) : undefined;
+    const addDataFilter = isNonEmptyObjectFn(propFilters) ? ChannelPayloadFilter.filterData(propFilters, debugLabel) : undefined;
 
     //console.log("IS STRING ",{selector, addStringSelectorFilter, addArraySelectorFilter, addDataFilter},isNonEmptyStr(selector))
 
@@ -101,7 +130,9 @@ export class ChannelPayloadFilter {
 
       // IF ARRAY IS EMPTY ALWAYS RETURN FALSE;
 
-      if (isEmpty(filtersArr)){
+      const filtersAreEmpty = isEmpty(filtersArr);
+
+      if (filtersAreEmpty){
         filtersArr = [always(false)];
 
         if (path(['Spyne', 'config', 'debug'], window) === true){
@@ -110,11 +141,18 @@ export class ChannelPayloadFilter {
 
       }
 
+
+
+    console.log(" VALUES OF FILTERS ",{selector,propFilters,debugLabel,testMode, filtersAreEmpty});
+    if (testMode === true){
+        return {selector, filters, debugLabel, testMode, filtersAreEmpty};
+      }
+
     return allPass(filtersArr);
   }
 
-  static filterData(filterJson, filterLabel) {
-    const label = filterLabel;
+  static filterData(filterJson, filterdebugLabel) {
+    const debugLabel = filterdebugLabel;
     let compareData = () => {
       // DO NOT ALLOW AN EMPTY OBJECT TO RETURN TRUEs
       if (isEmpty(filterJson)) {
@@ -149,13 +187,13 @@ export class ChannelPayloadFilter {
       // TAP LOGGER
 
       const tapLogger = (comparedObj)=>{
-        if (label===undefined){
+        if (debugLabel===undefined){
           return comparedObj;
         }
         const propsBooleans = {};
         const mapBools = (value,key)=>propsBooleans[key] = value(prop(key, comparedObj));
         forEachObjIndexed(mapBools, filterJson);
-        console.log(`%c CHANNEL PAYLOAD FILTER DEBUGGER '${label}': `, "color:orange;",{propsBooleans, comparedObj});
+        console.log(`%c CHANNEL PAYLOAD FILTER DEBUGGER '${debugLabel}': `, "color:orange;",{propsBooleans, comparedObj});
 
         return comparedObj;
         };
@@ -203,6 +241,7 @@ export class ChannelPayloadFilter {
 
     return any(equals(true), nodeArrResult);
   }
+
 
   static filterSelector(selectorArr) {
     let arr = reject(isEmpty, selectorArr);
