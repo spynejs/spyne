@@ -1,7 +1,7 @@
 const {expect, assert} = require('chai');
 import {ChannelPayloadToTestFilters} from '../mocks/channel-payload-data';
 import {ChannelPayloadFilter} from '../../spyne/utils/channel-payload-filter';
-
+const R = require('ramda');
 describe('should test channel payload filters parameter configuration', () => {
 
   beforeEach(function() {
@@ -15,8 +15,6 @@ describe('should test channel payload filters parameter configuration', () => {
   });
 
   const testModeBool = true;
-
-
 
 
   it('should throw an error if cp filter is empty', () => {
@@ -82,7 +80,155 @@ describe('should test channel payload filters parameter configuration', () => {
   });
 
 
+  it('should filter properties only by multiple params', () => {
+    const myProps = {
+      action: "CHANNEL_MYCHANNEL_MAIN_EVENT",
+      myPropFn: (v)=>v>=30
+    }
+    const cpFilter = new ChannelPayloadFilter(undefined ,myProps, 'myval', true);
+    const myPropFn = R.path(['propFilters', 'myPropFn'], cpFilter);
+    expect(myPropFn).to.be.a('function');
+
+  });
+
+  it('should filter properties only one object param', () => {
+    const myProps = {
+      action: "CHANNEL_MYCHANNEL_MAIN_EVENT",
+      myPropFn: (v)=>v>=30,
+      testMode: testModeBool
+    }
+    const cpFilter = new ChannelPayloadFilter(myProps);
+    const myPropFn = R.path(['propFilters', 'myPropFn'], cpFilter);
+    expect(myPropFn).to.be.a('function');
+
+  });
+
+
+
 
 
 
 });
+
+
+describe('should test channel payload filters boolean correctness', ()=>{
+
+  const liSel = "#xqdlqmr";
+
+
+  beforeEach(function(){
+
+    const liElTmpl = `
+     <li class="page-card page-menu-4-card" id="xqdlqmr" name="PageCardView" data-vsid="xqdlqmr"><a href="/menu-3/sub-menu-4" data-channel="ROUTE" data-event-prevent-default="true" data-topic-id="sub-menu-2" data-nav-level="2">
+        <dl class="card-content">
+          <dt class="card-image">
+          </dt>
+          <dd class="card-text">
+            <h2>SUB-MENU-2</h2>
+             <p>Lorem ipsum dolor sit </p>
+          </dd>
+        </dl>
+      </li>   
+    `;
+
+
+    const ul = document.createElement('ul');
+    ul.innerHTML = liElTmpl;
+    document.body.appendChild(ul);
+
+
+    ChannelPayloadToTestFilters.el = document.querySelector(liSel);
+  })
+
+
+  it('should find the selector string ', ()=>{
+      const cpFilter = new ChannelPayloadFilter(liSel);
+      const payloadBool = cpFilter(ChannelPayloadToTestFilters);
+    expect(payloadBool).to.be.true;
+
+  })
+
+  it('should detect the wrong selector string ', ()=>{
+    const cpFilter = new ChannelPayloadFilter("#mysel");
+    const payloadBool = cpFilter(ChannelPayloadToTestFilters);
+    expect(payloadBool).to.be.false;
+
+  })
+
+
+  it('should detect the selector from an array ', ()=>{
+    const cpFilter = new ChannelPayloadFilter([liSel, 'ul', 'li.test']);
+    const payloadBool = cpFilter(ChannelPayloadToTestFilters);
+    expect(payloadBool).to.be.true;
+
+  })
+
+  it('should detect the wrong selector from an array ', ()=>{
+    const cpFilter = new ChannelPayloadFilter(['dd', 'dt', 'ul', 'li.test']);
+    const payloadBool = cpFilter(ChannelPayloadToTestFilters);
+    expect(payloadBool).to.be.false;
+
+  })
+
+  it('should find the selector from filters', ()=>{
+    const selector = liSel;
+    const cpFilter = new ChannelPayloadFilter({selector});
+    const payloadBool = cpFilter(ChannelPayloadToTestFilters);
+
+    expect(payloadBool).to.be.true;
+  })
+
+
+  it('should detect the  selector from an array in filters ', ()=>{
+    const selector = ['dd', 'dt', 'ul',liSel, 'li.test'];
+    const cpFilter = new ChannelPayloadFilter({selector});
+    const payloadBool = cpFilter(ChannelPayloadToTestFilters);
+    expect(payloadBool).to.be.true;
+
+  })
+
+
+
+  it('should detect the selector from an array and destructured prop in filters ', ()=>{
+    const selector = ['dd', 'dt', 'ul',liSel, 'li.test'];
+    const pageId = (v)=>/menu-\d/.test(v);
+    const cpFilter = new ChannelPayloadFilter({selector, pageId});
+    const payloadBool = cpFilter(ChannelPayloadToTestFilters);
+    expect(payloadBool).to.be.true;
+
+
+  })
+
+  it('should detect the selector from an array and routeValue prop in filters ', ()=>{
+    const selector = ['dd', 'dt', 'ul', liSel, 'li.test'];
+    const re = /menu-\d/;
+    const payload =  R.compose(R.test(re), R.path(['routeData', 'pageId']));
+    const cpFilter = new ChannelPayloadFilter({selector, payload});
+    const payloadBool = cpFilter(ChannelPayloadToTestFilters);
+    expect(payloadBool).to.be.true;
+
+
+
+  })
+
+  it('should detect the selector from an array and multiple props in filters ', ()=>{
+    const selector = [liSel, 'dd', 'dt', 'ul', 'li.test'];
+    const re = /menu-\d/;
+    const action = "CHANNEL_ROUTE_CHANGE_EVENT";
+    const payload =  R.compose(R.test(re), R.path(['routeData', 'pageId']));
+    const cpFilter = new ChannelPayloadFilter({selector, payload, action});
+    const payloadBool = cpFilter(ChannelPayloadToTestFilters);
+    expect(payloadBool).to.be.true;
+
+    return true;
+
+  })
+
+
+
+
+
+
+})
+
+

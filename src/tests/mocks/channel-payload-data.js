@@ -163,10 +163,16 @@ const ChannelPayloadRouteDataRegexOverride = {
 const ChannelPayloadToTestFilters = {
   "channelName": "CHANNEL_ROUTE",
   "action": "CHANNEL_ROUTE_CHANGE_EVENT",
+  "pageId": "menu-3",
+  "topicId": "sub-menu-4",
+  "eventPreventDefault": "true",
+  "navLevel": "2",
   "payload": {
     "isDeepLink": false,
     "routeCount": 2,
     "pathInnermost": "topicId",
+
+
     "paths": [
       "pageId",
       "topicId"

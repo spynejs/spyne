@@ -134,7 +134,6 @@ export class ChannelPayloadFilter {
 
       if (filtersAreEmpty){
         filtersArr = [always(false)];
-
         if (path(['Spyne', 'config', 'debug'], window) === true){
           console.warn(`Spyne Warning: The Channel Filter, with selector: ${selector}, and propFilters:${propFilters} appears to be empty!`);
         }
@@ -142,10 +141,9 @@ export class ChannelPayloadFilter {
       }
 
 
-
-    console.log(" VALUES OF FILTERS ",{selector,propFilters,debugLabel,testMode, filtersAreEmpty});
+   // console.log(" VALUES OF FILTERS ",{selector,propFilters,debugLabel,testMode, filtersAreEmpty});
     if (testMode === true){
-        return {selector, filters, debugLabel, testMode, filtersAreEmpty};
+        return {selector, propFilters, debugLabel, filters, testMode, filtersAreEmpty};
       }
 
     return allPass(filtersArr);
