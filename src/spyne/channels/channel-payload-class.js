@@ -36,7 +36,7 @@ export class ChannelPayload {
    * @property {UIEvent} event - = undefined; The UIEvent, if any.
    * @returns Validated ChannelPayload json object
    */
-  constructor(channelName, action, payload, srcElement, event) {
+  constructor(channelName, action, payload, srcElement={}, event={}) {
     let channel = channelName;
 
     let payloadIndex = -1;
@@ -66,18 +66,20 @@ export class ChannelPayload {
 
 
     let channelPayloadTmpDir =  window.Spyne.config.channels[channelName]['payload'];
+    //const randLabel = `payload-${Math.floor(Math.random()*10000)}`
+    //console.time(randLabel)
     if (channelPayloadTmpDir.length>=5) {
       const pred = o => o === undefined;
       const index = findIndex(pred, window.Spyne.config.channels[channelName]['payload'])
       const startIndex = index >= 0 ? index : 1;
-      const rangeArr = getRangeArr(startIndex, 3, channelPayloadTmpDir.length);
+      const rangeArr = getRangeArr(startIndex, 2, channelPayloadTmpDir.length);
       window.Spyne.config.channels[channelName]['payload'] = emptyArrayIndexes(window.Spyne.config.channels[channelName]['payload'],rangeArr);
       payloadIndex = startIndex;
       //console.log("PAYLOAD TEST  ",{channelName, index, startIndex, rangeArr, payloadIndex}, window.Spyne.config.channels[channelName]['payload'])
-      window.Spyne.config.channels[channelName]['payload'][payloadIndex] = payload;
+      window.Spyne.config.channels[channelName]['payload'][payloadIndex] = {payload, srcElement, event};
     } else {
-      window.Spyne.config.channels[channelName]['payload'].push(payload);
-      payloadIndex = channelPayloadTmpDir.length-1;
+      window.Spyne.config.channels[channelName]['payload'].push({payload, srcElement, event});
+      payloadIndex = window.Spyne.config.channels[channelName]['payload'].length-1;
     }
 
 
@@ -87,10 +89,24 @@ export class ChannelPayload {
 
 
     const payloadPathAll = ['Spyne', 'config', 'channels', channelName, 'payload', payloadIndex];
+    const payloadPathAllPayload = ['Spyne', 'config', 'channels', channelName, 'payload', payloadIndex, 'payload'];
+    const payloadPathAllSrcElement = ['Spyne', 'config', 'channels', channelName, 'payload', payloadIndex, 'srcElement'];
+    const payloadPathAllEvent = ['Spyne', 'config', 'channels', channelName, 'payload', payloadIndex, 'event'];
 
 
-    let channelPayloadItemObj = { channelName, action, payload:{}, srcElement, event };
-    Object.defineProperty(channelPayloadItemObj, 'payload', {get: () => compose(clone, path(payloadPathAll))(window)});
+    let channelPayloadItemObj = { channelName, action, payload:{}, srcElement:{}, event:{} };
+    Object.defineProperties(channelPayloadItemObj, {
+          payload: {
+            get: () => compose(clone, path(payloadPathAllPayload))(window)
+          },
+          srcElement: {
+            get: () => compose(clone, path(payloadPathAllSrcElement))(window)
+          },
+          event: {
+            get: () => compose(clone, path(payloadPathAllEvent))(window)
+          }
+        }
+        );
 
     /**
      * This is a convenience method that helps with destructuring by merging all properties.
@@ -115,8 +131,22 @@ export class ChannelPayload {
     }
 
 
+    const mergeArr = [
+      {payload:channelPayloadItemObj.payload},
+      channelPayloadItemObj.payload, { channel },
+      { event: event },
+      channelPayloadItemObj.srcElement,
+      { action: channelPayloadItemObj.action }]
 
-    channelPayloadItemObj.props = () => mergeAll([{payload:channelPayloadItemObj.payload},channelPayloadItemObj.payload, { channel }, { event: event }, channelPayloadItemObj.srcElement, { action: channelPayloadItemObj.action }]);
+      const routeData = path(['payload', 'routeData'], channelPayloadItemObj);
+
+    if (routeData){
+      mergeArr.push(routeData);
+    }
+
+
+
+    channelPayloadItemObj.props = () => compose(clone, mergeAll)(mergeArr);
 
 
     const channelActionsArr = window.Spyne.getChannelActions(channel);
@@ -126,6 +156,8 @@ export class ChannelPayload {
     if (channel === 'CHANNEL_ROUTE') {
       channelPayloadItemObj['location'] = ChannelPayload.getLocationData();
     }
+
+    //console.timeEnd(randLabel);
 
     return channelPayloadItemObj;
   }

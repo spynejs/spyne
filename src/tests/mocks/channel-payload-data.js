@@ -160,4 +160,90 @@ const ChannelPayloadRouteDataRegexOverride = {
   ]
 };
 
-export { ChannelPayloadUIData, ChannelPayloadRouteData, DeepLinkData, ChannelPayloadRouteDataRegexOverride };
+const ChannelPayloadToTestFilters = {
+  "channelName": "CHANNEL_ROUTE",
+  "action": "CHANNEL_ROUTE_CHANGE_EVENT",
+  "payload": {
+    "isDeepLink": false,
+    "routeCount": 2,
+    "pathInnermost": "topicId",
+    "paths": [
+      "pageId",
+      "topicId"
+    ],
+    "routeData": {
+      "pageId": "menu-3",
+      "topicId": "sub-menu-4",
+      "eventPreventDefault": "true",
+      "navLevel": "2"
+    },
+    "routeValue": "menu-3/sub-menu-4",
+    "isHash": false,
+    "isHidden": false,
+    "routeType": "slash",
+    "pathsAdded": [
+      "topicId"
+    ],
+    "pathsRemoved": [],
+    "pathsChanged": [
+      "topicId"
+    ]
+  },
+  "srcElement": {
+    "id": "xqdlqmr",
+    "vsid": "xqdlqmr",
+    "isLocalEvent": false,
+    "srcEvent": "click",
+    "el": {}
+  },
+  "event": {
+    "altKey": false,
+    "bubbles": true,
+    "cancelBubble": false,
+    "cancelable": true,
+    "clientX": 258.15234375,
+    "clientY": 31.73046875,
+    "composed": true,
+    "ctrlKey": false,
+    "currentTarget": null,
+    "defaultPrevented": true,
+    "detail": 1,
+    "eventPhase": 0,
+    "fromElement": null,
+    "isTrusted": true,
+    "layerX": 9,
+    "layerY": 31,
+    "metaKey": false,
+    "movementX": 0,
+    "movementY": 0,
+    "offsetX": 9.71484375,
+    "offsetY": 31.73046875,
+    "pageX": 258.15234375,
+    "pageY": 31.73046875,
+    "relatedTarget": null,
+    "returnValue": false,
+    "screenX": 1108.15234375,
+    "screenY": 236.73046875,
+    "shiftKey": false,
+    "timeStamp": 6506.570000201464,
+    "toElement": null,
+    "type": "click",
+    "which": 1,
+    "x": 258.15234375,
+    "y": 31.73046875
+  },
+  "location": {
+    "href": "http://localhost:8080/menu-3/sub-menu-4",
+    "origin": "http://localhost:8080",
+    "protocol": "http:",
+    "host": "localhost:8080",
+    "hostname": "localhost",
+    "port": "8080",
+    "pathname": "/menu-3/sub-menu-4",
+    "search": "",
+    "hash": ""
+  }
+}
+
+
+export { ChannelPayloadUIData,ChannelPayloadToTestFilters, ChannelPayloadRouteData, DeepLinkData, ChannelPayloadRouteDataRegexOverride };
