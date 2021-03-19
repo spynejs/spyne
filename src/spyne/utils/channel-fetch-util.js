@@ -1,6 +1,21 @@
 import { from } from 'rxjs';
 import { flatMap, map, publish, tap } from 'rxjs/operators';
-import {compose, prop, defaultTo, over, lensProp, has, propEq, when, propIs, allPass, assoc, pick, mergeDeepRight} from 'ramda';
+import {
+  compose,
+  prop,
+  defaultTo,
+  over,
+  lensProp,
+  has,
+  propEq,
+  when,
+  propIs,
+  allPass,
+  assoc,
+  pick,
+  mergeDeepRight,
+  path, clone,
+} from 'ramda';
 export class ChannelFetchUtil {
 // METHOD GET POST PUT PATCH DELETE
   /**
@@ -76,8 +91,46 @@ export class ChannelFetchUtil {
     const tapLogDebug = p => console.log('DEBUG FETCH :', p);
     const tapLog = debug === true ? tapLogDebug : () => {};
 
+    const addToTmpDir = (o)=>{
+      const tmpLabel = `fetch-${Math.floor(Math.random()*100000)}`;
+      let payloadPath = ['Spyne', 'config', 'tmp'];
+      let tmpDir = path(payloadPath, window);
+
+      if (tmpDir===undefined) {
+        payloadPath = ['spyneTmp'];
+        window['spyneTmp'] = {};
+        tmpDir = path(payloadPath, window);
+      }
+
+
+
+
+      const payloadPathAll = clone(payloadPath);
+      payloadPathAll.push(tmpLabel);
+      tmpDir[tmpLabel] = o;
+
+      let pl = {};
+      const d = {pl};
+
+      Object.defineProperties(d, {
+        pl: {
+          get: ()=> compose(clone, path(payloadPathAll))(window)
+
+        }
+      })
+
+
+      console.log('payload path all ',{payloadPathAll, payloadPath, d}, compose(clone, path(payloadPathAll))(window));
+
+      return d.pl;
+    }
+
+
+
+
     let response$ = from(window.fetch(url, serverOptions))
       .pipe(tap(tapLog), flatMap(r => from(r[responseType]())),
+        map(addToTmpDir),
         map(mapFn),
         publish());
 
