@@ -86,7 +86,9 @@ export class ChannelFetch extends Channel {
   }
 
   onFetchReturned(streamItem) {
-    let payload = this.createChannelPayloadItem(streamItem);
+    console.log("FETCH RETURNDED ",{streamItem})
+    const data = window.spyneTmp[streamItem];
+    let payload = this.createChannelPayloadItem(data);
   }
 
   createChannelPayloadItem(payload, action = `${this.props.name}_DATA_EVENT`) {
