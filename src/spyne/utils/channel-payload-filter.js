@@ -1,4 +1,34 @@
-import {is, reject, ifElse, invoker, identity, isNil, allPass, tap, forEachObjIndexed, not, isEmpty, always, compose,  equals, prop, where, defaultTo, mergeAll, __, omit, path, clone, flatten, any,type, curry} from 'ramda';
+import {
+  is,
+  reject,
+  ifElse,
+  invoker,
+  identity,
+  assoc,
+  isNil,
+  allPass,
+  tap,
+  forEachObjIndexed,
+  not,
+  isEmpty,
+  always,
+  compose,
+  equals,
+  prop,
+  where,
+  defaultTo,
+  mergeAll,
+  __,
+  omit,
+  path,
+    call,
+  clone,
+  flatten,
+  any,
+  type,
+  curry,
+  mergeRight,
+} from 'ramda';
 const rMap = require('ramda').map;
 
 const isNotArr = compose(not, is(Array));
@@ -199,7 +229,20 @@ export class ChannelPayloadFilter {
       // END TAP LOGGER
 
       let fMethod = where(filterJson);
-      const getFilteringObj =  ifElse(prop('props'), invoker(0, 'props'), identity);
+
+      let getFilteringObj =  (v)=>{
+        let o = compose(ifElse(prop('props'), invoker(0, 'props'), identity))(v);
+        let {payload} = o;
+        if (typeof(payload)==='function'){
+          payload = payload();
+         o = mergeAll([o, payload])
+        }
+
+
+        console.log('o is ',o);
+
+        return o;
+      }
       return compose( fMethod, tapLogger, defaultTo({}),  getFilteringObj);
     };
 

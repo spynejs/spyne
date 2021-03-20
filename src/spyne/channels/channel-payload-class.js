@@ -39,6 +39,24 @@ export class ChannelPayload {
   constructor(channelName, action, payload, srcElement={}, event={}) {
     let channel = channelName;
 
+
+    /**TODO: UPDATE WITH THE FOLLOWING SCHEMA
+     *
+     * channelName: 'string'
+     * action: 'string'
+     * unpacked: 'boolean'
+     * timeStamp: number
+     * payloadLocation: 'array'
+     * props:      points to array
+     * payload:    points to props
+     * srcElement: points to props
+     * event:      points to props
+     *
+     *
+     *
+     * */
+
+
     let payloadIndex = -1;
 
     const emptyArrayIndexes=(arr, rangeArr)=>{
