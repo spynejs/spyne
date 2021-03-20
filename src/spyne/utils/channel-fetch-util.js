@@ -88,7 +88,39 @@ export class ChannelFetchUtil {
 
   static startWindowFetch(props, subscriber) {
     let { mapFn, url, serverOptions, responseType, debug } = props;
-    const tapLogDebug = p => console.log('DEBUG FETCH :', p);
+    debug = true;
+
+    const onMapResponse = (data)=>{
+      let payload = {}
+      const obj = {payload};
+      const tmpLabel = `fetch-temp-${Math.floor(Math.random()*100000)}`;
+      if (window.spyneTmp===undefined){
+        window.spyneTmp = {};
+      }
+      window.spyneTmp[tmpLabel] = data;
+/*
+
+      Object.defineProperty(obj, payload, {
+
+        get: ()=>compose(clone, path(['spyneTmp', tmpLabel]))(window)
+      })
+*/
+
+
+        subscriber(tmpLabel);
+
+    }
+
+
+
+
+    window.fetch(url, serverOptions)
+        .then(r => r[responseType]())
+        .then(onMapResponse);
+
+
+
+   /* const tapLogDebug = p => console.log('DEBUG FETCH :', p);
     const tapLog = debug === true ? tapLogDebug : () => {};
 
     const addToTmpDir = (o)=>{
@@ -136,7 +168,7 @@ export class ChannelFetchUtil {
 
     response$.connect();
 
-    response$.subscribe(subscriber);
+    response$.subscribe(subscriber);*/
   }
 
   static setMapFn(opts) {
