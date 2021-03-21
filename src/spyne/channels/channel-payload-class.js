@@ -1,19 +1,4 @@
-import {
-  mergeAll,
-  clone,
-    flatten,
-  compose,
-    repeat,
-  mergeDeepRight,
-  mergeRight,
-  pathEq,
-  includes,
-  pickAll,
-    findIndex,
-  __,
-    range,
-  path, assocPath,
-} from 'ramda';
+import {mergeAll,clone, compose, mergeDeepRight, mergeRight, pathEq, includes, pickAll, __} from 'ramda';
 
 export class ChannelPayload {
   /**
@@ -36,96 +21,11 @@ export class ChannelPayload {
    * @property {UIEvent} event - = undefined; The UIEvent, if any.
    * @returns Validated ChannelPayload json object
    */
-  constructor(channelName, action, payload, srcElement={}, event={}) {
+  constructor(channelName, action, payload, srcElement, event) {
     let channel = channelName;
 
-
-    /**TODO: UPDATE WITH THE FOLLOWING SCHEMA
-     *
-     * channelName: 'string'
-     * action: 'string'
-     * unpacked: 'boolean'
-     * timeStamp: number
-     * payloadLocation: 'array'
-     * props:      points to array
-     * payload:    points to props
-     * srcElement: points to props
-     * event:      points to props
-     * filter:     use channelPayloadFilter on window obj
-     *
-     *
-     *
-     * */
-
-
-    let payloadIndex = -1;
-
-    const emptyArrayIndexes=(arr, rangeArr)=>{
-
-      const gcArr = (o,i)=>{
-        if (rangeArr.indexOf(i)>=0){
-          return undefined;
-        }
-        return o;
-      }
-      return arr.map(gcArr);
-    }
-
-
-    if (window.Spyne.config.channels[channelName]['payload']===undefined){
-      window.Spyne.config.channels[channelName]['payload'] = [];
-    }
-
-    const getRangeArr = (start, rangeNum=5, length=10)=>{
-     const rangeArr =  compose(flatten,repeat(__, 2), range(0))(length)
-      return rangeArr.splice(start, rangeNum);
-    }
-
-
-
-
-    let channelPayloadTmpDir =  window.Spyne.config.channels[channelName]['payload'];
-    //const randLabel = `payload-${Math.floor(Math.random()*10000)}`
-    //console.time(randLabel)
-    if (channelPayloadTmpDir.length>=5) {
-      const pred = o => o === undefined;
-      const index = findIndex(pred, window.Spyne.config.channels[channelName]['payload'])
-      const startIndex = index >= 0 ? index : 1;
-      const rangeArr = getRangeArr(startIndex, 2, channelPayloadTmpDir.length);
-      window.Spyne.config.channels[channelName]['payload'] = emptyArrayIndexes(window.Spyne.config.channels[channelName]['payload'],rangeArr);
-      payloadIndex = startIndex;
-      //console.log("PAYLOAD TEST  ",{channelName, index, startIndex, rangeArr, payloadIndex}, window.Spyne.config.channels[channelName]['payload'])
-      window.Spyne.config.channels[channelName]['payload'][payloadIndex] = {payload, srcElement, event};
-    } else {
-      window.Spyne.config.channels[channelName]['payload'].push({payload, srcElement, event});
-      payloadIndex = window.Spyne.config.channels[channelName]['payload'].length-1;
-    }
-
-
-
-
-
-
-
-    const payloadPathAll = ['Spyne', 'config', 'channels', channelName, 'payload', payloadIndex];
-    const payloadPathAllPayload = ['Spyne', 'config', 'channels', channelName, 'payload', payloadIndex, 'payload'];
-    const payloadPathAllSrcElement = ['Spyne', 'config', 'channels', channelName, 'payload', payloadIndex, 'srcElement'];
-    const payloadPathAllEvent = ['Spyne', 'config', 'channels', channelName, 'payload', payloadIndex, 'event'];
-
-
-    let channelPayloadItemObj = { channelName, action, payload:{}, srcElement:{}, event:{} };
-    Object.defineProperties(channelPayloadItemObj, {
-          payload: {
-            get: () => compose(clone, path(payloadPathAllPayload))(window)
-          },
-          srcElement: {
-            get: () => compose(clone, path(payloadPathAllSrcElement))(window)
-          },
-          event: {
-            get: () => compose(clone, path(payloadPathAllEvent))(window)
-          }
-        }
-        );
+    let channelPayloadItemObj = { channelName, action, payload, srcElement, event };
+    Object.defineProperty(channelPayloadItemObj, 'payload', {get: () => clone(payload)});
 
     /**
      * This is a convenience method that helps with destructuring by merging all properties.
@@ -150,22 +50,8 @@ export class ChannelPayload {
     }
 
 
-    const mergeArr = [
-      {payload:channelPayloadItemObj.payload},
-      channelPayloadItemObj.payload, { channel },
-      { event: event },
-      channelPayloadItemObj.srcElement,
-      { action: channelPayloadItemObj.action }]
 
-      const routeData = path(['payload', 'routeData'], channelPayloadItemObj);
-
-    if (routeData){
-      mergeArr.push(routeData);
-    }
-
-
-
-    channelPayloadItemObj.props = () => compose(clone, mergeAll)(mergeArr);
+    channelPayloadItemObj.props = () => mergeAll([{payload:channelPayloadItemObj.payload},channelPayloadItemObj.payload, { channel }, { event: event }, channelPayloadItemObj.srcElement, { action: channelPayloadItemObj.action }]);
 
 
     const channelActionsArr = window.Spyne.getChannelActions(channel);
@@ -175,8 +61,6 @@ export class ChannelPayload {
     if (channel === 'CHANNEL_ROUTE') {
       channelPayloadItemObj['location'] = ChannelPayload.getLocationData();
     }
-
-    //console.timeEnd(randLabel);
 
     return channelPayloadItemObj;
   }
