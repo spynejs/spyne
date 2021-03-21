@@ -51,6 +51,7 @@ export class ChannelPayload {
      * payload:    points to props
      * srcElement: points to props
      * event:      points to props
+     * filter:     use channelPayloadFilter on window obj
      *
      *
      *
