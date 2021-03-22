@@ -47,6 +47,24 @@ describe('should test the ChannelDataPacketGenerator', () => {
 
   })
 
+  it('should create data packet ',()=>{
+    const channelDataPacketGen = new ChannelDataPacketGenerator();
+
+    console.time('initPacket');
+    const channelDataPacket = channelDataPacketGen.createDataPacket(ChannelPayloadToTestFilters, ['channelName', 'action']);
+      //console.log('channel data packet ',channelDataPacket.props)
+    console.timeEnd('initPacket');
+
+    //console.log("CHANNEL DATA ALL ",channelDataPacket);
+    channelDataPacket.unPacked = true;
+    console.log("CHANNEL DATA ALL 2 ",channelDataPacket.srcElement);
+
+
+    return true;
+
+
+  })
+
 
 
   it('should create a stripped down unpacked data obj', ()=>{
