@@ -1,6 +1,9 @@
 const {expect, assert} = require('chai');
 import {ChannelPayloadToTestFilters} from '../mocks/channel-payload-data';
 import {ChannelPayloadFilter} from '../../spyne/utils/channel-payload-filter';
+import {ChannelPayload} from '../../spyne/channels/channel-payload-class';
+import {SpyneApp} from '../../spyne/spyne';
+
 const R = require('ramda');
 describe('should test channel payload filters parameter configuration', () => {
 
@@ -115,6 +118,7 @@ describe('should test channel payload filters boolean correctness', ()=>{
 
   const liSel = "#xqdlqmr";
 
+  const spyneApp = new SpyneApp({debug:true})
 
   beforeEach(function(){
 
@@ -224,7 +228,52 @@ describe('should test channel payload filters boolean correctness', ()=>{
 
   })
 
+  it('should test regular channel payload ', ()=>{
 
+/*
+
+    const {action, channelName, srcElement, payload} = ChannelPayloadToTestFilters;
+    console.log('spyne is is ',{action, channelName, srcElement, payload});
+    const re = /menu-\d/;
+    const actionCompare = "CHANNEL_ROUTE_CHANGE_EVENT";
+    const payloadCompare =  R.compose(R.test(re), R.path(['routeData', 'pageId']));
+    const cpFilter = new ChannelPayloadFilter({payload:payloadCompare, action:actionCompare});
+
+
+
+    const channelPayload = new ChannelPayload(channelName, action, payload, srcElement, {});
+
+    const payloadBool = cpFilter(channelPayload);
+
+    console.log('payload bool base is ',payloadBool);
+*/
+
+    return true;
+
+  })
+
+
+  it('should test unpacked channel payload ', ()=>{
+
+/*
+    const {action, channelName, srcElement, payload} = ChannelPayloadToTestFilters;
+    console.log('spyne is is ',{action, channelName, srcElement, payload});
+    const re = /menu-\d/;
+    const actionCompare = "CHANNEL_ROUTE_CHANGE_EVENT";
+    const payloadCompare =  R.compose(R.test(re), R.path(['routeData', 'pageId']));
+    const cpFilter = new ChannelPayloadFilter({payload:payloadCompare, action:actionCompare});
+
+
+
+    const channelPayload = new ChannelPayload(channelName, action, payload, srcElement, {});
+
+    const payloadBool = cpFilter(channelPayload);
+
+    console.log('payload unpacked base is ',payloadBool);*/
+
+    return true;
+
+  })
 
 
 

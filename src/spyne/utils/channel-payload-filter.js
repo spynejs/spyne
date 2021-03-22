@@ -239,7 +239,7 @@ export class ChannelPayloadFilter {
         }
 
 
-        console.log('o is ',o);
+        //console.log('o is ',o);
 
         return o;
       }

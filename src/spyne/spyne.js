@@ -1,4 +1,5 @@
 import { ChannelsDelegator } from './channels/channels-delegator';
+import { ChannelDataPacketGenerator } from './utils/channel-data-packet-generator';
 import { DomElement, DomEl } from './views/dom-element';
 import { ViewStreamElement } from './views/view-stream-element';
 import { ViewStreamSelector} from './views/view-stream-selector';
@@ -57,6 +58,7 @@ class SpyneApp {
     this.ChannelsController = ChannelsDelegator;
     this.ChannelsBase = Channel;
     this.ChannelPayloadItem = ChannelPayload;
+    this._channelDataPacketGenerator = new ChannelDataPacketGenerator();
     window.Spyne = this;
     let defaultConfig = {
       scrollLock: false,
@@ -115,6 +117,11 @@ class SpyneApp {
     nullHolder.appendToDom(document.body);
     nullHolder.props.el.style.cssText = 'display:none; opacity:0; pointer-events:none;';
     this.channels.init();
+  }
+
+
+  get createDataPacket(){
+    return this._channelDataPacketGenerator.createDataPacket;
   }
 
   /**
