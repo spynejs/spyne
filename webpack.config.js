@@ -27,7 +27,7 @@ let spynePlugins = [loaderOptionsPlugin];
 
 if (env === 'build') {
   outputFile = libraryName + '.min.js';
-  devToolValue = 'none';
+  devToolValue = false;
   externalsArr = [
     WebpackRxjsExternals(),
     {ramda : {
@@ -68,7 +68,7 @@ console.log("CONFIG IS ",process.env.BABEL_ENV );
 
 const config = {
   entry: path.join(__dirname, '/src/spyne/spyne.js'),
-  devtool: '',
+  devtool: false,
   output: {
     path: path.join(__dirname, '/lib'),
     filename: outputFile,
