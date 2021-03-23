@@ -23,10 +23,11 @@ export class ChannelPayload {
    */
   constructor(channelName, action, payload, srcElement, event) {
     let channel = channelName;
+    //payload = ChannelPayload.deepFreeze(payload);
 
-    let channelPayloadItemObj = { channelName, action, payload, srcElement, event };
-    Object.defineProperty(channelPayloadItemObj, 'payload', {get: () => clone(payload)});
-
+    let channelPayloadItemObj = { channelName, action, srcElement, event };
+   // Object.defineProperty(channelPayloadItemObj, 'payload', {get: () => clone(payload)});
+    channelPayloadItemObj['payload'] = ChannelPayload.deepFreeze(payload);
     /**
      * This is a convenience method that helps with destructuring by merging all properties.
      *
@@ -40,6 +41,7 @@ export class ChannelPayload {
      *
      */
 
+
     const isDebugMode =  pathEq(['Spyne','config', 'debug'], true)(window);
 
     if (isDebugMode === true){
@@ -51,7 +53,7 @@ export class ChannelPayload {
 
 
 
-    channelPayloadItemObj.props = () => mergeAll([{payload:channelPayloadItemObj.payload},channelPayloadItemObj.payload, { channel }, { event: event }, channelPayloadItemObj.srcElement, { action: channelPayloadItemObj.action }]);
+    channelPayloadItemObj.props = () => clone(mergeAll([{payload:channelPayloadItemObj.payload},channelPayloadItemObj.payload, { channel }, { event: event }, channelPayloadItemObj.srcElement, { action: channelPayloadItemObj.action }]));
 
 
     const channelActionsArr = window.Spyne.getChannelActions(channel);
@@ -61,6 +63,7 @@ export class ChannelPayload {
     if (channel === 'CHANNEL_ROUTE') {
       channelPayloadItemObj['location'] = ChannelPayload.getLocationData();
     }
+   // return window.Spyne.createDataPacket(channelPayloadItemObj, ['channelName', 'action']);
 
     return channelPayloadItemObj;
   }
@@ -89,6 +92,28 @@ export class ChannelPayload {
 
   static getStreamItem() {
 
+  }
+
+
+  static deepFreeze(o) {
+    try {
+      Object.freeze(o);
+      Object.getOwnPropertyNames(o).forEach(function(prop) {
+        if (o.hasOwnProperty(prop)
+            && o[prop] !== null
+            && (typeof o[prop] === "object" || typeof o[prop] === "function")
+            && !Object.isFrozen(o[prop])) {
+          ChannelDataPacketGenerator.deepFreeze(o[prop]);
+        }
+      });
+
+    } catch(e){
+      // console.log("FREEZE ERR ",{o,e});
+      return o;
+
+    }
+
+    return o;
   }
 
   static getMouseEventKeys() {

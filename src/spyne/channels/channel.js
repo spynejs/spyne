@@ -227,6 +227,7 @@ export class Channel {
   }
 
   getActionMethodForObservable(obj) {
+    obj.unpacked=true;
     const defaultFn = this.onViewStreamInfo.bind(this);
 
     let methodStr = path(['data', 'action'], obj);
@@ -315,6 +316,9 @@ export class Channel {
 
     let channelPayloadItem = new ChannelPayload(this.props.name, action, payload, srcElement, event);
     // console.log("CHANNEL STREEM ITEM ",channelPayloadItem);
+
+   // const onNextFrame = ()=>obs$.next(channelPayloadItem);
+    //requestAnimationFrame(onNextFrame)
 
     obs$.next(channelPayloadItem);
   }

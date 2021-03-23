@@ -86,19 +86,7 @@ export class ChannelFetch extends Channel {
   }
 
   onFetchReturned(streamItem) {
-    console.log("FETCH RETURNDED ",{streamItem})
-    const obj = {
-        myData: {}
-    }
-
-    Object.defineProperty(obj, 'myData', {
-      get: ()=>window.spyneTmp[streamItem]
-    })
-
-    console.log('obj is ',{obj})
-
-   // const data = window.spyneTmp[streamItem];
-    let payload = this.createChannelPayloadItem(obj);
+    let payload = this.createChannelPayloadItem(streamItem);
   }
 
   createChannelPayloadItem(payload, action = `${this.props.name}_DATA_EVENT`) {

@@ -118,7 +118,6 @@ describe('should test channel payload filters boolean correctness', ()=>{
 
   const liSel = "#xqdlqmr";
 
-  const spyneApp = new SpyneApp({debug:true})
 
   beforeEach(function(){
 
@@ -228,12 +227,51 @@ describe('should test channel payload filters boolean correctness', ()=>{
 
   })
 
+
+
+
+
+})
+
+describe('it should test channel payload filter with data packer ',()=>{
+
+
+  const liSel = "#xqdlqmr";
+
+
+  beforeEach(function(){
+    const spyneApp = new SpyneApp({debug:true})
+
+    const liElTmpl = `
+     <li class="page-card page-menu-4-card" id="xqdlqmr" name="PageCardView" data-vsid="xqdlqmr"><a href="/menu-3/sub-menu-4" data-channel="ROUTE" data-event-prevent-default="true" data-topic-id="sub-menu-2" data-nav-level="2">
+        <dl class="card-content">
+          <dt class="card-image">
+          </dt>
+          <dd class="card-text">
+            <h2>SUB-MENU-2</h2>
+             <p>Lorem ipsum dolor sit </p>
+          </dd>
+        </dl>
+      </li>   
+    `;
+
+
+    const ul = document.createElement('ul');
+    ul.innerHTML = liElTmpl;
+    document.body.appendChild(ul);
+
+
+    ChannelPayloadToTestFilters.el = document.querySelector(liSel);
+  })
+
+
+
   it('should test regular channel payload ', ()=>{
 
-/*
+
 
     const {action, channelName, srcElement, payload} = ChannelPayloadToTestFilters;
-    console.log('spyne is is ',{action, channelName, srcElement, payload});
+    //console.log('spyne is is ',{action, channelName, srcElement, payload});
     const re = /menu-\d/;
     const actionCompare = "CHANNEL_ROUTE_CHANGE_EVENT";
     const payloadCompare =  R.compose(R.test(re), R.path(['routeData', 'pageId']));
@@ -246,7 +284,6 @@ describe('should test channel payload filters boolean correctness', ()=>{
     const payloadBool = cpFilter(channelPayload);
 
     console.log('payload bool base is ',payloadBool);
-*/
 
     return true;
 
@@ -255,23 +292,28 @@ describe('should test channel payload filters boolean correctness', ()=>{
 
   it('should test unpacked channel payload ', ()=>{
 
-/*
-    const {action, channelName, srcElement, payload} = ChannelPayloadToTestFilters;
-    console.log('spyne is is ',{action, channelName, srcElement, payload});
-    const re = /menu-\d/;
-    const actionCompare = "CHANNEL_ROUTE_CHANGE_EVENT";
-    const payloadCompare =  R.compose(R.test(re), R.path(['routeData', 'pageId']));
-    const cpFilter = new ChannelPayloadFilter({payload:payloadCompare, action:actionCompare});
+
+
+        const {action, channelName, srcElement, payload} = ChannelPayloadToTestFilters;
+        //console.log('spyne is is ',{action, channelName, srcElement, payload});
+        const re = /menu-\d/;
+        const actionCompare = "CHANNEL_ROUTE_CHANGE_EVENT";
+        const payloadCompare =  R.compose(R.test(re), R.path(['routeData', 'pageId']));
+        const cpFilter = new ChannelPayloadFilter({payload:payloadCompare, action:actionCompare});
 
 
 
-    const channelPayload = new ChannelPayload(channelName, action, payload, srcElement, {});
+        const channelPayload = new ChannelPayload(channelName, action, payload, srcElement, {});
+        const payloadPacket = window.Spyne.createDataPacket(channelPayload, ['channelName', 'action']);
 
-    const payloadBool = cpFilter(channelPayload);
 
-    console.log('payload unpacked base is ',payloadBool);*/
+        const payloadBool = cpFilter(payloadPacket);
+        payloadPacket.unPacked = true;
 
-    return true;
+        //console.log('payload unpacked base is ',{payloadBool}, payloadPacket);
+
+        return true;
+
 
   })
 
@@ -279,5 +321,3 @@ describe('should test channel payload filters boolean correctness', ()=>{
 
 
 })
-
-

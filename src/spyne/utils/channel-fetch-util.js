@@ -1,21 +1,6 @@
 import { from } from 'rxjs';
 import { flatMap, map, publish, tap } from 'rxjs/operators';
-import {
-  compose,
-  prop,
-  defaultTo,
-  over,
-  lensProp,
-  has,
-  propEq,
-  when,
-  propIs,
-  allPass,
-  assoc,
-  pick,
-  mergeDeepRight,
-  path, clone,
-} from 'ramda';
+import {compose, prop, defaultTo, over, lensProp, has, propEq, when, propIs, allPass, assoc, pick, mergeDeepRight} from 'ramda';
 export class ChannelFetchUtil {
 // METHOD GET POST PUT PATCH DELETE
   /**
@@ -88,87 +73,17 @@ export class ChannelFetchUtil {
 
   static startWindowFetch(props, subscriber) {
     let { mapFn, url, serverOptions, responseType, debug } = props;
-    debug = true;
-
-    const onMapResponse = (data)=>{
-      let payload = {}
-      const obj = {payload};
-      const tmpLabel = `fetch-temp-${Math.floor(Math.random()*100000)}`;
-      if (window.spyneTmp===undefined){
-        window.spyneTmp = {};
-      }
-      window.spyneTmp[tmpLabel] = data;
-/*
-
-      Object.defineProperty(obj, payload, {
-
-        get: ()=>compose(clone, path(['spyneTmp', tmpLabel]))(window)
-      })
-*/
-
-
-        subscriber(tmpLabel);
-
-    }
-
-
-
-
-    window.fetch(url, serverOptions)
-        .then(r => r[responseType]())
-        .then(onMapResponse);
-
-
-
-   /* const tapLogDebug = p => console.log('DEBUG FETCH :', p);
+    const tapLogDebug = p => console.log('DEBUG FETCH :', p);
     const tapLog = debug === true ? tapLogDebug : () => {};
 
-    const addToTmpDir = (o)=>{
-      const tmpLabel = `fetch-${Math.floor(Math.random()*100000)}`;
-      let payloadPath = ['Spyne', 'config', 'tmp'];
-      let tmpDir = path(payloadPath, window);
-
-      if (tmpDir===undefined) {
-        payloadPath = ['spyneTmp'];
-        window['spyneTmp'] = {};
-        tmpDir = path(payloadPath, window);
-      }
-
-
-
-
-      const payloadPathAll = clone(payloadPath);
-      payloadPathAll.push(tmpLabel);
-      tmpDir[tmpLabel] = o;
-
-      let pl = {};
-      const d = {pl};
-
-      Object.defineProperties(d, {
-        pl: {
-          get: ()=> compose(clone, path(payloadPathAll))(window)
-
-        }
-      })
-
-
-      console.log('payload path all ',{payloadPathAll, payloadPath, d}, compose(clone, path(payloadPathAll))(window));
-
-      return d.pl;
-    }
-
-
-
-
     let response$ = from(window.fetch(url, serverOptions))
-      .pipe(tap(tapLog), flatMap(r => from(r[responseType]())),
-        map(addToTmpDir),
+    .pipe(tap(tapLog), flatMap(r => from(r[responseType]())),
         map(mapFn),
         publish());
 
     response$.connect();
 
-    response$.subscribe(subscriber);*/
+    response$.subscribe(subscriber);
   }
 
   static setMapFn(opts) {

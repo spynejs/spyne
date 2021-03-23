@@ -1,10 +1,15 @@
 import {ChannelDataPacket} from './channel-data-packet';
+import {deepMerge} from './deep-merge';
 import {
   keys,
   compose,
   pick,
   mergeAll,
+    reject,
+    omit,
   map,
+    path,
+  clone,
   ifElse,
   prop,
   invoker,
@@ -17,46 +22,92 @@ export class ChannelDataPacketGenerator {
 
 
     this._packetMap = new Map();
+   // this._packetObj = {};
     this._iter = 0;
     this.createFilterGateway = ChannelDataPacketGenerator.createFilterGateway.bind(this);
 
     //console.log('data packet controller constructor ',this._packetMap);
-
+    this.createDataPacket = ChannelDataPacketGenerator.createDataPacket.bind(this);
+    this.createLabel = ChannelDataPacketGenerator.createLabel.bind(this);
 
   }
 
-  createDataPacket(data={}, exposedPropsArr=[]){
-    const _packedData = data;
-    const label = ChannelDataPacketGenerator.createLabel();
+  static deepFreeze(o) {
+    try {
+      Object.freeze(o);
+      Object.getOwnPropertyNames(o).forEach(function(prop) {
+        if (o.hasOwnProperty(prop)
+            && o[prop] !== null
+            && (typeof o[prop] === "object" || typeof o[prop] === "function")
+            && !Object.isFrozen(o[prop])) {
+          ChannelDataPacketGenerator.deepFreeze(o[prop]);
+        }
+      });
+
+    } catch(e){
+     // console.log("FREEZE ERR ",{o,e});
+      return o;
+
+    }
+
+    return o;
+  }
+
+ static createDataPacket(_packedData={}, exposedPropsArr=[]){
+
+    _packedData =  ChannelDataPacketGenerator.deepFreeze(_packedData);
+
+    //console.log('data packet gen is ',  this)
+    const label = this.createLabel();
+   //console.time(label);
+    //window.spyneTmp[label]=_packedData;//(['payload'], _packedData);
+ //  this._packetObj[label]=_packedData;
+   const isPacket = true;
     this._packetMap.set(label, _packedData);
 
-    const _packedDataKeys = keys(data);
-    const isPacket = true;
+    const _packedDataKeys =  compose(keys, omit(['props']))(_packedData);
+    //console.log("PACKED KEYS IS ",_packedDataKeys)
     const _unPacked = false;
-    const timestamp = ChannelDataPacketGenerator.createTimeStamp();
+    const timestamp =  ChannelDataPacketGenerator.createTimeStamp();
 
-    const filterGateway = this.createFilterGateway(data);
-    const reduceProps = (acc={}, k) => {
+    const filterGateway = this.createFilterGateway(_packedData);
+   //console.timeEnd(label);
+
+   const reduceProps = (acc={}, k) => {
+     if (k ==='props'){
+       return acc;
+     }
+
       acc[k] = _packedData[k];
       return acc;
     }
-    const baseProps = exposedPropsArr.reduce(reduceProps, {});
+
+   const baseProps = exposedPropsArr.reduce(reduceProps, {});
 
       //console.log('base props ',{baseProps})
 
        // const baseProps = pick(exposedPropsArr, data);
-        const channelDataPacket = mergeAll([{timestamp, label, filterGateway}, baseProps]);
 
     const ifElseFn =  ifElse(prop('props'), invoker(0, 'props'), identity);
 
-    const getProps = () => {
+    const props = () => {
         return ifElseFn(this._packetMap.get(label));
     }
+   const props2 = () => {
+     return  this._packetMap.get(label).props();
+   }
+    const users = ()=>{
+     // return window.spyneTmp[label];
+      return this._packetMap.get(label).payload.users;
+     // return this._packetObj[label].payload.users;
+    }
+
+
 
     const addBackValuesToKeys = ()=> {
       const data = this._packetMap.get(label);
       const addValues = (k)=>{
-        //console.log('k value is ',{k})
+        //console.log('k value is ',{k},channelDataPacket)
         channelDataPacket[k] = data[k];
       }
 
@@ -70,6 +121,7 @@ export class ChannelDataPacketGenerator {
     }
 
 
+/*
 
     Object.defineProperties(channelDataPacket, {
 
@@ -89,7 +141,16 @@ export class ChannelDataPacketGenerator {
         });
 
 
+*/
+   const packedData = ()=>this._packetMap.get(label);
+   const unpack = addBackValuesToKeys;
 
+   let obj = Object.create(null);
+
+   let channelDataPacket = mergeAll([{timestamp, label, props,users, isPacket, packedData, unpack, filterGateway}, baseProps]);
+    channelDataPacket = deepMerge(channelDataPacket, obj);
+
+    //console.log('packet is ',channelDataPacket);
     return channelDataPacket;
 
   }
@@ -120,8 +181,8 @@ export class ChannelDataPacketGenerator {
   }
 
 
-  static createLabel() {
-    this._iter++;
+  static createLabel(iter=this._iter++) {
+
     return `packet_num_${this._iter}`;
   }
 
