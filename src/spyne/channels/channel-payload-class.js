@@ -53,7 +53,7 @@ export class ChannelPayload {
 
 
 
-    channelPayloadItemObj.props = () => clone(mergeAll([{payload:channelPayloadItemObj.payload},channelPayloadItemObj.payload, { channel }, { event: event }, channelPayloadItemObj.srcElement, { action: channelPayloadItemObj.action }]));
+    channelPayloadItemObj.props = () => clone(mergeAll([{payload:Object.freeze(channelPayloadItemObj.payload)},Object.freeze(channelPayloadItemObj).payload, { channel }, { event: event }, channelPayloadItemObj.srcElement, { action: channelPayloadItemObj.action }]));
 
 
     const channelActionsArr = window.Spyne.getChannelActions(channel);
@@ -96,6 +96,7 @@ export class ChannelPayload {
 
 
   static deepFreeze(o) {
+    return Object.freeze(o);
     try {
       Object.freeze(o);
       Object.getOwnPropertyNames(o).forEach(function(prop) {
@@ -103,12 +104,12 @@ export class ChannelPayload {
             && o[prop] !== null
             && (typeof o[prop] === "object" || typeof o[prop] === "function")
             && !Object.isFrozen(o[prop])) {
-          ChannelDataPacketGenerator.deepFreeze(o[prop]);
+          ChannelPayload.deepFreeze(o[prop]);
         }
       });
 
     } catch(e){
-      // console.log("FREEZE ERR ",{o,e});
+       console.log("FREEZE ERR ",{o,e});
       return o;
 
     }
