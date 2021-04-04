@@ -106,13 +106,7 @@ export class ChannelPayloadFilter {
    *
    */
   constructor(selector, filters={}, debugLabel, testMode) {
-    /**
-     *
-     * TODO: ADD BACK SEPARATE SELECTOR VALUEK --> IF FIRST IS STRING OR ARRAY THEN SELECTOR, FIRST OBJ IS PROPS, debugLabel is third and is string
-     * // first is strOrArrSelectors, obj, debugLabel --> if strOrArrSelectors is Object, then no str and is props
-     *
-     *
-     */
+
 
 
     const selectorIsObj = isObjectFn(selector);
@@ -120,7 +114,7 @@ export class ChannelPayloadFilter {
     if(selectorIsObj){
       filters = selector;
       selector = prop('selector', filters);
-      testMode = prop("testMode", filters);
+      testMode = testMode || prop("testMode", filters);
       if (prop('label', filters)){
         debugLabel = filters.label;
       } else {
@@ -157,6 +151,7 @@ export class ChannelPayloadFilter {
 
 
     let filtersArr = reject(isNil, [addStringSelectorFilter, addArraySelectorFilter, addDataFilter]);
+   // console.log('filtersArr is ',{selector})
 
       // IF ARRAY IS EMPTY ALWAYS RETURN FALSE;
 
@@ -164,7 +159,7 @@ export class ChannelPayloadFilter {
 
       if (filtersAreEmpty){
         filtersArr = [always(false)];
-        if (path(['Spyne', 'config', 'debug'], window) === true){
+        if (path(['Spyne', 'config', 'debug'], window) === true && testMode!==true){
           console.warn(`Spyne Warning: The Channel Filter, with selector: ${selector}, and propFilters:${propFilters} appears to be empty!`);
         }
 

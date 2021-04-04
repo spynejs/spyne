@@ -57,7 +57,7 @@ describe('should test the ChannelDataPacketGenerator', () => {
 
     //console.log("CHANNEL DATA ALL ",channelDataPacket);
     channelDataPacket.unPacked = true;
-    console.log("CHANNEL DATA ALL 2 ",channelDataPacket.srcElement);
+    //console.log("CHANNEL DATA ALL 2 ",channelDataPacket.srcElement);
 
 
     return true;

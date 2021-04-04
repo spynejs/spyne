@@ -26,7 +26,7 @@ describe('should test Channel Payload Class', () => {
 
 
 
-    console.log('channel payload class ',channnelPayload.props())
+    //console.log('channel payload class ',channnelPayload.props())
     //console.log('channel payload class ',window.Spyne.config.channels[channelName].payload[1].payload.isDeepLink)
 
     return true;

@@ -283,7 +283,7 @@ describe('it should test channel payload filter with data packer ',()=>{
 
     const payloadBool = cpFilter(channelPayload);
 
-    console.log('payload bool base is ',payloadBool);
+    //console.log('payload bool base is ',payloadBool);
 
     return true;
 
