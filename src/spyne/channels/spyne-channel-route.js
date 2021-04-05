@@ -299,7 +299,7 @@ export class SpyneChannelRoute extends Channel {
 */
 
 
-  static checkForEndRoute(pl, routeConfigJson = this.routeConfigJson){
+  static checkForEndRoute(pl, routeConfigJson = this.routeConfigJson, debugBool){
 
     const endRoute = compose(equals("true"), path(['payload', 'endRoute']))(pl);
     //console.log('pl and aend route',{endRoute, pl})
@@ -308,9 +308,8 @@ export class SpyneChannelRoute extends Channel {
       return pl;
     }
     const win = window || {};
-    const debug = compose(equals(true), path(['Spyne','config', 'debug']))(win);
-
-      const {payload} = pl;
+    const debug = debugBool !== undefined ? debugBool : compose(equals(true), path(['Spyne','config', 'debug']))(win);
+     const {payload} = pl;
 
 
       const getPropVal = (routePath) => {

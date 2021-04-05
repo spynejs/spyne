@@ -138,7 +138,7 @@ describe('Channel Route', () => {
 
    })
    it('should determine first param is missing', ()=>{
-     const updateForEndRoute = SpyneChannelRoute.checkForEndRoute(plNoPageId, routeConfigJson);
+     const updateForEndRoute = SpyneChannelRoute.checkForEndRoute(plNoPageId, routeConfigJson, false);
      //console.log('updateForEndRoute ',updateForEndRoute)
      expect(updateForEndRoute).to.deep.equal(plNoPageId);
 
@@ -146,7 +146,7 @@ describe('Channel Route', () => {
    it('should determine first param is missing and last param is entered', ()=>{
      const newPl = R.clone(plNoPageId);
      newPl.payload.randomNum = "thirty-two";
-     const updateForEndRoute = SpyneChannelRoute.checkForEndRoute(newPl, routeConfigJson);
+     const updateForEndRoute = SpyneChannelRoute.checkForEndRoute(newPl, routeConfigJson, false);
      //console.log('updateForEndRoute ',updateForEndRoute)
      expect(updateForEndRoute).to.deep.equal(newPl);
 

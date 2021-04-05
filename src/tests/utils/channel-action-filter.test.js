@@ -24,7 +24,7 @@ describe('channel action filter', () => {
     document.body.removeChild(document.getElementById('app'));
   });
   it('Create a new ChannelPayloadFilter', () => {
-    let filter = new ChannelPayloadFilter();
+    let filter = new ChannelPayloadFilter({test:true});
     let filterConstructor = filter.constructor.name;
     return filterConstructor.should.equal('Function');
   });
