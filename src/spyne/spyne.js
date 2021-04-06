@@ -13,6 +13,7 @@ import {ChannelFetchUtil} from './utils/channel-fetch-util';
 import { ChannelPayload } from './channels/channel-payload-class';
 import {ChannelPayloadFilter} from './utils/channel-payload-filter';
 import {SpyneUtilsChannelRoute} from './utils/spyne-utils-channel-route';
+import {SpynePlugin} from './spyne-plugins';
 import { deepMerge } from './utils/deep-merge';
 
 class SpyneApp {
@@ -179,5 +180,6 @@ export {
   ViewStreamBroadcaster,
   SpyneTrait,
   SpyneApp,
+  SpynePlugin,
   deepMerge
 };
