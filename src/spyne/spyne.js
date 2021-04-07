@@ -72,6 +72,9 @@ class SpyneApp {
       tmp:{
 
       },
+      plugins:{
+
+      },
       channels: {
         WINDOW: {
           mediqQueries: {

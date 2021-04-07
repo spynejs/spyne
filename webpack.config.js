@@ -20,7 +20,8 @@ const loaderOptionsPlugin = new webpack.LoaderOptionsPlugin({ options: {
 });
 
 let bannerPlugin = new webpack.BannerPlugin({
-    banner: `spynejs ${version}\nhttps://sypnejs.org\n(c) 2017-present Frank Batista`
+    banner: `spynejs ${version}\nhttps://sypnejs.org\n(c) 2017-present Frank Batista`,
+    entryOnly:true
 })
 
 let spynePlugins = [loaderOptionsPlugin];
