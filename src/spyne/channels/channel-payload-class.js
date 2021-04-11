@@ -1,4 +1,4 @@
-import {mergeAll,clone, compose, mergeDeepRight, mergeRight, pathEq, includes, pickAll, __} from 'ramda';
+import {mergeAll,clone, fromPairs,toPairs, compose, mergeDeepRight, mergeRight, pathEq, includes, pickAll, __} from 'ramda';
 
 export class ChannelPayload {
   /**
@@ -57,7 +57,14 @@ export class ChannelPayload {
 
 
 
-    channelPayloadItemObj.props = () => clone(mergeAll([{payload:channelPayloadItemObj.payload},channelPayloadItemObj.payload, { channel }, { event: event }, channelPayloadItemObj.srcElement, { action: channelPayloadItemObj.action }]));
+    channelPayloadItemObj.props = () => clone(mergeAll([
+        {payload:ChannelPayload.deepClone(channelPayloadItemObj.payload)},
+      channelPayloadItemObj.payload,
+        { channel },
+        { event: event },
+                channelPayloadItemObj.srcElement, {
+        action: channelPayloadItemObj.action }
+         ]));
 
 
     const channelActionsArr = window.Spyne.getChannelActions(channel);
@@ -110,6 +117,11 @@ export class ChannelPayload {
   static getStreamItem() {
 
   }
+
+  static deepClone(o) {
+    return compose(fromPairs, toPairs)(o);
+  }
+
 
 
   static deepFreeze(o) {
