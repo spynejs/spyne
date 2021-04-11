@@ -30,7 +30,7 @@ export class SpyneChannelLifecycle extends Channel {
   }
 
   onViewStreamInfo(obj) {
-    let {data, action, srcElement} = obj.props();
+    let {data, action, srcElement} = obj.payload;
     let payload = srcElement;
     payload['action'] = action;
     this.onSendEvent(action, payload);

@@ -21,9 +21,13 @@ export class ChannelPayload {
    * @property {UIEvent} event - = undefined; The UIEvent, if any.
    * @returns Validated ChannelPayload json object
    */
-  constructor(channelName, action, payload, srcElement, event) {
+  constructor(channelName, action, payload, srcElement, event, timeLabel) {
     let channel = channelName;
     //payload = ChannelPayload.deepFreeze(payload);
+
+    if(timeLabel){
+      console.time(timeLabel);
+    }
 
     let channelPayloadItemObj = { channelName, action, srcElement, event };
    // Object.defineProperty(channelPayloadItemObj, 'payload', {get: () => clone(payload)});
@@ -53,7 +57,7 @@ export class ChannelPayload {
 
 
 
-    channelPayloadItemObj.props = () => clone(mergeAll([{payload:Object.freeze(channelPayloadItemObj.payload)},Object.freeze(channelPayloadItemObj).payload, { channel }, { event: event }, channelPayloadItemObj.srcElement, { action: channelPayloadItemObj.action }]));
+    channelPayloadItemObj.props = () => clone(mergeAll([{payload:channelPayloadItemObj.payload},channelPayloadItemObj.payload, { channel }, { event: event }, channelPayloadItemObj.srcElement, { action: channelPayloadItemObj.action }]));
 
 
     const channelActionsArr = window.Spyne.getChannelActions(channel);
@@ -65,6 +69,19 @@ export class ChannelPayload {
     }
    // return window.Spyne.createDataPacket(channelPayloadItemObj, ['channelName', 'action']);
 
+    channelPayloadItemObj._dir = undefined;
+
+    Object.defineProperties(channelPayloadItemObj, {
+      $dir: {
+        get: () => channelPayloadItemObj._dir,
+        set: (val) => channelPayloadItemObj._dir=val
+      }
+
+    })
+
+    if(timeLabel){
+      console.timeEnd(timeLabel);
+    }
     return channelPayloadItemObj;
   }
 
@@ -96,7 +113,7 @@ export class ChannelPayload {
 
 
   static deepFreeze(o) {
-    return Object.freeze(o);
+    //return Object.freeze(o);
     try {
       Object.freeze(o);
       Object.getOwnPropertyNames(o).forEach(function(prop) {

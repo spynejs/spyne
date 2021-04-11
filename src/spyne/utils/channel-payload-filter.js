@@ -248,7 +248,7 @@ export class ChannelPayloadFilter {
     // ELEMENT FROM PAYLOADs
 
     let payloadIsNotProps = compose(equals('Function'),type, prop('props')  )(payload);
-    payload = payloadIsNotProps === true ? payload.props() : payload;
+    payload = payloadIsNotProps === true ? payload.payload : payload;
 
 
     let el = path(['el'], payload);

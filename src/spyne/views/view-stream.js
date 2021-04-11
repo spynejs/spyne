@@ -286,7 +286,8 @@ export class ViewStream {
       this.sourceStreams.raw$.next(obj);
     }
     let filterPayload =  defaultTo(always(true), actionFilter);
-    if (filterPayload(p.props()) === true) {
+
+    if (filterPayload(p.payload) === true) {
       //  p = omit(['dir$'],p);
       p = omit(['$dir'], p)
       //console.log(' payload vs ',p);
@@ -1049,20 +1050,18 @@ export class ViewStream {
 
   addChannel(str, skipFirst=false, sendDownStream = false, bool = false) {
 
-
-
-    if (skipFirst === true){
-
-    }
-
-
     const directionArr = sendDownStream === true ? this.$dirs.CI : this.$dirs.I;
     const mapDirection = p => {
-      let p2 = defaultTo({}, clone(p));
-      let dirObj = { $dir: directionArr };
-      return deepMerge(dirObj, p2);
+      //et p2 = defaultTo({}, clone(p));
+      let pl = p;// || {};
+      pl['$dir'] = directionArr;
+      return pl;
+      //return deepMerge(dirObj, p2);
       // Object.assign({$dir: directionArr}, clone(p))
     };
+
+
+
     const isLocalEventCheck = path(['srcElement', 'isLocalEvent']);
     const cidCheck = path(['srcElement', 'vsid']);
     const cidMatches = p => {
