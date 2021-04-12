@@ -140,7 +140,7 @@ describe('should test channel payload filters boolean correctness', ()=>{
     document.body.appendChild(ul);
 
 
-    ChannelPayloadToTestFilters.el = document.querySelector(liSel);
+    ChannelPayloadToTestFilters.srcElement.el = document.querySelector(liSel);
   })
 
 

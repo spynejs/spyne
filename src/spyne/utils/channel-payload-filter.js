@@ -6,6 +6,7 @@ import {
   identity,
   assoc,
   isNil,
+    find,
   allPass,
   tap,
   forEachObjIndexed,
@@ -21,13 +22,13 @@ import {
   __,
   omit,
   path,
-    call,
+  call,
   clone,
   flatten,
   any,
   type,
   curry,
-  mergeRight,
+  mergeRight, lte,
 } from 'ramda';
 const rMap = require('ramda').map;
 
@@ -115,15 +116,15 @@ export class ChannelPayloadFilter {
       filters = selector;
       selector = prop('selector', filters);
       testMode = testMode || prop("testMode", filters);
-      if (prop('label', filters)){
-        debugLabel = filters.label;
-      } else {
-        debugLabel = prop('debugLabel', filters);
-      }
 
     }
 
 
+    const debugLabelArr = [debugLabel,  prop('debugLabel', filters)]
+
+    const makeBool = b => Boolean(b);
+
+    debugLabel = compose(find(is(String)))(debugLabelArr);
 
     let props = omit(['debugLabel', 'label', 'selector', 'props', 'testMode', 'propFilters'], filters)
     if (filters.props!==undefined) {
@@ -140,8 +141,8 @@ export class ChannelPayloadFilter {
 
     // let {selector,propFilters,debugLabel} = filters;
 
-    const addStringSelectorFilter =  isNonEmptyStr(selector) ? ChannelPayloadFilter.filterSelector([selector]) : undefined;
-    const addArraySelectorFilter =   isNonEmptyArr(selector) ? ChannelPayloadFilter.filterSelector(selector) : undefined;
+    const addStringSelectorFilter =  isNonEmptyStr(selector) ? ChannelPayloadFilter.filterSelector([selector], debugLabel) : undefined;
+    const addArraySelectorFilter =   isNonEmptyArr(selector) ? ChannelPayloadFilter.filterSelector(selector, debugLabel) : undefined;
 
 
     const addDataFilter = isNonEmptyObjectFn(propFilters) ? ChannelPayloadFilter.filterData(propFilters, debugLabel) : undefined;
@@ -166,7 +167,7 @@ export class ChannelPayloadFilter {
       }
 
 
-   // console.log(" VALUES OF FILTERS ",{selector,propFilters,debugLabel,testMode, filtersAreEmpty});
+    //console.log(" VALUES OF FILTERS ",{selector,propFilters,filters,debugLabel,testMode, filtersAreEmpty});
     if (testMode === true){
         return {selector, propFilters, debugLabel, filters, testMode, filtersAreEmpty};
       }
@@ -176,6 +177,8 @@ export class ChannelPayloadFilter {
 
   static filterData(filterJson, filterdebugLabel) {
     const debugLabel = filterdebugLabel;
+
+    //console.log('filter data is ',{filterJson, debugLabel})
     let compareData = () => {
       // DO NOT ALLOW AN EMPTY OBJECT TO RETURN TRUEs
       if (isEmpty(filterJson)) {
@@ -213,21 +216,24 @@ export class ChannelPayloadFilter {
         if (debugLabel===undefined){
           return comparedObj;
         }
-        const propsBooleans = {};
-        const mapBools = (value,key)=>propsBooleans[key] = value(prop(key, comparedObj));
-        forEachObjIndexed(mapBools, filterJson);
-        console.log(`%c CHANNEL PAYLOAD FILTER DEBUGGER '${debugLabel}': `, "color:orange;",{propsBooleans, comparedObj});
+          const propsBooleans = {};
+          const mapBools = (value,key)=>propsBooleans[key] = value(prop(key, comparedObj));
+          forEachObjIndexed(mapBools, filterJson);
+          console.log(`%c CHANNEL PAYLOAD FILTER DEBUGGER ["${debugLabel}"] - values:    `, "color:orange;",{propsBooleans, comparedObj});
 
         return comparedObj;
-        };
+      };
 
       // END TAP LOGGER
 
       let fMethod = where(filterJson);
 
       let getFilteringObj =  (v)=>{
-        const {payload} = v || {};
-        return Object.assign({}, v, payload);
+        const {payload, srcElement, event} = v || {};
+        const o = Object.assign({}, v, event,srcElement, payload);
+
+        //console.log('o is ',o);
+        return o;
       }
 
 
@@ -243,14 +249,39 @@ export class ChannelPayloadFilter {
     return compareData();
   }
 
-  static checkPayloadSelector(arr, payload) {
+
+  static checkPayloadSelector(arr, debugLabel, srcPayload) {
     // ELEMENT FROM PAYLOADs
 
-    let payloadIsNotProps = compose(equals('Function'),type, prop('props')  )(payload);
-    payload = payloadIsNotProps === true ? payload.payload : payload;
+
+    const {payload, srcElement, event} = srcPayload || {};
+    //console.log('payload before ',{srcPayload, payload, srcElement, event})
+
+    const reduceFindEl = (acc, src) => {
+      const el = prop('el', src);
+      //console.log("EL IS ",{el, src, acc})
+      if (ChannelPayloadFilter.elIsDomElement(el) && acc===undefined){
+        acc = el;
+       // return acc;
+      }
+      return acc;
+    }
+
+    const el = [srcElement, payload, prop('srcElement', event), srcPayload].reduce(reduceFindEl, undefined);
 
 
-    let el = path(['el'], payload);
+    //console.log('el check ',{debugLabel, srcElement, payload, event, el})
+
+    //const o = Object.assign({}, srcPayload, event,srcElement, payload);
+
+    //console.log('o is ',o);
+
+
+    //let payloadIsNotProps = compose(equals('Function'),type, prop('props')  )(payload);
+    //payload = payloadIsNotProps === true ? payload.payload : payload;
+   // console.log('payload after ',{o})
+
+   // let el = path(['el'], o);
 
     // RETURN BOOLEAN MATCH WITH PAYLOAD EL
     const compareEls = (elCompare) => elCompare.isEqualNode((el));
@@ -262,6 +293,15 @@ export class ChannelPayloadFilter {
       // els array to boolean array
       return rMap(compareEls, nodeArr);
     };
+
+    if (debugLabel!==undefined){
+      let nodeArrResultsDebugger = compose(flatten, rMap(mapNodeArrWithEl))(arr);
+      const selectorsArr = arr;
+
+      console.log(`%c CHANNEL PAYLOAD FILTER DEBUGGER ["${debugLabel}"] - selectors: `, "color:orange;",{el, selectorsArr, nodeArrResultsDebugger});
+
+
+    }
 
     // CHECK IF PAYLOAD EL EXISTS
     if (typeof (el) !== 'object') {
@@ -277,10 +317,19 @@ export class ChannelPayloadFilter {
     return any(equals(true), nodeArrResult);
   }
 
+  static elIsDomElement(o) {
+    if (is(String,o)){
+      o = document.querySelector(o);
+    }
 
-  static filterSelector(selectorArr) {
+
+    return compose(lte(0), defaultTo(-1), prop('nodeType'))(o);
+  }
+
+
+  static filterSelector(selectorArr, debugLabel) {
     let arr = reject(isEmpty, selectorArr);
     let payloadCheck = curry(ChannelPayloadFilter.checkPayloadSelector);
-    return payloadCheck(arr);
+    return payloadCheck(arr, debugLabel);
   }
 }
