@@ -120,6 +120,10 @@ export class ChannelPayload {
 
   static deepClone(o) {
     return compose(fromPairs, toPairs)(o);
+    /*
+    const obj = compose(fromPairs, toPairs, clone)(o);
+    let o2 = Object.create(null);
+    return mergeDeepRight(o2,obj);*/
   }
 
 
@@ -138,7 +142,7 @@ export class ChannelPayload {
       });
 
     } catch(e){
-       console.log("FREEZE ERR ",{o,e});
+       //console.log("FREEZE ERR ",{o,e});
       return o;
 
     }

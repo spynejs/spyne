@@ -37,7 +37,25 @@ describe('should test Channel Payload Class', () => {
     expect(payloadIsFrozen).to.be.true;
   })
 
+  it('should freeze the uintarray', ()=>{
+    const payloadObj = {
+      myArray:   new Uint8Array(0),
+      myDataView: new DataView(new ArrayBuffer(32))
+
+    }
+
+    const channnelPayload = new ChannelPayload(channelName, action, payloadObj, srcElement, event)
+    const {payload} = channnelPayload;
+    const {myArray} = payload;
+    //console.log('payload is ', {payloadIsFrozen, section});
+   // console.log('payload is ',typeof(myArray));
+
+    expect(myArray).to.exist
+  })
+
+
   it('should clone and unfreeze the props payload', ()=>{
+
     const channnelPayload = new ChannelPayload(channelName, action, MSFData, srcElement, event)
     const {payload, channel} = channnelPayload.props();
     let {section} = payload.content;
@@ -48,7 +66,7 @@ describe('should test Channel Payload Class', () => {
       payloadPropsIsClone = false;
     }
 
-    console.log('payload props is ', {payloadPropsIsClone,channel, section});
+    //console.log('payload props is ', {payloadPropsIsClone,channel, section});
 
     expect(payloadPropsIsClone).to.be.true;
   })
@@ -80,11 +98,10 @@ describe('should test Channel Payload Class', () => {
       payloadPropsIsClone = false;
     }
 
-    console.log('payload props2 is ', {payloadPropsIsClone,channel, section}, section.linksData);
+    //console.log('payload props2 is ', {payloadPropsIsClone,channel, section}, section.linksData);
 
     expect(payloadPropsIsClone).to.be.true;
   })
-
 
 
 
@@ -107,7 +124,7 @@ describe('should test Channel Payload Class', () => {
       let {section} = payload.content;
 
      // section['ubu']=4;
-      console.log('channel PROPS payload class ',section)
+      //console.log('channel PROPS payload class ',section)
     }
 
     //getVals(channnelPayload);
