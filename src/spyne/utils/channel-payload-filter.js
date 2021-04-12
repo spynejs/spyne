@@ -226,21 +226,20 @@ export class ChannelPayloadFilter {
       let fMethod = where(filterJson);
 
       let getFilteringObj =  (v)=>{
-        let o = compose(ifElse(prop('props'), invoker(0, 'props'), identity))(v);
-        let {payload} = o;
-        if (typeof(payload)==='function'){
-          payload = payload();
-         o = mergeAll([o, payload])
-        }
-
-
-        //console.log('o is ',o);
-
-        return o;
+        const {payload} = v || {};
+        return Object.assign({}, v, payload);
       }
-      return compose( fMethod, tapLogger, defaultTo({}),  getFilteringObj);
-    };
 
+
+      return compose( fMethod, tapLogger, defaultTo({}),  getFilteringObj);
+
+    };
+   // const filterLabel = `filtering-${Math.floor(Math.random()*999999)}`;
+    //console.time(filterLabel);
+   // const val = compareData();
+
+    //console.timeEnd(filterLabel);
+    //return val;
     return compareData();
   }
 

@@ -285,12 +285,22 @@ export class ViewStream {
       obj['$dir'] = this.$dirs.C;
       this.sourceStreams.raw$.next(obj);
     }
-    let filterPayload =  defaultTo(always(true), actionFilter);
+    let filterPayload = defaultTo(always(true), actionFilter);
+    const filterLabel = `filtering-${Math.floor(Math.random() * 999999)}`;
 
-    if (filterPayload(p.payload) === true) {
+    if (actionFilter !== undefined) {
+     //console.time(filterLabel);
+
+
+    }
+    if (filterPayload(p) === true) {
       //  p = omit(['dir$'],p);
       p = omit(['$dir'], p)
-      //console.log(' payload vs ',p);
+      if (actionFilter !== undefined) {
+
+       // console.log(`pf - ${filterLabel}: `, p);
+        //console.timeEnd(filterLabel);
+      }
       runFunc(p);
       //this[str](p);
     }

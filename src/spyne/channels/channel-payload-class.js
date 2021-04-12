@@ -1,4 +1,17 @@
-import {mergeAll,clone, fromPairs,toPairs, compose, mergeDeepRight, mergeRight, pathEq, includes, pickAll, __} from 'ramda';
+import {
+  mergeAll,
+  clone,
+  fromPairs,
+  toPairs,
+  compose,
+  mergeDeepRight,
+  mergeRight,
+  pathEq,
+  includes,
+  pickAll,
+  __,
+  lte, defaultTo, prop,
+} from 'ramda';
 
 export class ChannelPayload {
   /**
@@ -129,11 +142,15 @@ export class ChannelPayload {
 
 
   static deepFreeze(o) {
-    //return Object.freeze(o);
+    //return o;
+   // return Object.freeze(o);
+    const elIsDomElement = compose(lte(0), defaultTo(-1), prop('nodeType'));
+
     try {
       Object.freeze(o);
       Object.getOwnPropertyNames(o).forEach(function(prop) {
         if (o.hasOwnProperty(prop)
+            && elIsDomElement(o[prop]) === false
             && o[prop] !== null
             && (typeof o[prop] === "object" || typeof o[prop] === "function")
             && !Object.isFrozen(o[prop])) {
