@@ -10,7 +10,7 @@ import {
   includes,
   pickAll,
   __,
-  lte, defaultTo, prop,
+  lte, defaultTo, prop, is, mapObjIndexed,
 } from 'ramda';
 
 export class ChannelPayload {
@@ -132,18 +132,20 @@ export class ChannelPayload {
   }
 
   static deepClone(o) {
-    return compose(fromPairs, toPairs)(o);
-    /*
-    const obj = compose(fromPairs, toPairs, clone)(o);
-    let o2 = Object.create(null);
-    return mergeDeepRight(o2,obj);*/
+
+    const isArr = is(Array);
+    const isObj = is(Object);
+    const isIter = ob => isArr(ob)===false && isObj(ob)===true;
+    const isIterable = isIter(o);
+    return isIterable ? compose(fromPairs, toPairs, clone)(o) : clone(o);
+
   }
 
 
 
   static deepFreeze(o) {
     //return o;
-   // return Object.freeze(o);
+    //return Object.freeze(o);
     const elIsDomElement = compose(lte(0), defaultTo(-1), prop('nodeType'));
 
     try {
