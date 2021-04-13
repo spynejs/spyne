@@ -165,10 +165,9 @@ export class DomElementTemplate {
     strMatches = strMatches === null ? [] : strMatches;
     //console.timeEnd(tempL+3)
 
-
-    const mapTmplLoop = (str, data) => str.replace(
-      DomElementTemplate.parseTmplLoopsRE(),
-      this.parseTheTmplLoop.bind(this));
+    const parseTmplLoopsRE = DomElementTemplate.parseTmplLoopsRE();
+    const parseTmplLoopFn =  this.parseTheTmplLoop.bind(this);
+    const mapTmplLoop = (str, data) => str.replace(parseTmplLoopsRE, parseTmplLoopFn);
     const findTmplLoopsPred = includes(__, strMatches);
 
     const checkForMatches = ifElse(
@@ -247,25 +246,49 @@ export class DomElementTemplate {
    // return typeof (template) === 'string' ? template : template.text;
   }
 
+  getDataValFromPathStr(pathStr, dataFile){
+    const pathArr = String(pathStr).split('.');
+    const pathData = path(pathArr, dataFile);
+    return pathData || '';
+  }
+
   addParams(str) {
+    //console.time(this.tempL+'9')
+    const re = /(\.)/gm;
+    // let dataValFn = compose(path(__, this.templateData), split('.'));
+     //let defaultIsEmptyStr = defaultTo('');
+
+ /*   const getDataValFromPath = (pathStr) => {
+      const pathArr = String(pathStr).split('.');
+      const pathData = path(pathArr, this.templateData);
+      return pathData || '';
+
+    }*/
+
     const replaceTags = (str, p1, p2, p3) => {
       //console.log('template data ',{p2}, this.templateData);
-      if (is(String, p2) && String(p2).indexOf('.')<0 && this.templateData[p2] !== undefined){
+
+      if (re.test(p2) === false && this.templateData[p2] !==undefined){
+        //console.log("IS SHORTEND ",p2,this.tempL+'9')
         return this.templateData[p2];
       }
+     // let dataVal = dataValFn(p2);
+      //return defaultIsEmptyStr(dataVal);
 
-      let dataVal = compose(path(__, this.templateData), split('.'))(p2);
-      let defaultIsEmptyStr = defaultTo('');
-      return defaultIsEmptyStr(dataVal);
+      return this.getDataValFromPathStr(p2, this.templateData);
     };
 
-    return str.replace(DomElementTemplate.swapParamsForTagsRE(), replaceTags);
+    const newVal = str.replace(DomElementTemplate.swapParamsForTagsRE(), replaceTags);
+    //console.timeEnd(this.tempL+'9')
+
+
+    return newVal;
   }
 
   parseTheTmplLoop(str, p1, p2, p3) {
 
     //console.time(this.tempL+'5b')
-
+    const reDot = /(\.)/gm;
     const subStr = p3;
     let elData = this.templateData[p2];
     const parseString = (item, str) => {
@@ -275,11 +298,19 @@ export class DomElementTemplate {
       const loopObj = (str, p1, p2) => {
         // DOT SYNTAX CHECK
 
-        if (is(String, p2) && String(p2).indexOf('.')<0 && obj[p2]!==undefined){
+        if (reDot.test(p2) === false && obj[p2] !==undefined) {
           return obj[p2]
         }
 
-        return compose(path(__, obj), split('.'))(p2);
+
+      /*  if (is(String, p2) && String(p2).indexOf('.')<0 && obj[p2]!==undefined){
+          return obj[p2]
+        }*/
+
+
+        return this.getDataValFromPathStr(p2, obj);
+
+       // return compose(path(__, obj), split('.'))(p2);
       };
       return str.replace(DomElementTemplate.swapParamsForTagsRE(), loopObj);
     };
