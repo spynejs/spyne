@@ -136,6 +136,8 @@ export class DomElementTemplate {
   constructor(template, data) {
     this.template = this.formatTemplate(template);
 
+    const tempL = `template-${Math.floor(Math.random()*99999)}`
+
     const checkForArrayData = ()=>{
       if (is(Array, data) === true) {
         data = {spyneData:data};
@@ -143,16 +145,26 @@ export class DomElementTemplate {
         this.template = this.template.replace("{{#}}", "{{#spyneData}}");
       }
     };
+    this.tempL=tempL
+
+    //console.time(tempL+1)
 
     checkForArrayData();
-
+    //console.timeEnd(tempL+1);
 
     this.templateData = data;
 
-    let strArr = DomElementTemplate.getStringArray(this.template);
+    //console.time(tempL+2)
 
+    let strArr = DomElementTemplate.getStringArray(this.template);
+    //console.timeEnd(tempL+2)
+
+
+    //console.time(tempL+3)
     let strMatches = this.template.match(DomElementTemplate.findTmplLoopsRE());
     strMatches = strMatches === null ? [] : strMatches;
+    //console.timeEnd(tempL+3)
+
 
     const mapTmplLoop = (str, data) => str.replace(
       DomElementTemplate.parseTmplLoopsRE(),
@@ -164,7 +176,11 @@ export class DomElementTemplate {
       mapTmplLoop,
       this.addParams.bind(this));
 
+    //console.time(tempL+4)
+
     this.finalArr = strArr.map(checkForMatches);
+    //console.timeEnd(tempL+4)
+
   }
 
   static getStringArray(template) {
@@ -200,10 +216,15 @@ export class DomElementTemplate {
 
 
   renderDocFrag() {
-    const html = this.finalArr.join('');
+
+      //console.time(this.tempL+'8')
+
+      const html = this.finalArr.join('');
     const isTableSubTag =   /^([^>]*?)(<){1}(\b)(thead|col|colgroup|tbody|td|tfoot|tr|th)(\b)([^\0]*)$/.test(html);
     const el = isTableSubTag ? html : document.createRange().createContextualFragment(html);
-    window.setTimeout(this.removeThis(), 10);
+      //console.timeEnd(this.tempL+'8')
+
+      window.setTimeout(this.removeThis(), 2);
     return el;
 
   }
@@ -222,6 +243,11 @@ export class DomElementTemplate {
 
   addParams(str) {
     const replaceTags = (str, p1, p2, p3) => {
+      //console.log('template data ',{p2}, this.templateData);
+      if (is(String, p2) && String(p2).indexOf('.')<0){
+        return this.templateData[p2] || '';
+      }
+
       let dataVal = compose(path(__, this.templateData), split('.'))(p2);
       let defaultIsEmptyStr = defaultTo('');
       return defaultIsEmptyStr(dataVal);
@@ -231,6 +257,9 @@ export class DomElementTemplate {
   }
 
   parseTheTmplLoop(str, p1, p2, p3) {
+
+    //console.time(this.tempL+'5b')
+
     const subStr = p3;
     let elData = this.templateData[p2];
     const parseString = (item, str) => {
@@ -239,11 +268,18 @@ export class DomElementTemplate {
     const parseObject = (obj, str) => {
       const loopObj = (str, p1, p2) => {
         // DOT SYNTAX CHECK
+
+        if (is(String, p2) && String(p2).indexOf('.')<0){
+          return obj[p2]
+        }
+
         return compose(path(__, obj), split('.'))(p2);
       };
       return str.replace(DomElementTemplate.swapParamsForTagsRE(), loopObj);
     };
     const mapStringData = (d) => {
+
+
       if (typeof (d) === 'string') {
         //console.log("MAP STR 1 ",{d, subStr});
 
@@ -262,6 +298,13 @@ export class DomElementTemplate {
     if (elData.length===undefined) {
           elData = [elData];
       }
-      return elData.map(mapStringData).join('');
+
+
+
+      const v = elData.map(mapStringData).join('');
+    //console.timeEnd(this.tempL+'5b')
+
+    return v;
+
   }
 }
