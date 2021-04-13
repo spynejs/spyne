@@ -143,6 +143,15 @@ class DomElement {
     return this.getProp('el');
   }
 
+  renderToHTMLString() {
+    this.execute();
+    this.props.template = undefined;
+    this.props.data = undefined;
+    this.props.attributes = undefined;
+    return this.getProp('el').outerHTML;
+  }
+
+
   returnIfDefined(obj, val) {
     if (val !== undefined) {
       let isObj = typeof (val) === 'undefined';

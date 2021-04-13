@@ -1,6 +1,7 @@
 import { ChannelsDelegator } from './channels/channels-delegator';
 import { ChannelDataPacketGenerator } from './utils/channel-data-packet-generator';
 import { DomElement, DomEl } from './views/dom-element';
+import {DomElementTemplate} from './views/dom-element-template';
 import { ViewStreamElement } from './views/view-stream-element';
 import { ViewStreamSelector} from './views/view-stream-selector';
 import { ViewStream } from './views/view-stream';
@@ -178,6 +179,7 @@ export {
     ChannelPayloadFilter,
   DomElement,
     DomEl,
+  DomElementTemplate,
   ViewStream,
     ViewStreamSelector,
   ViewStreamBroadcaster,

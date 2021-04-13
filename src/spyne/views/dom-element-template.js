@@ -229,6 +229,12 @@ export class DomElementTemplate {
 
   }
 
+  renderToString(){
+    const html = this.finalArr.join('');
+    window.setTimeout(this.removeThis(), 2);
+    return html;
+  }
+
 
 
   getTemplateString() {
@@ -244,8 +250,8 @@ export class DomElementTemplate {
   addParams(str) {
     const replaceTags = (str, p1, p2, p3) => {
       //console.log('template data ',{p2}, this.templateData);
-      if (is(String, p2) && String(p2).indexOf('.')<0){
-        return this.templateData[p2] || '';
+      if (is(String, p2) && String(p2).indexOf('.')<0 && this.templateData[p2] !== undefined){
+        return this.templateData[p2];
       }
 
       let dataVal = compose(path(__, this.templateData), split('.'))(p2);
@@ -269,7 +275,7 @@ export class DomElementTemplate {
       const loopObj = (str, p1, p2) => {
         // DOT SYNTAX CHECK
 
-        if (is(String, p2) && String(p2).indexOf('.')<0){
+        if (is(String, p2) && String(p2).indexOf('.')<0 && obj[p2]!==undefined){
           return obj[p2]
         }
 

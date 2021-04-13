@@ -132,7 +132,6 @@ export class ChannelPayload {
   }
 
   static deepClone(o) {
-
     const isArr = is(Array);
     const isObj = is(Object);
     const isIter = ob => isArr(ob)===false && isObj(ob)===true;
