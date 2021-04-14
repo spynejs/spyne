@@ -3,11 +3,11 @@ cache:
   directories:
     - ~/.npm
 services:
-  - xvfb    
+  - xvfb
 notifications:
   email: false
 node_js:
-  - '8'
+  - '14'
 before_script:
   - npm prune
 script:
