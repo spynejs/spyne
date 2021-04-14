@@ -336,7 +336,7 @@ export class SpyneChannelWindow extends Channel {
       window.Spyne.config.scrollLockX = window.scrollX;
       window.Spyne.config.scrollLockY = window.scrollY;
     };
-    let {action, scrollLock} = e.props();
+    let {action, scrollLock} = e.payload;
     window.Spyne.config.scrollLock = scrollLock;
     if (scrollLock === true){
       setScrollPos();
@@ -347,7 +347,7 @@ export class SpyneChannelWindow extends Channel {
 
   onSetElementToScroll(e){
 
-    let {config, scrollElement} = e.props();
+    let {config, scrollElement} = e.payload;
     config = deepMerge(this.domChannelConfig, config);
 
     this.createScrollObservable(config, scrollElement)

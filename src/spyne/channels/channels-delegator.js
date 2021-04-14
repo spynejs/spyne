@@ -8,7 +8,7 @@ import { validate } from '../utils/channel-config-validator';
 
 import { Subject } from 'rxjs';
 import { ChannelProxy } from './channel-proxy';
-import {propEq, pluck, prop, filter, reject, compose, join} from 'ramda';
+import {propEq, pluck, prop, filter, pathEq, clone, reject, compose, join} from 'ramda';
 const rMap = require('ramda').map;
 
 // import * as R from 'ramda';
@@ -88,15 +88,19 @@ export class ChannelsDelegator {
   createMainStreams() {
     this.routeStream = new SpyneChannelRoute();
     this.map.set('CHANNEL_ROUTE', this.routeStream);
+    window.Spyne.config.channels['CHANNEL_ROUTE'] = {};
 
     this.uiStream = new SpyneChannelUI();
     this.map.set('CHANNEL_UI', this.uiStream);
+    window.Spyne.config.channels['CHANNEL_UI'] = {};
 
     this.domStream = new SpyneChannelWindow();
     this.map.set('CHANNEL_WINDOW', this.domStream);
-
+    window.Spyne.config.channels['CHANNEL_WINDOW'] = {};
+    
     this.viewStreamLifecycle = new SpyneChannelLifecycle();
     this.map.set('CHANNEL_LIFECYCLE', this.viewStreamLifecycle);
+    window.Spyne.config.channels['CHANNEL_LIFECYCLE'] = {};
 
     this.routeStream.initializeStream();
     this.domStream.initializeStream();
@@ -108,6 +112,17 @@ export class ChannelsDelegator {
 
   registerStream(val) {
     let name = val.channelName;
+    const nameExists = this.map.has(name);
+    if (nameExists){
+      const isAlreadyRegisterd = compose(pathEq(['props', 'isRegistered'], true))(this.map.get(name));
+      if(isAlreadyRegisterd){
+        console.warn(`Spyne Warning: The Channel, ${name}, has already been registered!`);
+        return;
+      }
+    }
+
+    window.Spyne.config.channels[name] = {};
+
     this.map.set(name, val);
     val.initializeStream();
   }

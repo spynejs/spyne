@@ -18,6 +18,7 @@ import {
   always,
   fromPairs,
   path,
+ assocPath,
   equals,
   prop,
   apply,
@@ -71,6 +72,7 @@ export class Channel {
     this.createChannelActionsObj(CHANNEL_NAME, props.extendedActionsArr);
     props.name = CHANNEL_NAME;
     this.props = props;
+    this.props.isRegistered = false;
     this.props.isProxy = this.props.isProxy === undefined ? false : this.props.isProxy;
     this.props.sendCachedPayload = this.props.sendCachedPayload === undefined ? false : this.props.sendCachedPayload;
     this.sendPayloadToRouteChannel = new RouteChannelUpdater(this);
@@ -150,6 +152,9 @@ export class Channel {
     this.checkForTraits();
     this.onChannelInitialized();
     this.onRegistered();
+    this.props.isRegistered = true;
+
+
   }
 
   setTrace(bool) {
@@ -222,6 +227,7 @@ export class Channel {
   }
 
   getActionMethodForObservable(obj) {
+    obj.unpacked=true;
     const defaultFn = this.onViewStreamInfo.bind(this);
 
     let methodStr = path(['data', 'action'], obj);
@@ -306,8 +312,13 @@ export class Channel {
    */
   sendChannelPayload(action, payload, srcElement = {}, event = {}, obs$ = this.observer$) {
     // MAKES ALL CHANNEL BASE AND DATA STREAMS CONSISTENT
+
+
     let channelPayloadItem = new ChannelPayload(this.props.name, action, payload, srcElement, event);
     // console.log("CHANNEL STREEM ITEM ",channelPayloadItem);
+
+   // const onNextFrame = ()=>obs$.next(channelPayloadItem);
+    //requestAnimationFrame(onNextFrame)
 
     obs$.next(channelPayloadItem);
   }

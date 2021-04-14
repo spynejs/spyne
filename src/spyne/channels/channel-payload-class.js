@@ -1,4 +1,17 @@
-import {mergeAll,clone, compose, mergeDeepRight, mergeRight, pathEq, includes, pickAll, __} from 'ramda';
+import {
+  mergeAll,
+  clone,
+  fromPairs,
+  toPairs,
+  compose,
+  mergeDeepRight,
+  mergeRight,
+  pathEq,
+  includes,
+  pickAll,
+  __,
+  lte, defaultTo, prop, is, mapObjIndexed,
+} from 'ramda';
 
 export class ChannelPayload {
   /**
@@ -21,12 +34,17 @@ export class ChannelPayload {
    * @property {UIEvent} event - = undefined; The UIEvent, if any.
    * @returns Validated ChannelPayload json object
    */
-  constructor(channelName, action, payload, srcElement, event) {
+  constructor(channelName, action, payload, srcElement, event, timeLabel) {
     let channel = channelName;
+    //payload = ChannelPayload.deepFreeze(payload);
 
-    let channelPayloadItemObj = { channelName, action, payload, srcElement, event };
-    Object.defineProperty(channelPayloadItemObj, 'payload', {get: () => clone(payload)});
+    if(timeLabel){
+      console.time(timeLabel);
+    }
 
+    let channelPayloadItemObj = { channelName, action, srcElement, event };
+   // Object.defineProperty(channelPayloadItemObj, 'payload', {get: () => clone(payload)});
+    channelPayloadItemObj['payload'] = ChannelPayload.deepFreeze(payload);
     /**
      * This is a convenience method that helps with destructuring by merging all properties.
      *
@@ -40,6 +58,7 @@ export class ChannelPayload {
      *
      */
 
+
     const isDebugMode =  pathEq(['Spyne','config', 'debug'], true)(window);
 
     if (isDebugMode === true){
@@ -51,7 +70,14 @@ export class ChannelPayload {
 
 
 
-    channelPayloadItemObj.props = () => mergeAll([{payload:channelPayloadItemObj.payload},channelPayloadItemObj.payload, { channel }, { event: event }, channelPayloadItemObj.srcElement, { action: channelPayloadItemObj.action }]);
+    channelPayloadItemObj.props = () => clone(mergeAll([
+        {payload:ChannelPayload.deepClone(channelPayloadItemObj.payload)},
+      channelPayloadItemObj.payload,
+        { channel },
+        { event: event },
+                channelPayloadItemObj.srcElement, {
+        action: channelPayloadItemObj.action }
+         ]));
 
 
     const channelActionsArr = window.Spyne.getChannelActions(channel);
@@ -61,7 +87,21 @@ export class ChannelPayload {
     if (channel === 'CHANNEL_ROUTE') {
       channelPayloadItemObj['location'] = ChannelPayload.getLocationData();
     }
+   // return window.Spyne.createDataPacket(channelPayloadItemObj, ['channelName', 'action']);
 
+    channelPayloadItemObj._dir = undefined;
+
+    Object.defineProperties(channelPayloadItemObj, {
+      $dir: {
+        get: () => channelPayloadItemObj._dir,
+        set: (val) => channelPayloadItemObj._dir=val
+      }
+
+    })
+
+    if(timeLabel){
+      console.timeEnd(timeLabel);
+    }
     return channelPayloadItemObj;
   }
 
@@ -89,6 +129,43 @@ export class ChannelPayload {
 
   static getStreamItem() {
 
+  }
+
+  static deepClone(o) {
+    const isArr = is(Array);
+    const isObj = is(Object);
+    const isIter = ob => isArr(ob)===false && isObj(ob)===true;
+    const isIterable = isIter(o);
+    return isIterable ? compose(fromPairs, toPairs, clone)(o) : clone(o);
+
+  }
+
+
+
+  static deepFreeze(o) {
+    //return o;
+    //return Object.freeze(o);
+    const elIsDomElement = compose(lte(0), defaultTo(-1), prop('nodeType'));
+
+    try {
+      Object.freeze(o);
+      Object.getOwnPropertyNames(o).forEach(function(prop) {
+        if (o.hasOwnProperty(prop)
+            && elIsDomElement(o[prop]) === false
+            && o[prop] !== null
+            && (typeof o[prop] === "object" || typeof o[prop] === "function")
+            && !Object.isFrozen(o[prop])) {
+          ChannelPayload.deepFreeze(o[prop]);
+        }
+      });
+
+    } catch(e){
+       //console.log("FREEZE ERR ",{o,e});
+      return o;
+
+    }
+
+    return o;
   }
 
   static getMouseEventKeys() {

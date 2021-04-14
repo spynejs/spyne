@@ -20,14 +20,15 @@ const loaderOptionsPlugin = new webpack.LoaderOptionsPlugin({ options: {
 });
 
 let bannerPlugin = new webpack.BannerPlugin({
-    banner: `spynejs ${version}\nhttps://sypnejs.org\n(c) 2017-present Frank Batista`
+    banner: `spynejs ${version}\nhttps://sypnejs.org\n(c) 2017-present Frank Batista`,
+    entryOnly:true
 })
 
 let spynePlugins = [loaderOptionsPlugin];
 
 if (env === 'build') {
   outputFile = libraryName + '.min.js';
-  devToolValue = 'none';
+  devToolValue = false;
   externalsArr = [
     WebpackRxjsExternals(),
     {ramda : {
@@ -68,7 +69,7 @@ console.log("CONFIG IS ",process.env.BABEL_ENV );
 
 const config = {
   entry: path.join(__dirname, '/src/spyne/spyne.js'),
-  devtool: '',
+  devtool: false,
   output: {
     path: path.join(__dirname, '/lib'),
     filename: outputFile,

@@ -97,9 +97,9 @@ class DomElement {
     let addTmpl = (template) => {
       let data = this.getProp('data');
       data = is(Object, data) ? data : {};
-
       let frag = new DomElementTemplate(template, data).renderDocFrag();
-      el.appendChild(frag);
+      const fragIsString = is(String, frag);
+      fragIsString ? el.innerHTML = frag : el.appendChild(frag);
       return el;
     };
     let doNothing = (el) => el;
@@ -142,6 +142,15 @@ class DomElement {
     this.props.attributes = undefined;
     return this.getProp('el');
   }
+
+  renderToHTMLString() {
+    this.execute();
+    this.props.template = undefined;
+    this.props.data = undefined;
+    this.props.attributes = undefined;
+    return this.getProp('el').outerHTML;
+  }
+
 
   returnIfDefined(obj, val) {
     if (val !== undefined) {

@@ -4,6 +4,7 @@ const webpackEnv = {test:true};
 //const webpackConfig = require("./webpack.config")(webpackEnv);
 const webpackConfig = require("./webpack.config");
 webpackConfig.mode = 'development';
+webpackConfig.watch = true;
 webpackConfig.output.filename='[name].[hash:8].js';
 const fileGlob =  './src/tests/index.test.js';
 process.env.BABEL_ENV = 'test';
@@ -23,6 +24,7 @@ module.exports = function(config) {
       {
        test: /(\.js)$/,
        loader: 'babel-loader',
+
        options: {
          "babelrc" : false,
          "presets": [
@@ -56,7 +58,7 @@ module.exports = function(config) {
 
     // frameworks to use
     // available frameworks: https://npmjs.org/browse/keyword/karma-adapter
-    frameworks: ['mocha', 'chai'],
+    frameworks: ['webpack', 'mocha', 'chai'],
 
 
     // list of files / patterns to load in the browser

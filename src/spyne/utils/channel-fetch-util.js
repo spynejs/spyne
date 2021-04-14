@@ -77,7 +77,7 @@ export class ChannelFetchUtil {
     const tapLog = debug === true ? tapLogDebug : () => {};
 
     let response$ = from(window.fetch(url, serverOptions))
-      .pipe(tap(tapLog), flatMap(r => from(r[responseType]())),
+    .pipe(tap(tapLog), flatMap(r => from(r[responseType]())),
         map(mapFn),
         publish());
 

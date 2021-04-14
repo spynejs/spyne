@@ -3,6 +3,7 @@ import { internalViewStreamPayload, internvalRouteChannelPayload } from '../mock
 import { spyneDocsDomStr } from '../mocks/spyne-docs.mocks';
 
 import * as R from 'ramda';
+import {UnsubscriptionError} from 'rxjs';
 internalViewStreamPayload.srcElement.el = document.querySelector('.has-svg.github');
 describe('channel action filter', () => {
   let payload = internalViewStreamPayload;
@@ -23,7 +24,7 @@ describe('channel action filter', () => {
     document.body.removeChild(document.getElementById('app'));
   });
   it('Create a new ChannelPayloadFilter', () => {
-    let filter = new ChannelPayloadFilter();
+    let filter = new ChannelPayloadFilter({test:true});
     let filterConstructor = filter.constructor.name;
     return filterConstructor.should.equal('Function');
   });
@@ -40,6 +41,14 @@ describe('channel action filter', () => {
     let filterVal = filter(payload);
     expect(filterVal).to.eq(true);
   });
+
+
+  it('Selectors array as first prop contains match but no data', () => {
+    let filter = new ChannelPayloadFilter(['#header ul li:last-child', '#header ul li:first-child']);
+    let filterVal = filter(payload);
+    expect(filterVal).to.eq(true);
+  });
+
 
   it('Static Data and String Selector returns true', () => {
     let selector = '#header ul li:last-child';
@@ -78,21 +87,23 @@ describe('channel action filter', () => {
   });
 
   it('Empty Filter', () => {
-    let filter = new ChannelPayloadFilter();
-    let filterVal = filter(payload);
-    //console.log("EMPTY STRING ",filterVal);
-    expect(filterVal).to.eq(false);
+    const testMode = true;
+    let filter = new ChannelPayloadFilter({testMode});
+    const {selector, propFilters} = filter;
+    const isEmpty = selector === undefined && R.isEmpty(propFilters);
+    expect(isEmpty).to.eq(true);
   });
 
   it('Empty String selector with no data', () => {
-    let filter = new ChannelPayloadFilter('');
-    let filterVal = filter(payload);
-    //console.log("EMPTY STRING NO DATA",payload);
-    expect(filterVal).to.eq(false);
+    const testMode = true;
+    let filter = new ChannelPayloadFilter('',{},undefined,testMode);
+    const {selector, propFilters} = filter;
+    const isEmpty = R.isEmpty(selector) && R.isEmpty(propFilters);
+    expect(isEmpty).to.eq(true);
   });
 
-  it('Empty Arrays of selectors with no data', () => {
-    let filter = new ChannelPayloadFilter(['', '#header ul li:first-child']);
+  it('Arrays of selectors with no data', () => {
+    let filter = new ChannelPayloadFilter(['a.test', 'a.b'], {});
     let filterVal = filter(payload);
     expect(filterVal).to.eq(false);
   });

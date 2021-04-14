@@ -1,5 +1,7 @@
 import { ChannelsDelegator } from './channels/channels-delegator';
+import { ChannelDataPacketGenerator } from './utils/channel-data-packet-generator';
 import { DomElement, DomEl } from './views/dom-element';
+import {DomElementTemplate} from './views/dom-element-template';
 import { ViewStreamElement } from './views/view-stream-element';
 import { ViewStreamSelector} from './views/view-stream-selector';
 import { ViewStream } from './views/view-stream';
@@ -12,6 +14,7 @@ import {ChannelFetchUtil} from './utils/channel-fetch-util';
 import { ChannelPayload } from './channels/channel-payload-class';
 import {ChannelPayloadFilter} from './utils/channel-payload-filter';
 import {SpyneUtilsChannelRoute} from './utils/spyne-utils-channel-route';
+import {SpynePlugin} from './spyne-plugins';
 import { deepMerge } from './utils/deep-merge';
 
 class SpyneApp {
@@ -37,9 +40,9 @@ class SpyneApp {
    */
   constructor(config = {}) {
     this.channels = new ChannelsDelegator();
-    this.VERSION = '0.14.8';
+    this.VERSION = '0.16.0';
 /*!
- * Spyne 0.14.8
+ * Spyne 0.16.0
  * https://spynejs.org
  *
  * @license Copyright 2017-2020, Frank Batista, Relevant Context, LLC. All rights reserved.
@@ -57,13 +60,22 @@ class SpyneApp {
     this.ChannelsController = ChannelsDelegator;
     this.ChannelsBase = Channel;
     this.ChannelPayloadItem = ChannelPayload;
+    this._channelDataPacketGenerator = new ChannelDataPacketGenerator();
     window.Spyne = this;
     let defaultConfig = {
       scrollLock: false,
-      scrollLockX: 0,
+      scrollLockX: 31,
       scrollLockY: 0,
       debug: false,
+      utils: {
+        tableRE: /^([^>]*?)(<){1}(\b)(thead|col|colgroup|tbody|td|tfoot|tr|th)(\b)([^\0]*)$/
+      },
+      tmp:{
 
+      },
+      plugins:{
+
+      },
       channels: {
         WINDOW: {
           mediqQueries: {
@@ -89,7 +101,10 @@ class SpyneApp {
             }
           }
 
-        }
+        },
+
+        CHANNEL_ROUTE: {},
+        CHANNEL_UI: {},
       }
     };
     if (config !== undefined) {
@@ -107,6 +122,11 @@ class SpyneApp {
     nullHolder.appendToDom(document.body);
     nullHolder.props.el.style.cssText = 'display:none; opacity:0; pointer-events:none;';
     this.channels.init();
+  }
+
+
+  get createDataPacket(){
+    return this._channelDataPacketGenerator.createDataPacket;
   }
 
   /**
@@ -159,10 +179,12 @@ export {
     ChannelPayloadFilter,
   DomElement,
     DomEl,
+  DomElementTemplate,
   ViewStream,
     ViewStreamSelector,
   ViewStreamBroadcaster,
   SpyneTrait,
   SpyneApp,
+  SpynePlugin,
   deepMerge
 };

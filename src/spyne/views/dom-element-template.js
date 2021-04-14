@@ -1,5 +1,5 @@
 import {includes, __, ifElse, compose,path,split,prop, reject, is, defaultTo, isNil, isEmpty} from 'ramda';
-
+import {testDomTemplateForTableTags} from "../utils/viewstream-dom-utils";
 /**
  * @module DomElTemplate
  * @type util
@@ -136,6 +136,9 @@ export class DomElementTemplate {
   constructor(template, data) {
     this.template = this.formatTemplate(template);
 
+    //const tempL = `template-${Math.floor(Math.random()*99999)}`
+   // this.tempL=tempL
+
     const checkForArrayData = ()=>{
       if (is(Array, data) === true) {
         data = {spyneData:data};
@@ -144,19 +147,21 @@ export class DomElementTemplate {
       }
     };
 
-    checkForArrayData();
 
+    checkForArrayData();
 
     this.templateData = data;
 
+
     let strArr = DomElementTemplate.getStringArray(this.template);
+
 
     let strMatches = this.template.match(DomElementTemplate.findTmplLoopsRE());
     strMatches = strMatches === null ? [] : strMatches;
 
-    const mapTmplLoop = (str, data) => str.replace(
-      DomElementTemplate.parseTmplLoopsRE(),
-      this.parseTheTmplLoop.bind(this));
+    const parseTmplLoopsRE = DomElementTemplate.parseTmplLoopsRE();
+    const parseTmplLoopFn =  this.parseTheTmplLoop.bind(this);
+    const mapTmplLoop = (str, data) => str.replace(parseTmplLoopsRE, parseTmplLoopFn);
     const findTmplLoopsPred = includes(__, strMatches);
 
     const checkForMatches = ifElse(
@@ -165,6 +170,7 @@ export class DomElementTemplate {
       this.addParams.bind(this));
 
     this.finalArr = strArr.map(checkForMatches);
+
   }
 
   static getStringArray(template) {
@@ -197,11 +203,24 @@ export class DomElementTemplate {
      *
      * @desc Returns a document fragment generated from the template and any added data.
      */
+
+
   renderDocFrag() {
+
+
     const html = this.finalArr.join('');
-    const el = document.createRange().createContextualFragment(html);
-    window.setTimeout(this.removeThis(), 10);
+    const isTableSubTag =   /^([^>]*?)(<){1}(\b)(thead|col|colgroup|tbody|td|tfoot|tr|th)(\b)([^\0]*)$/.test(html);
+    const el = isTableSubTag ? html : document.createRange().createContextualFragment(html);
+
+      window.setTimeout(this.removeThis(), 2);
     return el;
+
+  }
+
+  renderToString(){
+    const html = this.finalArr.join('');
+    window.setTimeout(this.removeThis(), 2);
+    return html;
   }
 
   getTemplateString() {
@@ -210,21 +229,33 @@ export class DomElementTemplate {
 
   formatTemplate(template) {
     return prop('nodeName', template)==='SCRIPT' ? template.innerHTML : template;
+  }
 
-   // return typeof (template) === 'string' ? template : template.text;
+  getDataValFromPathStr(pathStr, dataFile){
+    const pathArr = String(pathStr).split('.');
+    const pathData = path(pathArr, dataFile);
+    return pathData || '';
   }
 
   addParams(str) {
+    //console.time(this.tempL+'9')
+    const re = /(\.)/gm;
+
     const replaceTags = (str, p1, p2, p3) => {
-      let dataVal = compose(path(__, this.templateData), split('.'))(p2);
-      let defaultIsEmptyStr = defaultTo('');
-      return defaultIsEmptyStr(dataVal);
+      if (re.test(p2) === false && this.templateData[p2] !==undefined){
+        return this.templateData[p2];
+      }
+      return this.getDataValFromPathStr(p2, this.templateData);
     };
 
-    return str.replace(DomElementTemplate.swapParamsForTagsRE(), replaceTags);
+   return str.replace(DomElementTemplate.swapParamsForTagsRE(), replaceTags);
+
   }
 
   parseTheTmplLoop(str, p1, p2, p3) {
+
+    //console.time(this.tempL+'5b')
+    const reDot = /(\.)/gm;
     const subStr = p3;
     let elData = this.templateData[p2];
     const parseString = (item, str) => {
@@ -233,22 +264,17 @@ export class DomElementTemplate {
     const parseObject = (obj, str) => {
       const loopObj = (str, p1, p2) => {
         // DOT SYNTAX CHECK
-        return compose(path(__, obj), split('.'))(p2);
+        if (reDot.test(p2) === false && obj[p2] !==undefined) {
+          return obj[p2]
+        }
+
+        return this.getDataValFromPathStr(p2, obj);
       };
       return str.replace(DomElementTemplate.swapParamsForTagsRE(), loopObj);
     };
-    const mapStringData = (d) => {
-      if (typeof (d) === 'string') {
-        //console.log("MAP STR 1 ",{d, subStr});
+    const mapStringData = (d) => typeof(d) === 'string' ? parseString(d, subStr) : parseObject(d, subStr);
 
-        d = parseString(d, subStr);
-       // console.log("MAP STR 2",{d, subStr});
 
-      } else {
-        d = parseObject(d, subStr);
-      }
-      return d;
-    };
     if (isNil(elData) === true || isEmpty(elData)) {
       return '';
     }
@@ -256,6 +282,9 @@ export class DomElementTemplate {
     if (elData.length===undefined) {
           elData = [elData];
       }
-      return elData.map(mapStringData).join('');
+
+     return elData.map(mapStringData).join('');
+
+
   }
 }

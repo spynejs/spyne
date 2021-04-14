@@ -16,7 +16,41 @@ import { ViewStreamObservable } from '../utils/viewstream-observables';
 import {ViewStreamSelector} from './view-stream-selector';
 import { Subject, of } from 'rxjs';
 import { mergeMap, map, takeWhile, filter, tap, skip, finalize } from 'rxjs/operators';
-import {pick, compose, isNil, all, isEmpty, forEach, toLower, either, findIndex, partial, apply, test, flatten ,prop, always, lte, defaultTo, propSatisfies, allPass, curry, nth, is,slice, path, omit, ifElse, lensPath, view, clone,  mergeRight, where, equals} from 'ramda';
+import {
+  pick,
+  compose,
+  isNil,
+  all,
+  isEmpty,
+  forEach,
+  toLower,
+  either,
+  findIndex,
+  partial,
+  apply,
+  test,
+  flatten,
+  prop,
+  always,
+  lte,
+  defaultTo,
+  propSatisfies,
+  allPass,
+  curry,
+  nth,
+  is,
+  slice,
+  path,
+  omit,
+  ifElse,
+  lensPath,
+  view,
+  clone,
+  mergeRight,
+  where,
+  equals,
+  assocPath,
+} from 'ramda';
 
 const rMap = require('ramda').map;
 
@@ -36,7 +70,7 @@ export class ViewStream {
    <li>LINK['ViewStreamBroadcaster', 'view-stream-broadcaster']: Takes the nested array from the <i>BroadcastEvents</i> method and creates RxJs observables that are delegated to either the CHANNEL_UI or CHANNEL_ROUTE
    <li>LINK['ViewStreamSelector', 'view-stream-selector']: Provides selector and CSS utility methods.
    <li>LINK['ViewStreamPayload', 'view-stream-payload']: Payload format for sending data to Channels using the <i>sendInfoToChannel</i> method.
-    </ul>
+   </ul>
    *
    *
    * <h4>Rendering</h4>
@@ -166,7 +200,7 @@ export class ViewStream {
     this.sink$ = new Subject();
     const ViewClass = this.props.viewClass;
     this.view = new ViewClass(this.sink$, {}, this.props.vsid,
-      this.props.id);// new this.props.viewClass(this.sink$);
+        this.props.id);// new this.props.viewClass(this.sink$);
     this.sourceStreams = this.view.sourceStreams;
     this._rawSource$ = this.view.getSourceStream();
     this._rawSource$['viewName'] = this.props.name;
@@ -186,7 +220,7 @@ export class ViewStream {
     const elIsDomElement = compose(lte(0), defaultTo(-1), prop('nodeType'));
     const elIsRendered = el => document.body.contains(el);
     const elIsReadyBool = propSatisfies(
-      allPass([elIsRendered, elIsDomElement]), 'el');
+        allPass([elIsRendered, elIsDomElement]), 'el');
 
     if (elIsReadyBool(this.props)) {
       this.updatePropsToMatchEl();
@@ -208,11 +242,11 @@ export class ViewStream {
         actionFilter = new ChannelPayloadFilter({selector:actionFilter});
       }
       this.props.extendedSourcesHashMethods[action] = channelFn(funcStr,
-        actionFilter);
+          actionFilter);
     };
     this.addActionListeners().forEach(createExtraStatesMethod);
     this.props.hashSourceMethods = this.setSourceHashMethods(
-      this.props.extendedSourcesHashMethods);
+        this.props.extendedSourcesHashMethods);
   }
 
   /**
@@ -251,11 +285,22 @@ export class ViewStream {
       obj['$dir'] = this.$dirs.C;
       this.sourceStreams.raw$.next(obj);
     }
-    let filterPayload =  defaultTo(always(true), actionFilter);
-    if (filterPayload(p.props()) === true) {
-    //  p = omit(['dir$'],p);
+    let filterPayload = defaultTo(always(true), actionFilter);
+    const filterLabel = `filtering-${Math.floor(Math.random() * 999999)}`;
+
+    if (actionFilter !== undefined) {
+     //console.time(filterLabel);
+
+
+    }
+    if (filterPayload(p) === true) {
+      //  p = omit(['dir$'],p);
       p = omit(['$dir'], p)
-      //console.log(' payload vs ',p);
+      if (actionFilter !== undefined) {
+
+       // console.log(`pf - ${filterLabel}: `, p);
+        //console.timeEnd(filterLabel);
+      }
       runFunc(p);
       //this[str](p);
     }
@@ -280,7 +325,7 @@ export class ViewStream {
   // ====================== MAIN STREAM METHODS ==========================
   initViewStream() {
     this._source$ = this._rawSource$.pipe(map(
-      (payload) => this.onMapViewSource(payload)), takeWhile(this.notGCSTATE));
+        (payload) => this.onMapViewSource(payload)), takeWhile(this.notGCSTATE));
 
     this.initAutoMergeSourceStreams();
     this.updateSourceSubscription(this._source$, true);
@@ -320,8 +365,8 @@ export class ViewStream {
     };
 
     this.parent$ = obs.pipe(
-      filter(filterOutNullData),
-      map(checkIfDisposeOrFadeout));
+        filter(filterOutNullData),
+        map(checkIfDisposeOrFadeout));
     this.updateSourceSubscription(this.parent$, false, 'PARENT');
     this.renderAndAttachToParent(attachData);
   }
@@ -330,12 +375,12 @@ export class ViewStream {
     let filterOutNullData = (data) => data !== undefined && data.action !==
         undefined;
     let child$ = obs$.pipe(
-      filter(filterOutNullData),
-      tap(p => this.tracer('addChildStraem do ', p)),
-      map((p) => {
-        return p;
-      }),
-      finalize(p => this.onChildCompleted(child$.source)));
+        filter(filterOutNullData),
+        tap(p => this.tracer('addChildStraem do ', p)),
+        map((p) => {
+          return p;
+        }),
+        finalize(p => this.onChildCompleted(child$.source)));
     this.updateSourceSubscription(child$, true, 'CHILD');
   }
 
@@ -360,6 +405,15 @@ export class ViewStream {
     return childCompletedData;
   }
 
+  static removeDataFromTmpDir(vsid){
+    const tmpDir = path(['Spyne', 'config', 'tmp'], window);
+    const tmpDirExists = tmpDir[vsid] !== undefined;
+    if(tmpDirExists){
+      //console.log('remove from tmp dir ', {tmpDirExists, vsid});
+      delete window.Spyne.config.tmp[vsid];
+    }
+  }
+
   initAutoMergeSourceStreams() {
     // ====================== SUBSCRIPTION SOURCE =========================
     let subscriber = {
@@ -373,6 +427,7 @@ export class ViewStream {
     //  =====================================================================
     // ========== METHODS TO CHECK FOR WHEN TO COMPLETE THE STREAM =========
     let completeAll = () => {
+
       this.props.el$ = undefined;
       this.uberSource$.complete();
       this.autoSubscriber$.complete();
@@ -395,7 +450,7 @@ export class ViewStream {
     let incrementObservablesThatCloses = () => { obsCount += 1; };
     this.autoMergeSubject$ = this.uberSource$.pipe(mergeMap((obsData) => {
       let branchObservable$ = obsData.observable.pipe(filter(
-        (p) => p !== undefined && p.action !== undefined), map(p => {
+          (p) => p !== undefined && p.action !== undefined), map(p => {
         // console.log('PAYLOAD IS ', p, this.constructor.name)
         let payload = deepMerge({}, p);
         payload.action = p.action;// addRelationToState(obsData.rel, p.action);
@@ -412,9 +467,9 @@ export class ViewStream {
     }));
     // ============================= SUBSCRIBER ==============================
     this.autoSubscriber$ = this.autoMergeSubject$
-    // .do((p) => console.log('SINK DATA ', this.constructor.name, p))
-      .pipe(filter((p) => p !== undefined && p.action !== undefined))
-      .subscribe(subscriber);
+        // .do((p) => console.log('SINK DATA ', this.constructor.name, p))
+        .pipe(filter((p) => p !== undefined && p.action !== undefined))
+        .subscribe(subscriber);
   }
 
   // ========================= MERGE STREAMS TO MAIN SUBSCRIBER =================
@@ -436,7 +491,7 @@ export class ViewStream {
     // ****USE REGEX AS PREDICATE CHECK FOR PAYLOAD.ACTION IN HASH METHODS OBJ
     // const hashAction = this.props.hashSourceMethods[payload.action];
     const hashActionStr = findStrOrRegexMatchStr(this.props.hashSourceMethods,
-      payload.action);
+        payload.action);
     const hashAction = this.props.hashSourceMethods[hashActionStr];
     // console.log('S PAYLOAD ', this.props.name, typeof (hashAction), payload);
 
@@ -489,13 +544,13 @@ export class ViewStream {
     this.openSpigot('VS_SPAWN_AND_ATTACH_TO_DOM', { attachData });
   }
 
-/*
-  attachChildToView(data) {
-    // let childRenderData = data.attachData;
-    // console.log('CHILD DATA ', this.constructor.name, childRenderData);
-    // this.openSpigot('ATTACH_CHILD_TO_SELF', {childRenderData});
-  }
-*/
+  /*
+    attachChildToView(data) {
+      // let childRenderData = data.attachData;
+      // console.log('CHILD DATA ', this.constructor.name, childRenderData);
+      // this.openSpigot('ATTACH_CHILD_TO_SELF', {childRenderData});
+    }
+  */
 
   // ===================================== EXTIRPATE METHODS =================================
   checkParentDispose(p) {
@@ -705,7 +760,7 @@ export class ViewStream {
 
   appendViewToParentEl(v, query, level = 1) {
     this.exchangeViewsWithChild(v,
-      this.setAttachParentData('appendChild', query, level));
+        this.setAttachParentData('appendChild', query, level));
   }
 
   /**
@@ -728,7 +783,7 @@ export class ViewStream {
    * */
   prependViewToParentEl(v, query, level = 1) {
     this.exchangeViewsWithChild(v,
-      this.setAttachParentData('prependChild', query, level));
+        this.setAttachParentData('prependChild', query, level));
   }
 
   /**
@@ -791,8 +846,8 @@ export class ViewStream {
     }
 
     this.viewsStreamBroadcaster = new ViewStreamBroadcaster(this.props,
-      this.broadcastEvents.bind(this));
-      this.afterBroadcastEvents();
+        this.broadcastEvents.bind(this));
+    this.afterBroadcastEvents();
   }
 
   addTraits(traits){
@@ -813,57 +868,57 @@ export class ViewStream {
 
   afterBroadcastEvents(){
 
-      if (this.isDevMode === true ){
-        const pullActionsFromList = (arr)=>arr[0];
-        const nestedActionsArr = this.addActionListeners();
+    if (this.isDevMode === true ){
+      const pullActionsFromList = (arr)=>arr[0];
+      const nestedActionsArr = this.addActionListeners();
 
-        let actionsArr = nestedActionsArr.map(pullActionsFromList);
+      let actionsArr = nestedActionsArr.map(pullActionsFromList);
 
-        const isValidArr = ViewStream.isValidNestedArr(nestedActionsArr);
+      const isValidArr = ViewStream.isValidNestedArr(nestedActionsArr);
 
-        if (isValidArr === false){
-          console.warn(`Spyne Warning: The array returned from addActionsListeners in ${this.props.name}, '${JSON.stringify(nestedActionsArr)}', does not appear to be properly formatted!`);
-        } else {
-          const checkForExistingMethod = (arr)=>{
-            const method = defaultTo('', arr[1]);
-            const isMethod = is(Function, this[method]);
-            if (isMethod === false){
-              console.warn(`Spyne Warning: The method in addActionListeners nested Array, '${JSON.stringify(arr)}', in ${this.props.name}, does not appear to exist!`);
-            }
-
+      if (isValidArr === false){
+        console.warn(`Spyne Warning: The array returned from addActionsListeners in ${this.props.name}, '${JSON.stringify(nestedActionsArr)}', does not appear to be properly formatted!`);
+      } else {
+        const checkForExistingMethod = (arr)=>{
+          const method = defaultTo('', arr[1]);
+          const isMethod = is(Function, this[method]);
+          if (isMethod === false){
+            console.warn(`Spyne Warning: The method in addActionListeners nested Array, '${JSON.stringify(arr)}', in ${this.props.name}, does not appear to exist!`);
           }
-          compose(forEach(checkForExistingMethod), defaultTo([]))(nestedActionsArr);
+
         }
-
-        const delayForProxyChannelResets = ()=>{
-          if (path(['props','addedChannels'], this) !== undefined) {
-            ViewStream.checkIfActionsAreRegistered.bind(this)(this.props.addedChannels, actionsArr);
-          }
-        };
-        this.setTimeout(delayForProxyChannelResets, 500);
+        compose(forEach(checkForExistingMethod), defaultTo([]))(nestedActionsArr);
       }
+
+      const delayForProxyChannelResets = ()=>{
+        if (path(['props','addedChannels'], this) !== undefined) {
+          ViewStream.checkIfActionsAreRegistered.bind(this)(this.props.addedChannels, actionsArr);
+        }
+      };
+      this.setTimeout(delayForProxyChannelResets, 500);
+    }
   }
   static checkIfActionsAreRegistered(channelsArr=[], actionsArr){
-      //const getActionsFn = path(['Spyne', 'channels', 'getChannelActions'], window);
-      if (actionsArr.length>0){
-        const getAllActions = (a)=>{
-          const getRegisteredActionsArr = (str)=>window.Spyne.channels.getChannelActions(str);
-          let arr =  a.map(getRegisteredActionsArr);
-          return flatten(arr);
-        }
-        const checkForMatch = (strMatch) => {
-          let re = new RegExp(strMatch);
-          let actionIndex = findIndex(test(re), getAllActionsArr)
-          if (actionIndex<0){
-            let channelSyntax = channelsArr.length === 1 ? "from added channel. \nDid you forget to add the Channel to this ViewStream?" : "from added channels. \nDid you forget to add the Channel to this ViewStream?";
-            console.warn(`Spyne Warning: The action, ${strMatch}, in ${this.props.name}, does not match any of the registered actions ${channelSyntax}, ${channelsArr.join(', ')}`)
-          }
-         //  const vsnum = ()=> R.test(new RegExp(str), "CHANNEL_ROUTE_TEST_EVENT")
-        }
-        let getAllActionsArr = getAllActions(channelsArr);
-        actionsArr.forEach(checkForMatch);
-
+    //const getActionsFn = path(['Spyne', 'channels', 'getChannelActions'], window);
+    if (actionsArr.length>0){
+      const getAllActions = (a)=>{
+        const getRegisteredActionsArr = (str)=>window.Spyne.channels.getChannelActions(str);
+        let arr =  a.map(getRegisteredActionsArr);
+        return flatten(arr);
       }
+      const checkForMatch = (strMatch) => {
+        let re = new RegExp(strMatch);
+        let actionIndex = findIndex(test(re), getAllActionsArr)
+        if (actionIndex<0){
+          let channelSyntax = channelsArr.length === 1 ? "from added channel" : "from added dchannels";
+          console.warn(`Spyne Warning: The action, ${strMatch}, in ${this.props.name}, does not match any of the registered actions ${channelSyntax}, ${channelsArr.join(', ')}`)
+        }
+        //  const vsnum = ()=> R.test(new RegExp(str), "CHANNEL_ROUTE_TEST_EVENT")
+      }
+      let getAllActionsArr = getAllActions(channelsArr);
+      actionsArr.forEach(checkForMatch);
+
+    }
 
   }
 
@@ -872,11 +927,11 @@ export class ViewStream {
   }
 
   beforeAfterRender() {
-/*    let dm2 = function(el) {
-      return function(str = '') {
-        return new DomItemSelectors(el, str);
-      };
-    };*/
+    /*    let dm2 = function(el) {
+          return function(str = '') {
+            return new DomItemSelectors(el, str);
+          };
+        };*/
 
     //this.props.el$ = dm2(this.props.el);
     this.setDataVSID();
@@ -919,12 +974,12 @@ export class ViewStream {
    * @example
    *
    *  broadcastEvents() {
-     *  // ADD BUTTON EVENTS AS NESTED ARRAYS
-     *  return [
-     *       ['#my-button', 'mouseover'],
-     *       ['#my-input', 'change']
-     *     ]
-     *   }
+   *  // ADD BUTTON EVENTS AS NESTED ARRAYS
+   *  return [
+   *       ['#my-button', 'mouseover'],
+   *       ['#my-input', 'change']
+   *     ]
+   *   }
    *
    *
    * */
@@ -964,7 +1019,7 @@ export class ViewStream {
   getChannel(channel) {
     let isValidChannel = c => registeredStreamNames().includes(c);
     let error = c => console.warn(
-      `channel name ${c} is not within ${registeredStreamNames}`);
+        `channel name ${c} is not within ${registeredStreamNames}`);
     let startSubscribe = (c) => {
       let obs$ = window.Spyne.channels.getStream(c).observer;
 
@@ -991,34 +1046,32 @@ export class ViewStream {
    * let routeChannel = this.addChannel('ROUTE');
    *
    *      addActionListeners() {
-     *           return [
-     *             ['CHANNEL_ROUTE_CHANGE_EVENT', 'onMapRouteEvent']
-     *           ]
-     *       }
+   *           return [
+   *             ['CHANNEL_ROUTE_CHANGE_EVENT', 'onMapRouteEvent']
+   *           ]
+   *       }
    *
    *       onMapRouteEvent(p) {
-     *          console.log('the route value is ', p);
-     *       }
+   *          console.log('the route value is ', p);
+   *       }
    *
    *
    * */
 
   addChannel(str, skipFirst=false, sendDownStream = false, bool = false) {
 
-
-
-    if (skipFirst === true){
-
-    }
-
-
     const directionArr = sendDownStream === true ? this.$dirs.CI : this.$dirs.I;
     const mapDirection = p => {
-      let p2 = defaultTo({}, clone(p));
-      let dirObj = { $dir: directionArr };
-      return deepMerge(dirObj, p2);
+      //et p2 = defaultTo({}, clone(p));
+      let pl = p;// || {};
+      pl['$dir'] = directionArr;
+      return pl;
+      //return deepMerge(dirObj, p2);
       // Object.assign({$dir: directionArr}, clone(p))
     };
+
+
+
     const isLocalEventCheck = path(['srcElement', 'isLocalEvent']);
     const cidCheck = path(['srcElement', 'vsid']);
     const cidMatches = p => {
@@ -1063,13 +1116,43 @@ export class ViewStream {
    *
    */
 
-  sendInfoToChannel(channelName, payload = {}, action = 'VIEWSTREAM_EVENT') {
+  sendInfoToChannel(channelName, pl = {}, action = 'VIEWSTREAM_EVENT') {
+    const payload = pl;
+
+
     let data = { payload, action };
+
+
     data.srcElement = compose(pick(['id','vsid','class','tagName']), prop('props'))(this);
     if (this.checkIfChannelExists(channelName) === true) {
-      let obs$ = of(data);
-      return new ViewStreamPayload(channelName, obs$, data);
-    }
+      if (/CHANNEL_LIFECYCLE/.test(action)===false){
+        const payloadPath = ['Spyne', 'config', 'tmp'];
+        const payloadPathAll = ['Spyne', 'config', 'tmp', this.props.vsid];
+        const tmpDir = path(payloadPath, window);
+        tmpDir[this.props.vsid] = pl;
+        const vsid = this.props.vsid;
+
+        Object.defineProperties(data, {
+          payload: {
+            get: ()=> compose(clone, path(payloadPathAll))(window)
+
+          }
+        })
+
+        const removePayload = ()=>ViewStream.removeDataFromTmpDir(vsid);
+        window.requestAnimationFrame(removePayload)
+
+      }
+        let obs$ = of(data);
+        return new ViewStreamPayload(channelName, obs$, data);
+
+      }
+
+
+
+
+
+
   }
 
   tracer(...args) {

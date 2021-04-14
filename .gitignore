@@ -9,3 +9,5 @@ admin/
 src/assets/media
 .nyc_output*%
 coverage/*
+lib
+!lib/spyne*.js

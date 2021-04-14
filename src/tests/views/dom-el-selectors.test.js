@@ -129,7 +129,7 @@ describe('Dom Item Selector', () => {
     let el$ =   ViewStreamSelector("ul#my-list");
     let el1 = el.querySelector('li:nth-child(1)');
     let liList = el$('li');
-    liList.setActiveItem('bar','li:nth-child(551)');
+    liList.setActiveItem('bar','li:nth-child(5)');
     let hasBarClassBool = el1.classList.contains('bar');
     expect(hasBarClassBool).to.eq(false);
   });

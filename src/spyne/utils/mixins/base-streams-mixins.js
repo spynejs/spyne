@@ -6,6 +6,7 @@ export function baseStreamsMixins() {
       console.log('stream mixin is ', str);
     },
     sendRoutePayload: function(obs, data) {
+      /**TODO: ADD A CHECK FOR END ROUTE AND TRANSFORM TO EMPTY*/
       return new ViewStreamPayload('CHANNEL_ROUTE', obs, data, 'subscribe');
     },
     sendUIPayload: function(obs, data) {
