@@ -113,7 +113,8 @@ class SpyneApp {
     }
 
 
-
+    //const ranNum = Math.random();
+    //console.log('ranNum is ',{ranNum})
     this.getChannelActions = (str) => window.Spyne.channels.getChannelActions(str);
     this.registerChannel = (val) => this.channels.registerStream(val);
     this.registerDataChannel = (obs$) => this.channels.registerStream(obs$);
