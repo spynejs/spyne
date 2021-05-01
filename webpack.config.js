@@ -24,6 +24,9 @@ let bannerPlugin = new webpack.BannerPlugin({
     entryOnly:true
 })
 
+//console.log("ENVI S HERE ===========",env);
+
+
 let spynePlugins = [loaderOptionsPlugin];
 
 if (env === 'build') {
@@ -38,7 +41,7 @@ if (env === 'build') {
         root: 'R'
       }}
   ];
-} else {
+} else if(env === 'dev') {
   outputFile = libraryName + '.js';
    moduleRulesArr.push(
       {
@@ -64,19 +67,13 @@ if (env === 'build') {
   )
 }
 
-console.log("CONFIG IS ",process.env.BABEL_ENV );
+//console.log("CONFIG IS ",process.env.BABEL_ENV );
 
 
 const config = {
   entry: path.join(__dirname, '/src/spyne/spyne.js'),
   devtool: false,
-  output: {
-    path: path.join(__dirname, '/lib'),
-    filename: outputFile,
-    library: 'spyne',
-    libraryTarget:  'umd',
-    umdNamedDefine: true
-  },
+
 
 
   externals: externalsArr,
@@ -90,5 +87,16 @@ const config = {
   },
   plugins: spynePlugins
 };
+//console.log("ENV IS ============ ",env);
+
+if (env!==undefined){
+  config['output'] = {
+    path: path.join(__dirname, '/lib'),
+        filename: outputFile,
+        library: 'spyne',
+        libraryTarget:  'umd',
+        umdNamedDefine: true
+  };
+}
 
 module.exports = config;

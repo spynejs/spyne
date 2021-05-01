@@ -3,9 +3,9 @@
 const webpackEnv = {test:true};
 //const webpackConfig = require("./webpack.config")(webpackEnv);
 const webpackConfig = require("./webpack.config");
-webpackConfig.mode = 'development';
+webpackConfig.mode = 'none';
 webpackConfig.watch = true;
-webpackConfig.output.filename='[name].[hash:8].js';
+//webpackConfig.output.filename='[name].[hash:8].js';
 const fileGlob =  './src/tests/index.test.js';
 process.env.BABEL_ENV = 'test';
 //const rxjs = require("rxjs");
@@ -43,7 +43,7 @@ module.exports = function(config) {
        }
 
   );
-  console.log("CONFIG KARMA ",webpackConfig);
+  //console.log("CONFIG KARMA ",webpackConfig);
 
 
   config.set({
