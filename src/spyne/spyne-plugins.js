@@ -12,14 +12,14 @@ export class SpynePlugin {
     }
 
 
-     console.log("CONFIG AND PROPS ",{config, props});
+     //console.log("CONFIG AND PROPS ",{config, props});
 
     this.name = name || 'empty';
     this.props.name = name;
     config = SpynePlugin.mergeDefaultConfig(config, this.defaultConfig());
     this.props.parentEl = parentEl || SpynePlugin.createParentEl();
     this.props.spyneApp = SpynePlugin.getSpyneApp(name, config);
-    console.log("SPYNE APP ",{name},this.name,this.props.spyneApp);
+    //console.log("SPYNE APP ",{name},this.name,this.props.spyneApp);
     if (this.props.spyneApp===false){
       //console.warn(`Spyne Warning: Spyne Plugin, ${this.name} already exists!`)
       return false;
