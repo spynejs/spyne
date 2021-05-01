@@ -1,17 +1,25 @@
 import {SpyneApp, ViewStream, DomElement} from './spyne';
-import {prop, path, is, pathSatisfies} from 'ramda';
+import {prop, path, is, clone, mergeRight, pathSatisfies} from 'ramda';
 export class SpynePlugin {
 
   constructor(props={}) {
     let {name, config, parentEl} = props;
     this.props = props;
 
+
+    if (config===undefined){
+      config = clone(props);
+    }
+
+
+     //console.log("CONFIG AND PROPS ",{config, props});
+
     this.name = name || 'empty';
     this.props.name = name;
     config = SpynePlugin.mergeDefaultConfig(config, this.defaultConfig());
     this.props.parentEl = parentEl || SpynePlugin.createParentEl();
     this.props.spyneApp = SpynePlugin.getSpyneApp(name, config);
-    console.log("SPYNE APP ",{name},this.name,this.props.spyneApp);
+    //console.log("SPYNE APP ",{name},this.name,this.props.spyneApp);
     if (this.props.spyneApp===false){
       //console.warn(`Spyne Warning: Spyne Plugin, ${this.name} already exists!`)
       return false;
@@ -87,7 +95,7 @@ export class SpynePlugin {
         });
         document.body.appendChild(pluginEl.render());
         const el = document.getElementById('spyne-plugins')
-        el.style.cssText="position:absolute; top:0;left:0;width:100%;height:100%;min-height:100vh; pointer-events:none";
+        el.style.cssText="position:absolute; top:0;left:0;width:100%;height:100%;min-height:100vh;z-index:1000000; pointer-events:none";
         return el;
       }
       return pluginEl || createPluginEl();
