@@ -117,7 +117,8 @@ describe('should test channel payload filters parameter configuration', () => {
 describe('should test channel payload filters boolean correctness', ()=>{
 
   const liSel = "#xqdlqmr";
-
+  SpyneApp.init({debug:true})
+  const spyneApp = SpyneApp;
 
   beforeEach(function(){
 
@@ -237,10 +238,10 @@ describe('it should test channel payload filter with data packer ',()=>{
 
 
   const liSel = "#xqdlqmr";
+   SpyneApp.init({debug:true})
 
-
+    const spyneApp = SpyneApp;
   beforeEach(function(){
-    const spyneApp = new SpyneApp({debug:true})
 
     const liElTmpl = `
      <li class="page-card page-menu-4-card" id="xqdlqmr" name="PageCardView" data-vsid="xqdlqmr"><a href="/menu-3/sub-menu-4" data-channel="ROUTE" data-event-prevent-default="true" data-topic-id="sub-menu-2" data-nav-level="2">
@@ -304,7 +305,7 @@ describe('it should test channel payload filter with data packer ',()=>{
 
 
         const channelPayload = new ChannelPayload(channelName, action, payload, srcElement, {});
-        const payloadPacket = window.Spyne.createDataPacket(channelPayload, ['channelName', 'action']);
+        const payloadPacket = SpyneApp.createDataPacket(channelPayload, ['channelName', 'action']);
 
 
         const payloadBool = cpFilter(payloadPacket);

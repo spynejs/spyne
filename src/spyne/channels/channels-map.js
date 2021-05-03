@@ -4,16 +4,17 @@ import { SpyneChannelRoute } from './spyne-channel-route';
 import { SpyneChannelUI } from './spyne-channel-ui';
 import { SpyneChannelWindow } from './spyne-channel-window';
 import { SpyneChannelLifecycle } from './spyne-channel-lifecycle';
-import { validate } from '../utils/channel-config-validator';
+//import { validate } from '../utils/channel-config-validator';
 
 import { Subject } from 'rxjs';
 import { ChannelProxy } from './channel-proxy';
 import {propEq, pluck, prop, filter, pathEq, clone, reject, compose, join} from 'ramda';
 const rMap = require('ramda').map;
+const _map = new Map();
 
 // import * as R from 'ramda';
 
-export class ChannelsDelegator {
+export class ChannelsMap {
   /**
    * @module ChannelsDelegator
    * @type internal
@@ -28,14 +29,18 @@ export class ChannelsDelegator {
 
   constructor() {
     this.addMixins();
-    this.map = new Map();
+    //_map = new Map();
 
     // console.log('Rx is ',Rx);
     // console.log('RX IS ', Subject);
-    this.map.set('DISPATCHER', new Subject());
-    this.listRegisteredChannels = ChannelsDelegator.listRegisteredChannels.bind(this);
-    this.getChannelsList = ChannelsDelegator.getChannelsList.bind(this);
+    _map.set('DISPATCHER', new Subject());
+    this.listRegisteredChannels = ChannelsMap.listRegisteredChannels.bind(this);
+    this.getChannelsList = ChannelsMap.getChannelsList.bind(this);
     //window.setTimeout(this.checkForMissingChannels.bind(this), 8000);
+  }
+
+  get map(){
+    return _map;
   }
 
   static getChannelsList() {
@@ -79,27 +84,29 @@ export class ChannelsDelegator {
     this.createMainStreams();
   }
 
+/*
   createObserver(obj) {
     // RIGHT NOW THIS CREATES THE DISPATCHER STREAM
     validate(obj.validations, obj.init);
-    this.map.set(obj.init.name, obj.init.observable());
+    _map.set(obj.init.name, obj.init.observable());
   }
+*/
 
   createMainStreams() {
     this.routeStream = new SpyneChannelRoute();
-    this.map.set('CHANNEL_ROUTE', this.routeStream);
+    _map.set('CHANNEL_ROUTE', this.routeStream);
     //window.Spyne.config.channels['CHANNEL_ROUTE'] = {};
 
     this.uiStream = new SpyneChannelUI();
-    this.map.set('CHANNEL_UI', this.uiStream);
+    _map.set('CHANNEL_UI', this.uiStream);
     //window.Spyne.config.channels['CHANNEL_UI'] = {};
 
     this.domStream = new SpyneChannelWindow();
-    this.map.set('CHANNEL_WINDOW', this.domStream);
+    _map.set('CHANNEL_WINDOW', this.domStream);
    // window.Spyne.config.channels['CHANNEL_WINDOW'] = {};
 
     this.viewStreamLifecycle = new SpyneChannelLifecycle();
-    this.map.set('CHANNEL_LIFECYCLE', this.viewStreamLifecycle);
+    _map.set('CHANNEL_LIFECYCLE', this.viewStreamLifecycle);
     //window.Spyne.config.channels['CHANNEL_LIFECYCLE'] = {};
 
     this.routeStream.initializeStream();
@@ -107,14 +114,14 @@ export class ChannelsDelegator {
   }
 
   addKeyEvent(key) {
-    this.map.get('UI').addKeyEvent(key);
+    _map.get('UI').addKeyEvent(key);
   }
 
   registerStream(val) {
     let name = val.channelName;
-    const nameExists = this.map.has(name);
+    const nameExists = _map.has(name);
     if (nameExists){
-      const isAlreadyRegisterd = compose(pathEq(['props', 'isRegistered'], true))(this.map.get(name));
+      const isAlreadyRegisterd = compose(pathEq(['props', 'isRegistered'], true))(_map.get(name));
       if(isAlreadyRegisterd){
         console.warn(`Spyne Warning: The Channel, ${name}, has already been registered!`);
         return;
@@ -123,30 +130,30 @@ export class ChannelsDelegator {
 
    // window.Spyne.config.channels[name] = {};
 
-    this.map.set(name, val);
+    _map.set(name, val);
     val.initializeStream();
   }
 
   getChannelActions(str) {
-    return this.map.get(str).addRegisteredActions();
+    return _map.get(str).addRegisteredActions();
   }
 
   getProxySubject(name, isReplaySubject = false) {
     let subjectType = isReplaySubject === true ? 'replaySubject' : 'subject';
 
-    return this.map.get(name)[subjectType];
+    return _map.get(name)[subjectType];
   }
 
   testStream(name) {
-    return this.map.get(name) !== undefined;
+    return _map.get(name) !== undefined;
   }
 
   getStream(name) {
     if (this.testStream(name) === false) {
-      this.map.set(name, new ChannelProxy(name));
+      _map.set(name, new ChannelProxy(name));
     }
 
-    return this.map.get(name);
+    return _map.get(name);
   }
 
   addMixins() {

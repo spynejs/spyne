@@ -1,5 +1,5 @@
 import { uiValidations } from '../channels/channels-config';
-import { validate } from '../utils/channel-config-validator';
+//import { validate } from '../utils/channel-config-validator';
 import { gc } from '../utils/gc';
 
 export class ViewStreamPayload {
@@ -25,7 +25,8 @@ export class ViewStreamPayload {
       'data': data,
       'action': action
     };
-    this.getValidationChecks(name);
+   // this.getValidationChecks(name);
+    this.sendToDirectorStream(this.options);
   }
   getValidationChecks(n) {
     let left  = e => console.warn(e);
@@ -38,9 +39,9 @@ export class ViewStreamPayload {
     }
   }
   onRunValidations(checks) {
-    validate(checks(), this.options).fold(
+    /*validate(checks(), this.options).fold(
       this.onError.bind(this),
-      this.onSuccess.bind(this));
+      this.onSuccess.bind(this));*/
   }
   onPayloadValidated(p) {
     this.sendToDirectorStream(p);

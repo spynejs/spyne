@@ -70,12 +70,12 @@ module.exports = function(config) {
       { pattern: './node_modules/rxjs/**/*.js', included:false,    watched: false },
 
 
-      {pattern: './src/tests/*.test.js', watched: true},
+      {pattern: './src/tests/index.test.js', watched: true},
 
-      {pattern: './src/tests/channels/*.test.js', watched: true},
+      //{pattern: './src/tests/channels/*.test.js', watched: true},
 
-      {pattern: './src/tests/utils/*.test.js', watched: true},
-      {pattern: './src/tests/views/*.test.js', watched: true}
+    //  {pattern: './src/tests/utils/*.test.js', watched: true},
+     // {pattern: './src/tests/views/*.test.js', watched: true}
     ],
 
 
