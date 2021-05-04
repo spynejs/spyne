@@ -105,7 +105,7 @@ class SpyneApplication {
       }
     };
     if (config !== undefined) {
-       config = SpyneAppProperties.initialize(defaultConfig, config);
+       config = SpyneAppProperties.initialize(defaultConfig, config, _channels);
        window.Spyne['config'] = config;
       //config = SpyneUtilsChannelRoute.conformRouteObject(config);
       //window.Spyne['config'] = deepMerge(defaultConfig, config)

@@ -12,7 +12,8 @@ class SpyneAppPropertiesClass{
 
   }
 
-  initialize(defaultConfig={}, config={}){
+  initialize(defaultConfig={}, config={}, channelsMap=new Map()){
+    _channels = channelsMap;
     const userConfig = SpyneUtilsChannelRoute.conformRouteObject(config);
     _config = deepMerge(defaultConfig, userConfig);
     console.log("CONFIG IN PROPS IS ",{_config})
@@ -25,19 +26,28 @@ class SpyneAppPropertiesClass{
     return _config;
   }
 
-  listChannels(){
-
-
+  /**
+   * This is mostly used for debugging purposes
+   *
+   * @example
+   * TITLE['<h4>Listing the registereed Channels in the browser console</h4>']
+   * SpyneApp.listChannels();
+   *
+   * @returns A list of all registered channels
+   */
+  static listChannels() {
+    return Array.from(_channels.map.keys());
   }
 
-  getChannelConfigByName(channelName){
-
+  /**
+   * This method is useful to check in the console or in the code what actions are available to be listened to.
+   * @param {String} str
+   * @returns {Array} An array of Actions that can be listened to
+   */
+  static getChannelActions(str) {
+    return _channels.getChannelActions(str);
   }
 
-
-  getChannelActions(){
-
-  }
 
   registerChannel(){
 
