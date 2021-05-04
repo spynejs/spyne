@@ -16,6 +16,7 @@ import {ChannelPayloadFilter} from './utils/channel-payload-filter';
 import {SpyneUtilsChannelRoute} from './utils/spyne-utils-channel-route';
 import {SpynePlugin} from './spyne-plugins';
 import { deepMerge } from './utils/deep-merge';
+import {SpyneAppProperties} from './utils/spyne-app-properties';
 import {SpyneApp} from './spyne-app';
 
 //window['Spyne'] = SpyneApp;
@@ -36,6 +37,7 @@ export {
   ViewStreamBroadcaster,
   SpyneTrait,
   SpyneApp,
+  SpyneAppProperties,
   SpynePlugin,
   deepMerge
 };

@@ -12,6 +12,7 @@ import {
   __,
   lte, defaultTo, prop, is, mapObjIndexed,
 } from 'ramda';
+import {SpyneAppProperties} from '../utils/spyne-app-properties';
 
 export class ChannelPayload {
   /**
@@ -59,13 +60,18 @@ export class ChannelPayload {
      */
 
 
-    const isDebugMode =  pathEq(['Spyne','config', 'debug'], true)(window);
 
-    if (isDebugMode === true){
+    if (SpyneAppProperties.debug === true){
       if (payload.hasOwnProperty('payload')){
         let payloadStr = JSON.stringify(payload);
         console.warn(`Spyne Warning: the following payload contains a nested payload property which may create conflicts: Action: ${action}, ${payloadStr}`);
       }
+
+      const channelActionsArr = SpyneAppProperties.getChannelActions(channel);
+
+      ChannelPayload.validateAction(action, channel, channelActionsArr);
+
+
     }
 
 
@@ -80,14 +86,11 @@ export class ChannelPayload {
          ]));
 
 
-    const channelActionsArr = window.Spyne.getChannelActions(channel);
 
-    ChannelPayload.validateAction(action, channel, channelActionsArr);
 
     if (channel === 'CHANNEL_ROUTE') {
       channelPayloadItemObj['location'] = ChannelPayload.getLocationData();
     }
-   // return window.Spyne.createDataPacket(channelPayloadItemObj, ['channelName', 'action']);
 
     channelPayloadItemObj._dir = undefined;
 
@@ -107,7 +110,7 @@ export class ChannelPayload {
 
   static validateAction(action, channel, arr) {
     let isInArr = includes(action, arr);
-    if (isInArr === false && window.Spyne !== undefined) {
+    if (isInArr === false && SpyneAppProperties.initialized === true) {
       console.warn(`warning: Action: '${action}' is not registered within the ${channel} channel!`);
     }
     return isInArr;

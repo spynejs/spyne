@@ -36,7 +36,6 @@ export class ChannelsMap {
     _map.set('DISPATCHER', new Subject());
     this.listRegisteredChannels = ChannelsMap.listRegisteredChannels.bind(this);
     this.getChannelsList = ChannelsMap.getChannelsList.bind(this);
-    //window.setTimeout(this.checkForMissingChannels.bind(this), 8000);
   }
 
   get map(){
@@ -49,7 +48,7 @@ export class ChannelsMap {
       let val = k[1].constructor.name;
       return { key, val };
     };
-    return Array.from(window.Spyne.channels.map, proxyMapFn);
+    return Array.from(_map, proxyMapFn);
   }
 
   static listRegisteredChannels(showOnlyProxies = false) {
@@ -95,19 +94,15 @@ export class ChannelsMap {
   createMainStreams() {
     this.routeStream = new SpyneChannelRoute();
     _map.set('CHANNEL_ROUTE', this.routeStream);
-    //window.Spyne.config.channels['CHANNEL_ROUTE'] = {};
 
     this.uiStream = new SpyneChannelUI();
     _map.set('CHANNEL_UI', this.uiStream);
-    //window.Spyne.config.channels['CHANNEL_UI'] = {};
 
     this.domStream = new SpyneChannelWindow();
     _map.set('CHANNEL_WINDOW', this.domStream);
-   // window.Spyne.config.channels['CHANNEL_WINDOW'] = {};
 
     this.viewStreamLifecycle = new SpyneChannelLifecycle();
     _map.set('CHANNEL_LIFECYCLE', this.viewStreamLifecycle);
-    //window.Spyne.config.channels['CHANNEL_LIFECYCLE'] = {};
 
     this.routeStream.initializeStream();
     this.domStream.initializeStream();
@@ -128,7 +123,6 @@ export class ChannelsMap {
       }
     }
 
-   // window.Spyne.config.channels[name] = {};
 
     _map.set(name, val);
     val.initializeStream();

@@ -1,4 +1,5 @@
 import { baseCoreMixins } from '../utils/mixins/base-core-mixins';
+import {SpyneAppProperties} from '../utils/spyne-app-properties';
 //import { baseStreamsMixins } from '../utils/mixins/base-streams-mixins';
 import { deepMerge } from '../utils/deep-merge';
 import {
@@ -405,14 +406,7 @@ export class ViewStream {
     return childCompletedData;
   }
 
-  static removeDataFromTmpDir(vsid){
-    const tmpDir = path(['Spyne', 'config', 'tmp'], window);
-    const tmpDirExists = tmpDir[vsid] !== undefined;
-    if(tmpDirExists){
-      //console.log('remove from tmp dir ', {tmpDirExists, vsid});
-      delete window.Spyne.config.tmp[vsid];
-    }
-  }
+
 
   initAutoMergeSourceStreams() {
     // ====================== SUBSCRIPTION SOURCE =========================
@@ -620,7 +614,7 @@ export class ViewStream {
   }
 
   static isDevMode(){
-    return path(['Spyne', 'config', 'debug'], window)===true;
+    return SpyneAppProperties.debug;
   }
 
   setAttachData(attachType, query) {
@@ -899,7 +893,6 @@ export class ViewStream {
     }
   }
   static checkIfActionsAreRegistered(channelsArr=[], actionsArr){
-    //const getActionsFn = path(['Spyne', 'channels', 'getChannelActions'], window);
     if (actionsArr.length>0){
       const getAllActions = (a)=>{
         const getRegisteredActionsArr = (str)=>window.Spyne.channels.getChannelActions(str);
@@ -1126,21 +1119,12 @@ export class ViewStream {
     data.srcElement = compose(pick(['id','vsid','class','tagName']), prop('props'))(this);
     if (this.checkIfChannelExists(channelName) === true) {
       if (/CHANNEL_LIFECYCLE/.test(action)===false){
-        const payloadPath = ['Spyne', 'config', 'tmp'];
-        const payloadPathAll = ['Spyne', 'config', 'tmp', this.props.vsid];
-        const tmpDir = path(payloadPath, window);
-        tmpDir[this.props.vsid] = pl;
-        const vsid = this.props.vsid;
-
         Object.defineProperties(data, {
           payload: {
-            get: ()=> compose(clone, path(payloadPathAll))(window)
+            get: ()=> clone(pl)
 
           }
         })
-
-        const removePayload = ()=>ViewStream.removeDataFromTmpDir(vsid);
-        window.requestAnimationFrame(removePayload)
 
       }
         let obs$ = of(data);

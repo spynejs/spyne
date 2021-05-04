@@ -1,6 +1,7 @@
 import { registeredStreamNames } from './channels-config';
 import { ChannelPayload } from './channel-payload-class';
 import { ChannelPayloadFilter} from '../utils/channel-payload-filter';
+import {SpyneAppProperties} from '../utils/spyne-app-properties';
 import {RouteChannelUpdater} from '../utils/route-channel-updater';
 import { ReplaySubject, Subject } from 'rxjs';
 import {filter} from 'rxjs/operators';
@@ -77,7 +78,7 @@ export class Channel {
     this.props.sendCachedPayload = this.props.sendCachedPayload === undefined ? false : this.props.sendCachedPayload;
     this.sendPayloadToRouteChannel = new RouteChannelUpdater(this);
     this.createChannelActionMethods();
-    this.streamsController = window.Spyne.channels;// getGlobalParam('streamsController');
+    this.streamsController = SpyneAppProperties.channelsMap;
     let observer$ = this.getMainObserver();
 
     this.observer$ = this.props['observer'] = observer$;
@@ -365,6 +366,7 @@ export class Channel {
    *
    */
 
+/*
   setTimeout(fn, ms=0, bind=false){
     const timeoutMethod = (...args)=>{
       if (this!==undefined && this.props!==undefined){
@@ -374,6 +376,7 @@ export class Channel {
     }
     window.setTimeout(timeoutMethod, ms);
   }
+*/
 
 
 

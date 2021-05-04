@@ -1,24 +1,57 @@
 import {SpyneUtilsChannelRoute} from './spyne-utils-channel-route';
+import {ChannelsMap} from '../channels/channels-map';
 import {deepMerge} from './deep-merge';
 
 let _config;
 let _channels;
-
+let _channelsMap
 class SpyneAppPropertiesClass{
 
   constructor() {
+
+    this._initialized = false;
+
+  }
+
+
+
+  initialize(defaultConfig={}, config={}, channelsMap){
+    _channels = channelsMap;
+    const userConfig = SpyneUtilsChannelRoute.conformRouteObject(config);
+    _config = deepMerge(defaultConfig, userConfig);
+    console.log("CONFIG IN PROPS IS ",{_config})
+    this.getChannelActions = _channels.getChannelActions.bind(_channels);
+    this.listRegisteredChannels = _channels.listRegisteredChannels.bind(_channels);
+    this._initialized = true;
+   // if (channelsMap!==undefined) {
+      this.setChannelsMap();
+    //}
+    return _config;
+
+  }
+
+  setChannelsMap(){
+    let obj = {};
+
+
+
+    const getStream = _channels.getStream.bind(_channels);
+    const testStream =  _channels.testStream.bind(_channels);
+    const getProxySubject = _channels.getProxySubject.bind(_channels);
+
+
+    _channelsMap = {getStream, testStream, getProxySubject}
 
 
 
   }
 
-  initialize(defaultConfig={}, config={}, channelsMap=new Map()){
-    _channels = channelsMap;
-    const userConfig = SpyneUtilsChannelRoute.conformRouteObject(config);
-    _config = deepMerge(defaultConfig, userConfig);
-    console.log("CONFIG IN PROPS IS ",{_config})
-    return _config;
+  get channelsMap(){
+    return _channelsMap;
+  }
 
+  get initialized(){
+    return this._initialized;
   }
 
 
@@ -41,12 +74,12 @@ class SpyneAppPropertiesClass{
 
   /**
    * This method is useful to check in the console or in the code what actions are available to be listened to.
-   * @param {String} str
+   * @param {String} channelName
    * @returns {Array} An array of Actions that can be listened to
    */
-  static getChannelActions(str) {
-    return _channels.getChannelActions(str);
-  }
+/*  getChannelActions(channelName) {
+    return _channels.getChannelActions(channelName);
+  }*/
 
 
   registerChannel(){
@@ -54,9 +87,7 @@ class SpyneAppPropertiesClass{
 
   }
 
-  get channelsMap(){
-    return this._channelsMap;
-  }
+
 
 
   tempGetChannelsInstance(){
@@ -66,6 +97,10 @@ class SpyneAppPropertiesClass{
   tempGetConfig(){
 
 
+  }
+
+  get debug(){
+    return _config['debug']===true;
   }
 
 
