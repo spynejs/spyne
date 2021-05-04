@@ -1,5 +1,6 @@
 import { Channel } from './channel';
 import { checkIfObjIsNotEmptyOrNil } from '../utils/frp-tools';
+import {SpyneAppProperties} from '../utils/spyne-app-properties';
 import { SpyneUtilsChannelWindow } from '../utils/spyne-utils-channel-window';
 import { merge } from 'rxjs';
 import { map, debounceTime, skipWhile } from 'rxjs/operators';
@@ -41,7 +42,7 @@ export class SpyneChannelWindow extends Channel {
   }
 
   initializeStream() {
-    this.domChannelConfig = window.Spyne.config.channels.WINDOW;
+    this.domChannelConfig = SpyneAppProperties.config.channels.WINDOW;
     let obs$Arr = this.getActiveObservables();
     let dom$ = merge(...obs$Arr);
     this.dom$ = dom$;
@@ -165,8 +166,8 @@ export class SpyneChannelWindow extends Channel {
       .pipe(
          /* map(p=>{
             if (pathEq(['Spyne', 'config', 'scrollLock'], true)(scrollElement)){
-              let x = window.Spyne.config.scrollLockX
-              let y = window.Spyne.config.scrollLockY;
+              let x = SpyneAppProperties.config.scrollLockX
+              let y = SpyneAppProperties.config.scrollLockY;
               window.scrollTo(x,y);
             }
             return p;
@@ -333,11 +334,11 @@ export class SpyneChannelWindow extends Channel {
 
   onScrollLockEvent(e){
     const setScrollPos = ()=>{
-      window.Spyne.config.scrollLockX = window.scrollX;
-      window.Spyne.config.scrollLockY = window.scrollY;
+      SpyneAppProperties.config.scrollLockX = window.scrollX;
+      SpyneAppProperties.config.scrollLockY = window.scrollY;
     };
     let {action, scrollLock} = e.payload;
-    window.Spyne.config.scrollLock = scrollLock;
+    SpyneAppProperties.config.scrollLock = scrollLock;
     if (scrollLock === true){
       setScrollPos();
     }

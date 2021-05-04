@@ -1,6 +1,7 @@
 import { Channel } from './channel';
 import { SpyneUtilsChannelRouteUrl } from '../utils/spyne-utils-channel-route-url';
 import { SpyneUtilsChannelRoute } from '../utils/spyne-utils-channel-route';
+import {SpyneAppProperties} from '../utils/spyne-app-properties';
 import { ReplaySubject, merge } from 'rxjs';
 import { map } from 'rxjs/operators';
 
@@ -145,10 +146,10 @@ export class SpyneChannelRoute extends Channel {
 
   checkConfigForHash(){
     // LEGACY CHECK TO SIMPLIFY CONFIG FOR HASH;
-    let isHashType = window.Spyne.config.channels.ROUTE.type==='hash';
+    let isHashType = SpyneAppProperties.config.channels.ROUTE.type==='hash';
     if (isHashType === true){
-      window.Spyne.config.channels.ROUTE.type = 'slash';
-      window.Spyne.config.channels.ROUTE.isHash = true;
+      SpyneAppProperties.config.channels.ROUTE.type = 'slash';
+      SpyneAppProperties.config.channels.ROUTE.isHash = true;
     }
 
   }
@@ -178,13 +179,10 @@ export class SpyneChannelRoute extends Channel {
 
     const newRoutesObj  = pick(['isHash', 'isHidden', 'routes','type'], e.payload);
 
-    window.Spyne.config.channels.ROUTE =  mergeRight(window.Spyne.config.channels.ROUTE, newRoutesObj);
+    SpyneAppProperties.config.channels.ROUTE =  mergeRight(SpyneAppProperties.config.channels.ROUTE, newRoutesObj);
 
-    const clonedRoute = clone(window.Spyne.config.channels.ROUTE);
 
-    // ADD 404S, EMPTY REGEX AND CONVERT ARRAYS
-
-    window.Spyne.config = SpyneUtilsChannelRoute.conformRouteObject(window.Spyne.config);
+    SpyneAppProperties.conformRouteConfig();
 
 
      const routeConfig = this.getRouteConfig();
@@ -194,12 +192,11 @@ export class SpyneChannelRoute extends Channel {
     this.bindStaticMethodsWithConfigData();
 
 
-    this.sendChannelPayload(action, routeConfig, {}, {},
-        this.navToStream$);
+    this.sendChannelPayload(action, routeConfig, {}, {}, this.navToStream$);
   }
 
   getRouteConfig() {
-    const spyneConfig = window.Spyne.config;
+    const spyneConfig = SpyneAppProperties.config;
     let routeConfig = path(['channels', 'ROUTE'], spyneConfig);
     if (routeConfig.type === 'query') {
       routeConfig.isHash = false;

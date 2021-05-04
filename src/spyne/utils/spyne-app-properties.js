@@ -30,6 +30,17 @@ class SpyneAppPropertiesClass{
 
   }
 
+  conformRouteConfig(add404Props=false){
+    /**
+     * THIS METHOD IS PRIMARILY USED FOR SPA GEN SITE GENERATION
+     */
+
+    _config = SpyneUtilsChannelRoute.conformRouteObject(_config, add404Props);
+
+  }
+
+
+
   setChannelsMap(){
     let obj = {};
 
@@ -52,6 +63,16 @@ class SpyneAppPropertiesClass{
 
   get initialized(){
     return this._initialized;
+  }
+
+  setConfigProperty(){
+
+  }
+
+
+  setChannelConfig(channelName, config){
+    _config.channels[channelName] = config;
+    return _config.channels[channelName];
   }
 
 
@@ -85,6 +106,19 @@ class SpyneAppPropertiesClass{
   registerChannel(){
 
 
+  }
+
+  addPluginConfig(pluginName, pluginConfig={}){
+    if (_config['plugins']===undefined){
+      _config['plugins'] = {};
+    }
+
+    _config.plugins[pluginName]=pluginConfig;
+
+  }
+
+  getPluginConfigByPluginName(pluginName){
+    return _config.plugins[pluginName];
   }
 
 

@@ -1,4 +1,5 @@
 import {SpyneApp, ViewStream, DomElement} from './spyne';
+import {SpyneAppProperties} from './spyne';
 import {prop, path, is, clone, mergeRight, pathSatisfies} from 'ramda';
 export class SpynePlugin {
 
@@ -18,12 +19,12 @@ export class SpynePlugin {
     this.props.name = name;
     config = SpynePlugin.mergeDefaultConfig(config, this.defaultConfig());
     this.props.parentEl = parentEl || SpynePlugin.createParentEl();
-    this.props.spyneApp = SpynePlugin.getSpyneApp(name, config);
+    SpynePlugin.getSpyneApp(name, config);
     //console.log("SPYNE APP ",{name},this.name,this.props.spyneApp);
-    if (this.props.spyneApp===false){
+   // if (this.props.spyneApp===false){
       //console.warn(`Spyne Warning: Spyne Plugin, ${this.name} already exists!`)
-      return false;
-    }
+     // return false;
+   // }
 
     this.onBeforeRegistered();
     this.onRegistered();
@@ -32,8 +33,8 @@ export class SpynePlugin {
 
   onBeforeRegistered(){
     this.props.pluginName = this.props.name;
-    this.props.config = path(['Spyne', 'config', 'plugins', this.props.name], window);
-
+    //this.props.config = path(['Spyne', 'config', 'plugins', this.props.name], window);
+    this.props.config = SpyneAppProperties.getPluginConfigByPluginName(this.props.pluginName);
   }
 
   static mergeDefaultConfig(config={}, defaultConfig=this.defaultConfig()){
@@ -53,21 +54,27 @@ export class SpynePlugin {
 
 
   static getSpyneApp(name, config){
-    const win = window || {};
-    let spyneApp = prop('Spyne', win) ;
-    const spyneInitialized = typeof(spyneApp) === 'object';
+   // const win = window || {};
+   // let spyneApp = prop('Spyne', win) ;
+   // const spyneInitialized = typeof(spyneApp) === 'object';
     //console.log('spyne app is ',{spyneApp, spyneInitialized}, typeof(spyneApp));
 
-    spyneApp = spyneInitialized === true ? spyneApp : new spyneApp();
+   // spyneApp = spyneInitialized === true ? spyneApp : new spyneApp();
+    if(SpyneAppProperties.initialized===false){
+      SpyneApp.init()
+    }
 
-     const updateConfig = SpynePlugin.updateSpyneConfig(spyneApp, name, config);
+
+    SpyneAppProperties.addPluginConfig(name, config);
+
+   /*  const updateConfig = SpynePlugin.updateSpyneConfig(spyneApp, name, config);
 
      if(updateConfig===false){
        return false;
-     }
+     }*/
 
    // spyneApp.config.plugins[name] = config;
-    return spyneApp;
+    //return spyneApp;
   }
 
   static updateSpyneConfig(spyneApp, pluginName, pluginConfig){

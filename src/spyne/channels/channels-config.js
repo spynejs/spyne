@@ -1,13 +1,13 @@
 // import Spyne from '../spyne';
 import { arrFromMapKeys } from '../utils/frp-tools';
-
+import {SpyneAppProperties} from '../utils/spyne-app-properties';
 import {compose, path, is} from 'ramda';
 const Observable = require('rxjs');
 const Subject = require('rxjs');
 
 // console.log('channels config loaded ',R,Rx);
 let registeredStreamNames = () => ({
-  includes:  () => window.Spyne !== undefined ? arrFromMapKeys(window.Spyne.channels.map) : ['CHANNEL_ROUTE', 'CHANNEL_UI', 'CHANNEL_WINDOW', 'DISPATCHER']
+  includes:  () => SpyneAppProperties.initialized === true ? SpyneAppProperties.listRegisteredChannels() : ['CHANNEL_ROUTE', 'CHANNEL_UI', 'CHANNEL_WINDOW', 'DISPATCHER']
 
 });
 
