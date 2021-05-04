@@ -1,4 +1,5 @@
 import { uiValidations } from '../channels/channels-config';
+import {SpyneAppProperties} from '../utils/spyne-app-properties';
 //import { validate } from '../utils/channel-config-validator';
 import { gc } from '../utils/gc';
 
@@ -31,8 +32,8 @@ export class ViewStreamPayload {
   getValidationChecks(n) {
     let left  = e => console.warn(e);
     let right = val => this.onRunValidations(val);
-    const channelMap = window.Spyne.channels.map;
-    if (channelMap.has(n) === true) {
+    let channelExists = SpyneAppProperties.channelsMap.testStream(n);
+    if (channelExists === true) {
       return right(uiValidations);
     } else {
       return left('payload Needs a Valid Stream Name!');//
@@ -47,8 +48,7 @@ export class ViewStreamPayload {
     this.sendToDirectorStream(p);
   }
   sendToDirectorStream(payload) {
-    let streamsController = window.Spyne.channels;// getGlobalParam('streamsController');
-    let directorStream$ = streamsController.getStream('DISPATCHER');
+    let directorStream$ = SpyneAppProperties.channelsMap.getStream('DISPATCHER');
     // console.log('payload is ',payload);
     directorStream$.next(payload);
     this.gc();

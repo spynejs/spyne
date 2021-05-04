@@ -1,6 +1,6 @@
 import { baseStreamsMixins } from '../utils/mixins/base-streams-mixins';
 import { convertDomStringMapToObj } from '../utils/frp-tools';
-
+import {SpyneAppProperties} from '../utils/spyne-app-properties';
 import { fromEvent } from 'rxjs';
 import { map } from 'rxjs/operators';
 import {clone, omit, path} from 'ramda';
@@ -99,7 +99,7 @@ export class ViewStreamBroadcaster {
       // run payload
       channelPayload(observable, data);
     };
-    let isDevMode = path(['Spyne', 'config', 'debug'], window) === true;
+    let isDevMode = SpyneAppProperties.debug === true;
     let queryIsNil = query === undefined || query.length <= 0;
     if (queryIsNil === true && isDevMode === true) {
       console.warn(`Spyne Warning: The item ${selector}, does not appear to exist!`);

@@ -305,7 +305,7 @@ export class SpyneChannelRoute extends Channel {
       return pl;
     }
     const win = window || {};
-    const debug = debugBool !== undefined ? debugBool : compose(equals(true), path(['Spyne','config', 'debug']))(win);
+    const debug = debugBool !== undefined ? debugBool : SpyneAppProperties.debug === true;
      const {payload} = pl;
 
 

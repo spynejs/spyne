@@ -1,5 +1,5 @@
 import {head, compose, reject, split, isEmpty, path, lte, defaultTo, prop} from 'ramda';
-
+import {SpyneAppProperties} from '../utils/spyne-app-properties';
 
 function generateSpyneSelectorId(el) {
   //const num = () => Math.floor(Math.random(10000000) * 10000000);
@@ -15,7 +15,7 @@ function generateSpyneSelectorId(el) {
 }
 
 function isDevMode(){
-  return path(['Spyne', 'config', 'debug'], window) === true;
+  return SpyneAppProperties.debug === true;
 }
 
 

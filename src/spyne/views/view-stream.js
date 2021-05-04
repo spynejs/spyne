@@ -895,7 +895,7 @@ export class ViewStream {
   static checkIfActionsAreRegistered(channelsArr=[], actionsArr){
     if (actionsArr.length>0){
       const getAllActions = (a)=>{
-        const getRegisteredActionsArr = (str)=>window.Spyne.channels.getChannelActions(str);
+        const getRegisteredActionsArr = (str)=>SpyneAppProperties.getChannelActions(str);
         let arr =  a.map(getRegisteredActionsArr);
         return flatten(arr);
       }
@@ -1014,7 +1014,7 @@ export class ViewStream {
     let error = c => console.warn(
         `channel name ${c} is not within ${registeredStreamNames}`);
     let startSubscribe = (c) => {
-      let obs$ = window.Spyne.channels.getStream(c).observer;
+      let obs$ = SpyneAppProperties.channelsMap.getStream(c).observer;
 
       return obs$.pipe(takeWhile(p => this.deleted !== true));
     };// getGlobalParam('streamsController').getStream(c).observer;
@@ -1087,7 +1087,7 @@ export class ViewStream {
 
 
   checkIfChannelExists(channelName) {
-    let channelExists = window.Spyne.channels.map.get(channelName) !== undefined;
+    let channelExists = SpyneAppProperties.channelsMap.testStream(channelName);
     if (channelExists !== true) {
       console.warn(`SPYNE WARNING: The ChannelPayload from ${this.props.name}, has been sent to a channel, ${channelName}, that has not been registered!`);
     }
