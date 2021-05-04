@@ -30,6 +30,9 @@ import {
   curry,
   mergeRight, lte,
 } from 'ramda';
+
+import {SpyneAppProperties} from './spyne-app-properties';
+
 const rMap = require('ramda').map;
 
 const isNotArr = compose(not, is(Array));
@@ -160,7 +163,7 @@ export class ChannelPayloadFilter {
 
       if (filtersAreEmpty){
         filtersArr = [always(false)];
-        if (path(['Spyne', 'config', 'debug'], window) === true && testMode!==true){
+        if (SpyneAppProperties.debug === true && testMode!==true){
           console.warn(`Spyne Warning: The Channel Filter, with selector: ${selector}, and propFilters:${propFilters} appears to be empty!`);
         }
 

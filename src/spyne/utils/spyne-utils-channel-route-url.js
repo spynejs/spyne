@@ -1,4 +1,5 @@
 import {isEmpty, head, values, compose, prop, complement, isNil, allPass, reduce, filter, equals, toPairs, replace, either, propEq, __,invert,path,zipObj, reject, keys, find, assoc, is,has, when, split, always, concat, join, flatten, map, ifElse, test, findLastIndex,last, defaultTo,fromPairs } from 'ramda';
+import {SpyneAppProperties} from './spyne-app-properties';
 
 export class SpyneUtilsChannelRouteUrl {
   constructor() {
@@ -163,7 +164,7 @@ export class SpyneUtilsChannelRouteUrl {
     return map(mapUrlProps, urlsArr);
   }
 
-  static convertParamsToRoute(data, r = window.Spyne.config.channels.ROUTE, t, locStr) {
+  static convertParamsToRoute(data, r = SpyneAppProperties.config.channels.ROUTE, t, locStr) {
     const urlType = t !== undefined ? t : r.type;
     const isHash = r.isHash;
     let route = r.routes.routePath;

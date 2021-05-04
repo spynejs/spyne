@@ -1,5 +1,5 @@
 import {includes, __, ifElse, compose,path,split,prop, reject, is, defaultTo, isNil, isEmpty} from 'ramda';
-import {testDomTemplateForTableTags} from "../utils/viewstream-dom-utils";
+
 /**
  * @module DomElTemplate
  * @type util

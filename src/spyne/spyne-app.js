@@ -58,18 +58,11 @@ class SpyneApplication {
     this.ChannelsController = ChannelsMap;
     this.ChannelsBase = Channel;
     this.ChannelPayloadItem = ChannelPayload;*/
-   // this._channelDataPacketGenerator = new ChannelDataPacketGenerator();
     let defaultConfig = {
       scrollLock: false,
       scrollLockX: 31,
       scrollLockY: 0,
       debug: false,
-      utils: {
-        tableRE: /^([^>]*?)(<){1}(\b)(thead|col|colgroup|tbody|td|tfoot|tr|th)(\b)([^\0]*)$/
-      },
-      tmp:{
-
-      },
       plugins:{
 
       },
@@ -98,10 +91,7 @@ class SpyneApplication {
             }
           }
 
-        },
-
-        CHANNEL_ROUTE: {},
-        CHANNEL_UI: {},
+        }
       }
     };
     if (config !== undefined) {
@@ -124,11 +114,6 @@ class SpyneApplication {
     _channels.init();
     console.log('spyne app initialized');
 
-  }
-
-
-  get createDataPacket(){
-    return this._channelDataPacketGenerator.createDataPacket;
   }
 
   /**
