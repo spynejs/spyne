@@ -1,6 +1,7 @@
 import {SpyneUtilsChannelRoute} from './spyne-utils-channel-route';
 import {ChannelsMap} from '../channels/channels-map';
 import {deepMerge} from './deep-merge';
+import {prop, path} from 'ramda';
 
 let _config;
 let _channels;
@@ -57,6 +58,14 @@ class SpyneAppPropertiesClass{
 
   }
 
+  setProp(key, val){
+    _config.tmp[key]=val;
+  }
+
+  getProp(key){
+    return path(['tmp', key], _config);
+  }
+
   get channelsMap(){
     return _channelsMap;
   }
@@ -65,9 +74,7 @@ class SpyneAppPropertiesClass{
     return this._initialized;
   }
 
-  setConfigProperty(){
 
-  }
 
 
   setChannelConfig(channelName, config){

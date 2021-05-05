@@ -4,6 +4,8 @@ import {SpyneUtilsChannelRoute} from './utils/spyne-utils-channel-route';
 import {SpyneAppProperties} from './utils/spyne-app-properties';
 import {deepMerge} from './utils/deep-merge';
 const _channels = new ChannelsMap();
+const version = '0.17.0a';
+
 class SpyneApplication {
   /**
    *
@@ -27,9 +29,9 @@ class SpyneApplication {
    */
 
   constructor() {
-    this.VERSION = '0.17.0a';
-    window.Spyne = this;
-    console.log('spyne app created')
+    this.version = version
+
+    //console.log('spyne app created')
 
 
   }
@@ -66,6 +68,7 @@ class SpyneApplication {
       plugins:{
 
       },
+      tmp: {},
       channels: {
         WINDOW: {
           mediqQueries: {
@@ -96,7 +99,8 @@ class SpyneApplication {
     };
     if (config !== undefined) {
        config = SpyneAppProperties.initialize(defaultConfig, config, _channels);
-       window.Spyne['config'] = config;
+      window.Spyne = this;
+      window.Spyne['config'] = config;
       //config = SpyneUtilsChannelRoute.conformRouteObject(config);
       //window.Spyne['config'] = deepMerge(defaultConfig, config)
     }
@@ -113,6 +117,11 @@ class SpyneApplication {
     nullHolder.props.el.style.cssText = 'display:none; opacity:0; pointer-events:none;';
     _channels.init();
     console.log('spyne app initialized');
+
+    if (SpyneAppProperties.debug===true){
+     // window.Spyne = {version};
+    }
+
 
   }
 
@@ -146,7 +155,7 @@ class SpyneApplication {
    *
    */
   static registerChannel(c) {
-    if (window.Spyne === undefined) {
+    if (SpyneAppProperties.initialized === false) {
       console.warn('Spyne has not been initialized');
     } else {
       return _channels.registerStream(c);
