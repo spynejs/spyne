@@ -20,6 +20,7 @@ import {
   fromPairs,
   path,
  assocPath,
+    isEmpty,
   equals,
   prop,
   apply,
@@ -72,6 +73,7 @@ export class Channel {
     this.addRegisteredActions.bind(this);
     this.createChannelActionsObj(CHANNEL_NAME, props.extendedActionsArr);
     props.name = CHANNEL_NAME;
+    props.defaultActions = props.data!==undefined ? [`${props.name}_EVENT`] : [];
     this.props = props;
     this.props.isRegistered = false;
     this.props.isProxy = this.props.isProxy === undefined ? false : this.props.isProxy;
@@ -80,7 +82,7 @@ export class Channel {
     this.createChannelActionMethods();
     this.streamsController = SpyneAppProperties.channelsMap;
     let observer$ = this.getMainObserver();
-
+    this.checkForPersistentDataMode = Channel.checkForPersistentDataMode.bind(this);
     this.observer$ = this.props['observer'] = observer$;
     let dispatcherStream$ = this.streamsController.getStream('DISPATCHER');
     dispatcherStream$.subscribe((val) => this.onReceivedObservable(val));
@@ -110,7 +112,13 @@ export class Channel {
    * <p>This method is empty and is called as soon as the Channel has been registered.</p>
    * <p>Tasks such as subscribing to other channels, and sending initial payloads can be added here.</p>
    */
-  onRegistered(){
+  onRegistered(props=this.props){
+      if(props.data!==undefined){
+        const action = Object.keys(this.channelActions)[0];
+          console.log("CHANNELS ACTIONS IS ",this.channelActions);
+        //Object(this.channelActions).keys[0];
+        this.sendChannelPayload(action, props.data);
+      }
 
   }
 
@@ -152,10 +160,37 @@ export class Channel {
   initializeStream() {
     this.checkForTraits();
     this.onChannelInitialized();
+    this.checkForPersistentDataMode();
     this.onRegistered();
     this.props.isRegistered = true;
 
 
+  }
+
+  static checkForPersistentDataMode(props=this.props, actionsObj=this.channelActions){
+    const actionsObjIsEmpty = isEmpty(actionsObj);
+    const dataIsAdded = prop('data', props) !== undefined;
+    const autoSetToCachedPayload = actionsObjIsEmpty === true && dataIsAdded === true;
+    const setDefaultActionsObj = ()=>{
+      const {name} = props;
+      const actionStr = `${name}_EVENT`;
+      return {
+        [actionStr] : actionStr
+      }
+    }
+
+    if (autoSetToCachedPayload){
+      props.sendCachedPayload = true;
+      actionsObj = setDefaultActionsObj();
+
+      if (this.channelActions!==undefined){
+        this.channelActions = actionsObj;
+      }
+    }
+
+
+    //console.log("PROPS IS ",{actionsObjIsEmpty, dataIsAdded, props, actionsObj}, this.channelActions)
+    return {props, actionsObj};
   }
 
   setTrace(bool) {
@@ -220,7 +255,11 @@ export class Channel {
    *
    */
   addRegisteredActions() {
-    return [];
+    let arr = []
+    if (path(['props','data'], this)){
+      arr = [`${this.props.name}_EVENT`];
+    }
+    return arr;
   }
 
   onReceivedObservable(obj) {

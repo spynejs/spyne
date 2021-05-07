@@ -5,6 +5,7 @@ const webpackEnv = {test:true};
 const webpackConfig = require("./webpack.config");
 webpackConfig.mode = 'none';
 webpackConfig.watch = true;
+
 //webpackConfig.output.filename='[name].[hash:8].js';
 const fileGlob =  './src/tests/index.test.js';
 process.env.BABEL_ENV = 'test';
@@ -71,8 +72,7 @@ module.exports = function(config) {
 
 
       {pattern: './src/tests/index.test.js', watched: true},
-
-      //{pattern: './src/tests/channels/*.test.js', watched: true},
+      {pattern: './src/tests/channels/*.test.js', watched: true},
 
     //  {pattern: './src/tests/utils/*.test.js', watched: true},
      // {pattern: './src/tests/views/*.test.js', watched: true}
@@ -142,6 +142,7 @@ module.exports = function(config) {
 
     // enable / disable watching file and executing tests whenever any file changes
     autoWatch: true,
+    usePolling: true,
 
 
 

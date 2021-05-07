@@ -116,7 +116,7 @@ class SpyneApplication {
     nullHolder.appendToDom(document.body);
     nullHolder.props.el.style.cssText = 'display:none; opacity:0; pointer-events:none;';
     _channels.init();
-    console.log('spyne app initialized');
+    //console.log('spyne app initialized');
 
     if (SpyneAppProperties.debug===true){
      // window.Spyne = {version};

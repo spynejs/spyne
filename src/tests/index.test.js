@@ -48,7 +48,7 @@ describe('test index.test.js', () => {
   it('works', () => {
 
     SpyneApp.init({debug:true})
-    console.log("SPYNE APP IS ",SpyneApp)
+    //console.log("SPYNE APP IS ",SpyneApp)
     // throw new Error('ya!')
     expect(true).to.be.true;
   });

@@ -20,7 +20,6 @@ class SpyneAppPropertiesClass{
     _channels = channelsMap;
     const userConfig = SpyneUtilsChannelRoute.conformRouteObject(config);
     _config = deepMerge(defaultConfig, userConfig);
-    console.log("CONFIG IN PROPS IS ",{_config})
     this.getChannelActions = _channels.getChannelActions.bind(_channels);
     this.listRegisteredChannels = _channels.listRegisteredChannels.bind(_channels);
     this._initialized = true;

@@ -291,32 +291,7 @@ describe('it should test channel payload filter with data packer ',()=>{
   })
 
 
-  it('should test unpacked channel payload ', ()=>{
 
-
-
-        const {action, channelName, srcElement, payload} = ChannelPayloadToTestFilters;
-        //console.log('spyne is is ',{action, channelName, srcElement, payload});
-        const re = /menu-\d/;
-        const actionCompare = "CHANNEL_ROUTE_CHANGE_EVENT";
-        const payloadCompare =  R.compose(R.test(re), R.path(['routeData', 'pageId']));
-        const cpFilter = new ChannelPayloadFilter({payload:payloadCompare, action:actionCompare});
-
-
-
-        const channelPayload = new ChannelPayload(channelName, action, payload, srcElement, {});
-        const payloadPacket = SpyneApp.createDataPacket(channelPayload, ['channelName', 'action']);
-
-
-        const payloadBool = cpFilter(payloadPacket);
-        payloadPacket.unPacked = true;
-
-        //console.log('payload unpacked base is ',{payloadBool}, payloadPacket);
-
-        return true;
-
-
-  })
 
 
 
