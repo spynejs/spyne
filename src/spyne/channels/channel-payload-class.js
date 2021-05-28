@@ -81,6 +81,7 @@ export class ChannelPayload {
       channelPayloadItemObj.payload,
         { channel },
         { event: event },
+        {srcElement: srcElement},
                 channelPayloadItemObj.srcElement, {
         action: channelPayloadItemObj.action }
          ]));
