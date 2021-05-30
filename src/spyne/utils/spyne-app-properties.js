@@ -1,4 +1,5 @@
 import {SpyneUtilsChannelRoute} from './spyne-utils-channel-route';
+import {SpyneScrollLock} from './spyne-scroll-lock';
 import {ChannelsMap} from '../channels/channels-map';
 import {deepMerge} from './deep-merge';
 import {prop, path} from 'ramda';
@@ -6,6 +7,8 @@ import {prop, path} from 'ramda';
 let _config;
 let _channels;
 let _channelsMap
+
+const _spyneScrollLock = new SpyneScrollLock();
 class SpyneAppPropertiesClass{
 
   constructor() {
@@ -71,6 +74,10 @@ class SpyneAppPropertiesClass{
 
   get initialized(){
     return this._initialized;
+  }
+
+  get scrollLock(){
+    return _spyneScrollLock;
   }
 
 

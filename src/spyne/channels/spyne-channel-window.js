@@ -38,6 +38,8 @@ export class SpyneChannelWindow extends Channel {
     super(CHANNEL_NAME);
     this.bindStaticMethods();
     this.currentScrollY=0;
+
+    this.spyneScrollLock = SpyneAppProperties.scrollLock;
     // this.props.name = 'WINDOW';
   }
 
@@ -336,12 +338,18 @@ export class SpyneChannelWindow extends Channel {
     const setScrollPos = ()=>{
       SpyneAppProperties.config.scrollLockX = window.scrollX;
       SpyneAppProperties.config.scrollLockY = window.scrollY;
+      this.spyneScrollLock.setScroll();
     };
     let {action, scrollLock} = e.payload;
     SpyneAppProperties.config.scrollLock = scrollLock;
     if (scrollLock === true){
-      setScrollPos();
+     // setScrollPos();
+      this.spyneScrollLock.disableBodyScroll();
+    } else {
+      this.spyneScrollLock.enableBodyScroll();
     }
+
+    console.log('scroll lock window channel ',{action,scrollLock});
 
     this.sendChannelPayload(action, {scrollLock});
   }
