@@ -4,7 +4,7 @@ import {SpyneAppProperties} from '../utils/spyne-app-properties';
 import { SpyneUtilsChannelWindow } from '../utils/spyne-utils-channel-window';
 import { merge } from 'rxjs';
 import { map, debounceTime, skipWhile } from 'rxjs/operators';
-import {curry, pathEq, pick, partialRight, mapObjIndexed, apply} from 'ramda';
+import {curry, pathEq, path, pick, partialRight, mapObjIndexed, apply} from 'ramda';
 import {deepMerge} from '../utils/deep-merge';
 
 const rMap = require('ramda').map;
@@ -143,9 +143,11 @@ export class SpyneChannelWindow extends Channel {
     return { action, payload, srcElement, scrollDistance, event };
   }
 
-  createScrollObservable(config, scrollElement=window) {
+  createScrollObservable(config, scrollElement=window, isPassive = true) {
     const skipWhenDirIsMissing = evt => evt.scrollDistance === 0;
     const dTime = config.debounceMSTimeForScroll;
+
+    const element = scrollElement;
 
 
     const isWindow = scrollElement === window;
@@ -156,7 +158,9 @@ export class SpyneChannelWindow extends Channel {
 
     const scrollDataFn =SpyneChannelWindow.getScrollData();
      // console.log("SCROLL ELEMENT ",action,scrollElement, scrollElForVals);
-    const scrollMapFn =partialRight(SpyneChannelWindow.getScrollMapFn, [action, scrollDataFn, scrollElForVals]).bind(this);
+    const scrollMapFn =partialRight(SpyneChannelWindow.getScrollMapFn, [action, scrollDataFn, scrollElForVals, isPassive, element]).bind(this);
+
+   // console.log("createScrollObservable ", {scrollMapFn, scrollDataFn, action, config, scrollElement, element})
 
     /**
      * TODO: curry createDomObservableFromEvent so that element can be other than window.
@@ -164,7 +168,7 @@ export class SpyneChannelWindow extends Channel {
      */
 
     return SpyneUtilsChannelWindow.createDomObservableFromEvent('scroll',
-        scrollMapFn)
+        scrollMapFn, isPassive, element)
       .pipe(
          /* map(p=>{
             if (pathEq(['Spyne', 'config', 'scrollLock'], true)(scrollElement)){
@@ -177,7 +181,8 @@ export class SpyneChannelWindow extends Channel {
         debounceTime(dTime),
         skipWhile(skipWhenDirIsMissing),
         map(p=>{
-          const newScrollY = SpyneChannelWindow.getScrollY(window);
+          const newScrollY = SpyneChannelWindow.getScrollY(element);
+          //console.log("SCROLL P IS ",{p});
           p.payload['scrollDistanceAbs'] = Math.abs(this.currentScrollY-newScrollY);
           this.currentScrollY=newScrollY;
           return p;
@@ -344,12 +349,27 @@ export class SpyneChannelWindow extends Channel {
     SpyneAppProperties.config.scrollLock = scrollLock;
     if (scrollLock === true){
      // setScrollPos();
+
       this.spyneScrollLock.disableBodyScroll();
+      const id = path(['srcElement', 'id'], e);
+      const el = document.querySelector(`#${id} .card-scroll`);
+      //console.log("E TO SCROLL IS ",{id,el,e});
+     // this.onSetElementToScroll({}, el);
+
+      this.createScrollObservable(this.domChannelConfig, el, true)
+      .subscribe(p => {
+        let { action, payload, srcElement, event } = p;
+        //console.log("SCROLL OBS IS ",p)
+        this.sendChannelPayload(action, payload, srcElement, event);
+      });
+
+
+
     } else {
       this.spyneScrollLock.enableBodyScroll();
     }
 
-    console.log('scroll lock window channel ',{action,scrollLock});
+    //console.log('scroll lock window channel ',{action,scrollLock});
 
     this.sendChannelPayload(action, {scrollLock});
   }
