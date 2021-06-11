@@ -345,9 +345,9 @@ export class SpyneChannelWindow extends Channel {
       SpyneAppProperties.config.scrollLockY = window.scrollY;
       this.spyneScrollLock.setScroll();
     };
-    let {action, scrollLock} = e.payload;
+    let {action, scrollLock, el} = e.payload;
     SpyneAppProperties.config.scrollLock = scrollLock;
-    let el = window;
+    el = el || window;
     if (scrollLock === true){
      // setScrollPos();
 
@@ -357,7 +357,7 @@ export class SpyneChannelWindow extends Channel {
        * TODO: ADD EL TO Scroll lock --- this is hard coded .scroll-lock class
        *
        * */
-       el = document.querySelector(`#${id} .card-scroll`);
+       //el = document.querySelector(`#${id} .card-scroll`);
       //console.log("E TO SCROLL IS ",{id,el,e});
      // this.onSetElementToScroll({}, el);
 

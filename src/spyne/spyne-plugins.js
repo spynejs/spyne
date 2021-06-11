@@ -38,7 +38,7 @@ export class SpynePlugin {
   }
 
   static mergeDefaultConfig(config={}, defaultConfig=this.defaultConfig()){
-    return Object.assign(defaultConfig, config);
+    return Object.assign(defaultConfig, config);z
   }
 
 

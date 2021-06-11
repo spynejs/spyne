@@ -77,7 +77,8 @@ export class Channel {
     this.props = props;
     this.props.isRegistered = false;
     this.props.isProxy = this.props.isProxy === undefined ? false : this.props.isProxy;
-    this.props.sendCachedPayload = this.props.sendCachedPayload === undefined ? false : this.props.sendCachedPayload;
+    const defaultCachedPayloadBool = this.props['data']!==undefined;
+    this.props.sendCachedPayload = this.props.sendCachedPayload === undefined ? defaultCachedPayloadBool : this.props.sendCachedPayload;
     this.sendPayloadToRouteChannel = new RouteChannelUpdater(this);
     this.createChannelActionMethods();
     this.streamsController = SpyneAppProperties.channelsMap;
@@ -115,7 +116,7 @@ export class Channel {
   onRegistered(props=this.props){
       if(props.data!==undefined){
         const action = Object.keys(this.channelActions)[0];
-          console.log("CHANNELS ACTIONS IS ",this.channelActions);
+          //console.log("CHANNELS ACTIONS IS ",this.channelActions);
         //Object(this.channelActions).keys[0];
         this.sendChannelPayload(action, props.data);
       }

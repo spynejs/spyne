@@ -125,8 +125,24 @@ class SpyneAppPropertiesClass{
     if (_config['plugins']===undefined){
       _config['plugins'] = {};
     }
+    this.addPluginMethods(pluginConfig['pluginMethods'])
 
     _config.plugins[pluginName]=pluginConfig;
+
+  }
+
+  addPluginMethods(pluginMethods){
+
+    if (pluginMethods){
+
+
+      /**
+       * TODO: check for valid methods and have them added to the spyneApp
+       * TODO: spyneApp.plugins$.enableScroll();
+       *
+       * */
+    }
+
 
   }
 
