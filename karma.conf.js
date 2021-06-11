@@ -74,8 +74,8 @@ module.exports = function(config) {
       {pattern: './src/tests/index.test.js', watched: true},
       {pattern: './src/tests/channels/*.test.js', watched: true},
 
-    //  {pattern: './src/tests/utils/*.test.js', watched: true},
-     // {pattern: './src/tests/views/*.test.js', watched: true}
+      {pattern: './src/tests/utils/*.test.js', watched: true},
+      {pattern: './src/tests/views/*.test.js', watched: true}
     ],
 
 
