@@ -61,13 +61,21 @@ module.exports = function(config) {
     // available frameworks: https://npmjs.org/browse/keyword/karma-adapter
     frameworks: ['webpack', 'mocha', 'chai'],
 
-
+    plugins: [
+      'karma-webpack',
+      'karma-mocha',
+      'karma-chai',
+      'karma-coverage',
+      'karma-chrome-launcher'
+    ],
     // list of files / patterns to load in the browser
     files: [
       {pattern: './node_modules/spynejs-polyfill/ie.js', watched:false},
       {pattern: './node_modules/ramda/dist/ramda.min.js', watched:false},
 
-      { pattern: './node_modules/rxjs/*.js', included:false,   watched: false },
+/*
+      { pattern: './node_modules/rxjs/!*.js', included:false,   watched: false },
+*/
       { pattern: './node_modules/rxjs/**/*.js', included:false,    watched: false },
 
 

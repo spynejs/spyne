@@ -99,8 +99,8 @@ class SpyneApplication {
     };
     if (config !== undefined) {
        config = SpyneAppProperties.initialize(defaultConfig, config, _channels);
-      window.Spyne = this;
-      window.Spyne['config'] = config;
+      //window.Spyne = this;
+      //window.Spyne['config'] = config;
       //config = SpyneUtilsChannelRoute.conformRouteObject(config);
       //window.Spyne['config'] = deepMerge(defaultConfig, config)
     }
@@ -108,6 +108,7 @@ class SpyneApplication {
 
     //const ranNum = Math.random();
     //console.log('ranNum is ',{ranNum})
+    this.pluginsFn = SpyneAppProperties.getPluginsMethodObj();
     this.getChannelActions = (str) => _channels.getChannelActions(str);
     this.registerChannel = (val) => _channels.registerStream(val);
     this.registerDataChannel = (obs$) => _channels.registerStream(obs$);
@@ -116,10 +117,10 @@ class SpyneApplication {
     nullHolder.appendToDom(document.body);
     nullHolder.props.el.style.cssText = 'display:none; opacity:0; pointer-events:none;';
     _channels.init();
-    //console.log('spyne app initialized');
+    //console.log('spyne app initialized ',SpyneAppProperties.config.debug);
 
-    if (SpyneAppProperties.debug===true){
-     // window.Spyne = {version};
+    if (SpyneAppProperties.config.debug===true){
+      window.Spyne = {version};
     }
 
 

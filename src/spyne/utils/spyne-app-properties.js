@@ -1,5 +1,6 @@
 import {SpyneUtilsChannelRoute} from './spyne-utils-channel-route';
 import {SpyneScrollLock} from './spyne-scroll-lock';
+import {SpynePluginsMethods} from './spyne-plugins-methods';
 import {ChannelsMap} from '../channels/channels-map';
 import {deepMerge} from './deep-merge';
 import {prop, path} from 'ramda';
@@ -9,6 +10,9 @@ let _channels;
 let _channelsMap
 
 const _spyneScrollLock = new SpyneScrollLock();
+const _spynePluginMethods = new SpynePluginsMethods();
+
+
 class SpyneAppPropertiesClass{
 
   constructor() {
@@ -89,6 +93,31 @@ class SpyneAppPropertiesClass{
   }
 
 
+  getChannelConfig(channelName, config=_config){
+    if (channelName === 'CHANNEL_ROUTE'){
+      channelName = "ROUTE";
+    } else if (channelName === 'CHANNEL_WINDOW'){
+      channelName = "WINDOW";
+    }
+
+    if (config === undefined || _config.channels === undefined){
+      console.warn('Spyne warning: Spyne config object is empty!')
+      return;
+    }
+
+    const channelConfig = _config.channels[channelName];
+
+    if (channelConfig === undefined){
+      console.warn(`Spyne warning: Spyne configuration for channel, ${channelName} is empty!`)
+      return;
+    }
+
+    return channelConfig;
+  }
+
+
+
+
   get config(){
     return _config;
   }
@@ -131,16 +160,17 @@ class SpyneAppPropertiesClass{
 
   }
 
+  getPluginsMethodObj(){
+
+    return _spynePluginMethods.pluginMethodsObj;
+  }
+
   addPluginMethods(pluginMethods){
 
     if (pluginMethods){
 
+      _spynePluginMethods.addMethods(pluginMethods);
 
-      /**
-       * TODO: check for valid methods and have them added to the spyneApp
-       * TODO: spyneApp.plugins$.enableScroll();
-       *
-       * */
     }
 
 
