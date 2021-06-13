@@ -112,6 +112,8 @@ class SpyneAppPropertiesClass{
       return;
     }
 
+    console.log("MAIN CONFIG IS ",{channelName, channelConfig, config});
+
     return channelConfig;
   }
 

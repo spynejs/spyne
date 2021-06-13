@@ -162,10 +162,7 @@ export class SpyneChannelWindow extends Channel {
 
    // console.log("createScrollObservable ", {scrollMapFn, scrollDataFn, action, config, scrollElement, element})
 
-    /**
-     * TODO: curry createDomObservableFromEvent so that element can be other than window.
-     *
-     */
+
 
     return SpyneUtilsChannelWindow.createDomObservableFromEvent('scroll',
         scrollMapFn, isPassive, element)
@@ -381,8 +378,12 @@ export class SpyneChannelWindow extends Channel {
 
   onSetElementToScroll(e){
 
-    let {config, scrollElement} = e.payload;
+    let {config, el, scrollElement} = e.payload;
+    config = config || {};
     config = deepMerge(this.domChannelConfig, config);
+
+    scrollElement = scrollElement || el;
+    console.log('set elemenet to scroll ',{scrollElement})
 
     this.createScrollObservable(config, scrollElement)
     .subscribe(p => {

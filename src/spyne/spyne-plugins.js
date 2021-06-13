@@ -1,5 +1,4 @@
-import {SpyneApp, ViewStream, DomElement} from './spyne';
-import {SpyneAppProperties} from './spyne';
+import {SpyneApp, ViewStream, DomElement, SpyneAppProperties} from './spyne';
 import {prop, path, is, clone, mergeRight, pathSatisfies} from 'ramda';
 export class SpynePlugin {
 
@@ -26,10 +25,30 @@ export class SpynePlugin {
      // return false;
    // }
 
+
+    if (this.props.traits!==undefined){
+      this.addTraits(this.props.traits);
+    }
+
     this.onBeforeRegistered();
     this.onRegistered();
     this.onRender();
   }
+
+
+  addTraits(traits){
+    if (traits.constructor.name!=='Array'){
+      traits = [traits];
+    }
+    const addTrait=(TraitClass)=>{
+      new TraitClass(this);
+    };
+
+    traits.forEach(addTrait);
+
+
+  }
+
 
   onBeforeRegistered(){
     this.props.pluginName = this.props.name;

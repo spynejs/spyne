@@ -59,12 +59,6 @@ export class SpyneScrollLock {
 
 
 
-  setScroll(x=window.scrollX,y=window.scrollY){
-      this.scrollX = x;
-      this.scrollY = y;
-
-
-  }
 
   disableBodyScroll(){
 
