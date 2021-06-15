@@ -322,6 +322,7 @@ export class SpyneChannelWindow extends Channel {
       'CHANNEL_WINDOW_RESET_EVENT',
       'CHANNEL_WINDOW_RESIZE_EVENT',
       'CHANNEL_WINDOW_ELEMENT_SCROLL_EVENT',
+      'CHANNEL_WINDOW_SCROLL_ELEMENT_ADDED_EVENT',
       ['CHANNEL_WINDOW_SET_ELEMENT_TO_SCROLL_EVENT', 'onSetElementToScroll'],
       'CHANNEL_WINDOW_SCROLL_EVENT',
       'CHANNEL_WINDOW_SCROLL_LOCK_EVENT',
@@ -384,6 +385,9 @@ export class SpyneChannelWindow extends Channel {
 
     scrollElement = scrollElement || el;
     console.log('set elemenet to scroll ',{scrollElement})
+
+    const action = "CHANNEL_WINDOW_SCROLL_ELEMENT_ADDED_EVENT";
+    this.sendChannelPayload(action, {el}, el);
 
     this.createScrollObservable(config, scrollElement)
     .subscribe(p => {
