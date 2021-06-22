@@ -384,7 +384,7 @@ export class SpyneChannelWindow extends Channel {
     config = deepMerge(this.domChannelConfig, config);
 
     scrollElement = scrollElement || el;
-    console.log('set elemenet to scroll ',{scrollElement})
+    //console.log('set elemenet to scroll ',{scrollElement})
 
     const action = "CHANNEL_WINDOW_SCROLL_ELEMENT_ADDED_EVENT";
     this.sendChannelPayload(action, {el}, el);

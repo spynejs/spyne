@@ -68,7 +68,7 @@ export class SpyneScrollLock {
     const {y} = this.defaultScrollState;
     const bodyTopPos = `${y*-1}px`;
 
-    console.log('disable body scroll ', this.defaultScrollState, bodyTopPos)
+    //console.log('disable body scroll ', this.defaultScrollState, bodyTopPos)
     document.body.style.overflow = 'hidden';
     document.body.style.position = 'fixed';
     document.body.style.top = bodyTopPos;
@@ -80,7 +80,7 @@ export class SpyneScrollLock {
   enableBodyScroll(){
     const {position, overflow, top, x, y} = this.defaultScrollState;
 
-    console.log('Enable body scroll ', this.defaultScrollState)
+    //console.log('Enable body scroll ', this.defaultScrollState)
 
     document.body.style.overflow = overflow;
     document.body.style.position = position;

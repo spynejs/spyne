@@ -89,7 +89,7 @@ export class SpynePluginsMethods{
   }
 
   test1(){
-    console.log('test 1 is ');
+    //console.log('test 1 is ');
   }
 
 
