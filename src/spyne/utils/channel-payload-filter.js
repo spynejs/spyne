@@ -233,8 +233,7 @@ export class ChannelPayloadFilter {
 
       let getFilteringObj =  (v)=>{
         const {payload, srcElement, event} = v || {};
-        const o = Object.assign({}, v, event,srcElement, payload);
-
+        const o = Object.assign({}, v, event, payload);
         //console.log('o is ',o);
         return o;
       }

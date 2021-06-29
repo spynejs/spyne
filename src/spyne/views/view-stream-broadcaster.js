@@ -102,7 +102,7 @@ export class ViewStreamBroadcaster {
     let isDevMode = SpyneAppProperties.debug === true;
     let queryIsNil = query === undefined || query.length <= 0;
     if (queryIsNil === true && isDevMode === true) {
-      console.warn(`Spyne Warning: The item ${selector}, does not appear to exist!`);
+      console.warn(`Spyne Warning: The item ${selector}, does not appear to exist in ${this.props.name} --> vsid:${this.props.vsid}!`);
       // query = this.props.el;
       // addObservable(query, event);
     } else {
