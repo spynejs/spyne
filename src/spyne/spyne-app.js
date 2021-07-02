@@ -99,8 +99,8 @@ class SpyneApplication {
     };
     if (config !== undefined) {
        config = SpyneAppProperties.initialize(defaultConfig, config, _channels);
-      window.Spyne = this;
-      window.Spyne['config'] = config;
+      //window.Spyne = this;
+      //window.Spyne['config'] = "SDFSD";// {};
       //config = SpyneUtilsChannelRoute.conformRouteObject(config);
       //window.Spyne['config'] = deepMerge(defaultConfig, config)
     }
@@ -120,7 +120,7 @@ class SpyneApplication {
     //console.log('spyne app initialized ',SpyneAppProperties.config.debug);
 
     if (SpyneAppProperties.config.debug===true){
-     // window.Spyne = {version};
+      window.Spyne = {version};
     }
 
 
