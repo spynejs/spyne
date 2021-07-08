@@ -828,7 +828,12 @@ export class ViewStream {
   postRender() {
     this.beforeAfterRender();
     this.afterRender();
+
     this.onRendered();
+    const startAnimFrameAfterRendered = ()=>this.onAnimFrameAfterRendered();
+    requestAnimationFrame(startAnimFrameAfterRendered);
+
+
 
     if (this.isDevMode === true ){
       const eventsArr = this.broadcastEvents();
@@ -948,6 +953,17 @@ export class ViewStream {
 
   onRendered() {
   }
+
+  /**
+   *
+   * This method is useful to add animation classes to be called immediately after rendering.
+   *
+   */
+
+  onAnimFrameAfterRendered() {
+  }
+
+
 
 
 
