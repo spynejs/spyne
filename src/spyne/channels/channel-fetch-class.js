@@ -1,6 +1,6 @@
 import { Channel } from './channel';
 import { ChannelFetchUtil } from '../utils/channel-fetch-util';
-import {path, pick, mergeDeepRight, defaultTo, reject, compose, isNil} from 'ramda';
+import {path, pick, mergeDeepRight, all, allPass, either, values, defaultTo, reject, compose, isNil} from 'ramda';
 
 export class ChannelFetch extends Channel {
   /**
@@ -50,7 +50,11 @@ export class ChannelFetch extends Channel {
   constructor(name, props = {}) {
 
     // ALLOW FOR GENERIC MAP PROPERTY
+
+    ChannelFetch.validateMapMethod(props, name);
+
     if (props.map!==undefined){
+
       props.mapFn = props.map;
     }
     props.extendedActionsArr = [
@@ -59,6 +63,25 @@ export class ChannelFetch extends Channel {
     ];
     props.sendCachedPayload = true;
     super(name, props);
+  }
+
+  static validateMapMethod(props, name, testMode=false){
+    const isNotEmpty = arr=>arr.length>=1
+    const isNotFunction = val => typeof(val)!=='function';
+    const isUndefinedOrWrongType = either(isNil, isNotFunction)
+    const isUndefined = all(isUndefinedOrWrongType);
+    const isNotUndefinedAndIsNotEmpty = allPass([isUndefined, isNotEmpty])
+    const mapMethodIsInvalid = compose(isNotUndefinedAndIsNotEmpty,values, pick(['map', 'mapFn']))(props)
+
+    if (mapMethodIsInvalid){
+      if(testMode===false) {
+        console.warn(`Spyne Warning: The map method for ChannelFetch, ${name}, appears to be invalid`);
+      }
+      return false;
+    }
+
+    return true;
+
   }
 
   onRegistered() {
