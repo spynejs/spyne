@@ -648,11 +648,13 @@ export class ViewStream {
 
   setAttachParentData(attachType, query, level) {
     query = query!=="" ? query : undefined;
+    const node = this.getParentEls(this.props.el, level);
+    console.log('node is ',node);
     return {
-      node: this.getParentEls(this.props.el, level),
+      node,
       type: 'ViewStreamObservable',
       attachType,
-      query: this.props.el.parentElement.querySelector(query)
+      query: node.querySelector(query)
     };
   }
 
