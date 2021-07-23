@@ -1,4 +1,4 @@
-import { fromEventPattern } from 'rxjs';
+import { fromEventPattern, fromEvent } from 'rxjs';
 import { map } from 'rxjs/operators';
 import {mapObjIndexed} from 'ramda';
 
