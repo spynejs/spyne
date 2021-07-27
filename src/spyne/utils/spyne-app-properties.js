@@ -8,6 +8,8 @@ import {prop, path} from 'ramda';
 let _config;
 let _channels;
 let _channelsMap
+let _initialized = false;
+let _debug = true;
 
 const _spyneScrollLock = new SpyneScrollLock();
 const _spynePluginMethods = new SpynePluginsMethods();
@@ -17,7 +19,6 @@ class SpyneAppPropertiesClass{
 
   constructor() {
 
-    this._initialized = false;
 
   }
 
@@ -27,12 +28,14 @@ class SpyneAppPropertiesClass{
     _channels = channelsMap;
     const userConfig = SpyneUtilsChannelRoute.conformRouteObject(config);
     _config = deepMerge(defaultConfig, userConfig);
+    _debug = _config.debug!== undefined ? _config.debug : _debug;
     this.getChannelActions = _channels.getChannelActions.bind(_channels);
     this.listRegisteredChannels = _channels.listRegisteredChannels.bind(_channels);
-    this._initialized = true;
+    _initialized = true;
    // if (channelsMap!==undefined) {
       this.setChannelsMap();
     //}
+
     return _config;
 
   }
@@ -77,7 +80,7 @@ class SpyneAppPropertiesClass{
   }
 
   get initialized(){
-    return this._initialized;
+    return _initialized;
   }
 
   get scrollLock(){
@@ -162,7 +165,10 @@ class SpyneAppPropertiesClass{
 
   }
 
-  getPluginsMethodObj(){
+  getPluginsMethodObj(pluginMethodsObj){
+    if(pluginMethodsObj){
+      this.addPluginMethods(pluginMethodsObj);
+    }
 
     return _spynePluginMethods.pluginMethodsObj;
   }
@@ -195,7 +201,8 @@ class SpyneAppPropertiesClass{
   }
 
   get debug(){
-    return _config['debug']===true;
+    return _debug;
+    //return _config['debug']===true;
   }
 
 

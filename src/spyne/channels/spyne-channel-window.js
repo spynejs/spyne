@@ -39,7 +39,7 @@ export class SpyneChannelWindow extends Channel {
     this.bindStaticMethods();
     this.currentScrollY=0;
 
-    this.spyneScrollLock = SpyneAppProperties.scrollLock;
+    //this.spyneScrollLock = SpyneAppProperties.scrollLock;
     // this.props.name = 'WINDOW';
   }
 

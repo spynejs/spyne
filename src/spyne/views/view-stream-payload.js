@@ -2,6 +2,20 @@ import { uiValidations } from '../channels/channels-config';
 import {SpyneAppProperties} from '../utils/spyne-app-properties';
 //import { validate } from '../utils/channel-config-validator';
 import { gc } from '../utils/gc';
+import {
+  mergeAll,
+  clone,
+  fromPairs,
+  toPairs,
+  compose,
+  mergeDeepRight,
+  mergeRight,
+  pathEq,
+  includes,
+  pickAll,
+  __,
+  lte, defaultTo, prop, is, mapObjIndexed,
+} from 'ramda';
 
 export class ViewStreamPayload {
   /**
@@ -20,16 +34,16 @@ export class ViewStreamPayload {
    */
   constructor(name, observable, data, action = 'subscribe', debug = false) {
     this.addMixins();
-    this.options = {
+    const options = {
       'name' : name,
       'observable': observable,
       'data': data,
       'action': action
     };
    // this.getValidationChecks(name);
-    this.sendToDirectorStream(this.options);
+    this.sendToDirectorStream(options);
   }
-  getValidationChecks(n) {
+/*  getValidationChecks(n) {
     let left  = e => console.warn(e);
     let right = val => this.onRunValidations(val);
     let channelExists = SpyneAppProperties.channelsMap.testStream(n);
@@ -40,19 +54,23 @@ export class ViewStreamPayload {
     }
   }
   onRunValidations(checks) {
-    /*validate(checks(), this.options).fold(
+    /!*validate(checks(), this.options).fold(
       this.onError.bind(this),
-      this.onSuccess.bind(this));*/
+      this.onSuccess.bind(this));*!/
   }
   onPayloadValidated(p) {
     this.sendToDirectorStream(p);
-  }
+  }*/
   sendToDirectorStream(payload) {
     let directorStream$ = SpyneAppProperties.channelsMap.getStream('DISPATCHER');
-    // console.log('payload is ',payload);
-    directorStream$.next(payload);
+    const frozenPayload = ViewStreamPayload.deepClone(payload);
+    //console.log('payload is ',frozenPayload);
+    directorStream$.next(frozenPayload);
+    payload = undefined;
     this.gc();
+    delete this;
   }
+/*
   onError(errors) {
     console.warn('payload failed due to:\n' + errors.map(e => '* ' + e).join('\n'));
     this.gc();
@@ -60,6 +78,51 @@ export class ViewStreamPayload {
   onSuccess(payload) {
     this.onPayloadValidated(payload);
   }
+*/
+
+  static deepClone(o) {
+    const isArr = is(Array);
+    const isObj = is(Object);
+    const isIter = ob => isArr(ob)===false && isObj(ob)===true;
+    const isIterable = isIter(o);
+    return isIterable ? compose(fromPairs, toPairs, clone)(o) : clone(o);
+
+  }
+
+
+
+  static deepFreeze(o) {
+    //return o;
+    //return Object.freeze(o);
+    const elIsDomElement = compose(lte(0), defaultTo(-1), prop('nodeType'));
+
+    try {
+      Object.freeze(o);
+      Object.getOwnPropertyNames(o).forEach(function(prop) {
+        if (o.hasOwnProperty(prop)
+            && elIsDomElement(o[prop]) === false
+            && o[prop] !== null
+            && (typeof o[prop] === "object" || typeof o[prop] === "function")
+            && !Object.isFrozen(o[prop])) {
+          ChannelPayload.deepFreeze(o[prop]);
+        }
+      });
+
+    } catch(e){
+      //console.log("FREEZE ERR ",{o,e});
+      return o;
+
+    }
+
+    return o;
+  }
+
+  static getMouseEventKeys() {
+    return ['altKey', 'bubbles', 'cancelBubble', 'cancelable', 'clientX', 'clientY', 'composed', 'ctrlKey', 'currentTarget', 'defaultPrevented', 'detail', 'eventPhase', 'fromElement', 'isTrusted', 'layerX', 'layerY', 'metaKey', 'movementX', 'movementY', 'offsetX', 'offsetY', 'pageX', 'pageY', 'path', 'relatedTarget', 'returnValue', 'screenX', 'screenY', 'shiftKey', 'sourceCapabilities', 'srcElement', 'target', 'timeStamp', 'toElement', 'type', 'view', 'which', 'x', 'y'];
+  }
+
+
+
   addMixins() {
     //  ==================================
     // BASE CORE MIXINS

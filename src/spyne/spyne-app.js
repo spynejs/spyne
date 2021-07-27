@@ -39,7 +39,7 @@ class SpyneApplication {
     return _channels;
   }
 
-  init(config = {}) {
+  init(config = {}, testMode=false) {
     //this.channels = new ChannelsMap();
     /*!
      * Spyne 0.17.0
@@ -60,11 +60,24 @@ class SpyneApplication {
     this.ChannelsController = ChannelsMap;
     this.ChannelsBase = Channel;
     this.ChannelPayloadItem = ChannelPayload;*/
+
+    //console.log('spyne app ',{config,testMode}, SpyneAppProperties.initialized);
+    if(SpyneAppProperties.initialized === true){
+
+      if (testMode){
+        return 'The Spyne Application has already been initialized!';
+      } else {
+        console.warn('The Spyne Application has already been initialized!');
+      }
+      return
+    }
+
+
     let defaultConfig = {
       scrollLock: false,
       scrollLockX: 31,
       scrollLockY: 0,
-      debug: false,
+      debug: true,
       plugins:{
 
       },
@@ -108,7 +121,7 @@ class SpyneApplication {
 
     //const ranNum = Math.random();
     //console.log('ranNum is ',{ranNum})
-    this.pluginsFn = SpyneAppProperties.getPluginsMethodObj();
+    this.pluginsFn = SpyneAppProperties.getPluginsMethodObj(config['pluginMethods']);
     this.getChannelActions = (str) => _channels.getChannelActions(str);
     this.registerChannel = (val) => _channels.registerStream(val);
     this.registerDataChannel = (obs$) => _channels.registerStream(obs$);

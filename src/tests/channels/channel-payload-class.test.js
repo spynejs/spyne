@@ -11,7 +11,7 @@ const R = require('ramda');
 describe('should test Channel Payload Class', () => {
   const {srcElement, event, action} = ChannelPayloadToTestFilters;
   const channelName = "CHANNEL_ROUTE";
-  SpyneApp.init({debug:true})
+  SpyneApp.init({debug:true}, true);
 
   before(()=>{
     const spyneApp = SpyneApp;

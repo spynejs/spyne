@@ -1,13 +1,12 @@
 //import {SpyneApp} from '../spyne/spyne';
 //const {SpyneApp} = require('../spyne/spyne');
 const {expect, assert} = require('chai');
-//const {SpynePlugin} = require('../spyne/spyne-plugins');
+const {SpynePlugin} = require('../spyne/spyne-plugins.js');
 
 const name = 'mySpynePlugin';
 const config = {debug:true};
 
 describe('should test use of spyne plugin', () => {
-  let spyneApp;
   const baseConfig = {debug:false};
   beforeEach(()=>{
 
@@ -16,21 +15,25 @@ describe('should test use of spyne plugin', () => {
 
 
   it('spyne plugin should exist', () => {
-    //console.log('spyne plugin  is ',spyneApp);
+    //console.log('spyne plugin1  is ',spyneApp);
 
     return true;
   // expect(SpynePlugin).to.exist;
 
   });
 
- /* it('should get or create new spyne app', ()=>{
+/*
+  it('should get or create new spyne app', ()=>{
     const spyneApp = SpynePlugin.getSpyneApp({name, config})
+     console.log("HERE IS ",{name, config, spyneApp})
+
     //console.log('spune app is ',spyneApp.constructor.name)
     expect(spyneApp.constructor.name).to.equal('SpyneApp');
   })
 
+*/
 
-  it('should set the plugin name', ()=>{
+/*  it('should set the plugin name', ()=>{
     const spynePluginSetConfig =  SpynePlugin.updateSpyneConfig(spyneApp, name, config);
 
    expect(spynePluginSetConfig).to.deep.equal(config);

@@ -23,6 +23,7 @@ import {
     isEmpty,
   equals,
   prop,
+    propEq,
   apply,
 } from 'ramda';
 const rMap = require('ramda').map;
@@ -86,7 +87,8 @@ export class Channel {
     this.checkForPersistentDataMode = Channel.checkForPersistentDataMode.bind(this);
     this.observer$ = this.props['observer'] = observer$;
     let dispatcherStream$ = this.streamsController.getStream('DISPATCHER');
-    dispatcherStream$.subscribe((val) => this.onReceivedObservable(val));
+    const payloadPredByChannelName = propEq('name', props.name)
+    dispatcherStream$.pipe(filter(payloadPredByChannelName)).subscribe((val) => this.onReceivedObservable(val));
   }
 
   getMainObserver() {

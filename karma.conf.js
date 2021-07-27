@@ -80,6 +80,8 @@ module.exports = function(config) {
 
 
       {pattern: './src/tests/index.test.js', watched: true},
+      {pattern: './src/tests/spyne-app.test.js', watched: true},
+      {pattern: './src/tests/spyne-plugin.test.js', watched: true},
       {pattern: './src/tests/channels/*.test.js', watched: true},
 
       {pattern: './src/tests/utils/*.test.js', watched: true},

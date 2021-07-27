@@ -117,10 +117,10 @@ describe('should test channel payload filters parameter configuration', () => {
 describe('should test channel payload filters boolean correctness', ()=>{
 
   const liSel = "#xqdlqmr";
-  SpyneApp.init({debug:true})
-  const spyneApp = SpyneApp;
+  //const spyneApp = SpyneApp;
 
   beforeEach(function(){
+    SpyneApp.init({debug:true}, true)
 
     const liElTmpl = `
      <li class="page-card page-menu-4-card" id="xqdlqmr" name="PageCardView" data-vsid="xqdlqmr"><a href="/menu-3/sub-menu-4" data-channel="ROUTE" data-event-prevent-default="true" data-topic-id="sub-menu-2" data-nav-level="2">
@@ -238,10 +238,9 @@ describe('it should test channel payload filter with data packer ',()=>{
 
 
   const liSel = "#xqdlqmr";
-   SpyneApp.init({debug:true})
 
-    const spyneApp = SpyneApp;
   beforeEach(function(){
+    SpyneApp.init({debug:true}, true)
 
     const liElTmpl = `
      <li class="page-card page-menu-4-card" id="xqdlqmr" name="PageCardView" data-vsid="xqdlqmr"><a href="/menu-3/sub-menu-4" data-channel="ROUTE" data-event-prevent-default="true" data-topic-id="sub-menu-2" data-nav-level="2">

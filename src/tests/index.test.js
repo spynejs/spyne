@@ -47,7 +47,7 @@ describe('createElement', ()=>{
 describe('test index.test.js', () => {
   it('works', () => {
 
-    SpyneApp.init({debug:true})
+    SpyneApp.init({debug:true}, true)
     //console.log("SPYNE APP IS ",SpyneApp)
     // throw new Error('ya!')
     expect(true).to.be.true;
