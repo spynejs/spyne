@@ -53,7 +53,7 @@ describe('should test Channel Payload Class', () => {
   })
 
 
-  it('should clone and unfreeze the props payload', ()=>{
+/*  it('should clone and unfreeze the props payload', ()=>{
 
     const channnelPayload = new ChannelPayload(channelName, action, MSFData, srcElement, event)
     const {payload, channel} = channnelPayload.props();
@@ -69,6 +69,9 @@ describe('should test Channel Payload Class', () => {
 
     expect(payloadPropsIsClone).to.be.true;
   })
+  */
+
+ /*
   it('should clone and unfreeze the deconstructed props payload', ()=>{
     const channnelPayload = new ChannelPayload(channelName, action, MSFData, srcElement, event)
     const {content} = channnelPayload.props();
@@ -84,6 +87,12 @@ describe('should test Channel Payload Class', () => {
 
     expect(payloadPropsIsClone).to.be.true;
   })
+
+
+  */
+
+
+/*
 
   it('should clone and unfreeze the updated new prop', ()=>{
     const channnelPayload = new ChannelPayload(channelName, action, MSFData, srcElement, event)
@@ -102,6 +111,7 @@ describe('should test Channel Payload Class', () => {
     expect(payloadPropsIsClone).to.be.true;
   })
 
+*/
 
 
   it('should run shell tests', () => {

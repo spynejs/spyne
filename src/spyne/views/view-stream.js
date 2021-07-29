@@ -609,6 +609,8 @@ export class ViewStream {
     if (this.props !== undefined) {
       this.props.action = action;
       let data = mergeRight(this.props, obj);
+      //let data = Object.assign({}, this.props, obj);
+
       this.sink$.next(Object.freeze(data));
     }
   }

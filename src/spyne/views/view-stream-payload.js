@@ -3,18 +3,12 @@ import {SpyneAppProperties} from '../utils/spyne-app-properties';
 //import { validate } from '../utils/channel-config-validator';
 import { gc } from '../utils/gc';
 import {
-  mergeAll,
+  compose,
   clone,
   fromPairs,
   toPairs,
-  compose,
-  mergeDeepRight,
-  mergeRight,
-  pathEq,
-  includes,
-  pickAll,
   __,
-  lte, defaultTo, prop, is, mapObjIndexed,
+  lte, defaultTo, prop, is,
 } from 'ramda';
 
 export class ViewStreamPayload {
@@ -33,7 +27,7 @@ export class ViewStreamPayload {
    * @param {Boolean} debug
    */
   constructor(name, observable, data, action = 'subscribe', debug = false) {
-    this.addMixins();
+    //this.addMixins();
     const options = {
       'name' : name,
       'observable': observable,
@@ -67,7 +61,10 @@ export class ViewStreamPayload {
     //console.log('payload is ',frozenPayload);
     directorStream$.next(frozenPayload);
     payload = undefined;
-    this.gc();
+
+    //this.gc();
+    //console.timeEnd(label);
+
     delete this;
   }
 /*

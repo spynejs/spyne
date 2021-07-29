@@ -45,7 +45,8 @@ export class ChannelPayload {
 
     let channelPayloadItemObj = { channelName, action, srcElement, event };
    // Object.defineProperty(channelPayloadItemObj, 'payload', {get: () => clone(payload)});
-    channelPayloadItemObj['payload'] = ChannelPayload.deepFreeze(payload);
+    const frozenPayload = ChannelPayload.deepFreeze(payload);
+    channelPayloadItemObj['payload'] = frozenPayload;
     /**
      * This is a convenience method that helps with destructuring by merging all properties.
      *
@@ -76,7 +77,7 @@ export class ChannelPayload {
 
 
 
-    channelPayloadItemObj.props = () => clone(mergeAll([
+   /* channelPayloadItemObj.props = () => clone(mergeAll([
         {payload:ChannelPayload.deepClone(channelPayloadItemObj.payload)},
       channelPayloadItemObj.payload,
         { channel },
@@ -85,23 +86,32 @@ export class ChannelPayload {
                 channelPayloadItemObj.srcElement, {
         action: channelPayloadItemObj.action }
          ]));
+*/
 
 
-
-
-    if (channel === 'CHANNEL_ROUTE') {
-      channelPayloadItemObj['location'] = ChannelPayload.getLocationData();
-    }
-
-    channelPayloadItemObj._dir = undefined;
-
-    Object.defineProperties(channelPayloadItemObj, {
+    const channelPayloadItemObjProps = {
       $dir: {
         get: () => channelPayloadItemObj._dir,
         set: (val) => channelPayloadItemObj._dir=val
       }
+    }
 
-    })
+
+
+    if (channel === 'CHANNEL_ROUTE') {
+      //channelPayloadItemObj['location'] = ChannelPayload.getLocationData();
+      channelPayloadItemObjProps['location'] = {
+        get: ()=>ChannelPayload.getLocationData()
+      }
+     /* channelPayloadItemObjProps['routeData'] = {
+        get: ()=>prop('routeData', frozenPayload)
+      }
+*/
+    }
+
+    channelPayloadItemObj._dir = undefined;
+
+    Object.defineProperties(channelPayloadItemObj, channelPayloadItemObjProps)
 
     if(timeLabel){
       console.timeEnd(timeLabel);
