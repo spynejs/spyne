@@ -249,7 +249,7 @@ export class SpyneChannelRoute extends Channel {
     payload = rMerge(payload, keywordArrs);
     // console.log("SEND STREAM onIncomingDomEvent", payload, keywordArrs);;
    // payload = SpyneChannelRoute.removeSSID(payload);
-      this.sendChannelPayload(action, payload, undefined, undefined, this.navToStream$);
+      this.sendChannelPayload(action, payload, undefined, evt, this.navToStream$);
 
   }
 
@@ -430,7 +430,7 @@ export class SpyneChannelRoute extends Channel {
     let isHash = config.isHash;
     let isHidden = config.isHidden;
     let routeType = config.type;
-    return { routeCount, isDeepLink, isHash, isHidden, routeType };
+    return { routeCount, isDeepLink, isHash,isHistory, isHidden, routeType };
   }
 
   static getDataFromParams(pl, config = this.routeConfigJson) {
@@ -450,7 +450,7 @@ export class SpyneChannelRoute extends Channel {
 
     routeData = rMerge(dataFromStr.routeData, routeData);
 
-    let { routeCount, isDeepLink, isHash, isHidden, routeType } = this.getExtraPayloadParams(
+    let { routeCount, isDeepLink, isHash,isHistory, isHidden, routeType } = this.getExtraPayloadParams(
       config);
     return {
       isDeepLink,
@@ -461,6 +461,7 @@ export class SpyneChannelRoute extends Channel {
       routeValue,
       isHash,
       isHidden,
+      isHistory,
       routeType
     };
   }
@@ -484,6 +485,7 @@ export class SpyneChannelRoute extends Channel {
       routeValue,
       isHash,
       isHidden,
+      isHistory,
       routeType
     };
     return obj;
