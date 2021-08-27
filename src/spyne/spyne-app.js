@@ -45,7 +45,7 @@ class SpyneApplication {
      * Spyne 0.17.0
      * https://spynejs.org
      *
-     * @license Copyright 2017-2020, Frank Batista, Relevant Context, LLC. All rights reserved.
+     * @license Copyright 2017-2021, Frank Batista, Relevant Context, LLC. All rights reserved.
      * Spyne is licensed under the GNU Lesser General Public License v3.0
      *
      * @author: Frank Batista,

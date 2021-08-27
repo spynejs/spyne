@@ -129,7 +129,9 @@ export class SpyneUtilsChannelRoute {
         const [key, val] = arrPair;
         const isObject = is(Object, val);
 
-        const getLinkText = str => test(isValidStrRE, str) ? String(str).toUpperCase() : key;
+        const createTitle = (str)=>String(str).replace(/([-_])/g, " ").toUpperCase();
+
+        const getLinkText = str => test(isValidStrRE, str) ? createTitle(str) : key;
 
         if (key === 'routeName' || key === '404'){
           return acc;

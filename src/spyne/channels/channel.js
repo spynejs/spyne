@@ -92,6 +92,10 @@ export class Channel {
   }
 
   getMainObserver() {
+    if (this.streamsController === undefined){
+      console.warn(`Spyne Warning: The following channel, ${this.props.name}, appears to be registered before Spyne has been initialized.`)
+    }
+
     let proxyExists = this.streamsController.testStream(this.props.name);
 
     if (proxyExists === true) {
