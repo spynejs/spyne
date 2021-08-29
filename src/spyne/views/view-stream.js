@@ -1128,8 +1128,16 @@ export class ViewStream {
    *
    */
 
-  sendInfoToChannel(channelName, pl = {}, action = 'VIEWSTREAM_EVENT') {
+  sendInfoToChannel(channelName, pl = {}, action) {
     const payload = pl;
+
+    let defaultToAction = defaultTo('VIEWSTREAM_EVENT');
+    const channelDefaultActionHash = {
+      CHANNEL_ROUTE: "CHANNEL_ROUTE_CHANGE_EVENT"
+    }
+    const getActionFn = compose(defaultToAction, prop(channelName))
+
+    action = action || getActionFn(channelDefaultActionHash);
 
 
     let data = { payload, action };
