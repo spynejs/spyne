@@ -24,7 +24,7 @@ module.exports = function(config) {
   webpackConfig.module.rules.push(
       {
        test: /(\.js)$/,
-       loader: 'babel-loader',
+    /*   loader: 'babel-loader',
 
        options: {
          "babelrc" : false,
@@ -39,7 +39,7 @@ module.exports = function(config) {
              "loose": true
            }]
          ]
-       },
+       },*/
        exclude: /(node_modules)/
        }
 
@@ -70,7 +70,6 @@ module.exports = function(config) {
     ],
     // list of files / patterns to load in the browser
     files: [
-      {pattern: './node_modules/spynejs-polyfill/ie.js', watched:false},
       {pattern: './node_modules/ramda/dist/ramda.min.js', watched:false},
 
 /*

@@ -77,7 +77,6 @@
   },
   "dependencies": {
     "ramda": "^0.27.1",
-    "rxjs": "^7.3.0",
-    "spynejs-polyfill": "0.0.5"
+    "rxjs": "^7.3.0"
   }
 }
