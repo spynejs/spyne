@@ -161,14 +161,9 @@ module.exports = function(config) {
        ChromeHeadlessNoSandbox: {
        base: 'ChromeHeadless',
        flags: ['--no-sandbox']
-     },
+     }
 
-      VirtualBoxIE11onWin7: {
-        base: 'VirtualBoxIE11',
-        keepAlive: true,
-        snapshot: 'pristine',
-        uuid: '0552dac4-c8f0-4d29-b81a-ae70026505c5'
-      }
+
 
 
 

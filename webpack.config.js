@@ -2,7 +2,13 @@ const path = require('path');
 const webpack = require('webpack');
 const PACKAGE = require('./package');
 const version = PACKAGE.version;
-const env = require('yargs').argv.env; // use --env with webpack 2
+const getEnv = ()=>{
+  const npmCommand = process.env.npm_lifecycle_script;
+  return String(npmCommand).replace(/^(webpack.*--env)(\s)*(\w+)(.*)$/gm, "$3");
+}
+const env = getEnv();
+
+
 const libraryName = 'spyne';
 let moduleRulesArr = [];
 let devToolValue = 'eval-source-map';
