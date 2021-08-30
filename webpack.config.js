@@ -49,7 +49,7 @@ if (env === 'build') {
   ];
 } else if(env === 'dev') {
   outputFile = libraryName + '.js';
-   moduleRulesArr.push(
+/*   moduleRulesArr.push(
       {
         test: /(\.js)$/,
         loader: 'babel-loader',
@@ -70,7 +70,7 @@ if (env === 'build') {
         exclude: /(node_modules)/
       }
 
-  )
+  )*/
 }
 
 //console.log("CONFIG IS ",process.env.BABEL_ENV );

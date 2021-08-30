@@ -4,7 +4,7 @@ import {SpyneUtilsChannelRoute} from './utils/spyne-utils-channel-route';
 import {SpyneAppProperties} from './utils/spyne-app-properties';
 import {deepMerge} from './utils/deep-merge';
 const _channels = new ChannelsMap();
-const version = '0.17.0';
+const version = '0.17.1';
 
 class SpyneApplication {
   /**
@@ -42,7 +42,7 @@ class SpyneApplication {
   init(config = {}, testMode=false) {
     //this.channels = new ChannelsMap();
     /*!
-     * Spyne 0.17.0
+     * Spyne 0.17.1
      * https://spynejs.org
      *
      * @license Copyright 2017-2021, Frank Batista, Relevant Context, LLC. All rights reserved.
