@@ -218,7 +218,8 @@ export class SpyneChannelWindow extends Channel {
     // CHECK TO ADD MEDIA QUERY OBSERVABLE
     // ==========================================
     config['listenForMediaQueries'] = checkIfObjIsNotEmptyOrNil(
-      config.mediqQueries);
+      config.mediaQueries) || checkIfObjIsNotEmptyOrNil(
+        config.mediqQueries);
 
     // =========================================
 

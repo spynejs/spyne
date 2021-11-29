@@ -1192,8 +1192,18 @@ export class ViewStream {
 
   isLocalEvent(channelPayloadItem) {
     const itemEl = path(['srcElement', 'el'], channelPayloadItem);
-    return itemEl !== undefined &&
-        this.props.el.contains(channelPayloadItem.srcElement.el);
+    const thisEl = path(['props', 'el'], this);
+    //console.log('this el is ',{thisEl, itemEl});
+    return ViewStream.elIsDomElement(thisEl) && ViewStream.elIsDomElement(itemEl) && thisEl.contains(itemEl);
+  }
+
+  static elIsDomElement(o) {
+    if (is(String,o)){
+      o = document.querySelector(o);
+    }
+
+
+    return compose(lte(0), defaultTo(-1), prop('nodeType'))(o);
   }
 
   get attributesArray() {
