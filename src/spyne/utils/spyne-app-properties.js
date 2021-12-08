@@ -26,7 +26,10 @@ class SpyneAppPropertiesClass{
 
   initialize(defaultConfig={}, config={}, channelsMap){
     _channels = channelsMap;
-    const userConfig = SpyneUtilsChannelRoute.conformRouteObject(config);
+    let userConfig = config;
+    if (config.channels && config.channels.ROUTE) {
+       userConfig = SpyneUtilsChannelRoute.conformRouteObject(config);
+    }
     _config = deepMerge(defaultConfig, userConfig);
     _debug = _config.debug!== undefined ? _config.debug : _debug;
     this.getChannelActions = _channels.getChannelActions.bind(_channels);
