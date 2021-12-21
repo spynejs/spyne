@@ -77,7 +77,7 @@ export class ChannelPayload {
 
 
 
-   /* channelPayloadItemObj.props = () => clone(mergeAll([
+    channelPayloadItemObj.clone = () => clone(mergeAll([
         {payload:ChannelPayload.deepClone(channelPayloadItemObj.payload)},
       channelPayloadItemObj.payload,
         { channel },
@@ -86,7 +86,7 @@ export class ChannelPayload {
                 channelPayloadItemObj.srcElement, {
         action: channelPayloadItemObj.action }
          ]));
-*/
+
 
 
     const channelPayloadItemObjProps = {

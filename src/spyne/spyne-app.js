@@ -4,7 +4,7 @@ import {SpyneUtilsChannelRoute} from './utils/spyne-utils-channel-route';
 import {SpyneAppProperties} from './utils/spyne-app-properties';
 import {deepMerge} from './utils/deep-merge';
 const _channels = new ChannelsMap();
-const version = '0.17.4';
+const version = '0.17.5';
 
 class SpyneApplication {
   /**
@@ -42,7 +42,7 @@ class SpyneApplication {
   init(config = {}, testMode=false) {
     //this.channels = new ChannelsMap();
     /*!
-     * Spyne 0.17.4
+     * Spyne 0.17.5
      * https://spynejs.org
      *
      * @license Copyright 2017-2021, Frank Batista, Relevant Context, LLC. All rights reserved.
@@ -112,10 +112,10 @@ class SpyneApplication {
     };
     if (config !== undefined) {
        config = SpyneAppProperties.initialize(defaultConfig, config, _channels);
-      //window.Spyne = this;
+      window.Spyne = this;
       //window.Spyne['config'] = "SDFSD";// {};
       //config = SpyneUtilsChannelRoute.conformRouteObject(config);
-      //window.Spyne['config'] = deepMerge(defaultConfig, config)
+      window.Spyne['config'] = deepMerge(defaultConfig, config)
     }
 
 
@@ -133,7 +133,7 @@ class SpyneApplication {
     //console.log('spyne app initialized ',SpyneAppProperties.config.debug);
 
     if (SpyneAppProperties.config.debug===true){
-      window.Spyne = {version};
+      //window.Spyne = {version};
     }
 
 
