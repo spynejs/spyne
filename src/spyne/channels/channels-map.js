@@ -1,10 +1,7 @@
-// import {baseCoreMixins}    from '../utils/mixins/base-core-mixins';
-// import {BaseStreamsMixins} from '../utils/mixins/base-streams-mixins';
 import { SpyneChannelRoute } from './spyne-channel-route';
 import { SpyneChannelUI } from './spyne-channel-ui';
 import { SpyneChannelWindow } from './spyne-channel-window';
 import { SpyneChannelLifecycle } from './spyne-channel-lifecycle';
-//import { validate } from '../utils/channel-config-validator';
 
 import { Subject } from 'rxjs';
 import { ChannelProxy } from './channel-proxy';
@@ -12,7 +9,6 @@ import {propEq, pluck, prop, filter, pathEq, reject, compose, join} from 'ramda'
 const rMap = require('ramda').map;
 const _map = new Map();
 
-// import * as R from 'ramda';
 
 export class ChannelsMap {
   /**
@@ -29,10 +25,6 @@ export class ChannelsMap {
 
   constructor() {
     this.addMixins();
-    //_map = new Map();
-
-    // console.log('Rx is ',Rx);
-    // console.log('RX IS ', Subject);
     _map.set('DISPATCHER', new Subject());
     this.listRegisteredChannels = ChannelsMap.listRegisteredChannels.bind(this);
     this.getChannelsList = ChannelsMap.getChannelsList.bind(this);
@@ -73,23 +65,14 @@ export class ChannelsMap {
       let channels = compose(join(', '), rMap(prop('key')))(filterProxyArr);
       let filterPrefixWarning = `Spyne Warning: The following ${channelStr} not been initialized: ${channels}`;
       console.warn(filterPrefixWarning);
-      // console.log("FILTER PROXY WARNING ",filterProxyArr);
     }
 
-    // console.log(filterProxy(proxyMap),' proxyMap ', proxyMap);
   }
 
   init() {
     this.createMainStreams();
   }
 
-/*
-  createObserver(obj) {
-    // RIGHT NOW THIS CREATES THE DISPATCHER STREAM
-    validate(obj.validations, obj.init);
-    _map.set(obj.init.name, obj.init.observable());
-  }
-*/
 
   createMainStreams() {
     this.routeStream = new SpyneChannelRoute();

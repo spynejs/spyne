@@ -47,9 +47,7 @@ export class ViewStreamBroadcaster {
     };
     // spread operator to select variables from arrays
     let [selector, event, local] = args;
-    // console.log('args is ',args);
     // btn query
-    // let query = this.props.el.querySelectorAll(selector);
     let channel; // hoist channel and later check if chnl exists
     let query = this.props.el.querySelectorAll(selector);
 
@@ -85,8 +83,6 @@ export class ViewStreamBroadcaster {
       data['channel'] = channel;
       // payload needs vsid# to pass verification
 
-      // data['event'] = event;
-      // data['el'] = q;
       data['srcElement'] = {};// pick(['vsid','viewName'], data);
       data.srcElement['id'] = this.props.id;
       data.srcElement['vsid'] = this.props.vsid;
@@ -103,7 +99,7 @@ export class ViewStreamBroadcaster {
     let queryIsNil = query === undefined || query.length <= 0;
     if (queryIsNil === true && isDevMode === true) {
       console.warn(`Spyne Warning: The item ${selector}, does not appear to exist in ${this.props.name} --> vsid:${this.props.vsid}!`);
-      // query = this.props.el;
+
       // addObservable(query, event);
     } else {
       query.forEach = Array.prototype.forEach;
@@ -124,6 +120,5 @@ export class ViewStreamBroadcaster {
     let streamMixins = baseStreamsMixins();
     this.sendUIPayload = streamMixins.sendUIPayload;
     this.sendRoutePayload = streamMixins.sendRoutePayload;
-    //this.createLifeStreamPayload = streamMixins.createLifeStreamPayload;
   }
 }

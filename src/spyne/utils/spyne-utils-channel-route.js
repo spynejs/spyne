@@ -178,7 +178,6 @@ export class SpyneUtilsChannelRoute {
       return getMainKeys(datasetsArr);
     }
     const routeNamesArr = getNavProps(routeDatasetsArr);
-    //console.log('validate route names arr is ',routeNamesArr);
 
     return {routeDatasetsArr, routeNamesArr};
   }
@@ -188,7 +187,6 @@ export class SpyneUtilsChannelRoute {
     const channelsRoutePath = path(['channels', 'ROUTE'], channelRouteObj);
     let {add404s} = channelsRoutePath !== undefined ? channelsRoutePath : channelRouteObj;
     add404s = add404s || add404Props;
-    //console.log("add 404s is1 ",{add404s, channelsRoutePath})
     const parseRoutePath = (a) => {
       let val = a[1];
       const isArr = is(Array, val);
@@ -218,23 +216,16 @@ export class SpyneUtilsChannelRoute {
     }
 
     const configMapperFn = compose(fromPairs, map(transduceConfig), toPairs);
-    //console.log('route obj ',channelRouteObj);
 
 
     if (channelsRoutePath !== undefined){
       channelRouteObj.channels.ROUTE = configMapperFn(channelRouteObj.channels.ROUTE)
       const extraRouteData = SpyneUtilsChannelRoute.addRouteDatasets(channelRouteObj.channels.ROUTE);
       channelRouteObj.channels.ROUTE = mergeRight(channelRouteObj.channels.ROUTE, extraRouteData);
-      //console.log("CHANNEL ROUTE OBJ ",channelRouteObj.channels.ROUTE);
-      //channelRouteObj.channels.ROUTE.linkDatasets = SpyneUtilsChannelRoute.addRouteDatasets(channelRouteObj.channels.ROUTE);
       return channelRouteObj;
     }
 
-
-
     return configMapperFn(channelRouteObj);
-
-
 
   }
 

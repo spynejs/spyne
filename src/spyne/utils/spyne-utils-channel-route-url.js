@@ -62,7 +62,6 @@ export class SpyneUtilsChannelRouteUrl {
       let keyword = routeObj.routeName; // PARAM FORM SPYNE CONFIG
       let paramValFromData = data[keyword] !== undefined ? data[keyword] : prop(keyword, paramsFromLoc); // PULL VALUE FOR THIS PARAM FROM DATA
       const paramValType = typeof (routeObj[paramValFromData]);
-      // console.log({routeObj, paramValType, paramValFromData, keyword})
 
       if (paramValType === 'string') {
         paramValFromData = routeObj[paramValFromData];
@@ -72,12 +71,9 @@ export class SpyneUtilsChannelRouteUrl {
 
       urlObj[keyword] = paramValFromData;
 
-      // console.log("URL OBJ ",urlObj);
       if (this.checkIfObjIsNotEmptyOrNil(urlObj)) {
-        // console.log("FOUND ",{paramValFromData, paramValType, urlObj, routeObj});
         urlArr.push(urlObj);
       } else {
-        // console.log("NOT FOUND ",paramValFromData, paramValType, urlObj, routeObj);
 
       }
 
@@ -85,10 +81,8 @@ export class SpyneUtilsChannelRouteUrl {
       const objectParamExists = has(paramValFromData, routeObj);
       const objectContainsRoute = has('routePath', routeObj);
       const recursivelyCallLoopBool = objectParamExists && isObject;
-      // console.log("CHECKS ", {isObject, objectParamExists, objectContainsRoute, recursivelyCallLoopBool})
       if (recursivelyCallLoopBool === true) {
         let newObj = routeObj[paramValFromData];
-        // console.log("NEW OBJ ",{paramValFromData, routeObj, newObj});
         if (has('routePath', newObj)) {
           loopThroughParam(newObj.routePath);
         }

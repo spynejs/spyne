@@ -113,8 +113,6 @@ export class ChannelFetch extends Channel {
   }
 
   createChannelPayloadItem(payload, action = `${this.props.name}_DATA_EVENT`) {
-   // console.log("FETCH ",this.props.name, {action,payload});
-    // return new ChannelPayload(this.props.name, action, payload);
     this.sendChannelPayload(action, payload);
   }
 
@@ -124,7 +122,6 @@ export class ChannelFetch extends Channel {
   }
 
   consolidateAllFetchProps(options, props = this.props) {
-    // let currentOptions = mergeRight({url}, options);
     let propsOptions = pick(['mapFn', 'url', 'header', 'body', 'mode', 'method', 'responseType', 'debug'], props);
     const mergeOptions = (o1, o2) => mergeDeepRight(o1, o2);
     const filterOutUndefined = reject(isNil);

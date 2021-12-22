@@ -6,7 +6,6 @@ import {
   getConstructorName
 } from '../utils/frp-tools';
 import { ViewStreamElement } from './view-stream-element';
-import { ViewStreamEnhancerLoader } from './view-stream-enhancer-loader';
 import { registeredStreamNames } from '../channels/channels-config';
 import { ViewStreamBroadcaster } from './view-stream-broadcaster';
 import { ViewStreamPayload } from './view-stream-payload';
@@ -187,7 +186,6 @@ export class ViewStream {
     if (this.props.traits!==undefined){
       this.addTraits(this.props.traits);
     }
-    this.loadEnhancers();
     this.loadAllMethods();
     this.props.action = 'LOADED';
     this.sink$ = new Subject();
@@ -204,10 +202,243 @@ export class ViewStream {
     this.checkIfElementAlreadyExists();
   }
 
+  // ============================= HASH KEY AND SPIGOT METHODS==============================
+  get source$() {
+    return this._source$;
+  }
+
+  get attributesArray() {
+    return [
+      'accept',
+      'accept-charset',
+      'accesskey',
+      'action',
+      'align',
+      'allow',
+      'alt',
+      'aria-autocomplete',
+      'aria-checked',
+      'aria-disabled',
+      'aria-expanded',
+      'aria-haspopup',
+      'aria-hidden',
+      'aria-invalid',
+      'aria-label',
+      'aria-level',
+      'aria-multiline',
+      'aria-multiselectable',
+      'aria-orientation',
+      'aria-pressed',
+      'aria-readonly',
+      'aria-required',
+      'aria-selected',
+      'aria-sort',
+      'aria-valuemax',
+      'aria-valuemin',
+      'aria-valuenow',
+      'aria-valuetext',
+      'aria-atomic',
+      'aria-busy',
+      'aria-live',
+      'aria-relevant',
+      'aria-dropeffect',
+      'aria-grabbed',
+      'aria-activedescendant',
+      'aria-controls',
+      'aria-describedby',
+      'aria-flowto',
+      'aria-labelledby',
+      'aria-owns',
+      'aria-posinset',
+      'aria-setsize',
+      'async',
+      'autocapitalize',
+      'autocomplete',
+      'autofocus',
+      'autoplay',
+      'bgcolor',
+      'border',
+      'buffered',
+      'challenge',
+      'charset',
+      'checked',
+      'cite',
+      'class',
+      'code',
+      'codebase',
+      'color',
+      'cols',
+      'colspan',
+      'content',
+      'contenteditable',
+      'contextmenu',
+      'controls',
+      'coords',
+      'crossorigin',
+      'csp',
+      'dataset',
+      'datetime',
+      'decoding',
+      'default',
+      'defer',
+      'dir',
+      'dirname',
+      'disabled',
+      'download',
+      'draggable',
+      'dropzone',
+      'enctype',
+      'for',
+      'form',
+      'formaction',
+      'headers',
+      'height',
+      'hidden',
+      'high',
+      'href',
+      'hreflang',
+      'http-equiv',
+      'icon',
+      'id',
+      'importance',
+      'integrity',
+      'ismap',
+      'itemprop',
+      'keytype',
+      'kind',
+      'label',
+      'lang',
+      'language',
+      'lazyload',
+      'list',
+      'loop',
+      'low',
+      'manifest',
+      'max',
+      'maxlength',
+      'minlength',
+      'media',
+      'method',
+      'min',
+      'multiple',
+      'muted',
+      'name',
+      'novalidate',
+      'open',
+      'optimum',
+      'pattern',
+      'ping',
+      'placeholder',
+      'poster',
+      'preload',
+      'radiogroup',
+      'readonly',
+      'referrerpolicy',
+      'rel',
+      'required',
+      'reversed',
+      'role',
+      'rows',
+      'rowspan',
+      'sandbox',
+      'scope',
+      'scoped',
+      'selected',
+      'shape',
+      'size',
+      'sizes',
+      'slot',
+      'span',
+      'spellcheck',
+      'src',
+      'srcdoc',
+      'srclang',
+      'srcset',
+      'start',
+      'step',
+      'style',
+      'summary',
+      'tabindex',
+      'target',
+      'title',
+      'translate',
+      'type',
+      'usemap',
+      'value',
+      'width',
+      'wrap'
+    ];
+  }
+
+  static isDevMode(){
+    return SpyneAppProperties.debug;
+  }
+
+  static checkIfActionsAreRegistered(channelsArr=[], actionsArr){
+    if (actionsArr.length>0){
+      const getAllActions = (a)=>{
+        const getRegisteredActionsArr = (str)=>SpyneAppProperties.getChannelActions(str);
+        let arr =  a.map(getRegisteredActionsArr);
+        return flatten(arr);
+      }
+      const checkForMatch = (strMatch) => {
+        let re = new RegExp(strMatch);
+        let actionIndex = findIndex(test(re), getAllActionsArr)
+        if (actionIndex<0){
+          let channelSyntax = channelsArr.length === 1 ? "from added channel" : "from added channels";
+          console.warn(`Spyne Warning: The action, ${strMatch}, in ${this.props.name}, does not match any of the registered actions ${channelSyntax}, ${channelsArr.join(', ')}`)
+        }
+        //  const vsnum = ()=> R.test(new RegExp(str), "CHANNEL_ROUTE_TEST_EVENT")
+      }
+      let getAllActionsArr = getAllActions(channelsArr);
+      actionsArr.forEach(checkForMatch);
+
+    }
+
+  }
+
+  /**
+   *
+   * Add any query within the ViewStream's dom and any dom events to automatically be observed by the UI Channel.
+   * <br>
+   * @example
+   *
+   *  broadcastEvents() {
+   *  // ADD BUTTON EVENTS AS NESTED ARRAYS
+   *  return [
+   *       ['#my-button', 'mouseover'],
+   *       ['#my-input', 'change']
+   *     ]
+   *   }
+   *
+   *
+   * */
+
+
+  static isValidNestedArr(eventsArr){
+    const isTrue = equals(true);
+    const allIsTrue = all(isTrue);
+    const isString = is(String);
+    const isValidArr = compose(allIsTrue, rMap(isString), slice(0,2), defaultTo([]));
+    const mapEventsArrFn = compose( allIsTrue, rMap(isValidArr), defaultTo([]));
+    return mapEventsArrFn(eventsArr);
+  }
+
+  static elIsDomElement(o) {
+    if (is(String,o)){
+      o = document.querySelector(o);
+    }
+
+
+    return compose(lte(0), defaultTo(-1), prop('nodeType'))(o);
+  }
+
   updatePropsToMatchEl() {
     const getTagName = compose(toLower, either(prop('tagName'), always('')));
     this.props.tagName = getTagName(this.props.el);
   }
+
+  //  =====================================================================
 
   checkIfElementAlreadyExists() {
     const elIsDomElement = compose(lte(0), defaultTo(-1), prop('nodeType'));
@@ -219,12 +450,6 @@ export class ViewStream {
       this.updatePropsToMatchEl();
       this.postRender();
     }
-  }
-
-  loadEnhancers(arr = []) {
-    let enhancerLoader = new ViewStreamEnhancerLoader(this, arr);
-    this.props['enhancersMap'] = enhancerLoader.getEnhancersMap();
-    enhancerLoader = undefined;
   }
 
   loadAllMethods() {
@@ -308,7 +533,6 @@ export class ViewStream {
     return deepMerge.all([{}, hashSourceKeys, extendedSourcesHashMethods]);
   }
 
-  //  =====================================================================
   // ====================== MAIN STREAM METHODS ==========================
   initViewStream() {
     this._source$ = this._rawSource$.pipe(map(
@@ -375,6 +599,8 @@ export class ViewStream {
 
   }
 
+  //  =======================================================================================
+
   onChildCompleted(p) {
     let findName = (x) => {
       let finalDest = (y) => {
@@ -391,8 +617,6 @@ export class ViewStream {
     this.onChildDisposed(childCompletedData, p);
     return childCompletedData;
   }
-
-
 
   initAutoMergeSourceStreams() {
     // ====================== SUBSCRIPTION SOURCE =========================
@@ -490,17 +714,19 @@ export class ViewStream {
     console.log('ALL ERROR  ', this.constructor.name, payload);
   }
 
+  /*
+    attachChildToView(data) {
+      // let childRenderData = data.attachData;
+      // console.log('CHILD DATA ', this.constructor.name, childRenderData);
+      // this.openSpigot('ATTACH_CHILD_TO_SELF', {childRenderData});
+    }
+  */
+
   onSubscribeToSourcesComplete() {
     // console.log('==== EXTIRPATER ALL COMPLETED ====', this.constructor.name);
     this.tracer('onSubscribeToSourcesComplete', 'VS_DETRITUS_COLLECT');
 
     this.openSpigot('VS_DETRITUS_COLLECT');
-  }
-
-  //  =======================================================================================
-  // ============================= HASH KEY AND SPIGOT METHODS==============================
-  get source$() {
-    return this._source$;
   }
 
   sendExtendedStreams(payload) {
@@ -524,14 +750,6 @@ export class ViewStream {
     this.openSpigot('VS_SPAWN_AND_ATTACH_TO_DOM', { attachData });
   }
 
-  /*
-    attachChildToView(data) {
-      // let childRenderData = data.attachData;
-      // console.log('CHILD DATA ', this.constructor.name, childRenderData);
-      // this.openSpigot('ATTACH_CHILD_TO_SELF', {childRenderData});
-    }
-  */
-
   // ===================================== EXTIRPATE METHODS =================================
   checkParentDispose(p) {
     if (p.from$ === 'parent') {
@@ -542,6 +760,8 @@ export class ViewStream {
   onBeforeDispose() {
 
   }
+
+  // ===================================== SINK$ METHODS =================================
 
   /**
    *
@@ -561,7 +781,6 @@ export class ViewStream {
     }
     window.setTimeout(timeoutMethod, ms);
   }
-
 
   /**
    *
@@ -589,8 +808,6 @@ export class ViewStream {
     this.tracer('onReadyToGC', isInternal, p);
   }
 
-  // ===================================== SINK$ METHODS =================================
-
   openSpigot(action, obj = {}) {
     if (this.props !== undefined) {
       this.props.action = action;
@@ -599,10 +816,6 @@ export class ViewStream {
 
       this.sink$.next(Object.freeze(data));
     }
-  }
-
-  static isDevMode(){
-    return SpyneAppProperties.debug;
   }
 
   setAttachData(attachType, query) {
@@ -850,6 +1063,8 @@ export class ViewStream {
 
   }
 
+  // ================================= METHODS TO BE EXTENDED ==============================
+
   afterBroadcastEvents(){
 
     if (this.isDevMode === true ){
@@ -882,28 +1097,6 @@ export class ViewStream {
       this.setTimeout(delayForProxyChannelResets, 500);
     }
   }
-  static checkIfActionsAreRegistered(channelsArr=[], actionsArr){
-    if (actionsArr.length>0){
-      const getAllActions = (a)=>{
-        const getRegisteredActionsArr = (str)=>SpyneAppProperties.getChannelActions(str);
-        let arr =  a.map(getRegisteredActionsArr);
-        return flatten(arr);
-      }
-      const checkForMatch = (strMatch) => {
-        let re = new RegExp(strMatch);
-        let actionIndex = findIndex(test(re), getAllActionsArr)
-        if (actionIndex<0){
-          let channelSyntax = channelsArr.length === 1 ? "from added channel" : "from added channels";
-          console.warn(`Spyne Warning: The action, ${strMatch}, in ${this.props.name}, does not match any of the registered actions ${channelSyntax}, ${channelsArr.join(', ')}`)
-        }
-        //  const vsnum = ()=> R.test(new RegExp(str), "CHANNEL_ROUTE_TEST_EVENT")
-      }
-      let getAllActionsArr = getAllActions(channelsArr);
-      actionsArr.forEach(checkForMatch);
-
-    }
-
-  }
 
   setDataVSID(){
     this.props.el.dataset.vsid = this.props.vsid;// String(this.props.vsid).replace(/^(vsid-)(.*)$/, '$2');
@@ -923,13 +1116,11 @@ export class ViewStream {
     // window.theEl$ = this.props.el$;
   }
 
-  // ================================= METHODS TO BE EXTENDED ==============================
-
-
   // THIS IS AN EVENT HOLDER METHOD BECAUSE SENDING DOWNSTREAM REQUIRE THE PARENT TO HAVE A METHOD
   downStream() {
 
   }
+
   /**
    *
    * This method is called as soon as the element has been rendered.
@@ -948,10 +1139,6 @@ export class ViewStream {
   onAnimFrameAfterRendered() {
   }
 
-
-
-
-
   /**
    *
    * (Deprecated. Use onRendered). This method is called as soon as the element has been rendered.
@@ -960,35 +1147,6 @@ export class ViewStream {
 
   afterRender() {
   }
-
-  /**
-   *
-   * Add any query within the ViewStream's dom and any dom events to automatically be observed by the UI Channel.
-   * <br>
-   * @example
-   *
-   *  broadcastEvents() {
-   *  // ADD BUTTON EVENTS AS NESTED ARRAYS
-   *  return [
-   *       ['#my-button', 'mouseover'],
-   *       ['#my-input', 'change']
-   *     ]
-   *   }
-   *
-   *
-   * */
-
-
-  static isValidNestedArr(eventsArr){
-    const isTrue = equals(true);
-    const allIsTrue = all(isTrue);
-    const isString = is(String);
-    const isValidArr = compose(allIsTrue, rMap(isString), slice(0,2), defaultTo([]));
-    const mapEventsArrFn = compose( allIsTrue, rMap(isValidArr), defaultTo([]));
-    return mapEventsArrFn(eventsArr);
-  }
-
-
 
   broadcastEvents() {
     // ADD BUTTON EVENTS AS NESTED ARRAYS
@@ -1086,7 +1244,6 @@ export class ViewStream {
     this.props.addedChannels.push(str);
   }
 
-
   checkIfChannelExists(channelName) {
     let channelExists = SpyneAppProperties.channelsMap.testStream(channelName);
     if (channelExists !== true) {
@@ -1094,7 +1251,6 @@ export class ViewStream {
     }
     return channelExists;
   }
-
 
   /**
    *
@@ -1142,15 +1298,12 @@ export class ViewStream {
       }
 
 
-
-
-
-
   }
 
   tracer(...args) {
     this.sendLifecycleMethod(...args);
   }
+
   sendLifecycleMethodInactive() {
 
   }
@@ -1177,178 +1330,6 @@ export class ViewStream {
     const thisEl = path(['props', 'el'], this);
     //console.log('this el is ',{thisEl, itemEl});
     return ViewStream.elIsDomElement(thisEl) && ViewStream.elIsDomElement(itemEl) && thisEl.contains(itemEl);
-  }
-
-  static elIsDomElement(o) {
-    if (is(String,o)){
-      o = document.querySelector(o);
-    }
-
-
-    return compose(lte(0), defaultTo(-1), prop('nodeType'))(o);
-  }
-
-  get attributesArray() {
-    return [
-      'accept',
-      'accept-charset',
-      'accesskey',
-      'action',
-      'align',
-      'allow',
-      'alt',
-      'aria-autocomplete',
-      'aria-checked',
-      'aria-disabled',
-      'aria-expanded',
-      'aria-haspopup',
-      'aria-hidden',
-      'aria-invalid',
-      'aria-label',
-      'aria-level',
-      'aria-multiline',
-      'aria-multiselectable',
-      'aria-orientation',
-      'aria-pressed',
-      'aria-readonly',
-      'aria-required',
-      'aria-selected',
-      'aria-sort',
-      'aria-valuemax',
-      'aria-valuemin',
-      'aria-valuenow',
-      'aria-valuetext',
-      'aria-atomic',
-      'aria-busy',
-      'aria-live',
-      'aria-relevant',
-      'aria-dropeffect',
-      'aria-grabbed',
-      'aria-activedescendant',
-      'aria-controls',
-      'aria-describedby',
-      'aria-flowto',
-      'aria-labelledby',
-      'aria-owns',
-      'aria-posinset',
-      'aria-setsize',
-      'async',
-      'autocapitalize',
-      'autocomplete',
-      'autofocus',
-      'autoplay',
-      'bgcolor',
-      'border',
-      'buffered',
-      'challenge',
-      'charset',
-      'checked',
-      'cite',
-      'class',
-      'code',
-      'codebase',
-      'color',
-      'cols',
-      'colspan',
-      'content',
-      'contenteditable',
-      'contextmenu',
-      'controls',
-      'coords',
-      'crossorigin',
-      'csp',
-      'dataset',
-      'datetime',
-      'decoding',
-      'default',
-      'defer',
-      'dir',
-      'dirname',
-      'disabled',
-      'download',
-      'draggable',
-      'dropzone',
-      'enctype',
-      'for',
-      'form',
-      'formaction',
-      'headers',
-      'height',
-      'hidden',
-      'high',
-      'href',
-      'hreflang',
-      'http-equiv',
-      'icon',
-      'id',
-      'importance',
-      'integrity',
-      'ismap',
-      'itemprop',
-      'keytype',
-      'kind',
-      'label',
-      'lang',
-      'language',
-      'lazyload',
-      'list',
-      'loop',
-      'low',
-      'manifest',
-      'max',
-      'maxlength',
-      'minlength',
-      'media',
-      'method',
-      'min',
-      'multiple',
-      'muted',
-      'name',
-      'novalidate',
-      'open',
-      'optimum',
-      'pattern',
-      'ping',
-      'placeholder',
-      'poster',
-      'preload',
-      'radiogroup',
-      'readonly',
-      'referrerpolicy',
-      'rel',
-      'required',
-      'reversed',
-      'role',
-      'rows',
-      'rowspan',
-      'sandbox',
-      'scope',
-      'scoped',
-      'selected',
-      'shape',
-      'size',
-      'sizes',
-      'slot',
-      'span',
-      'spellcheck',
-      'src',
-      'srcdoc',
-      'srclang',
-      'srcset',
-      'start',
-      'step',
-      'style',
-      'summary',
-      'tabindex',
-      'target',
-      'title',
-      'translate',
-      'type',
-      'usemap',
-      'value',
-      'width',
-      'wrap'
-    ];
   }
 
   //  =======================================================================================

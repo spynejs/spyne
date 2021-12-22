@@ -2,8 +2,6 @@ import {head, compose, reject, split, isEmpty, lte, defaultTo, prop} from 'ramda
 import {SpyneAppProperties} from '../utils/spyne-app-properties';
 
 function generateSpyneSelectorId(el) {
-  //const num = () => Math.floor(Math.random(10000000) * 10000000);
-  //const num = () => Math.random().toString(36).substring(2, 8);;
   const num = () => Math.random().toString(36).replace(/\d/gm, '').substring(1,8);
   let vsid = `${num()}`;
   if (el.dataset.vsid === undefined) {
@@ -201,9 +199,6 @@ function ViewStreamSelector(cxt, str) {
     selector.toggleClass(c, bool);
     return this;
   };
-
-
-
 
 
   /**

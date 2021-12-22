@@ -41,7 +41,6 @@ class DomElement {
   }
 
   setProp(key, val) {
-    //this.props.set(key, val);
     this.props[key] = val;
   }
 

@@ -1,5 +1,4 @@
 import {SpyneUtilsChannelRoute} from './spyne-utils-channel-route';
-import {SpyneScrollLock} from './spyne-scroll-lock';
 import {SpynePluginsMethods} from './spyne-plugins-methods';
 import {deepMerge} from './deep-merge';
 import {path} from 'ramda';
@@ -10,7 +9,6 @@ let _channelsMap
 let _initialized = false;
 let _debug = true;
 
-const _spyneScrollLock = new SpyneScrollLock();
 const _spynePluginMethods = new SpynePluginsMethods();
 
 
@@ -21,7 +19,34 @@ class SpyneAppPropertiesClass{
 
   }
 
+  get channelsMap(){
+    return _channelsMap;
+  }
 
+  get initialized(){
+    return _initialized;
+  }
+
+  get config(){
+    return _config;
+  }
+
+  get debug(){
+    return _debug;
+  }
+
+  /**
+   * This is mostly used for debugging purposes
+   *
+   * @example
+   * TITLE['<h4>Listing the registereed Channels in the browser console</h4>']
+   * SpyneApp.listChannels();
+   *
+   * @returns A list of all registered channels
+   */
+  static listChannels() {
+    return Array.from(_channels.map.keys());
+  }
 
   initialize(defaultConfig={}, config={}, channelsMap){
     _channels = channelsMap;
@@ -34,9 +59,8 @@ class SpyneAppPropertiesClass{
     this.getChannelActions = _channels.getChannelActions.bind(_channels);
     this.listRegisteredChannels = _channels.listRegisteredChannels.bind(_channels);
     _initialized = true;
-   // if (channelsMap!==undefined) {
-      this.setChannelsMap();
-    //}
+     this.setChannelsMap();
+
 
     return _config;
 
@@ -50,8 +74,6 @@ class SpyneAppPropertiesClass{
     _config = SpyneUtilsChannelRoute.conformRouteObject(_config, add404Props);
 
   }
-
-
 
   setChannelsMap(){
     const getStream = _channels.getStream.bind(_channels);
@@ -70,26 +92,19 @@ class SpyneAppPropertiesClass{
     return path(['tmp', key], _config);
   }
 
-  get channelsMap(){
-    return _channelsMap;
-  }
-
-  get initialized(){
-    return _initialized;
-  }
-
-  get scrollLock(){
-    return _spyneScrollLock;
-  }
-
-
-
-
   setChannelConfig(channelName, config){
     _config.channels[channelName] = config;
     return _config.channels[channelName];
   }
 
+  /**
+   * This method is useful to check in the console or in the code what actions are available to be listened to.
+   * @param {String} channelName
+   * @returns {Array} An array of Actions that can be listened to
+   */
+/*  getChannelActions(channelName) {
+    return _channels.getChannelActions(channelName);
+  }*/
 
   getChannelConfig(channelName, config=_config){
     if (channelName === 'CHANNEL_ROUTE'){
@@ -110,40 +125,8 @@ class SpyneAppPropertiesClass{
       return;
     }
 
-    //console.log("MAIN CONFIG IS ",{channelName, channelConfig, config});
-
     return channelConfig;
   }
-
-
-
-
-  get config(){
-    return _config;
-  }
-
-  /**
-   * This is mostly used for debugging purposes
-   *
-   * @example
-   * TITLE['<h4>Listing the registereed Channels in the browser console</h4>']
-   * SpyneApp.listChannels();
-   *
-   * @returns A list of all registered channels
-   */
-  static listChannels() {
-    return Array.from(_channels.map.keys());
-  }
-
-  /**
-   * This method is useful to check in the console or in the code what actions are available to be listened to.
-   * @param {String} channelName
-   * @returns {Array} An array of Actions that can be listened to
-   */
-/*  getChannelActions(channelName) {
-    return _channels.getChannelActions(channelName);
-  }*/
-
 
   registerChannel(){
 
@@ -183,9 +166,6 @@ class SpyneAppPropertiesClass{
     return _config.plugins[pluginName];
   }
 
-
-
-
   tempGetChannelsInstance(){
 
   }
@@ -193,11 +173,6 @@ class SpyneAppPropertiesClass{
   tempGetConfig(){
 
 
-  }
-
-  get debug(){
-    return _debug;
-    //return _config['debug']===true;
   }
 
 

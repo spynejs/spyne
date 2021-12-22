@@ -1,6 +1,4 @@
-//import { baseCoreMixins } from '../utils/mixins/base-core-mixins';
 import { DomElement } from './dom-element';
-//import { ifNilThenUpdate, convertDomStringMapToObj } from '../utils/frp-tools';
 import { fadein, fadeout } from '../utils/viewstream-animations';
 import { ViewStreamObservable } from '../utils/viewstream-observables';
 import { deepMerge } from '../utils/deep-merge';
@@ -108,7 +106,6 @@ export class ViewStreamElement {
 
     let fadeOutObs = bindCallback(animateOut);
     let onFadeoutCompleted = (e) => {
-      // console.log('fade out completed ', e, d);
       this._source$.next(gcData);
     };
 
@@ -139,7 +136,6 @@ export class ViewStreamElement {
   }
 
   onGarbageCollect(p) {
-    // console.log('MEDIATOR onGarbageCollect ', this.vsid, this.vsName, p);
     if (this.domItem!==undefined) {
       this.domItem.unmount();
     }
@@ -161,9 +157,7 @@ export class ViewStreamElement {
     let append = (node, item) => node.appendChild(item);
     // DETERMINE WHETHER TO USE APPEND OR PREPEND
     // ON CONNECTING DOM ITEMS TO EACH OTHER
-    // this.domItemEl = this.domItem.render();
     let attachFunc = d.attachType === 'appendChild' ? append : prepend;
-    // d.node = isNil(d.query) ? d.node : d.query;
     attachFunc(container, this.domItem.render());
     this.setAnimateIn(d);
   }
@@ -177,7 +171,6 @@ export class ViewStreamElement {
   onAttachChildToSelf(p) {
     let data = p.childRenderData;
     this.combineDomItems(data);
-    //console.log("ATTACHING CHID TO SELF ===============")
     return {
       action: 'CHILD_ATTACHED',
       $dir: this.$dirs.PI
@@ -227,7 +220,6 @@ export class ViewStreamElement {
    */
   onRenderAndAttachToDom(d) {
     let getEl = (data) => this.renderDomItem(data);
-    // let getEl = (data) => new DomElement(...data);
     d.attachData['el'] = getEl(props(['tagName', 'domAttributes', 'data', 'template'], d));
     this.combineDomItems(d.attachData);
     return {
@@ -247,13 +239,9 @@ export class ViewStreamElement {
     let action = payload.action;
     let defaultToFn = defaultTo((data) => this.extendedMethods(data));
     let fn = defaultToFn(this.options.hashMethods[action]);
-    // console.log('MEDIATOR onObsSinkSubscribe before ', this.vsid, action, payload);
     let data = fn(payload);
-    // data = this.addDefaultDir(data);
-    // console.log('add default dir ', data);
     let sendData = (d) => this._source$.next(d);
     if (data !== undefined) {
-      // console.log('MEDIATOR onObsSinkSubscribe ', this.vsid, data, payload);
       sendData(Object.freeze(data));
     }
   }

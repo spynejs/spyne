@@ -102,8 +102,6 @@ class SpyneApplication {
     };
     if (config !== undefined) {
        config = SpyneAppProperties.initialize(defaultConfig, config, _channels);
-      //window.Spyne = this;
-      //window.Spyne['config'] = deepMerge(defaultConfig, config)
     }
 
     this.pluginsFn = SpyneAppProperties.getPluginsMethodObj(config['pluginMethods']);

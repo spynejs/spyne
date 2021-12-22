@@ -39,8 +39,6 @@ export class SpyneChannelWindow extends Channel {
     this.bindStaticMethods();
     this.currentScrollY=0;
 
-    //this.spyneScrollLock = SpyneAppProperties.scrollLock;
-    // this.props.name = 'WINDOW';
   }
 
   initializeStream() {
@@ -167,19 +165,10 @@ export class SpyneChannelWindow extends Channel {
     return SpyneUtilsChannelWindow.createDomObservableFromEvent('scroll',
         scrollMapFn, isPassive, element)
       .pipe(
-         /* map(p=>{
-            if (pathEq(['Spyne', 'config', 'scrollLock'], true)(scrollElement)){
-              let x = SpyneAppProperties.config.scrollLockX
-              let y = SpyneAppProperties.config.scrollLockY;
-              window.scrollTo(x,y);
-            }
-            return p;
-          }),*/
         debounceTime(dTime),
         skipWhile(skipWhenDirIsMissing),
         map(p=>{
           const newScrollY = SpyneChannelWindow.getScrollY(element);
-          //console.log("SCROLL P IS ",{p});
           p.payload['scrollDistanceAbs'] = Math.abs(this.currentScrollY-newScrollY);
           this.currentScrollY=newScrollY;
           return p;
@@ -336,29 +325,7 @@ export class SpyneChannelWindow extends Channel {
   }
 
   onScrollLockEvent(e){
-    const setScrollPos = ()=>{
-      SpyneAppProperties.config.scrollLockX = window.scrollX;
-      SpyneAppProperties.config.scrollLockY = window.scrollY;
-      this.spyneScrollLock.setScroll();
-    };
-    let {action, scrollLock, el} = e.payload;
-    SpyneAppProperties.config.scrollLock = scrollLock;
-    el = el || window;
-    if (scrollLock === true){
-     // setScrollPos();
-      this.spyneScrollLock.disableBodyScroll();
-
-      this.createScrollObservable(this.domChannelConfig, el, true)
-      .subscribe(p => {
-        let { action, payload, srcElement, event } = p;
-        this.sendChannelPayload(action, payload, srcElement, event);
-      });
-
-    } else {
-      this.spyneScrollLock.enableBodyScroll();
-    }
-
-    this.sendChannelPayload(action, {scrollLock}, el);
+    // DEPRECATED -- MOVED TO spyne-plugin-scroll-lock;
   }
 
   onSetElementToScroll(e){

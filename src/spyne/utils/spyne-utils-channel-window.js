@@ -78,8 +78,6 @@ export class SpyneUtilsChannelWindow {
     };
 
     mapObjIndexed(loopQueries, mediaQueriesObj);
-    // let obs$ = Observable.merge(...arr);
-    // console.log('arr is ',arr);
     return arr;
   }
 }
