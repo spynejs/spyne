@@ -11,20 +11,11 @@ export class SpynePlugin {
       config = clone(props);
     }
 
-
-     //console.log("CONFIG AND PROPS ",{config, props});
-
     this.name = name || 'empty';
     this.props.name = name;
     config = SpynePlugin.mergeDefaultConfig(config, this.defaultConfig());
     this.props.parentEl = parentEl || SpynePlugin.createParentEl();
     SpynePlugin.getSpyneApp(name, config);
-    //console.log("SPYNE APP ",{name},this.name,this.props.spyneApp);
-   // if (this.props.spyneApp===false){
-      //console.warn(`Spyne Warning: Spyne Plugin, ${this.name} already exists!`)
-     // return false;
-   // }
-
 
     if (this.props.traits!==undefined){
       this.addTraits(this.props.traits);
@@ -35,40 +26,9 @@ export class SpynePlugin {
     this.onRender();
   }
 
-
-  addTraits(traits){
-    if (traits.constructor.name!=='Array'){
-      traits = [traits];
-    }
-    const addTrait=(TraitClass)=>{
-      return new TraitClass(this);
-    };
-
-    traits.forEach(addTrait);
-
-  }
-
-
-  onBeforeRegistered(){
-    this.props.pluginName = this.props.name;
-    this.props.config = SpyneAppProperties.getPluginConfigByPluginName(this.props.pluginName);
-  }
-
   static mergeDefaultConfig(config={}, defaultConfig=this.defaultConfig()){
     return Object.assign(defaultConfig, config);
   }
-
-
-  defaultConfig(){
-
-    return {
-
-
-    }
-
-  }
-
-
 
   static getSpyneApp(name, config){
     if(SpyneAppProperties.initialized===false){
@@ -110,6 +70,32 @@ export class SpynePlugin {
     }
 
     return el || createPluginParentEl();
+  }
+
+  addTraits(traits){
+    if (traits.constructor.name!=='Array'){
+      traits = [traits];
+    }
+    const addTrait=(TraitClass)=>{
+      return new TraitClass(this);
+    };
+
+    traits.forEach(addTrait);
+
+  }
+
+  onBeforeRegistered(){
+    this.props.pluginName = this.props.name;
+    this.props.config = SpyneAppProperties.getPluginConfigByPluginName(this.props.pluginName);
+  }
+
+  defaultConfig(){
+
+    return {
+
+
+    }
+
   }
 
   onRegistered(){

@@ -17,7 +17,6 @@ import { deepMerge } from './utils/deep-merge';
 import {SpyneAppProperties} from './utils/spyne-app-properties';
 import {SpyneApp} from './spyne-app';
 
-//window['Spyne'] = SpyneApp;
 export {
   ViewStreamElement,
   Channel,

@@ -1,15 +1,11 @@
-// Karma configuration
-// Generated on Fri Mar 31 2017 02:40:49 GMT-0400 (EDT)
-const webpackEnv = {test:true};
-//const webpackConfig = require("./webpack.config")(webpackEnv);
+
 const webpackConfig = require("./webpack.config");
 webpackConfig.mode = 'none';
 webpackConfig.watch = true;
+webpackConfig.entry = undefined;
+webpackConfig.output = undefined;
 
-//webpackConfig.output.filename='[name].[hash:8].js';
 const fileGlob =  './src/tests/index.test.js';
-process.env.BABEL_ENV = 'test';
-//const rxjs = require("rxjs");
 
 
 module.exports = function(config) {
@@ -19,32 +15,12 @@ module.exports = function(config) {
   }
 
 
-
-
   webpackConfig.module.rules.push(
       {
        test: /(\.js)$/,
-    /*   loader: 'babel-loader',
-
-       options: {
-         "babelrc" : false,
-         "presets": [
-           ["@babel/preset-env", {
-             "targets": {
-               "ie" : 10,
-                 "browsers": ["last 2 versions"]
-
-             },
-             "modules": false,
-             "loose": true
-           }]
-         ]
-       },*/
        exclude: /(node_modules)/
        }
-
   );
-  //console.log("CONFIG KARMA ",webpackConfig);
 
 
   config.set({
@@ -57,7 +33,6 @@ module.exports = function(config) {
 
     },
 
-    // frameworks to use
     // available frameworks: https://npmjs.org/browse/keyword/karma-adapter
     frameworks: ['webpack', 'mocha', 'chai'],
 
@@ -68,15 +43,11 @@ module.exports = function(config) {
       'karma-coverage',
       'karma-chrome-launcher'
     ],
-    // list of files / patterns to load in the browser
+
+
     files: [
       {pattern: './node_modules/ramda/dist/ramda.min.js', watched:false},
-
-/*
-      { pattern: './node_modules/rxjs/!*.js', included:false,   watched: false },
-*/
       { pattern: './node_modules/rxjs/**/*.js', included:false,    watched: false },
-
 
       {pattern: './src/tests/index.test.js', watched: true},
       {pattern: './src/tests/spyne-app.test.js', watched: true},
@@ -88,9 +59,6 @@ module.exports = function(config) {
     ],
 
 
-
-
-    // list of files to exclude
     exclude: [
 
     ],
@@ -114,18 +82,6 @@ module.exports = function(config) {
     // possible values: 'dots', 'progress'
     // available reporters: https://npmjs.org/browse/keyword/karma-reporter
     reporters: ['coverage'],
-
-    /*
-        coverageReporter: {
-          reporters: [
-              {type: 'lcov', dir: 'coverage/', subdir: '.'},
-              {type: 'text-summary'}
-
-
-          ]
-        },
-    */
-
 
     coverageReporter: {
       reporters: [
@@ -153,30 +109,18 @@ module.exports = function(config) {
     autoWatch: true,
     usePolling: true,
 
-
-
     customLaunchers: {
-
        ChromeHeadlessNoSandbox: {
        base: 'ChromeHeadless',
        flags: ['--no-sandbox']
      }
 
-
-
-
-
     },
-
 
 
     // start these browsers
     // available browser launchers: https://npmjs.org/browse/keyword/karma-launcher
     browsers: ['Chrome'],
-/*
-    browsers: ['Chrome','VirtualBoxIE11onWin7'],
-*/
-
 
     // Continuous Integration mode
     // if true, Karma captures browsers, runs the tests and exits

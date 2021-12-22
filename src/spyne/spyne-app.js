@@ -51,18 +51,9 @@ class SpyneApplication {
      * @email:  frbatista.nyc@gmail.com
     */
     /* eslint-disable */
-   /* this.ViewStream = ViewStream;
-    this.BasicView = ViewStreamElement;
-    this.DomEl = DomElement;
-    this.ViewStreamBroadcaster = ViewStreamBroadcaster;
-    this.ChannelsPayload = ViewStreamPayload;
-    this.ChannelsController = ChannelsMap;
-    this.ChannelsBase = Channel;
-    this.ChannelPayloadItem = ChannelPayload;*/
 
-    //console.log('spyne app ',{config,testMode}, SpyneAppProperties.initialized);
+
     if(SpyneAppProperties.initialized === true){
-
       if (testMode){
         return 'The Spyne Application has already been initialized!';
       } else {
@@ -111,15 +102,10 @@ class SpyneApplication {
     };
     if (config !== undefined) {
        config = SpyneAppProperties.initialize(defaultConfig, config, _channels);
-      window.Spyne = this;
-      //window.Spyne['config'] = "SDFSD";// {};
-      //config = SpyneUtilsChannelRoute.conformRouteObject(config);
-      window.Spyne['config'] = deepMerge(defaultConfig, config)
+      //window.Spyne = this;
+      //window.Spyne['config'] = deepMerge(defaultConfig, config)
     }
 
-
-    //const ranNum = Math.random();
-    //console.log('ranNum is ',{ranNum})
     this.pluginsFn = SpyneAppProperties.getPluginsMethodObj(config['pluginMethods']);
     this.getChannelActions = (str) => _channels.getChannelActions(str);
     this.registerChannel = (val) => _channels.registerStream(val);
@@ -129,10 +115,9 @@ class SpyneApplication {
     nullHolder.appendToDom(document.body);
     nullHolder.props.el.style.cssText = 'display:none; opacity:0; pointer-events:none;';
     _channels.init();
-    //console.log('spyne app initialized ',SpyneAppProperties.config.debug);
 
     if (SpyneAppProperties.config.debug===true){
-      //window.Spyne = {version};
+       window.Spyne = {version};
     }
 
 
