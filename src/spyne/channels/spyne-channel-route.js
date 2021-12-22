@@ -1,17 +1,16 @@
 import { Channel } from './channel';
 import { SpyneUtilsChannelRouteUrl } from '../utils/spyne-utils-channel-route-url';
 import { SpyneUtilsChannelRoute } from '../utils/spyne-utils-channel-route';
+import {SpyneAppProperties} from '../utils/spyne-app-properties';
 import { ReplaySubject, merge } from 'rxjs';
 import { map } from 'rxjs/operators';
 
 import {
-  clone,
   pick,
-    find,
+  find,
   omit,
   over,
   mergeRight,
-  mergeDeepRight,
   is,
   objOf,
   mergeAll,
@@ -32,7 +31,10 @@ import {
     reverse,
   curryN,
   __,
-  test, replace, fromPairs, toPairs, forEach, reduceRight, reduce
+  test,
+  replace,
+  toPairs,
+  reduce
 } from 'ramda';
 const ramdaFilter = require('ramda').filter;
 const rMerge = require('ramda').mergeRight;
@@ -139,16 +141,15 @@ export class SpyneChannelRoute extends Channel {
     this.bindStaticMethods();
     this.navToStream$ = new ReplaySubject(1);
     this.observer$ = this.navToStream$.pipe(map(info => this.onMapNext(info)));
-    // let compareKeysFn = SpyneUtilsChannelRoute.compareRouteKeywords.bind(this);
     this.compareRouteKeywords = SpyneUtilsChannelRoute.compareRouteKeywords();
   }
 
   checkConfigForHash(){
     // LEGACY CHECK TO SIMPLIFY CONFIG FOR HASH;
-    let isHashType = window.Spyne.config.channels.ROUTE.type==='hash';
+    let isHashType = SpyneAppProperties.config.channels.ROUTE.type==='hash';
     if (isHashType === true){
-      window.Spyne.config.channels.ROUTE.type = 'slash';
-      window.Spyne.config.channels.ROUTE.isHash = true;
+      SpyneAppProperties.config.channels.ROUTE.type = 'slash';
+      SpyneAppProperties.config.channels.ROUTE.isHash = true;
     }
 
   }
@@ -178,13 +179,10 @@ export class SpyneChannelRoute extends Channel {
 
     const newRoutesObj  = pick(['isHash', 'isHidden', 'routes','type'], e.payload);
 
-    window.Spyne.config.channels.ROUTE =  mergeRight(window.Spyne.config.channels.ROUTE, newRoutesObj);
+    SpyneAppProperties.config.channels.ROUTE =  mergeRight(SpyneAppProperties.config.channels.ROUTE, newRoutesObj);
 
-    const clonedRoute = clone(window.Spyne.config.channels.ROUTE);
 
-    // ADD 404S, EMPTY REGEX AND CONVERT ARRAYS
-
-    window.Spyne.config = SpyneUtilsChannelRoute.conformRouteObject(window.Spyne.config);
+    SpyneAppProperties.conformRouteConfig();
 
 
      const routeConfig = this.getRouteConfig();
@@ -194,21 +192,18 @@ export class SpyneChannelRoute extends Channel {
     this.bindStaticMethodsWithConfigData();
 
 
-    this.sendChannelPayload(action, routeConfig, {}, {},
-        this.navToStream$);
+    this.sendChannelPayload(action, routeConfig, {}, {}, this.navToStream$);
   }
 
   getRouteConfig() {
-    const spyneConfig = window.Spyne.config;
+    const spyneConfig = SpyneAppProperties.config;
     let routeConfig = path(['channels', 'ROUTE'], spyneConfig);
     if (routeConfig.type === 'query') {
       routeConfig.isHash = false;
     }
 
     let arr = SpyneUtilsChannelRoute.flattenConfigObject(routeConfig.routes);
-    // console.log("FLATTENED CONFIG ",arr);
     routeConfig['paramsArr'] = arr;
-    //console.log("ROUTE CONFIG IS ",routeConfig);
     return routeConfig;
   }
 
@@ -223,7 +218,6 @@ export class SpyneChannelRoute extends Channel {
   }
 
   onMapNext(data, firstLoaded = false) {
-   // console.log("MAP NEXT ",{firstLoaded, data});
     data['action'] = 'CHANNEL_ROUTE_CHANGE_EVENT';
     return data;
   }
@@ -250,15 +244,11 @@ export class SpyneChannelRoute extends Channel {
 
     let keywordArrs = this.compareRouteKeywords.compare(payload.routeData, payload.paths);
     payload = rMerge(payload, keywordArrs);
-    // console.log("SEND STREAM onIncomingDomEvent", payload, keywordArrs);;
-   // payload = SpyneChannelRoute.removeSSID(payload);
-      this.sendChannelPayload(action, payload, undefined, undefined, this.navToStream$);
+      this.sendChannelPayload(action, payload, undefined, evt, this.navToStream$);
 
   }
 
   static checkForRouteParamsOverrides(payload) {
-    // console.log("CHECK FOR OVERRIDES ",payload);
-
     return payload;
   }
 
@@ -283,32 +273,14 @@ export class SpyneChannelRoute extends Channel {
   }
 
 
-
-/*
-  static checkToPreventDefaultEvent(obs) {
-    const checkDataForPreventDefault = pathEq(['viewStreamInfo', 'payload', 'eventPreventDefault'], 'true');
-    const setPreventDefault = (evt) => {
-      if (evt !== undefined) {
-        evt.preventDefault();
-      }
-    };
-    const selectEvtAndPreventDefault = compose(setPreventDefault, prop('event'));
-    const checkForPreventDefault = when(checkDataForPreventDefault, selectEvtAndPreventDefault);
-    checkForPreventDefault(obs);
-  }
-*/
-
-
   static checkForEndRoute(pl, routeConfigJson = this.routeConfigJson, debugBool){
 
     const endRoute = compose(equals("true"), path(['payload', 'endRoute']))(pl);
-    //console.log('pl and aend route',{endRoute, pl})
 
     if (endRoute!==true){
       return pl;
     }
-    const win = window || {};
-    const debug = debugBool !== undefined ? debugBool : compose(equals(true), path(['Spyne','config', 'debug']))(win);
+    const debug = debugBool !== undefined ? debugBool : SpyneAppProperties.debug === true;
      const {payload} = pl;
 
 
@@ -319,7 +291,6 @@ export class SpyneChannelRoute extends Channel {
           let routeNameVal = payload[routeName]
           const pred = arrStr => new RegExp(`^${arrStr}$`).test(routeNameVal);
           const routeVal = find(pred, keysArr);
-           // console.log('route val is ',{routeVal, keysArr})
           return routeVal;
 
         }
@@ -350,7 +321,6 @@ export class SpyneChannelRoute extends Channel {
               acc.push(routeName)
             }
           }
-         // compose(reduce(onReduceRoutePaths), toPairs)(nextRoutePath);
         }
         return acc;
 
@@ -378,17 +348,15 @@ export class SpyneChannelRoute extends Channel {
     SpyneChannelRoute.checkForEventMethods(pl);
     pl = this.checkForEndRoute(pl);
     let payload = this.getDataFromParams(pl);
-    const {routeConfigJson} = this;
-    //console.log("LOADING ROUTE FROM LINK ", {pl, payload,routeConfigJson})
 
     let srcElement = prop('srcElement', pl);
     let event = prop('event', pl);
     let changeLocationBool = !payload.isHidden;
     let keywordArrs = this.compareRouteKeywords.compare(payload.routeData, payload.paths);
+
     payload = rMerge(payload, keywordArrs);
-    // this.checkForRouteParamsOverrides(payload);
     this.sendRouteStream(payload, changeLocationBool);
-     //console.log("SEND STREAM onViewStreamInfo", payload);
+
     payload = SpyneChannelRoute.removeSSID(payload);
 
     this.sendChannelPayload(action, payload, srcElement, event,
@@ -429,11 +397,10 @@ export class SpyneChannelRoute extends Channel {
   static getExtraPayloadParams(config = this.routeConfigJson, isHistory=false) {
     let routeCount = this.getRouteCount(isHistory);
     let isDeepLink = this.getIsDeepLinkBool(isHistory);
-    //console.log("GETTING DEEP LINK ", {routeCount, isDeepLink,isHistory, config})
     let isHash = config.isHash;
     let isHidden = config.isHidden;
     let routeType = config.type;
-    return { routeCount, isDeepLink, isHash, isHidden, routeType };
+    return { routeCount, isDeepLink, isHash,isHistory, isHidden, routeType };
   }
 
   static getDataFromParams(pl, config = this.routeConfigJson) {
@@ -448,12 +415,11 @@ export class SpyneChannelRoute extends Channel {
     let nextWindowLoc = SpyneUtilsChannelRouteUrl.formatStrAsWindowLocation(routeValue);
     let dataFromStr = this.getDataFromLocationStr(typeForStr, isHashForStr, nextWindowLoc);
 
-    // console.log(" DATA FROM STRING ",{routeValue, pl, dataFromStr});
     let { pathInnermost, paths } = dataFromStr;
 
     routeData = rMerge(dataFromStr.routeData, routeData);
 
-    let { routeCount, isDeepLink, isHash, isHidden, routeType } = this.getExtraPayloadParams(
+    let { routeCount, isDeepLink, isHash,isHistory, isHidden, routeType } = this.getExtraPayloadParams(
       config);
     return {
       isDeepLink,
@@ -464,6 +430,7 @@ export class SpyneChannelRoute extends Channel {
       routeValue,
       isHash,
       isHidden,
+      isHistory,
       routeType
     };
   }
@@ -471,7 +438,6 @@ export class SpyneChannelRoute extends Channel {
   static getDataFromString(config = this.routeConfigJson, isHistory=false) {
     const type = config.type;
     const hashIsTrue = config.isHash === true;
-    // type = config.isHash === true ? ''
     const str = SpyneUtilsChannelRouteUrl.getLocationStrByType(type, hashIsTrue);
     let { paths, pathInnermost, routeData, routeValue } = SpyneChannelRoute.getParamsFromRouteStr(
       str, config, type);
@@ -487,6 +453,7 @@ export class SpyneChannelRoute extends Channel {
       routeValue,
       isHash,
       isHidden,
+      isHistory,
       routeType
     };
     return obj;
@@ -497,7 +464,6 @@ export class SpyneChannelRoute extends Channel {
       ? this.routeConfigJson.type
       : t;
 
-    // console.log("DATA CHECK STRING ",loc);
     const str = SpyneUtilsChannelRouteUrl.getLocationStrByType(type, isHash, loc);
     let { paths, pathInnermost, routeData, routeValue } = this.getParamsFromRouteStr(
       str, this.routeConfigJson, type);
@@ -522,15 +488,12 @@ export class SpyneChannelRoute extends Channel {
   static getRouteStrFromParams(paramsData, routeConfig, t) {
     const type = t !== undefined ? t : routeConfig.type;
     let obj = SpyneUtilsChannelRouteUrl.convertParamsToRoute(paramsData, routeConfig, type);
-
-    // console.log("ROUTE getRouteStrFromParams ",paramsData,obj);
     return obj;
   }
 
   static getParamsFromRouteStr(str, routeConfig, t) {
     const type = t !== undefined ? t : routeConfig.type;
     let obj = SpyneUtilsChannelRouteUrl.convertRouteToParams(str, routeConfig, type);
-    // console.log("ROUTE getParamsFromRouteStr ",obj);
     return obj;
   }
 
@@ -540,7 +503,6 @@ export class SpyneChannelRoute extends Channel {
     const hashNameIsEmptyBool = isEmptyBool === true && isHash === true;
     const hashNameBool = isEmptyBool === false && isHash === true;
 
-    // console.log('ROUTE STR CHECK ', {str, isHash});
     if (pathNameIsEmptyBool === true || hashNameIsEmptyBool === true) {
       return '/';
     } else if (hashNameBool === true) {
@@ -560,11 +522,8 @@ export class SpyneChannelRoute extends Channel {
     if (isHash === true) {
       let pathName = SpyneChannelRoute.removeLastSlash(window.location.pathname);
       routeValue = pathName + routeValue;
-      // window.location.hash = routeValue;
-      // console.log('ROUTE STR FOR HASH ', routeValue);
       window.history.pushState({routeCount}, '', routeValue);
     } else {
-      // routeValue =  when(isEmpty, always('/'))(routeValue);
       const checkForSlash = when(
         compose(complement(equals('/')), head), concat('/', __));
       window.history.pushState({routeCount}, '', checkForSlash(routeValue));

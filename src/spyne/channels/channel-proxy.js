@@ -1,6 +1,8 @@
 import { Channel } from './channel';
+import {SpyneAppProperties} from '../utils/spyne-app-properties';
 import { Subject, ReplaySubject, merge } from 'rxjs';
-import {includes, path} from 'ramda';
+import {includes} from 'ramda';
+import {delayCall} from '../utils/frp-tools';
 
 export class ChannelProxy extends Channel {
   /**
@@ -22,7 +24,7 @@ export class ChannelProxy extends Channel {
     this.subject$ = new Subject();
     this.replaySub$ = new ReplaySubject(1);
     this.observer$ = merge(this.subject$, this.replaySub$);
-	const isDevMode = path(['Spyne', 'config', 'debug'], window) === true;
+	const isDevMode = SpyneAppProperties.debug;
     if (isDevMode === true){
       this.checkIfChannelIsStillProxy(name);
     }
@@ -36,14 +38,14 @@ export class ChannelProxy extends Channel {
     let name = channelName;
 
     const checkIfProxy=()=>{
-      //console.log("CHANNELS ",window.Spyne.channels.listRegisteredChannels());
-      let bool = includes(name, window.Spyne.channels.listRegisteredChannels());
+      let bool = includes(name, SpyneAppProperties.listRegisteredChannels());
       if (bool!==true){
         console.warn(`Spyne Warning: The channel, ${name} does not appear to be registered!`);
       }
     };
 
-    window.setTimeout(checkIfProxy, 1000);
+    delayCall(checkIfProxy, 1000);
+
   }
 
   get replaySubject() {

@@ -1,7 +1,6 @@
 import { fromEventPattern } from 'rxjs';
-import {last, mapObjIndexed, flatten, clone, pick, prop, propOr, pickAll, path, equals, compose, keys, filter, propEq, uniq, map, __, chain,is, includes, fromPairs, reject, mergeDeepRight, mergeRight, reverse, test, omit, reduceRight, nth, toPairs, values} from 'ramda';
+import {last, flatten, clone, pick, prop, pickAll, path, equals, compose, keys, filter, propEq, uniq, map, __, chain,is, includes, fromPairs, reject, mergeDeepRight, mergeRight, test, toPairs, values} from 'ramda';
 import {SpyneUtilsChannelRouteUrl} from './spyne-utils-channel-route-url';
-import {RouteDataForTests} from '../../tests/mocks/utils-data';
 
 export class SpyneUtilsChannelRoute {
   constructor() {
@@ -102,7 +101,7 @@ export class SpyneUtilsChannelRoute {
     // create href and check to see if need to convert to hash href links
     const getHREF = (obj)=>{
       const santizeHREF = str => {
-        const hrefRE = /^(.*\/)([\w\-]*\/?)(.*)$/gm
+        const hrefRE = /^(.*\/)([\w-]*\/?)(.*)$/gm
         //const hrefRE = /^(.*\/)([\w-]*)(.*)$/gm;
        str = str.replace(hrefRE, "$1$2");
        // str = String(str).replace('^$', "");
@@ -119,7 +118,7 @@ export class SpyneUtilsChannelRoute {
 
 
     // test whether to use key or val
-    const isValidStrRE = /^([A-Za-z0-9_\-])+$/m;
+    const isValidStrRE = /^([A-Za-z0-9_-])+$/m;
 
     const createInitialValFn = (accMain=[], routePathObj, objAcc={})=>{
       let {routeName} = routePathObj;
@@ -129,7 +128,9 @@ export class SpyneUtilsChannelRoute {
         const [key, val] = arrPair;
         const isObject = is(Object, val);
 
-        const getLinkText = str => test(isValidStrRE, str) ? String(str).toUpperCase() : key;
+        const createTitle = (str)=>String(str).replace(/([-_])/g, " ").toUpperCase();
+
+        const getLinkText = str => test(isValidStrRE, str) ? createTitle(str) : key;
 
         if (key === 'routeName' || key === '404'){
           return acc;
@@ -177,7 +178,6 @@ export class SpyneUtilsChannelRoute {
       return getMainKeys(datasetsArr);
     }
     const routeNamesArr = getNavProps(routeDatasetsArr);
-    //console.log('validate route names arr is ',routeNamesArr);
 
     return {routeDatasetsArr, routeNamesArr};
   }
@@ -187,7 +187,6 @@ export class SpyneUtilsChannelRoute {
     const channelsRoutePath = path(['channels', 'ROUTE'], channelRouteObj);
     let {add404s} = channelsRoutePath !== undefined ? channelsRoutePath : channelRouteObj;
     add404s = add404s || add404Props;
-    //console.log("add 404s is1 ",{add404s, channelsRoutePath})
     const parseRoutePath = (a) => {
       let val = a[1];
       const isArr = is(Array, val);
@@ -217,23 +216,16 @@ export class SpyneUtilsChannelRoute {
     }
 
     const configMapperFn = compose(fromPairs, map(transduceConfig), toPairs);
-    //console.log('route obj ',channelRouteObj);
 
 
     if (channelsRoutePath !== undefined){
       channelRouteObj.channels.ROUTE = configMapperFn(channelRouteObj.channels.ROUTE)
       const extraRouteData = SpyneUtilsChannelRoute.addRouteDatasets(channelRouteObj.channels.ROUTE);
       channelRouteObj.channels.ROUTE = mergeRight(channelRouteObj.channels.ROUTE, extraRouteData);
-      //console.log("CHANNEL ROUTE OBJ ",channelRouteObj.channels.ROUTE);
-      //channelRouteObj.channels.ROUTE.linkDatasets = SpyneUtilsChannelRoute.addRouteDatasets(channelRouteObj.channels.ROUTE);
       return channelRouteObj;
     }
 
-
-
     return configMapperFn(channelRouteObj);
-
-
 
   }
 

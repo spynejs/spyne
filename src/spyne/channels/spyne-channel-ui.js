@@ -25,7 +25,6 @@ export class SpyneChannelUI extends Channel {
     super(name, props);
     this.keyEventsLoaded = false;
     this.keyCodeArr = [];
-    // this.addKeyEvent(13);
   }
 
   addRegisteredActions() {
@@ -44,6 +43,7 @@ export class SpyneChannelUI extends Channel {
       'CHANNEL_UI_CHECKBOXSTATECHANGE_EVENT',
       'CHANNEL_UI_CLICK_EVENT',
       'CHANNEL_UI_COMPLETE_EVENT',
+      'CHANNEL_UI_CONTEXTMENU_EVENT',
       'CHANNEL_UI_COPY_EVENT',
       'CHANNEL_UI_CUT_EVENT',
       'CHANNEL_UI_DBLCLICK_EVENT',
@@ -136,7 +136,6 @@ export class SpyneChannelUI extends Channel {
   onIncomingObservable(obj) {
     let eqsName = equals(obj.name, this.props.name);
     obj.data = SpyneChannelUI.removeSSID(obj.data);
-    //console.log("OBJECT DATA ",obj.data);
     let {payload, srcElement} = obj.data;
     let dataObj = obsVal => ({ payload, srcElement, event: obsVal });
     let onSuccess = (obj) => obj.observable.pipe(map(dataObj))

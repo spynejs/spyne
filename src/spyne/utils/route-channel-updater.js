@@ -7,10 +7,7 @@ export class RouteChannelUpdater{
     let id = `${name}_ROUTE_UPDATER`;
 
     const sendRouteChannelUpdate = curry(RouteChannelUpdater.createTemporaryViewStreamObj);
-
     return sendRouteChannelUpdate({id,name});
-
-   //RouteChannelUpdater.createTemporaryViewStreamObj({name,id});
   }
 
 
@@ -30,7 +27,6 @@ export class RouteChannelUpdater{
     };
 
     vs.appendToNull();
-    //console.log("VIEWSTREAM IS ",{vs, name,id,payload});
 
   }
 

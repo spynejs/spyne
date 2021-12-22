@@ -1,14 +1,9 @@
 import {
   is,
   reject,
-  ifElse,
-  invoker,
-  identity,
-  assoc,
   isNil,
-    find,
+  find,
   allPass,
-  tap,
   forEachObjIndexed,
   not,
   isEmpty,
@@ -19,17 +14,15 @@ import {
   where,
   defaultTo,
   mergeAll,
-  __,
   omit,
-  path,
-  call,
-  clone,
   flatten,
   any,
-  type,
   curry,
-  mergeRight, lte,
+  lte
 } from 'ramda';
+
+import {SpyneAppProperties} from './spyne-app-properties';
+
 const rMap = require('ramda').map;
 
 const isNotArr = compose(not, is(Array));
@@ -122,8 +115,6 @@ export class ChannelPayloadFilter {
 
     const debugLabelArr = [debugLabel,  prop('debugLabel', filters)]
 
-    const makeBool = b => Boolean(b);
-
     debugLabel = compose(find(is(String)))(debugLabelArr);
 
     let props = omit(['debugLabel', 'label', 'selector', 'props', 'testMode', 'propFilters'], filters)
@@ -137,22 +128,13 @@ export class ChannelPayloadFilter {
     filters['propFilters'] = props;
 
     let {propFilters} = filters;
-    //console.log("selector filters ", {selector, filters})
 
-    // let {selector,propFilters,debugLabel} = filters;
 
     const addStringSelectorFilter =  isNonEmptyStr(selector) ? ChannelPayloadFilter.filterSelector([selector], debugLabel) : undefined;
     const addArraySelectorFilter =   isNonEmptyArr(selector) ? ChannelPayloadFilter.filterSelector(selector, debugLabel) : undefined;
-
-
     const addDataFilter = isNonEmptyObjectFn(propFilters) ? ChannelPayloadFilter.filterData(propFilters, debugLabel) : undefined;
 
-    //console.log("IS STRING ",{selector, addStringSelectorFilter, addArraySelectorFilter, addDataFilter},isNonEmptyStr(selector))
-
-
-
     let filtersArr = reject(isNil, [addStringSelectorFilter, addArraySelectorFilter, addDataFilter]);
-   // console.log('filtersArr is ',{selector})
 
       // IF ARRAY IS EMPTY ALWAYS RETURN FALSE;
 
@@ -160,15 +142,12 @@ export class ChannelPayloadFilter {
 
       if (filtersAreEmpty){
         filtersArr = [always(false)];
-        if (path(['Spyne', 'config', 'debug'], window) === true && testMode!==true){
+        if (SpyneAppProperties.debug === true && testMode!==true){
           console.warn(`Spyne Warning: The Channel Filter, with selector: ${selector}, and propFilters:${propFilters} appears to be empty!`);
         }
 
       }
-
-
-    //console.log(" VALUES OF FILTERS ",{selector,propFilters,filters,debugLabel,testMode, filtersAreEmpty});
-    if (testMode === true){
+      if (testMode === true){
         return {selector, propFilters, debugLabel, filters, testMode, filtersAreEmpty};
       }
 
@@ -178,22 +157,13 @@ export class ChannelPayloadFilter {
   static filterData(filterJson, filterdebugLabel) {
     const debugLabel = filterdebugLabel;
 
-    //console.log('filter data is ',{filterJson, debugLabel})
     let compareData = () => {
       // DO NOT ALLOW AN EMPTY OBJECT TO RETURN TRUEs
       if (isEmpty(filterJson)) {
         return always(false);
       }
 
-      //console.log("FILTER JSON ",filterJson);
       //  CHECKS ALL VALUES IN JSON TO DETERMINE IF THERE ARE FILTERING METHODS
-
-      //let typeArrFn = compose(values, rMap(type));
-
-      /*let sendMalFormedWarningBool = uniq(filterValsArr).length > 1;
-      if (sendMalFormedWarningBool === true) {
-        console.warn('Spyne Warningd: The data values in ChannelActionFilters needs to be either all methods or all static values.  DATA: ', filterJson);
-      }*/
 
       const createCurryComparator = compareStr => (str)=>{
         return str===compareStr;
@@ -201,17 +171,7 @@ export class ChannelPayloadFilter {
       const checkToConvertToFn = (val, key, obj)=>val = is(String, val)===true ? createCurryComparator(val) : val;
       filterJson = rMap(checkToConvertToFn, filterJson);
 
-      // console.log("FILTER JSON: ",{filterJson, newJson});
-      //const isAllMethods  = all(equals('Function'), filterValsArr);
-
-      // PULL OUT THE CHANNEL PAYLOAD OBJECT IN THE MAIN PAYLOAD
-      // let payload = prop('channelPayload', eventData)
-
-      // IF THERE ARE METHODS IN THE FILTERING JSON, THEN USE where or whereEq if Basic JSON
-     // let fMethod = isAllMethods === true ? where(filterJson) : whereEq(filterJson);
-
       // TAP LOGGER
-
       const tapLogger = (comparedObj)=>{
         if (debugLabel===undefined){
           return comparedObj;
@@ -225,13 +185,11 @@ export class ChannelPayloadFilter {
       };
 
       // END TAP LOGGER
-
       let fMethod = where(filterJson);
 
       let getFilteringObj =  (v)=>{
         const {payload, srcElement, event} = v || {};
-        const o = Object.assign({}, v, event,srcElement, payload);
-
+        const o = Object.assign({}, v, event, payload);
         //console.log('o is ',o);
         return o;
       }
@@ -240,48 +198,26 @@ export class ChannelPayloadFilter {
       return compose( fMethod, tapLogger, defaultTo({}),  getFilteringObj);
 
     };
-   // const filterLabel = `filtering-${Math.floor(Math.random()*999999)}`;
-    //console.time(filterLabel);
-   // const val = compareData();
 
-    //console.timeEnd(filterLabel);
-    //return val;
     return compareData();
   }
 
 
   static checkPayloadSelector(arr, debugLabel, srcPayload) {
+
     // ELEMENT FROM PAYLOADs
-
-
     const {payload, srcElement, event} = srcPayload || {};
-    //console.log('payload before ',{srcPayload, payload, srcElement, event})
 
     const reduceFindEl = (acc, src) => {
       const el = prop('el', src);
-      //console.log("EL IS ",{el, src, acc})
       if (ChannelPayloadFilter.elIsDomElement(el) && acc===undefined){
         acc = el;
-       // return acc;
       }
       return acc;
     }
 
     const el = [srcElement, payload, prop('srcElement', event), srcPayload].reduce(reduceFindEl, undefined);
 
-
-    //console.log('el check ',{debugLabel, srcElement, payload, event, el})
-
-    //const o = Object.assign({}, srcPayload, event,srcElement, payload);
-
-    //console.log('o is ',o);
-
-
-    //let payloadIsNotProps = compose(equals('Function'),type, prop('props')  )(payload);
-    //payload = payloadIsNotProps === true ? payload.payload : payload;
-   // console.log('payload after ',{o})
-
-   // let el = path(['el'], o);
 
     // RETURN BOOLEAN MATCH WITH PAYLOAD EL
     const compareEls = (elCompare) => elCompare.isEqualNode((el));
@@ -297,10 +233,7 @@ export class ChannelPayloadFilter {
     if (debugLabel!==undefined){
       let nodeArrResultsDebugger = compose(flatten, rMap(mapNodeArrWithEl))(arr);
       const selectorsArr = arr;
-
       console.log(`%c CHANNEL PAYLOAD FILTER DEBUGGER ["${debugLabel}"] - selectors: `, "color:orange;",{el, selectorsArr, nodeArrResultsDebugger});
-
-
     }
 
     // CHECK IF PAYLOAD EL EXISTS

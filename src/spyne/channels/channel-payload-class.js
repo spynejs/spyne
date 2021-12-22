@@ -4,14 +4,14 @@ import {
   fromPairs,
   toPairs,
   compose,
-  mergeDeepRight,
-  mergeRight,
-  pathEq,
   includes,
   pickAll,
-  __,
-  lte, defaultTo, prop, is, mapObjIndexed,
+  lte,
+  defaultTo,
+  prop,
+  is
 } from 'ramda';
+import {SpyneAppProperties} from '../utils/spyne-app-properties';
 
 export class ChannelPayload {
   /**
@@ -44,7 +44,8 @@ export class ChannelPayload {
 
     let channelPayloadItemObj = { channelName, action, srcElement, event };
    // Object.defineProperty(channelPayloadItemObj, 'payload', {get: () => clone(payload)});
-    channelPayloadItemObj['payload'] = ChannelPayload.deepFreeze(payload);
+    const frozenPayload = ChannelPayload.deepFreeze(payload);
+    channelPayloadItemObj['payload'] = frozenPayload;
     /**
      * This is a convenience method that helps with destructuring by merging all properties.
      *
@@ -59,45 +60,57 @@ export class ChannelPayload {
      */
 
 
-    const isDebugMode =  pathEq(['Spyne','config', 'debug'], true)(window);
 
-    if (isDebugMode === true){
-      if (payload.hasOwnProperty('payload')){
+    if (SpyneAppProperties.debug === true){
+      if (Object.prototype.hasOwnProperty.call(payload, 'payload')){
         let payloadStr = JSON.stringify(payload);
         console.warn(`Spyne Warning: the following payload contains a nested payload property which may create conflicts: Action: ${action}, ${payloadStr}`);
       }
+
+      const channelActionsArr = SpyneAppProperties.getChannelActions(channel);
+
+      ChannelPayload.validateAction(action, channel, channelActionsArr);
+
+
     }
 
 
 
-    channelPayloadItemObj.props = () => clone(mergeAll([
+    channelPayloadItemObj.clone = () => clone(mergeAll([
         {payload:ChannelPayload.deepClone(channelPayloadItemObj.payload)},
       channelPayloadItemObj.payload,
         { channel },
         { event: event },
+        {srcElement: srcElement},
                 channelPayloadItemObj.srcElement, {
         action: channelPayloadItemObj.action }
          ]));
 
 
-    const channelActionsArr = window.Spyne.getChannelActions(channel);
 
-    ChannelPayload.validateAction(action, channel, channelActionsArr);
-
-    if (channel === 'CHANNEL_ROUTE') {
-      channelPayloadItemObj['location'] = ChannelPayload.getLocationData();
-    }
-   // return window.Spyne.createDataPacket(channelPayloadItemObj, ['channelName', 'action']);
-
-    channelPayloadItemObj._dir = undefined;
-
-    Object.defineProperties(channelPayloadItemObj, {
+    const channelPayloadItemObjProps = {
       $dir: {
         get: () => channelPayloadItemObj._dir,
         set: (val) => channelPayloadItemObj._dir=val
       }
+    }
 
-    })
+
+
+    if (channel === 'CHANNEL_ROUTE') {
+      //channelPayloadItemObj['location'] = ChannelPayload.getLocationData();
+      channelPayloadItemObjProps['location'] = {
+        get: ()=>ChannelPayload.getLocationData()
+      }
+     /* channelPayloadItemObjProps['routeData'] = {
+        get: ()=>prop('routeData', frozenPayload)
+      }
+*/
+    }
+
+    channelPayloadItemObj._dir = undefined;
+
+    Object.defineProperties(channelPayloadItemObj, channelPayloadItemObjProps)
 
     if(timeLabel){
       console.timeEnd(timeLabel);
@@ -107,7 +120,7 @@ export class ChannelPayload {
 
   static validateAction(action, channel, arr) {
     let isInArr = includes(action, arr);
-    if (isInArr === false && window.Spyne !== undefined) {
+    if (isInArr === false && SpyneAppProperties.initialized === true) {
       console.warn(`warning: Action: '${action}' is not registered within the ${channel} channel!`);
     }
     return isInArr;
@@ -150,7 +163,7 @@ export class ChannelPayload {
     try {
       Object.freeze(o);
       Object.getOwnPropertyNames(o).forEach(function(prop) {
-        if (o.hasOwnProperty(prop)
+        if (Object.prototype.hasOwnProperty.call(o,prop)
             && elIsDomElement(o[prop]) === false
             && o[prop] !== null
             && (typeof o[prop] === "object" || typeof o[prop] === "function")

@@ -1,4 +1,5 @@
 import {isEmpty, head, values, compose, prop, complement, isNil, allPass, reduce, filter, equals, toPairs, replace, either, propEq, __,invert,path,zipObj, reject, keys, find, assoc, is,has, when, split, always, concat, join, flatten, map, ifElse, test, findLastIndex,last, defaultTo,fromPairs } from 'ramda';
+import {SpyneAppProperties} from './spyne-app-properties';
 
 export class SpyneUtilsChannelRouteUrl {
   constructor() {
@@ -61,7 +62,6 @@ export class SpyneUtilsChannelRouteUrl {
       let keyword = routeObj.routeName; // PARAM FORM SPYNE CONFIG
       let paramValFromData = data[keyword] !== undefined ? data[keyword] : prop(keyword, paramsFromLoc); // PULL VALUE FOR THIS PARAM FROM DATA
       const paramValType = typeof (routeObj[paramValFromData]);
-      // console.log({routeObj, paramValType, paramValFromData, keyword})
 
       if (paramValType === 'string') {
         paramValFromData = routeObj[paramValFromData];
@@ -71,12 +71,9 @@ export class SpyneUtilsChannelRouteUrl {
 
       urlObj[keyword] = paramValFromData;
 
-      // console.log("URL OBJ ",urlObj);
       if (this.checkIfObjIsNotEmptyOrNil(urlObj)) {
-        // console.log("FOUND ",{paramValFromData, paramValType, urlObj, routeObj});
         urlArr.push(urlObj);
       } else {
-        // console.log("NOT FOUND ",paramValFromData, paramValType, urlObj, routeObj);
 
       }
 
@@ -84,10 +81,8 @@ export class SpyneUtilsChannelRouteUrl {
       const objectParamExists = has(paramValFromData, routeObj);
       const objectContainsRoute = has('routePath', routeObj);
       const recursivelyCallLoopBool = objectParamExists && isObject;
-      // console.log("CHECKS ", {isObject, objectParamExists, objectContainsRoute, recursivelyCallLoopBool})
       if (recursivelyCallLoopBool === true) {
         let newObj = routeObj[paramValFromData];
-        // console.log("NEW OBJ ",{paramValFromData, routeObj, newObj});
         if (has('routePath', newObj)) {
           loopThroughParam(newObj.routePath);
         }
@@ -163,7 +158,7 @@ export class SpyneUtilsChannelRouteUrl {
     return map(mapUrlProps, urlsArr);
   }
 
-  static convertParamsToRoute(data, r = window.Spyne.config.channels.ROUTE, t, locStr) {
+  static convertParamsToRoute(data, r = SpyneAppProperties.config.channels.ROUTE, t, locStr) {
     const urlType = t !== undefined ? t : r.type;
     const isHash = r.isHash;
     let route = r.routes.routePath;
@@ -239,7 +234,7 @@ export class SpyneUtilsChannelRouteUrl {
       let getParamInverted = compose(head, defaultTo([]), prop(param));
       let paramInverted = getParamInverted(invertedObj);
       // spyne 11.0.1;
-      let re =  /^([-\$\w]*)$/;
+      let re =  /^([-$\w]*)$/;
       let keyMatch =  re.test(paramInverted);
 
       if (keyMatch === true && is(String, paramInverted) === true) {

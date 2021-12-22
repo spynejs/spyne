@@ -3,7 +3,7 @@ cache:
   directories:
     - ~/.npm
 services:
-  - xvfb    
+  - xvfb
 notifications:
   email: false
 node_js:

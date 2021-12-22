@@ -66,7 +66,7 @@ export class SpyneUtilsChannelWindow {
   }
 
   static createMergedObsFromObj(config) {
-    let mediaQueriesObj = config.mediqQueries;
+    let mediaQueriesObj = config.mediaQueries || config.mediqQueries;
     let arr = [];
 
     const loopQueries = (val, key, obj) => {
@@ -78,8 +78,6 @@ export class SpyneUtilsChannelWindow {
     };
 
     mapObjIndexed(loopQueries, mediaQueriesObj);
-    // let obs$ = Observable.merge(...arr);
-    // console.log('arr is ',arr);
     return arr;
   }
 }

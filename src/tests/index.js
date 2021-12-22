@@ -5,7 +5,6 @@
 
 // const appConst =  require("../app/app-contants.js");
 
-f;
 // let CDN = require("../app/app-contants.js").CDN;
 
 function maybeFirst(array) {
