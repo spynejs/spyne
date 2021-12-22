@@ -1,4 +1,4 @@
-import {head, compose, reject, split, isEmpty, path, lte, defaultTo, prop} from 'ramda';
+import {head, compose, reject, split, isEmpty, lte, defaultTo, prop} from 'ramda';
 import {SpyneAppProperties} from '../utils/spyne-app-properties';
 
 function generateSpyneSelectorId(el) {

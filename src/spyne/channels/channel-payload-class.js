@@ -4,13 +4,12 @@ import {
   fromPairs,
   toPairs,
   compose,
-  mergeDeepRight,
-  mergeRight,
-  pathEq,
   includes,
   pickAll,
-  __,
-  lte, defaultTo, prop, is, mapObjIndexed,
+  lte,
+  defaultTo,
+  prop,
+  is
 } from 'ramda';
 import {SpyneAppProperties} from '../utils/spyne-app-properties';
 
@@ -63,7 +62,7 @@ export class ChannelPayload {
 
 
     if (SpyneAppProperties.debug === true){
-      if (payload.hasOwnProperty('payload')){
+      if (Object.prototype.hasOwnProperty.call(payload, 'payload')){
         let payloadStr = JSON.stringify(payload);
         console.warn(`Spyne Warning: the following payload contains a nested payload property which may create conflicts: Action: ${action}, ${payloadStr}`);
       }
@@ -164,7 +163,7 @@ export class ChannelPayload {
     try {
       Object.freeze(o);
       Object.getOwnPropertyNames(o).forEach(function(prop) {
-        if (o.hasOwnProperty(prop)
+        if (Object.prototype.hasOwnProperty.call(o,prop)
             && elIsDomElement(o[prop]) === false
             && o[prop] !== null
             && (typeof o[prop] === "object" || typeof o[prop] === "function")

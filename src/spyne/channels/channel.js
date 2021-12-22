@@ -1,6 +1,5 @@
 import { registeredStreamNames } from './channels-config';
 import { ChannelPayload } from './channel-payload-class';
-import { ChannelPayloadFilter} from '../utils/channel-payload-filter';
 import {SpyneAppProperties} from '../utils/spyne-app-properties';
 import {RouteChannelUpdater} from '../utils/route-channel-updater';
 import { ReplaySubject, Subject } from 'rxjs';
@@ -19,12 +18,10 @@ import {
   always,
   fromPairs,
   path,
- assocPath,
-    isEmpty,
+  isEmpty,
   equals,
   prop,
-    propEq,
-  apply,
+  propEq
 } from 'ramda';
 const rMap = require('ramda').map;
 
@@ -152,7 +149,7 @@ export class Channel {
         traits = [traits];
       }
       const addTrait=(TraitClass)=>{
-        new TraitClass(this);
+        return new TraitClass(this);
       };
 
       traits.forEach(addTrait);

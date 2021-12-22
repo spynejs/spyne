@@ -1,7 +1,7 @@
 {
   "name": "spyne",
   "sideEffects": false,
-  "version": "0.17.5",
+  "version": "0.18.0",
   "description": "Reactive Real-DOM Framework for Advanced Javascript applications",
   "main": "lib/spyne.min.js",
   "module": "src/spyne/spyne.js",

@@ -3,7 +3,7 @@ import { convertDomStringMapToObj } from '../utils/frp-tools';
 import {SpyneAppProperties} from '../utils/spyne-app-properties';
 import { fromEvent } from 'rxjs';
 import { map } from 'rxjs/operators';
-import {clone, omit, path} from 'ramda';
+import {clone, omit} from 'ramda';
 
 export class ViewStreamBroadcaster {
   /**

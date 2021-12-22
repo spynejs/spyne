@@ -1,9 +1,8 @@
 import {SpyneUtilsChannelRoute} from './spyne-utils-channel-route';
 import {SpyneScrollLock} from './spyne-scroll-lock';
 import {SpynePluginsMethods} from './spyne-plugins-methods';
-import {ChannelsMap} from '../channels/channels-map';
 import {deepMerge} from './deep-merge';
-import {prop, path} from 'ramda';
+import {path} from 'ramda';
 
 let _config;
 let _channels;
@@ -55,18 +54,11 @@ class SpyneAppPropertiesClass{
 
 
   setChannelsMap(){
-    let obj = {};
-
-
-
     const getStream = _channels.getStream.bind(_channels);
     const testStream =  _channels.testStream.bind(_channels);
     const getProxySubject = _channels.getProxySubject.bind(_channels);
 
-
     _channelsMap = {getStream, testStream, getProxySubject}
-
-
 
   }
 

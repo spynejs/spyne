@@ -6,13 +6,11 @@ import { ReplaySubject, merge } from 'rxjs';
 import { map } from 'rxjs/operators';
 
 import {
-  clone,
   pick,
-    find,
+  find,
   omit,
   over,
   mergeRight,
-  mergeDeepRight,
   is,
   objOf,
   mergeAll,
@@ -33,7 +31,10 @@ import {
     reverse,
   curryN,
   __,
-  test, replace, fromPairs, toPairs, forEach, reduceRight, reduce
+  test,
+  replace,
+  toPairs,
+  reduce
 } from 'ramda';
 const ramdaFilter = require('ramda').filter;
 const rMerge = require('ramda').mergeRight;
@@ -280,31 +281,13 @@ export class SpyneChannelRoute extends Channel {
   }
 
 
-
-/*
-  static checkToPreventDefaultEvent(obs) {
-    const checkDataForPreventDefault = pathEq(['viewStreamInfo', 'payload', 'eventPreventDefault'], 'true');
-    const setPreventDefault = (evt) => {
-      if (evt !== undefined) {
-        evt.preventDefault();
-      }
-    };
-    const selectEvtAndPreventDefault = compose(setPreventDefault, prop('event'));
-    const checkForPreventDefault = when(checkDataForPreventDefault, selectEvtAndPreventDefault);
-    checkForPreventDefault(obs);
-  }
-*/
-
-
   static checkForEndRoute(pl, routeConfigJson = this.routeConfigJson, debugBool){
 
     const endRoute = compose(equals("true"), path(['payload', 'endRoute']))(pl);
-    //console.log('pl and aend route',{endRoute, pl})
 
     if (endRoute!==true){
       return pl;
     }
-    const win = window || {};
     const debug = debugBool !== undefined ? debugBool : SpyneAppProperties.debug === true;
      const {payload} = pl;
 
@@ -316,7 +299,6 @@ export class SpyneChannelRoute extends Channel {
           let routeNameVal = payload[routeName]
           const pred = arrStr => new RegExp(`^${arrStr}$`).test(routeNameVal);
           const routeVal = find(pred, keysArr);
-           // console.log('route val is ',{routeVal, keysArr})
           return routeVal;
 
         }
@@ -375,17 +357,15 @@ export class SpyneChannelRoute extends Channel {
     SpyneChannelRoute.checkForEventMethods(pl);
     pl = this.checkForEndRoute(pl);
     let payload = this.getDataFromParams(pl);
-    const {routeConfigJson} = this;
-    //console.log("LOADING ROUTE FROM LINK ", {pl, payload,routeConfigJson})
 
     let srcElement = prop('srcElement', pl);
     let event = prop('event', pl);
     let changeLocationBool = !payload.isHidden;
     let keywordArrs = this.compareRouteKeywords.compare(payload.routeData, payload.paths);
+
     payload = rMerge(payload, keywordArrs);
-    // this.checkForRouteParamsOverrides(payload);
     this.sendRouteStream(payload, changeLocationBool);
-     //console.log("SEND STREAM onViewStreamInfo", payload);
+
     payload = SpyneChannelRoute.removeSSID(payload);
 
     this.sendChannelPayload(action, payload, srcElement, event,

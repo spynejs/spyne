@@ -1,5 +1,5 @@
 import { getAllMethodNames } from './frp-tools';
-import {reject, test, curryN, __, map} from 'ramda';
+import {reject, curryN, __, map} from 'ramda';
 
 export class SpyneTrait {
   /**
@@ -63,13 +63,10 @@ export class SpyneTrait {
     this.checkForMalformedMethods(methodsObj.allMethods);
       let obj = {};
     const bindMethodsToParentViewStream = (str, isStatic = false) => {
-      const addMethod = s =>  {
-        return context[s] = constructorType[s].bind(context);
-      };
       let constructorType = isStatic === true ? this.constructor : this;
       let propertyType = typeof (constructorType[str]);
       if (propertyType === 'function') {
-         obj[str] = addMethod(str);
+         obj[str] = context[str] = constructorType[str].bind(context);
       }
     };
 

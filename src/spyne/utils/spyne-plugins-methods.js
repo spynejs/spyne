@@ -25,11 +25,9 @@ export class SpynePluginsMethods{
 
 
   addMethod(key, fn, test=false){
-    //console.log('has method is 2',typeof(_pluginMethodsObj),{_pluginMethodsObj})
 
-    if (_pluginMethodsObj.hasOwnProperty(key)===true){
+    if (Object.prototype.hasOwnProperty.call(_pluginMethodsObj, key)===true){
       const warnStr = `Spyne Warning: the method name, ${key}, already exists.`;
-
       if (test){
         return warnStr;
       }
@@ -50,7 +48,6 @@ export class SpynePluginsMethods{
     if (isObj === false){
       warnStr = `Spyne Warning: the pluginMethods property, ${JSON.stringify(methodsObj)} needs to be an object.`
       if (test){
-        //console.log('this is a test ',{methodsObj})
         return warnStr;
       }
       console.warn(warnStr);
@@ -63,7 +60,6 @@ export class SpynePluginsMethods{
 
       const isFunction = typeof(methodVal) === 'function';
 
-      //console.log('method to add ',{keyStr, isFunction})
 
       if (isFunction){
         this.addMethod(keyStr, methodVal, test);
@@ -86,10 +82,6 @@ export class SpynePluginsMethods{
 
   checkIfMethodExists(key){
 
-  }
-
-  test1(){
-    //console.log('test 1 is ');
   }
 
 

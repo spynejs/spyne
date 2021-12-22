@@ -1,12 +1,10 @@
 import { baseCoreMixins } from '../utils/mixins/base-core-mixins';
 import {SpyneAppProperties} from '../utils/spyne-app-properties';
-//import { baseStreamsMixins } from '../utils/mixins/base-streams-mixins';
 import { deepMerge } from '../utils/deep-merge';
 import {
   findStrOrRegexMatchStr,
   getConstructorName
 } from '../utils/frp-tools';
-// import {gc} from '../utils/gc';
 import { ViewStreamElement } from './view-stream-element';
 import { ViewStreamEnhancerLoader } from './view-stream-enhancer-loader';
 import { registeredStreamNames } from '../channels/channels-config';
@@ -22,12 +20,10 @@ import {
   compose,
   isNil,
   all,
-  isEmpty,
   forEach,
   toLower,
   either,
   findIndex,
-  partial,
   apply,
   test,
   flatten,
@@ -38,19 +34,15 @@ import {
   propSatisfies,
   allPass,
   curry,
-  nth,
   is,
   slice,
   path,
   omit,
   ifElse,
-  lensPath,
-  view,
   clone,
   mergeRight,
   where,
   equals,
-  assocPath,
 } from 'ramda';
 
 const rMap = require('ramda').map;
@@ -287,23 +279,17 @@ export class ViewStream {
       this.sourceStreams.raw$.next(obj);
     }
     let filterPayload = defaultTo(always(true), actionFilter);
-    const filterLabel = `filtering-${Math.floor(Math.random() * 999999)}`;
 
     if (actionFilter !== undefined) {
-     //console.time(filterLabel);
-
 
     }
     if (filterPayload(p) === true) {
-      //  p = omit(['dir$'],p);
       p = omit(['$dir'], p)
+
       if (actionFilter !== undefined) {
 
-       // console.log(`pf - ${filterLabel}: `, p);
-        //console.timeEnd(filterLabel);
       }
       runFunc(p);
-      //this[str](p);
     }
   }
 
@@ -861,10 +847,6 @@ export class ViewStream {
     };
 
     traits.forEach(addTrait);
-
-    if (this.isDevMode === true){
-      const actionsArr = this.addActionListeners();
-    }
 
   }
 

@@ -4,7 +4,7 @@ import {SpyneAppProperties} from '../utils/spyne-app-properties';
 import { SpyneUtilsChannelWindow } from '../utils/spyne-utils-channel-window';
 import { merge } from 'rxjs';
 import { map, debounceTime, skipWhile } from 'rxjs/operators';
-import {curry, pathEq, path, pick, partialRight, mapObjIndexed, apply} from 'ramda';
+import {curry, pick, partialRight, mapObjIndexed, apply} from 'ramda';
 import {deepMerge} from '../utils/deep-merge';
 
 const rMap = require('ramda').map;
@@ -223,9 +223,6 @@ export class SpyneChannelWindow extends Channel {
 
     // =========================================
 
-    // config.listenForResize = false;
-    // config.listenForMouseWheel = true;
-    // config.listenForScroll = false;
     let methods = {
       'listenForResize': this.createResizeObservable.bind(this),
       'listenForOrientation': this.createOrientationObservable.bind(this),
@@ -349,31 +346,17 @@ export class SpyneChannelWindow extends Channel {
     el = el || window;
     if (scrollLock === true){
      // setScrollPos();
-
       this.spyneScrollLock.disableBodyScroll();
-      const id = path(['srcElement', 'id'], e);
-      /**
-       * TODO: ADD EL TO Scroll lock --- this is hard coded .scroll-lock class
-       *
-       * */
-       //el = document.querySelector(`#${id} .card-scroll`);
-      //console.log("E TO SCROLL IS ",{id,el,e});
-     // this.onSetElementToScroll({}, el);
 
       this.createScrollObservable(this.domChannelConfig, el, true)
       .subscribe(p => {
         let { action, payload, srcElement, event } = p;
-        //console.log("SCROLL OBS IS ",p)
         this.sendChannelPayload(action, payload, srcElement, event);
       });
-
-
 
     } else {
       this.spyneScrollLock.enableBodyScroll();
     }
-
-    //console.log('scroll lock window channel ',{action,scrollLock});
 
     this.sendChannelPayload(action, {scrollLock}, el);
   }
@@ -385,7 +368,6 @@ export class SpyneChannelWindow extends Channel {
     config = deepMerge(this.domChannelConfig, config);
 
     scrollElement = scrollElement || el;
-    //console.log('set elemenet to scroll ',{scrollElement})
 
     const action = "CHANNEL_WINDOW_SCROLL_ELEMENT_ADDED_EVENT";
     this.sendChannelPayload(action, {el}, el);

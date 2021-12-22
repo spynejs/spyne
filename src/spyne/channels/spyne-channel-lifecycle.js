@@ -1,5 +1,4 @@
 import { Channel } from './channel';
-import {prop} from 'ramda';
 
 export class SpyneChannelLifecycle extends Channel {
   /**
@@ -30,7 +29,7 @@ export class SpyneChannelLifecycle extends Channel {
   }
 
   onViewStreamInfo(obj) {
-    let {data, action, srcElement} = obj;
+    let {action, srcElement} = obj;
     let payload = srcElement;
     payload['action'] = action;
     this.onSendEvent(action, payload);

@@ -1,5 +1,3 @@
-// import Spyne from '../spyne';
-import { arrFromMapKeys } from '../utils/frp-tools';
 import {SpyneAppProperties} from '../utils/spyne-app-properties';
 import {compose, path, is} from 'ramda';
 const Observable = require('rxjs');

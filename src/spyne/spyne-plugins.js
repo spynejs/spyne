@@ -1,5 +1,5 @@
-import {SpyneApp, ViewStream, DomElement, SpyneAppProperties} from './spyne';
-import {prop, path, is, clone, mergeRight, pathSatisfies} from 'ramda';
+import {SpyneApp, DomElement, SpyneAppProperties} from './spyne';
+import {is, clone, pathSatisfies} from 'ramda';
 export class SpynePlugin {
 
   constructor(props={}) {
@@ -41,23 +41,21 @@ export class SpynePlugin {
       traits = [traits];
     }
     const addTrait=(TraitClass)=>{
-      new TraitClass(this);
+      return new TraitClass(this);
     };
 
     traits.forEach(addTrait);
-
 
   }
 
 
   onBeforeRegistered(){
     this.props.pluginName = this.props.name;
-    //this.props.config = path(['Spyne', 'config', 'plugins', this.props.name], window);
     this.props.config = SpyneAppProperties.getPluginConfigByPluginName(this.props.pluginName);
   }
 
   static mergeDefaultConfig(config={}, defaultConfig=this.defaultConfig()){
-    return Object.assign(defaultConfig, config);z
+    return Object.assign(defaultConfig, config);
   }
 
 
@@ -73,32 +71,16 @@ export class SpynePlugin {
 
 
   static getSpyneApp(name, config){
-   // const win = window || {};
-   // let spyneApp = prop('Spyne', win) ;
-   // const spyneInitialized = typeof(spyneApp) === 'object';
-    //console.log('spyne app is ',{spyneApp, spyneInitialized}, typeof(spyneApp));
-
-   // spyneApp = spyneInitialized === true ? spyneApp : new spyneApp();
     if(SpyneAppProperties.initialized===false){
       SpyneApp.init()
     }
 
-
     SpyneAppProperties.addPluginConfig(name, config);
 
-   /*  const updateConfig = SpynePlugin.updateSpyneConfig(spyneApp, name, config);
-
-     if(updateConfig===false){
-       return false;
-     }*/
-
-   // spyneApp.config.plugins[name] = config;
-    //return spyneApp;
   }
 
   static updateSpyneConfig(spyneApp, pluginName, pluginConfig){
     const pathExists = pathSatisfies(is(Object), ['config', 'plugins', pluginName])(spyneApp);
-   // console.log('path exists ',{pathExists}, spyneApp.config.plugins[pluginName])
 
     if (pathExists===true){
       if (spyneApp.config.debug===true) {

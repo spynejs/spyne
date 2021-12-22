@@ -1,7 +1,6 @@
 import { fromEventPattern } from 'rxjs';
-import {last, mapObjIndexed, flatten, clone, pick, prop, propOr, pickAll, path, equals, compose, keys, filter, propEq, uniq, map, __, chain,is, includes, fromPairs, reject, mergeDeepRight, mergeRight, reverse, test, omit, reduceRight, nth, toPairs, values} from 'ramda';
+import {last, flatten, clone, pick, prop, pickAll, path, equals, compose, keys, filter, propEq, uniq, map, __, chain,is, includes, fromPairs, reject, mergeDeepRight, mergeRight, test, toPairs, values} from 'ramda';
 import {SpyneUtilsChannelRouteUrl} from './spyne-utils-channel-route-url';
-import {RouteDataForTests} from '../../tests/mocks/utils-data';
 
 export class SpyneUtilsChannelRoute {
   constructor() {
@@ -102,7 +101,7 @@ export class SpyneUtilsChannelRoute {
     // create href and check to see if need to convert to hash href links
     const getHREF = (obj)=>{
       const santizeHREF = str => {
-        const hrefRE = /^(.*\/)([\w\-]*\/?)(.*)$/gm
+        const hrefRE = /^(.*\/)([\w-]*\/?)(.*)$/gm
         //const hrefRE = /^(.*\/)([\w-]*)(.*)$/gm;
        str = str.replace(hrefRE, "$1$2");
        // str = String(str).replace('^$', "");
@@ -119,7 +118,7 @@ export class SpyneUtilsChannelRoute {
 
 
     // test whether to use key or val
-    const isValidStrRE = /^([A-Za-z0-9_\-])+$/m;
+    const isValidStrRE = /^([A-Za-z0-9_-])+$/m;
 
     const createInitialValFn = (accMain=[], routePathObj, objAcc={})=>{
       let {routeName} = routePathObj;
