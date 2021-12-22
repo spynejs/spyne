@@ -6,6 +6,26 @@ const isIOS = () => {
   return ios === true;
 };
 
+
+const delayCall = async(fn, time)=>{
+
+  function sleep (ms) {
+    return new Promise(resolve => setTimeout(resolve, ms))
+  }
+
+  const timeoutHandler = async() => {
+    await sleep(1);
+    window.requestAnimationFrame(fn);
+  }
+
+  window.setTimeout(timeoutHandler, time)
+
+
+}
+
+
+
+
 const getConstructorName = (obj) => {
   if (obj.constructor.name !== undefined) {
     return obj.constructor.name;
@@ -142,4 +162,4 @@ const pullParams =    (str) => str.replace(routeRE, '$4');
 const pullTranslateX = str => str.replace(/^(matrix)(.*\d*,)(.*\d*,)(.*\d*,)(.*\d*,)(.*\d*)(,.*)/, '$6');
 const pullTranslateY = str => str.replace(/^(matrix)(.*\d*,)(.*\d*,)(.*\d*,)(.*\d*,)(.*\d*,)(.*\d)(.*)/, '$7');
 const pullTranslateYFromHeader = str => str.replace(/^(transform: matrix)(.*\d*,)(.*\d*,)(.*\d*,)(.*\d*,)(.*\d*)(\).*;)/, '$6');
-export { getConstructorName, arrFromMapKeys, getAllMethodNames, findStrOrRegexMatchStr, findStrFromRegexArr, checkIfObjIsNotEmptyOrNil, isIOS, pullRouteInfo, pullTranslateYFromHeader, pullSlashFromPath, pullHashAndSlashFromPath, closest, pullTranslateY, pullTranslateX, pullMainRoute, pullParams, right, left, fromNullable, findInObj, ifNilThenUpdate, removeSlashes, subscribeFn, convertDomStringMapToObj };
+export { getConstructorName, arrFromMapKeys, getAllMethodNames, findStrOrRegexMatchStr, findStrFromRegexArr, checkIfObjIsNotEmptyOrNil, isIOS, pullRouteInfo, pullTranslateYFromHeader, pullSlashFromPath, pullHashAndSlashFromPath, closest, pullTranslateY, pullTranslateX, pullMainRoute, pullParams, right, left, fromNullable, findInObj, ifNilThenUpdate, removeSlashes, subscribeFn, convertDomStringMapToObj, delayCall };

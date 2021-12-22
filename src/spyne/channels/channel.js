@@ -1,6 +1,6 @@
 import { registeredStreamNames } from './channels-config';
 import { ChannelPayload } from './channel-payload-class';
-import { ChannelPayloadFilter} from '../utils/channel-payload-filter';
+import {SpyneAppProperties} from '../utils/spyne-app-properties';
 import {RouteChannelUpdater} from '../utils/route-channel-updater';
 import { ReplaySubject, Subject } from 'rxjs';
 import {filter} from 'rxjs/operators';
@@ -18,10 +18,10 @@ import {
   always,
   fromPairs,
   path,
- assocPath,
+  isEmpty,
   equals,
   prop,
-  apply,
+  propEq
 } from 'ramda';
 const rMap = require('ramda').map;
 
@@ -71,21 +71,28 @@ export class Channel {
     this.addRegisteredActions.bind(this);
     this.createChannelActionsObj(CHANNEL_NAME, props.extendedActionsArr);
     props.name = CHANNEL_NAME;
+    props.defaultActions = props.data!==undefined ? [`${props.name}_EVENT`] : [];
     this.props = props;
     this.props.isRegistered = false;
     this.props.isProxy = this.props.isProxy === undefined ? false : this.props.isProxy;
-    this.props.sendCachedPayload = this.props.sendCachedPayload === undefined ? false : this.props.sendCachedPayload;
+    const defaultCachedPayloadBool = this.props['data']!==undefined;
+    this.props.sendCachedPayload = this.props.sendCachedPayload === undefined ? defaultCachedPayloadBool : this.props.sendCachedPayload;
     this.sendPayloadToRouteChannel = new RouteChannelUpdater(this);
     this.createChannelActionMethods();
-    this.streamsController = window.Spyne.channels;// getGlobalParam('streamsController');
+    this.streamsController = SpyneAppProperties.channelsMap;
     let observer$ = this.getMainObserver();
-
+    this.checkForPersistentDataMode = Channel.checkForPersistentDataMode.bind(this);
     this.observer$ = this.props['observer'] = observer$;
     let dispatcherStream$ = this.streamsController.getStream('DISPATCHER');
-    dispatcherStream$.subscribe((val) => this.onReceivedObservable(val));
+    const payloadPredByChannelName = propEq('name', props.name)
+    dispatcherStream$.pipe(filter(payloadPredByChannelName)).subscribe((val) => this.onReceivedObservable(val));
   }
 
   getMainObserver() {
+    if (this.streamsController === undefined){
+      console.warn(`Spyne Warning: The following channel, ${this.props.name}, appears to be registered before Spyne has been initialized.`)
+    }
+
     let proxyExists = this.streamsController.testStream(this.props.name);
 
     if (proxyExists === true) {
@@ -109,7 +116,13 @@ export class Channel {
    * <p>This method is empty and is called as soon as the Channel has been registered.</p>
    * <p>Tasks such as subscribing to other channels, and sending initial payloads can be added here.</p>
    */
-  onRegistered(){
+  onRegistered(props=this.props){
+      if(props.data!==undefined){
+        const action = Object.keys(this.channelActions)[0];
+          //console.log("CHANNELS ACTIONS IS ",this.channelActions);
+        //Object(this.channelActions).keys[0];
+        this.sendChannelPayload(action, props.data);
+      }
 
   }
 
@@ -136,7 +149,7 @@ export class Channel {
         traits = [traits];
       }
       const addTrait=(TraitClass)=>{
-        new TraitClass(this);
+        return new TraitClass(this);
       };
 
       traits.forEach(addTrait);
@@ -151,10 +164,37 @@ export class Channel {
   initializeStream() {
     this.checkForTraits();
     this.onChannelInitialized();
+    this.checkForPersistentDataMode();
     this.onRegistered();
     this.props.isRegistered = true;
 
 
+  }
+
+  static checkForPersistentDataMode(props=this.props, actionsObj=this.channelActions){
+    const actionsObjIsEmpty = isEmpty(actionsObj);
+    const dataIsAdded = prop('data', props) !== undefined;
+    const autoSetToCachedPayload = actionsObjIsEmpty === true && dataIsAdded === true;
+    const setDefaultActionsObj = ()=>{
+      const {name} = props;
+      const actionStr = `${name}_EVENT`;
+      return {
+        [actionStr] : actionStr
+      }
+    }
+
+    if (autoSetToCachedPayload){
+      props.sendCachedPayload = true;
+      actionsObj = setDefaultActionsObj();
+
+      if (this.channelActions!==undefined){
+        this.channelActions = actionsObj;
+      }
+    }
+
+
+    //console.log("PROPS IS ",{actionsObjIsEmpty, dataIsAdded, props, actionsObj}, this.channelActions)
+    return {props, actionsObj};
   }
 
   setTrace(bool) {
@@ -219,7 +259,11 @@ export class Channel {
    *
    */
   addRegisteredActions() {
-    return [];
+    let arr = []
+    if (path(['props','data'], this)){
+      arr = [`${this.props.name}_EVENT`];
+    }
+    return arr;
   }
 
   onReceivedObservable(obj) {
@@ -356,24 +400,6 @@ export class Channel {
     return fn(CHANNEL_NAME);
   }
 
-  /**
-   *
-   * Wraps window.setTimeout with a check to see if "this" ViewStream element and its props property still exists
-   * @property {function} fn - = 'function'; The local method that is to be called.
-   * @property {number} ms - = 0;  The time, in milleseconds, for the timeout.
-   * @property {boolean} bind - = false;  When true, will bind the method to 'this'.
-   *
-   */
-
-  setTimeout(fn, ms=0, bind=false){
-    const timeoutMethod = (...args)=>{
-      if (this!==undefined && this.props!==undefined){
-        const methodFn = bind===true ? fn.bind(this) : fn;
-        apply(methodFn, args);
-      }
-    }
-    window.setTimeout(timeoutMethod, ms);
-  }
 
 
 

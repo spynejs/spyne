@@ -11,3 +11,4 @@ src/assets/media
 coverage/*
 lib
 !lib/spyne*.js
+dist/

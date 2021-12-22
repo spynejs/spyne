@@ -2,7 +2,6 @@ import { from } from 'rxjs';
 import { flatMap, map, publish, tap } from 'rxjs/operators';
 import {compose, prop, defaultTo, over, lensProp, has, propEq, when, propIs, allPass, assoc, pick, mergeDeepRight} from 'ramda';
 export class ChannelFetchUtil {
-// METHOD GET POST PUT PATCH DELETE
   /**
    * @module ChannelFetchUtil
    * @type util
@@ -49,7 +48,7 @@ export class ChannelFetchUtil {
 
 
   constructor(options, subscriber, testMode) {
-    // console.log('url ',url,options);
+
     const testSubscriber = (p) => console.log('FETCH RETURNED ', p);
 
     this._mapFn = ChannelFetchUtil.setMapFn(options);

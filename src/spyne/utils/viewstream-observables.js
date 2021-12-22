@@ -65,12 +65,11 @@ export class ViewStreamObservable {
 
     const raw$ =  obs$
       .pipe(filter((payload) => payload !== undefined && payload.action !== undefined));
-    // .filter(p => p.$dir !== undefined)
-    // .do(p => console.log('payload : ', p.$dir, p));
+
     const toInternal$ = obs$.pipe(filter(filterInternal), map(addInternalfrom$));
     const toParent$ = obs$.pipe(filter(filterParent), map(addParentfrom$));
     const toChild$ = obs$.pipe(filter(filterChild), map(addChildfrom$));
-    // const upObs$ = obs$.do(p => console.log('UP: ', p));
+
     const streamObj = {
       parent: toParent$,
       internal: toInternal$,

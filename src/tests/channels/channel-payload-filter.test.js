@@ -117,9 +117,10 @@ describe('should test channel payload filters parameter configuration', () => {
 describe('should test channel payload filters boolean correctness', ()=>{
 
   const liSel = "#xqdlqmr";
-
+  //const spyneApp = SpyneApp;
 
   beforeEach(function(){
+    SpyneApp.init({debug:true}, true)
 
     const liElTmpl = `
      <li class="page-card page-menu-4-card" id="xqdlqmr" name="PageCardView" data-vsid="xqdlqmr"><a href="/menu-3/sub-menu-4" data-channel="ROUTE" data-event-prevent-default="true" data-topic-id="sub-menu-2" data-nav-level="2">
@@ -238,9 +239,8 @@ describe('it should test channel payload filter with data packer ',()=>{
 
   const liSel = "#xqdlqmr";
 
-
   beforeEach(function(){
-    const spyneApp = new SpyneApp({debug:true})
+    SpyneApp.init({debug:true}, true)
 
     const liElTmpl = `
      <li class="page-card page-menu-4-card" id="xqdlqmr" name="PageCardView" data-vsid="xqdlqmr"><a href="/menu-3/sub-menu-4" data-channel="ROUTE" data-event-prevent-default="true" data-topic-id="sub-menu-2" data-nav-level="2">
@@ -290,32 +290,7 @@ describe('it should test channel payload filter with data packer ',()=>{
   })
 
 
-  it('should test unpacked channel payload ', ()=>{
 
-
-
-        const {action, channelName, srcElement, payload} = ChannelPayloadToTestFilters;
-        //console.log('spyne is is ',{action, channelName, srcElement, payload});
-        const re = /menu-\d/;
-        const actionCompare = "CHANNEL_ROUTE_CHANGE_EVENT";
-        const payloadCompare =  R.compose(R.test(re), R.path(['routeData', 'pageId']));
-        const cpFilter = new ChannelPayloadFilter({payload:payloadCompare, action:actionCompare});
-
-
-
-        const channelPayload = new ChannelPayload(channelName, action, payload, srcElement, {});
-        const payloadPacket = window.Spyne.createDataPacket(channelPayload, ['channelName', 'action']);
-
-
-        const payloadBool = cpFilter(payloadPacket);
-        payloadPacket.unPacked = true;
-
-        //console.log('payload unpacked base is ',{payloadBool}, payloadPacket);
-
-        return true;
-
-
-  })
 
 
 

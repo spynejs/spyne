@@ -1,12 +1,7 @@
-// import {createElement} from '../utils/dom-methods';
 import { baseCoreMixins } from '../utils/mixins/base-core-mixins';
 import { DomElementTemplate } from './dom-element-template';
 import { deepMerge } from '../utils/deep-merge';
-// import {DomElementTemplate} from './template-renderer';
-
 import {is, defaultTo, pick, mapObjIndexed, forEachObjIndexed, pipe} from 'ramda';
-//import {ViewStreamElement} from './view-stream-element';
-//import {getConstructorName} from '../utils/frp-tools';
 
 class DomElement {
   /**
@@ -31,16 +26,10 @@ class DomElement {
    */
 
   constructor(props={}) {
-    //let isSimpleView = both(is(String), complement(isEmpty))(attributes);
-   // if (isSimpleView === true) {
-    //  data = attributes;
-      // attributes = {};
 
-   // }
     const checkDefault = (dflt, val)=>defaultTo(dflt)(val);
 
     props.tagName = checkDefault('div', props.tagName);
-
 
     props.attributes = props.attributes!==undefined ? props.attributes : this.getDomAttributes(props);
     props.attrs = this.updateAttrs(props.attributes);
@@ -48,18 +37,10 @@ class DomElement {
     props.fragment =  document.createDocumentFragment()
     this.props = props;
 
-    //this.setProp('tagName', tagName);
-    //this.setProp('attrs', this.updateAttrs(attributes));
-    //this.setProp('data', data);
-   // this.setProp('template', template);
-
-   // this.setProp('fragment', document.createDocumentFragment());
-
     this.addMixins();
   }
 
   setProp(key, val) {
-    //this.props.set(key, val);
     this.props[key] = val;
   }
 

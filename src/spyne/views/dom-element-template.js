@@ -1,5 +1,5 @@
-import {includes, __, ifElse, compose,path,split,prop, reject, is, defaultTo, isNil, isEmpty} from 'ramda';
-import {testDomTemplateForTableTags} from "../utils/viewstream-dom-utils";
+import {includes, __, ifElse, path, prop, reject, is, isNil, isEmpty} from 'ramda';
+
 /**
  * @module DomElTemplate
  * @type util
@@ -136,9 +136,6 @@ export class DomElementTemplate {
   constructor(template, data) {
     this.template = this.formatTemplate(template);
 
-    //const tempL = `template-${Math.floor(Math.random()*99999)}`
-   // this.tempL=tempL
-
     const checkForArrayData = ()=>{
       if (is(Array, data) === true) {
         data = {spyneData:data};
@@ -206,8 +203,6 @@ export class DomElementTemplate {
 
 
   renderDocFrag() {
-
-
     const html = this.finalArr.join('');
     const isTableSubTag =   /^([^>]*?)(<){1}(\b)(thead|col|colgroup|tbody|td|tfoot|tr|th)(\b)([^\0]*)$/.test(html);
     const el = isTableSubTag ? html : document.createRange().createContextualFragment(html);
