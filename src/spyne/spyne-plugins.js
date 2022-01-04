@@ -32,12 +32,15 @@ export class SpynePlugin {
 
   static getSpyneApp(name, config){
     if(SpyneAppProperties.initialized===false){
-      SpyneApp.init()
+
+      console.warn(`Spyne Warning: Unable to install plugin, ${name}! SpyneApp has not been initialized!`);
+       //SpyneApp.init()
+    } else{
+      SpyneAppProperties.addPluginConfig(name, config);
     }
 
-    SpyneAppProperties.addPluginConfig(name, config);
-
   }
+
 
   static updateSpyneConfig(spyneApp, pluginName, pluginConfig){
     const pathExists = pathSatisfies(is(Object), ['config', 'plugins', pluginName])(spyneApp);
