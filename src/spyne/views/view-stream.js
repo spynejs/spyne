@@ -445,10 +445,11 @@ export class ViewStream {
     const elIsRendered = el => document.body.contains(el);
     const elIsReadyBool = propSatisfies(
         allPass([elIsRendered, elIsDomElement]), 'el');
-
     if (elIsReadyBool(this.props)) {
       this.updatePropsToMatchEl();
       this.postRender();
+    } else if(this.props.el === null){
+      console.error(`Spyne Error: The defined element for this ViewStream instance, ${this.constructor.name}, appears to not exist.`)
     }
   }
 
