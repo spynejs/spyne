@@ -55,13 +55,12 @@ export class SpyneUtilsChannelRoute {
           return obj;
         };
 
-        const createPred = p => compose(keys, filter(propEq(p, true)));
+        const createPred = p => compose(keys, filter(propEq(true, p)));
 
         const getPropsState = compose(map(compareProps), uniq, chain(keys))([obj1, obj2]);
         let pathsChanged = chain(createPred('changed'), getPropsState);
         let pathsAdded = chain(createPred('added'), getPropsState);
         let pathsRemoved = chain(createPred('removed'), getPropsState);
-        // console.log("GET KEYS ", pathsChanged);
         obj1 = obj2;
         return { pathsAdded, pathsRemoved, pathsChanged };
       },

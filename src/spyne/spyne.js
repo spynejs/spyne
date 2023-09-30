@@ -14,6 +14,7 @@ import { ChannelPayload } from './channels/channel-payload-class';
 import {ChannelPayloadFilter} from './utils/channel-payload-filter';
 import {SpynePlugin} from './spyne-plugins';
 import { deepMerge } from './utils/deep-merge';
+import {safeClone} from './utils/safe-clone';
 import {SpyneAppProperties} from './utils/spyne-app-properties';
 import {SpyneApp} from './spyne-app';
 
@@ -35,5 +36,6 @@ export {
   SpyneApp,
   SpyneAppProperties,
   SpynePlugin,
-  deepMerge
+  deepMerge,
+  safeClone
 };

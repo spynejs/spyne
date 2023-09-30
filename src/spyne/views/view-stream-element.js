@@ -155,9 +155,17 @@ export class ViewStreamElement {
     let container =  isNil(d.query) ? d.node : d.query;
     let prepend = (node, item) => node.insertBefore(item, node.firstChild);
     let append = (node, item) => node.appendChild(item);
+    let after = (node, item) => node.after(item);
+
+    const defaultFn = prepend;
+    const attachTypeHash = {
+      'appendChild' : append,
+      'after' : after
+    }
     // DETERMINE WHETHER TO USE APPEND OR PREPEND
     // ON CONNECTING DOM ITEMS TO EACH OTHER
-    let attachFunc = d.attachType === 'appendChild' ? append : prepend;
+    //let attachFunc = d.attachType === 'appendChild' ? append : prepend;
+    const attachFunc = attachTypeHash[d.attachType] || defaultFn;
     attachFunc(container, this.domItem.render());
     this.setAnimateIn(d);
   }

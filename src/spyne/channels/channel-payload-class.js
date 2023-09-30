@@ -12,6 +12,7 @@ import {
   is
 } from 'ramda';
 import {SpyneAppProperties} from '../utils/spyne-app-properties';
+import {safeClone} from '../utils/safe-clone';
 
 export class ChannelPayload {
   /**
@@ -76,15 +77,15 @@ export class ChannelPayload {
 
 
 
-    channelPayloadItemObj.clone = () => clone(mergeAll([
-        {payload:ChannelPayload.deepClone(channelPayloadItemObj.payload)},
+    channelPayloadItemObj.clone = () => mergeAll([
+        {payload:safeClone(channelPayloadItemObj.payload)},
       channelPayloadItemObj.payload,
-        { channel },
-        { event: event },
+        { channel: clone(channel) },
+        { event: clone(event) },
         {srcElement: srcElement},
-                channelPayloadItemObj.srcElement, {
-        action: channelPayloadItemObj.action }
-         ]));
+                clone(channelPayloadItemObj.srcElement), {
+        action: clone(channelPayloadItemObj.action) }
+         ]);
 
 
 

@@ -188,7 +188,7 @@ export class SpyneUtilsChannelRouteUrl {
     };
 
     const checkForEitherStrOrReMatch =  either(
-      propEq('str', mainStr), compose(test(__, mainStr), prop('re'))
+      propEq(mainStr, 'str'), compose(test(__, mainStr), prop('re'))
     );
 
     const findMatchIndex = compose(findLastIndex(equals(true)), map(checkForEitherStrOrReMatch), map(createStrRegexTest), map(checkForEmpty));

@@ -1,4 +1,5 @@
 import {SpyneAppProperties} from '../utils/spyne-app-properties';
+import {safeClone} from '../utils/safe-clone';
 import { gc } from '../utils/gc';
 import {
   compose,
@@ -36,7 +37,8 @@ export class ViewStreamPayload {
 
   sendToDirectorStream(payload) {
     let directorStream$ = SpyneAppProperties.channelsMap.getStream('DISPATCHER');
-    const frozenPayload = ViewStreamPayload.deepClone(payload);
+    const frozenPayload = safeClone(payload);
+    //console.log("VS PAYLOAD ",frozenPayload);
     directorStream$.next(frozenPayload);
     payload = undefined;
 

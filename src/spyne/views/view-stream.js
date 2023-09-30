@@ -1,6 +1,7 @@
 import { baseCoreMixins } from '../utils/mixins/base-core-mixins';
 import {SpyneAppProperties} from '../utils/spyne-app-properties';
 import { deepMerge } from '../utils/deep-merge';
+import {safeClone} from '../utils/safe-clone';
 import {
   findStrOrRegexMatchStr,
   getConstructorName
@@ -891,6 +892,13 @@ export class ViewStream {
     this.renderViewAndAttachToDom(node, 'dom', 'appendChild');
   }
 
+  appendToDomAfter(node){
+    if (this.props.el !== undefined){
+      console.warn(`Spyne Warning: The ViewStream, ${this.props.name}, has an element, ${this.props.el}, that is already rendered and does not need to be appendedToDomAfter. This may create unsusual side effects!`)
+    }
+    this.renderViewAndAttachToDom(node, 'dom', 'after');
+  }
+
   /**
    * Prepends the current ViewStream object to an existing dom element.
    * @param {HTMLElement} node the ViewStream child that is to be attached.
@@ -930,6 +938,10 @@ export class ViewStream {
    * */
   appendView(v, query) {
     this.exchangeViewsWithChild(v, this.setAttachData('appendChild', query));
+  }
+
+  appendViewAfter(v, query) {
+    this.exchangeViewsWithChild(v, this.setAttachData('after', query));
   }
 
   /**
@@ -1287,7 +1299,7 @@ export class ViewStream {
       if (/CHANNEL_LIFECYCLE/.test(action)===false){
         Object.defineProperties(data, {
           payload: {
-            get: ()=> clone(pl)
+            get: ()=> safeClone(pl)
 
           }
         })

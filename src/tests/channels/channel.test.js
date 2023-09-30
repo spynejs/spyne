@@ -31,8 +31,14 @@ describe('should test channel instance', () => {
     expect(props.sendCachedPayload).to.be.true;
     expect(actionsObj).to.deep.equal(finalActionsObj);
 
+  })
 
-
+  it('should update SpyneAppProperties doNotTrackList if doNotTrack is true', ()=>{
+    const channelName="CHANNEL_MY_TEST_CHANNEL";
+    const doNotTrack = true;
+    Channel.checkForNotTrackFlag({channelName, doNotTrack});
+    const untrackedChannelsArr = SpyneAppProperties.getUntrackedChannelsList()
+    expect(untrackedChannelsArr).to.deep.eq([channelName]);
   })
 
 });

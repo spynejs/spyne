@@ -5,9 +5,11 @@ import {path} from 'ramda';
 
 let _config;
 let _channels;
-let _channelsMap
+let _channelsMap;
 let _initialized = false;
 let _debug = true;
+const _doNotTrackChannelsArr = [];
+const _proxiesMap = new Map();;
 
 const _spynePluginMethods = new SpynePluginsMethods();
 
@@ -160,6 +162,27 @@ class SpyneAppPropertiesClass{
     }
 
 
+  }
+
+
+
+  doNotTrackChannel(channelName){
+    _doNotTrackChannelsArr.push(channelName);
+  }
+
+  getUntrackedChannelsList(){
+    return _doNotTrackChannelsArr;
+  }
+
+
+  registerProxyReviver(name, method){
+    _proxiesMap.set(name, method);
+    //console.log("REGISTERD PROXY REVIVER",_proxiesMap, _proxiesMap.get(name));
+
+  }
+
+  getProxyReviver(proxyName){
+    return _proxiesMap.get(proxyName);
   }
 
   getPluginConfigByPluginName(pluginName){

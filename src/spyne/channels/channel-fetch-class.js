@@ -100,7 +100,7 @@ export class ChannelFetch extends Channel {
 
   startFetch(options = {}, subscriber = this.onFetchReturned.bind(this)) {
     let fetchProps = this.consolidateAllFetchProps(options);
-    return new ChannelFetchUtil(fetchProps, subscriber);
+    return new ChannelFetchUtil(fetchProps, subscriber, false, this.props.name);
   }
 
   onFetchUpdate(evt) {
@@ -113,7 +113,9 @@ export class ChannelFetch extends Channel {
   }
 
   createChannelPayloadItem(payload, action = `${this.props.name}_DATA_EVENT`) {
-    this.sendChannelPayload(action, payload);
+    const {name, sendCachedPayload, url} = this.props;
+    const srcElement = {name, sendCachedPayload, url};
+    this.sendChannelPayload(action, payload, srcElement);
   }
 
   getPropsForFetch(evt) {

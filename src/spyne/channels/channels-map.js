@@ -45,8 +45,8 @@ export class ChannelsMap {
 
   static listRegisteredChannels(showOnlyProxies = false) {
     let proxyMap = this.getChannelsList();
-    let rejectProxyFn = reject(propEq('val', 'ChannelProxy'));
-    let filterProxyFn = filter(propEq('val', 'ChannelProxy'));
+    let rejectProxyFn = reject(propEq('ChannelProxy', 'val'));
+    let filterProxyFn = filter(propEq('ChannelProxy', 'val' ));
     let fn = showOnlyProxies === true ? filterProxyFn : rejectProxyFn;
     let removedProxyArr = fn(proxyMap);
     return pluck(['key'], removedProxyArr);
@@ -57,7 +57,7 @@ export class ChannelsMap {
 
   checkForMissingChannels() {
     let proxyMap = this.getChannelsList();
-    let filterProxyFn = filter(propEq('val', 'ChannelProxy'));
+    let filterProxyFn = filter(propEq('ChannelProxy', 'val'));
     let filterProxyArr = filterProxyFn(proxyMap);
 
     if (filterProxyArr.length >= 1) {

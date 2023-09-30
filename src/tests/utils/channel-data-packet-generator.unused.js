@@ -39,7 +39,7 @@ describe('should test the ChannelDataPacketGenerator', () => {
     map.set(label, ChannelPayloadToTestFilters);
 
     const filterGateway = ChannelDataPacketGenerator.createFilterGateway(label, map);
-    const pred = R.propEq('action', 'CHANNEL_ROUTE_CHANGE_EVENT');
+    const pred = R.propEq('CHANNEL_ROUTE_CHANGE_EVENT', 'action');
 
     const isCorrectAction = filterGateway(pred)
 

@@ -84,7 +84,7 @@ export class Channel {
     this.checkForPersistentDataMode = Channel.checkForPersistentDataMode.bind(this);
     this.observer$ = this.props['observer'] = observer$;
     let dispatcherStream$ = this.streamsController.getStream('DISPATCHER');
-    const payloadPredByChannelName = propEq('name', props.name)
+    const payloadPredByChannelName = propEq(props.name, 'name')
     dispatcherStream$.pipe(filter(payloadPredByChannelName)).subscribe((val) => this.onReceivedObservable(val));
   }
 
@@ -295,7 +295,7 @@ export class Channel {
     //console.log("INCOMING ",{action, payload, srcElement}, {obj});
     const mergeProps = (d) => mergeAll([d, { action: prop('action', d) }, prop('payload', d), prop('srcElement', d)]);
     let dataObj = obsVal => ({
-      props: () => mergeProps(obj.data),
+      clone: () => mergeProps(obj.data),
       action, payload, srcElement,
       event: obsVal
     });
@@ -401,6 +401,13 @@ export class Channel {
   }
 
 
+  static checkForNotTrackFlag(props={}){
+    if (props.doNotTrack === true){
+      SpyneAppProperties.doNotTrackChannel(props.channelName);
+    }
+
+
+  }
 
 
 

@@ -64,6 +64,7 @@ describe('it should compare two objects for updated keys', () => {
 
   it('first comparison should be done against empty obj', () => {
     let compareStart = checkUpdatedKeys.compare(obj1);
+    console.log("compare start is ",compareStart);
     expect(compareStart.pathsChanged).to.deep.equal(['pageId', 'section']);
   });
 

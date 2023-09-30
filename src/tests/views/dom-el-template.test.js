@@ -31,7 +31,7 @@ describe('DomElTemplate', () => {
     let data = {dog: {
         sound: 'woof'
       }};
-    let template = "<h1>The dog says {{#dog}}{{sound}}{{/dog}}";
+    let template = "<h1>The dog says {{#dog}}{{sound}}{{/dog}}</h1>";
     let domElTemplate = new DomElementTemplate(template, data);
     let render = domElTemplate.renderDocFrag();
     expect(render.firstElementChild.innerText).to.equal('The dog says woof');
@@ -162,6 +162,23 @@ describe('DomElTemplate', () => {
     // expect(lastItemTxt).to.equal('Welcome, john.');
     return true;
   });
+
+  it('DomElementTemplate should render index string value of an array',() =>{
+    const article = ["Usu at illum porro audire. Nam at ubique latine, vidit ocurreret pri ea, cu elitr nonumes mediocritatem nam.",
+      "Eu delenit meliore graecis sea. Sit id ubique commune, ius ne recusabo oportere similique, error putant usu ei.",
+      "Nam mutat saperet detracto eu, te ubique utamur aliquando pro. Ut verear probatus sea. Porro sonet euripidis ex est.",
+      "Mucius platonem eu per. Te utroque persecuti pro, error verterem scribentur no est.",
+      "An pro nibh salutatus, ea rebum aeterno complectitur has."];
+
+    const template = `<li>{{article.1}}</li>`;
+    const data = {article};
+    const domElTemplate = new DomElementTemplate(template, data);
+
+    const result = domElTemplate.renderToString();
+
+    expect(result).to.eq("<li>Eu delenit meliore graecis sea. Sit id ubique commune, ius ne recusabo oportere similique, error putant usu ei.</li>");
+
+  })
 
 
 

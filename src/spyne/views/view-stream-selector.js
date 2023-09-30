@@ -33,7 +33,7 @@ function testSelectors(cxt, str, verboseBool) {
   const elIsDomElement = compose(lte(0), defaultTo(-1),
       prop('nodeType'));
 
-  if (elIsDomElement(el) === false) {
+  if (el !== null && elIsDomElement(el) === false) {
     console.warn(`Spyne Warning: the el object is not a valid single element, ${el}`);
     return;
   }
@@ -52,18 +52,37 @@ function testSelectors(cxt, str, verboseBool) {
 
 function getNodeListArray(cxt, str, verboseBool=false) {
   let selector = str !== undefined ? `${cxt} ${str}` : cxt;
+  let isParent = false;
 
 
   const returnSelectorIfValid = (selector) => {
-        try { document.querySelectorAll(selector) } catch (e) { return [] }
-        return  document.querySelectorAll(selector);
+        let arr = [];
+        try {
+          arr = document.querySelectorAll(selector)
+        } catch (e) { arr = [] }
+        try {
+          isParent = document.querySelector(str) === document.querySelector(cxt);
+          if (isParent === true){
+            arr =  [document.querySelector(str)];
+          }
+        } catch(e){
+          //return [];
+        }
+        return  arr;// document.querySelectorAll(selector);
       };
 
 
+  const elArr =  returnSelectorIfValid(selector);
+
   if (verboseBool===true) {
-    testSelectors(cxt, str, verboseBool);
+    const mainSel = isParent === true ? 'body' : cxt;
+    testSelectors(mainSel, str, verboseBool);
   }
-  return returnSelectorIfValid(selector)
+
+  return elArr;
+
+
+
 }
 
 function setInlineCss(val, cxt, str) {
