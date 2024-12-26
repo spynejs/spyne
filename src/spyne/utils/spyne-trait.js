@@ -1,5 +1,5 @@
-import { getAllMethodNames } from './frp-tools';
-import {reject, curryN, __, map} from 'ramda';
+import { getAllMethodNames } from './frp-tools'
+import { reject, curryN, __, map } from 'ramda'
 
 export class SpyneTrait {
   /**
@@ -17,72 +17,72 @@ export class SpyneTrait {
    */
 
   constructor(parentContext, prefix = '', autoInit = true) {
-    this.parentContext = parentContext;
+    this.parentContext = parentContext
     this.omittedMethods = [
       'autoBinder',
       'initAutoBinder',
       'getEnhancerMethods',
       'checkForMalformedMethods',
-        'caller',
-        'arguments',
-      'bindParentViewStream'];
+      'caller',
+      'arguments',
+      'bindParentViewStream']
 
-    this.prefix = prefix;
+    this.prefix = prefix
 
     if (autoInit === true) {
-      this.autoBinder();
+      this.autoBinder()
     }
-    return this.allMethodsList;
+    return this.allMethodsList
   }
 
   initAutoBinder() {
-     this.autoBinder();
+    this.autoBinder()
   }
 
   getEnhancerMethods() {
-    return getAllMethodNames(this, this.omittedMethods);
+    return getAllMethodNames(this, this.omittedMethods)
   }
 
   checkForMalformedMethods(methodsArr) {
     if (this.prefix === '') {
-      console.warn(`SPYNE WARNING: The following SpyneTrait ${this.constructor.name} needs a prefix`);
-      return;
+      console.warn(`SPYNE WARNING: The following SpyneTrait ${this.constructor.name} needs a prefix`)
+      return
     }
-    //let reStr = `^(${this.prefix})(.*)$`;
-    //let re = new RegExp(reStr);
-    const hasPrefix = (str)=>str.indexOf(this.prefix)===0;
+    // let reStr = `^(${this.prefix})(.*)$`;
+    // let re = new RegExp(reStr);
+    const hasPrefix = (str) => str.indexOf(this.prefix) === 0
 
-    let malformedMethodsArr = reject(hasPrefix, methodsArr);
+    const malformedMethodsArr = reject(hasPrefix, methodsArr)
     if (malformedMethodsArr.length >= 1) {
-      let warningStr = `Spyne Warning: The following method(s) in ${this.constructor.name} require the prefix, "${this.prefix}": [${malformedMethodsArr.join(', ')}];`;
-      console.warn(warningStr);
+      const warningStr = `Spyne Warning: The following method(s) in ${this.constructor.name} require the prefix, "${this.prefix}": [${malformedMethodsArr.join(', ')}];`
+      console.warn(warningStr)
     }
   }
 
   bindParentViewStream(methodsObj, context) {
-    this.checkForMalformedMethods(methodsObj.allMethods);
-      let obj = {};
+    this.checkForMalformedMethods(methodsObj.allMethods)
+    const obj = {}
     const bindMethodsToParentViewStream = (str, isStatic = false) => {
-      let constructorType = isStatic === true ? this.constructor : this;
-      let propertyType = typeof (constructorType[str]);
+      const constructorType = isStatic === true ? this.constructor : this
+      const propertyType = typeof (constructorType[str])
       if (propertyType === 'function') {
-         obj[str] = context[str] = constructorType[str].bind(context);
+        obj[str] = context[str] = constructorType[str].bind(context)
       }
-    };
+    }
 
-    const bindCurry = curryN(2, bindMethodsToParentViewStream);
-    const bindStaticMethodsToParentViewStream = bindCurry(__, true);
+    const bindCurry = curryN(2, bindMethodsToParentViewStream)
+    const bindStaticMethodsToParentViewStream = bindCurry(__, true)
     // MAP STATIC METHODS
-    map(bindStaticMethodsToParentViewStream, methodsObj.staticMethods);
+    map(bindStaticMethodsToParentViewStream, methodsObj.staticMethods)
     // MAP MAIN METHODS
-    map(bindMethodsToParentViewStream, methodsObj.methods);
-    return obj;
+    map(bindMethodsToParentViewStream, methodsObj.methods)
+    return obj
   }
 
   autoBinder() {
-    let allMethods = this.getEnhancerMethods();
+    const allMethods = this.getEnhancerMethods()
     // console.log('all ',allMethods);
-    this.allMethodsList = this.bindParentViewStream(allMethods, this.parentContext);
-    return this.allMethodsList;
+    this.allMethodsList = this.bindParentViewStream(allMethods, this.parentContext)
+    return this.allMethodsList
   }
 }

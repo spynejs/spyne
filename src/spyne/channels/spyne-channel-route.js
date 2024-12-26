@@ -1,9 +1,9 @@
-import { Channel } from './channel';
-import { SpyneUtilsChannelRouteUrl } from '../utils/spyne-utils-channel-route-url';
-import { SpyneUtilsChannelRoute } from '../utils/spyne-utils-channel-route';
-import {SpyneAppProperties} from '../utils/spyne-app-properties';
-import { ReplaySubject, merge } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { Channel } from './channel'
+import { SpyneUtilsChannelRouteUrl } from '../utils/spyne-utils-channel-route-url'
+import { SpyneUtilsChannelRoute } from '../utils/spyne-utils-channel-route'
+import { SpyneAppProperties } from '../utils/spyne-app-properties'
+import { ReplaySubject, merge } from 'rxjs'
+import { map } from 'rxjs/operators'
 
 import {
   pick,
@@ -28,16 +28,16 @@ import {
   concat,
   when,
   complement,
-    reverse,
+  reverse,
   curryN,
   __,
   test,
   replace,
   toPairs,
   reduce
-} from 'ramda';
-const ramdaFilter = require('ramda').filter;
-const rMerge = require('ramda').mergeRight;
+  , filter as ramdaFilter, mergeRight as rMerge
+} from 'ramda'
+
 export class SpyneChannelRoute extends Channel {
   constructor(name = 'CHANNEL_ROUTE', props = {}) {
     /**
@@ -134,36 +134,35 @@ export class SpyneChannelRoute extends Channel {
      * @property {String} CHANNEL_NAME - = 'CHANNEL_ROUTE';
      *
      */
-    props.sendCachedPayload = true;
-    super('CHANNEL_ROUTE', props);
-    this.createChannelActionsObj();
-    this.routeConfigJson = this.getRouteConfig();
-    this.bindStaticMethods();
-    this.navToStream$ = new ReplaySubject(1);
-    this.observer$ = this.navToStream$.pipe(map(info => this.onMapNext(info)));
-    this.compareRouteKeywords = SpyneUtilsChannelRoute.compareRouteKeywords();
+    props.sendCachedPayload = true
+    super('CHANNEL_ROUTE', props)
+    this.createChannelActionsObj()
+    this.routeConfigJson = this.getRouteConfig()
+    this.bindStaticMethods()
+    this.navToStream$ = new ReplaySubject(1)
+    this.observer$ = this.navToStream$.pipe(map(info => this.onMapNext(info)))
+    this.compareRouteKeywords = SpyneUtilsChannelRoute.compareRouteKeywords()
   }
 
-  checkConfigForHash(){
+  checkConfigForHash() {
     // LEGACY CHECK TO SIMPLIFY CONFIG FOR HASH;
-    let isHashType = SpyneAppProperties.config.channels.ROUTE.type==='hash';
-    if (isHashType === true){
-      SpyneAppProperties.config.channels.ROUTE.type = 'slash';
-      SpyneAppProperties.config.channels.ROUTE.isHash = true;
+    const isHashType = SpyneAppProperties.config.channels.ROUTE.type === 'hash'
+    if (isHashType === true) {
+      SpyneAppProperties.config.channels.ROUTE.type = 'slash'
+      SpyneAppProperties.config.channels.ROUTE.isHash = true
     }
-
   }
 
   onRegistered() {
-    this.checkConfigForHash();
-    this.initStream();
+    this.checkConfigForHash()
+    this.initStream()
   }
 
   createChannelActionsObj() {
-    let arr = this.addRegisteredActions();
-    const converter = str => objOf(str, str);
-    let obj = mergeAll(chain(converter, arr));
-    this.channelActions = obj;
+    const arr = this.addRegisteredActions()
+    const converter = str => objOf(str, str)
+    const obj = mergeAll(chain(converter, arr))
+    this.channelActions = obj
   }
 
   addRegisteredActions() {
@@ -172,255 +171,247 @@ export class SpyneChannelRoute extends Channel {
       'CHANNEL_ROUTE_CHANGE_EVENT',
       'CHANNEL_ROUTE_CONFIG_UPDATED_EVENT',
       ['CHANNEL_ROUTE_UPDATE_CONFIG_EVENT', 'updateRouteConfig']
-    ];
+    ]
   }
 
-  updateRouteConfig(e){
+  updateRouteConfig(e) {
+    const newRoutesObj  = pick(['isHash', 'isHidden', 'routes', 'type'], e.payload)
 
-    const newRoutesObj  = pick(['isHash', 'isHidden', 'routes','type'], e.payload);
+    SpyneAppProperties.config.channels.ROUTE = mergeRight(SpyneAppProperties.config.channels.ROUTE, newRoutesObj)
 
-    SpyneAppProperties.config.channels.ROUTE =  mergeRight(SpyneAppProperties.config.channels.ROUTE, newRoutesObj);
+    SpyneAppProperties.conformRouteConfig()
 
+    const routeConfig = this.getRouteConfig()
+    const action = 'CHANNEL_ROUTE_CONFIG_UPDATED_EVENT'
 
-    SpyneAppProperties.conformRouteConfig();
+    this.routeConfigJson = routeConfig
+    this.bindStaticMethodsWithConfigData()
 
-
-     const routeConfig = this.getRouteConfig();
-     const action = 'CHANNEL_ROUTE_CONFIG_UPDATED_EVENT';
-
-    this.routeConfigJson = routeConfig;
-    this.bindStaticMethodsWithConfigData();
-
-
-    this.sendChannelPayload(action, routeConfig, {}, {}, this.navToStream$);
+    this.sendChannelPayload(action, routeConfig, {}, {}, this.navToStream$)
   }
 
   getRouteConfig() {
-    const spyneConfig = SpyneAppProperties.config;
-    let routeConfig = path(['channels', 'ROUTE'], spyneConfig);
+    const spyneConfig = SpyneAppProperties.config
+    const routeConfig = path(['channels', 'ROUTE'], spyneConfig)
     if (routeConfig.type === 'query') {
-      routeConfig.isHash = false;
+      routeConfig.isHash = false
     }
 
-    let arr = SpyneUtilsChannelRoute.flattenConfigObject(routeConfig.routes);
-    routeConfig['paramsArr'] = arr;
-    return routeConfig;
+    const arr = SpyneUtilsChannelRoute.flattenConfigObject(routeConfig.routes)
+    routeConfig.paramsArr = arr
+    return routeConfig
   }
 
   initStream() {
-    this.firstLoadStream$ = new ReplaySubject(1);
-      this.onIncomingDomEvent(undefined, this.routeConfigJson, '' + 'CHANNEL_ROUTE_DEEPLINK_EVENT');
+    this.firstLoadStream$ = new ReplaySubject(1)
+    this.onIncomingDomEvent(undefined, this.routeConfigJson, '' + 'CHANNEL_ROUTE_DEEPLINK_EVENT')
 
-    SpyneUtilsChannelRoute.createPopStateStream(this.onIncomingDomEvent.bind(this));
+    SpyneUtilsChannelRoute.createPopStateStream(this.onIncomingDomEvent.bind(this))
 
     this.observer$ = merge(this.firstLoadStream$,
-      this.navToStream$);
+      this.navToStream$)
   }
 
   onMapNext(data, firstLoaded = false) {
-    data['action'] = 'CHANNEL_ROUTE_CHANGE_EVENT';
-    return data;
+    data.action = 'CHANNEL_ROUTE_CHANGE_EVENT'
+    return data
   }
 
-  static removeSSID(payload){
-    const routeLens = lensProp(['routeData']);
-    const omitSSID = over(routeLens, omit(['vsid']));
-    return omitSSID(payload);;
+  static removeSSID(payload) {
+    const routeLens = lensProp(['routeData'])
+    const omitSSID = over(routeLens, omit(['vsid']))
+    return omitSSID(payload)
   }
 
   static onIncomingDomEvent(evt, config = this.routeConfigJson, actn) {
-    let action = actn !== undefined
+    const action = actn !== undefined
       ? actn
-      : this.channelActions.CHANNEL_ROUTE_CHANGE_EVENT;
+      : this.channelActions.CHANNEL_ROUTE_CHANGE_EVENT
 
     // CHECK IF THIS IS A HISTORY EVENT BY USING THE routeCount PROPERTY
-    let eventCount = path(['state', 'routeCount'], evt);
-    let isHistoryCount = is(Number, eventCount) === true;
-    let payload = this.getDataFromString(config, isHistoryCount);
-     if (isHistoryCount===true){
-       payload.routeCount = eventCount;
-     }
-     // ===============================================================
-
-    let keywordArrs = this.compareRouteKeywords.compare(payload.routeData, payload.paths);
-    payload = rMerge(payload, keywordArrs);
-      this.sendChannelPayload(action, payload, undefined, evt, this.navToStream$);
-
+    const eventCount = path(['state', 'routeCount'], evt)
+    const isHistoryCount = is(Number, eventCount) === true
+    let payload = this.getDataFromString(config, isHistoryCount)
+    if (isHistoryCount === true) {
+      payload.routeCount = eventCount
+    }
+    // ===============================================================
+    if (actn === 'CHANNEL_ROUTE_DEEPLINK_EVENT') {
+      payload.linksData = prop('routeDatasetsArr', config)
+    }
+    const keywordArrs = this.compareRouteKeywords.compare(payload.routeData, payload.paths)
+    payload = rMerge(payload, keywordArrs)
+    this.sendChannelPayload(action, payload, undefined, evt, this.navToStream$)
   }
 
   static checkForRouteParamsOverrides(payload) {
-    return payload;
+    return payload
   }
 
-  static checkForEventMethods(obs){
-    const re = /^(event)([A-Z].*)([A-Z].*)$/gm;
-    const getMethods = compose(ramdaFilter(test(re)), keys, prop('payload'));
-    const methodsArr = getMethods(obs);
-    if (methodsArr.length>=1) {
-      const evt = prop('event', obs);
+  static checkForEventMethods(obs) {
+    const re = /^(event)([A-Z].*)([A-Z].*)$/gm
+    const getMethods = compose(ramdaFilter(test(re)), keys, prop('payload'))
+    const methodsArr = getMethods(obs)
+    if (methodsArr.length >= 1) {
+      const evt = prop('event', obs)
       if (evt !== undefined) {
-        const methodUpdate = (match,p1,p2,p3,p4)=>String(p2).toLowerCase()+p3+p4;
-        const methodStrReplace = replace(/^(event)([A-Z])(.*)([A-Z].*)$/gm, methodUpdate);
-        const runMethod = (methodStr)=>{
-          const m = methodStrReplace(methodStr);
-          if (evt[m]!==undefined) {evt[m]();}
-        };
+        const methodUpdate = (match, p1, p2, p3, p4) => String(p2).toLowerCase() + p3 + p4
+        const methodStrReplace = replace(/^(event)([A-Z])(.*)([A-Z].*)$/gm, methodUpdate)
+        const runMethod = (methodStr) => {
+          const m = methodStrReplace(methodStr)
+          if (evt[m] !== undefined) { evt[m]() }
+        }
         methodsArr.forEach(runMethod)
       }
     }
 
-    return obs;
+    return obs
   }
 
+  static checkForEndRoute(pl, routeConfigJson = this.routeConfigJson, debugBool) {
+    const endRoute = compose(equals('true'), path(['payload', 'endRoute']))(pl)
 
-  static checkForEndRoute(pl, routeConfigJson = this.routeConfigJson, debugBool){
-
-    const endRoute = compose(equals("true"), path(['payload', 'endRoute']))(pl);
-
-    if (endRoute!==true){
-      return pl;
+    if (endRoute !== true) {
+      return pl
     }
-    const debug = debugBool !== undefined ? debugBool : SpyneAppProperties.debug === true;
-     const {payload} = pl;
+    const debug = debugBool !== undefined ? debugBool : SpyneAppProperties.debug === true
+    const { payload } = pl
 
-
-      const getPropVal = (routePath) => {
-        const routeName = prop('routeName', routePath);
-        if (routeName){
-          const keysArr = compose(keys, omit(['routeName']))(routePath);
-          let routeNameVal = payload[routeName]
-          const pred = arrStr => new RegExp(`^${arrStr}$`).test(routeNameVal);
-          const routeVal = find(pred, keysArr);
-          return routeVal;
-
-        }
+    const getPropVal = (routePath) => {
+      const routeName = prop('routeName', routePath)
+      if (routeName) {
+        const keysArr = compose(keys, omit(['routeName']))(routePath)
+        const routeNameVal = payload[routeName]
+        const pred = arrStr => new RegExp(`^${arrStr}$`).test(routeNameVal)
+        const routeVal = find(pred, keysArr)
+        return routeVal
       }
+    }
 
-      let iter = 0;
-      const onReduceRoutePaths = (acc=[], arr)=>{
-        const [key, val] = arr;
-        const {routePath} = val;
-        const routeName = prop('routeName', routePath);
-        const routeNameVal = getPropVal(routePath);
-        const isObj = is(Object, val);
-        const isArr = is(Array, val);
-        const iterObj = isObj === true && isArr === false;
-        iter = iter+1;
-        if (iterObj) {
-          const nextRoutePath = routePath[routeNameVal];
-          //console.log('key is ',{iter,acc,key, routeName, routeNameVal, iterObj, nextRoutePath});
-          if (nextRoutePath){
-              compose(reverse, reduce(onReduceRoutePaths, acc), toPairs)({nextRoutePath})
-          } else{
-            //console.log("KEY IS ",{iter,key, routeName, routeNameVal})
-            if (iter===1){
-              if (debug) {
-                console.warn(`Spyne Warning: use of end route method should add start route value of "${routeName}".`)
-              }
-            } else {
-              acc.push(routeName)
+    let iter = 0
+    const onReduceRoutePaths = (acc = [], arr) => {
+      // const [key, val] = arr
+      const val = arr[1]
+      const { routePath } = val
+      const routeName = prop('routeName', routePath)
+      const routeNameVal = getPropVal(routePath)
+      const isObj = is(Object, val)
+      const isArr = is(Array, val)
+      const iterObj = isObj === true && isArr === false
+      iter = iter + 1
+      if (iterObj) {
+        const nextRoutePath = routePath[routeNameVal]
+        // console.log('key is ',{iter,acc,key, routeName, routeNameVal, iterObj, nextRoutePath});
+        if (nextRoutePath) {
+          compose(reverse, reduce(onReduceRoutePaths, acc), toPairs)({ nextRoutePath })
+        } else {
+          // console.log("KEY IS ",{iter,key, routeName, routeNameVal})
+          if (iter === 1) {
+            if (debug) {
+              console.warn(`Spyne Warning: use of end route method should add start route value of "${routeName}".`)
             }
+          } else {
+            acc.push(routeName)
           }
         }
-        return acc;
-
       }
+      return acc
+    }
 
-      const {routes} = routeConfigJson;
+    const { routes } = routeConfigJson
 
-      const endRouteValArr = compose(reverse, reduce(onReduceRoutePaths, []), toPairs)({routes});
-        //console.log('end route val arr ',endRouteValArr);
-        if(endRouteValArr.length===1){
-          const endRouteVal = endRouteValArr[0];
-          pl.payload[endRouteVal] = "";
-        } else{
-          if (debug) {
-           // console.warn(`Spyne Warning: the end route param did not yield any results for ${JSON.stringify(payload)} `);
-          }
-        }
+    const endRouteValArr = compose(reverse, reduce(onReduceRoutePaths, []), toPairs)({ routes })
+    // console.log('end route val arr ',endRouteValArr);
+    if (endRouteValArr.length === 1) {
+      const endRouteVal = endRouteValArr[0]
+      pl.payload[endRouteVal] = ''
+    } else {
+      if (debug) {
+        // console.warn(`Spyne Warning: the end route param did not yield any results for ${JSON.stringify(payload)} `);
+      }
+    }
 
-    return pl;
-
+    return pl
   }
 
   onViewStreamInfo(pl) {
-    let action = this.channelActions.CHANNEL_ROUTE_CHANGE_EVENT;
-    SpyneChannelRoute.checkForEventMethods(pl);
-    pl = this.checkForEndRoute(pl);
-    let payload = this.getDataFromParams(pl);
+    const action = this.channelActions.CHANNEL_ROUTE_CHANGE_EVENT
+    SpyneChannelRoute.checkForEventMethods(pl)
+    pl = this.checkForEndRoute(pl)
+    let payload = this.getDataFromParams(pl)
 
-    let srcElement = prop('srcElement', pl);
-    let event = prop('event', pl);
-    let changeLocationBool = !payload.isHidden;
-    let keywordArrs = this.compareRouteKeywords.compare(payload.routeData, payload.paths);
+    const srcElement = prop('srcElement', pl)
+    const event = prop('event', pl)
+    const changeLocationBool = !payload.isHidden
+    const keywordArrs = this.compareRouteKeywords.compare(payload.routeData, payload.paths)
 
-    payload = rMerge(payload, keywordArrs);
-    this.sendRouteStream(payload, changeLocationBool);
+    payload = rMerge(payload, keywordArrs)
+    this.sendRouteStream(payload, changeLocationBool)
 
-    payload = SpyneChannelRoute.removeSSID(payload);
+    payload = SpyneChannelRoute.removeSSID(payload)
 
     this.sendChannelPayload(action, payload, srcElement, event,
-      this.navToStream$);
+      this.navToStream$)
   }
 
   static checkAndConvertStrWithRegexTokens(routeValue, regexTokenObj) {
-    let tokenKeysArr = keys(regexTokenObj);
+    const tokenKeysArr = keys(regexTokenObj)
 
-    return tokenKeysArr;
+    return tokenKeysArr
   }
 
   sendRouteStream(payload, changeWindowLoc = true) {
     if (changeWindowLoc === true) {
-      this.setWindowLocation(payload);
+      this.setWindowLocation(payload)
     }
   }
 
   static getRouteState() {
-    return 'CHANNEL_ROUTE_CHANGE_EVENT';
+    return 'CHANNEL_ROUTE_CHANGE_EVENT'
   }
 
   static getIsDeepLinkBool(isHistory) {
-    return isHistory === false && this._routeCount === 0;
+    return isHistory === false && this._routeCount === 0
   }
 
-  static getRouteCount(isHistory=false) {
+  static getRouteCount(isHistory = false) {
     if (this._routeCount === undefined) {
-      this._routeCount = 0;
-      return this._routeCount;
+      this._routeCount = 0
+      return this._routeCount
     }
-    if (isHistory===false) {
-      this._routeCount += 1;
+    if (isHistory === false) {
+      this._routeCount += 1
     }
-    return this._routeCount;
+    return this._routeCount
   }
 
-  static getExtraPayloadParams(config = this.routeConfigJson, isHistory=false) {
-    let routeCount = this.getRouteCount(isHistory);
-    let isDeepLink = this.getIsDeepLinkBool(isHistory);
-    let isHash = config.isHash;
-    let isHidden = config.isHidden;
-    let routeType = config.type;
-    return { routeCount, isDeepLink, isHash,isHistory, isHidden, routeType };
+  static getExtraPayloadParams(config = this.routeConfigJson, isHistory = false) {
+    const routeCount = this.getRouteCount(isHistory)
+    const isDeepLink = this.getIsDeepLinkBool(isHistory)
+    const isHash = config.isHash
+    const isHidden = config.isHidden
+    const routeType = config.type
+    return { routeCount, isDeepLink, isHash, isHistory, isHidden, routeType }
   }
 
   static getDataFromParams(pl, config = this.routeConfigJson) {
-    let routeData = prop('payload', pl);
+    let routeData = prop('payload', pl)
 
-    let routeValue = this.getRouteStrFromParams(routeData, config);
+    const routeValue = this.getRouteStrFromParams(routeData, config)
 
     // WINDOW LOCATION HASN'T BEEN CHANGED YET, SO WILL GET STR PARAMS
-    const getPropFromConfig = (prp, defalt) => defaultTo(defalt, prop(prp, config));
-    let typeForStr = getPropFromConfig('type', 'slash');
-    let isHashForStr = getPropFromConfig('isHash', false);
-    let nextWindowLoc = SpyneUtilsChannelRouteUrl.formatStrAsWindowLocation(routeValue);
-    let dataFromStr = this.getDataFromLocationStr(typeForStr, isHashForStr, nextWindowLoc);
+    const getPropFromConfig = (prp, defalt) => defaultTo(defalt, prop(prp, config))
+    const typeForStr = getPropFromConfig('type', 'slash')
+    const isHashForStr = getPropFromConfig('isHash', false)
+    const nextWindowLoc = SpyneUtilsChannelRouteUrl.formatStrAsWindowLocation(routeValue)
+    const dataFromStr = this.getDataFromLocationStr(typeForStr, isHashForStr, nextWindowLoc)
 
-    let { pathInnermost, paths } = dataFromStr;
+    const { pathInnermost, paths } = dataFromStr
 
-    routeData = rMerge(dataFromStr.routeData, routeData);
+    routeData = rMerge(dataFromStr.routeData, routeData)
 
-    let { routeCount, isDeepLink, isHash,isHistory, isHidden, routeType } = this.getExtraPayloadParams(
-      config);
+    const { routeCount, isDeepLink, isHash, isHistory, isHidden, routeType } = this.getExtraPayloadParams(
+      config)
     return {
       isDeepLink,
       routeCount,
@@ -432,19 +423,19 @@ export class SpyneChannelRoute extends Channel {
       isHidden,
       isHistory,
       routeType
-    };
+    }
   }
 
-  static getDataFromString(config = this.routeConfigJson, isHistory=false) {
-    const type = config.type;
-    const hashIsTrue = config.isHash === true;
-    const str = SpyneUtilsChannelRouteUrl.getLocationStrByType(type, hashIsTrue);
-    let { paths, pathInnermost, routeData, routeValue } = SpyneChannelRoute.getParamsFromRouteStr(
-      str, config, type);
-    let { routeCount, isDeepLink, isHash, routeType, isHidden } = this.getExtraPayloadParams(
-      config,isHistory);
+  static getDataFromString(config = this.routeConfigJson, isHistory = false) {
+    const type = config.type
+    const hashIsTrue = config.isHash === true
+    const str = SpyneUtilsChannelRouteUrl.getLocationStrByType(type, hashIsTrue)
+    const { paths, pathInnermost, routeData, routeValue } = SpyneChannelRoute.getParamsFromRouteStr(
+      str, config, type)
+    const { routeCount, isDeepLink, isHash, routeType, isHidden } = this.getExtraPayloadParams(
+      config, isHistory)
 
-    let obj = {
+    const obj = {
       isDeepLink,
       routeCount,
       pathInnermost,
@@ -455,20 +446,20 @@ export class SpyneChannelRoute extends Channel {
       isHidden,
       isHistory,
       routeType
-    };
-    return obj;
+    }
+    return obj
   }
 
   static getDataFromLocationStr(t = 'slash', isHash = this.routeConfigJson.isHash, loc = window.location) {
     const type = this.routeConfigJson !== undefined
       ? this.routeConfigJson.type
-      : t;
+      : t
 
-    const str = SpyneUtilsChannelRouteUrl.getLocationStrByType(type, isHash, loc);
-    let { paths, pathInnermost, routeData, routeValue } = this.getParamsFromRouteStr(
-      str, this.routeConfigJson, type);
-    const action = this.getRouteState();
-    return { paths, pathInnermost, routeData, routeValue, action };
+    const str = SpyneUtilsChannelRouteUrl.getLocationStrByType(type, isHash, loc)
+    const { paths, pathInnermost, routeData, routeValue } = this.getParamsFromRouteStr(
+      str, this.routeConfigJson, type)
+    const action = this.getRouteState()
+    return { paths, pathInnermost, routeData, routeValue, action }
   }
 
   static getLocationData() {
@@ -481,79 +472,79 @@ export class SpyneChannelRoute extends Channel {
       'port',
       'pathname',
       'search',
-      'hash'];
-    return pickAll(locationParamsArr, window.location);
+      'hash']
+    return pickAll(locationParamsArr, window.location)
   }
 
   static getRouteStrFromParams(paramsData, routeConfig, t) {
-    const type = t !== undefined ? t : routeConfig.type;
-    let obj = SpyneUtilsChannelRouteUrl.convertParamsToRoute(paramsData, routeConfig, type);
-    return obj;
+    const type = t !== undefined ? t : routeConfig.type
+    const obj = SpyneUtilsChannelRouteUrl.convertParamsToRoute(paramsData, routeConfig, type)
+    return obj
   }
 
   static getParamsFromRouteStr(str, routeConfig, t) {
-    const type = t !== undefined ? t : routeConfig.type;
-    let obj = SpyneUtilsChannelRouteUrl.convertRouteToParams(str, routeConfig, type);
-    return obj;
+    const type = t !== undefined ? t : routeConfig.type
+    const obj = SpyneUtilsChannelRouteUrl.convertRouteToParams(str, routeConfig, type)
+    return obj
   }
 
   checkEmptyRouteStr(str, isHash = false) {
-    const isEmptyBool = isEmpty(str);
-    const pathNameIsEmptyBool = isEmptyBool === true && isHash === false;
-    const hashNameIsEmptyBool = isEmptyBool === true && isHash === true;
-    const hashNameBool = isEmptyBool === false && isHash === true;
+    const isEmptyBool = isEmpty(str)
+    const pathNameIsEmptyBool = isEmptyBool === true && isHash === false
+    const hashNameIsEmptyBool = isEmptyBool === true && isHash === true
+    const hashNameBool = isEmptyBool === false && isHash === true
 
     if (pathNameIsEmptyBool === true || hashNameIsEmptyBool === true) {
-      return '/';
+      return '/'
     } else if (hashNameBool === true) {
-      return concat('#', str);
+      return concat('#', str)
     }
-    return str;
+    return str
   }
+
   static removeLastSlash(str) {
-    let re = /^(.*)(\/)$/;
-    return str.replace(re, '$1');
+    const re = /^(.*)(\/)$/
+    return str.replace(re, '$1')
   }
 
   setWindowLocation(channelPayload) {
-    let { isHash, routeValue } = channelPayload;
-    routeValue = this.checkEmptyRouteStr(routeValue, isHash);
-     let {routeCount} = channelPayload;
-    if (isHash === true) {
-      let pathName = SpyneChannelRoute.removeLastSlash(window.location.pathname);
-      routeValue = pathName + routeValue;
-      window.history.pushState({routeCount}, '', routeValue);
+    let { isHash, routeValue, routeType } = channelPayload
+    routeValue = this.checkEmptyRouteStr(routeValue, isHash)
+    const { routeCount } = channelPayload
+    if (isHash === true || routeType === 'query') {
+      const pathName = SpyneChannelRoute.removeLastSlash(window.location.pathname)
+      routeValue = pathName + routeValue
+      window.history.pushState({ routeCount }, '', routeValue)
     } else {
       const checkForSlash = when(
-        compose(complement(equals('/')), head), concat('/', __));
-      window.history.pushState({routeCount}, '', checkForSlash(routeValue));
+        compose(complement(equals('/')), head), concat('/', __))
+      window.history.pushState({ routeCount }, '', checkForSlash(routeValue))
     }
   }
 
   getWindowLocation() {
-    return window.location.pathname; // pullHashAndSlashFromPath(window.location.hash);
+    return window.location.pathname // pullHashAndSlashFromPath(window.location.hash);
   }
 
   bindStaticMethods() {
-    this.checkForEndRoute = SpyneChannelRoute.checkForEndRoute.bind(this);
-    this.getIsDeepLinkBool = SpyneChannelRoute.getIsDeepLinkBool.bind(this);
+    this.checkForEndRoute = SpyneChannelRoute.checkForEndRoute.bind(this)
+    this.getIsDeepLinkBool = SpyneChannelRoute.getIsDeepLinkBool.bind(this)
     this.getDataFromLocationStr = SpyneChannelRoute.getDataFromLocationStr.bind(
-      this);
-    this.onIncomingDomEvent = SpyneChannelRoute.onIncomingDomEvent.bind(this);
-    this.getDataFromString = SpyneChannelRoute.getDataFromString.bind(this);
-    this.getParamsFromRouteStr = SpyneChannelRoute.getParamsFromRouteStr.bind(this);
-    this.getLocationData = SpyneChannelRoute.getLocationData.bind(this);
-    this.getRouteState = SpyneChannelRoute.getRouteState.bind(this);
-    this.getDataFromParams = SpyneChannelRoute.getDataFromParams.bind(this);
-    this.getRouteCount = SpyneChannelRoute.getRouteCount.bind(this);
-    this.getExtraPayloadParams = SpyneChannelRoute.getExtraPayloadParams.bind(this);
-    this.bindStaticMethodsWithConfigData();
+      this)
+    this.onIncomingDomEvent = SpyneChannelRoute.onIncomingDomEvent.bind(this)
+    this.getDataFromString = SpyneChannelRoute.getDataFromString.bind(this)
+    this.getParamsFromRouteStr = SpyneChannelRoute.getParamsFromRouteStr.bind(this)
+    this.getLocationData = SpyneChannelRoute.getLocationData.bind(this)
+    this.getRouteState = SpyneChannelRoute.getRouteState.bind(this)
+    this.getDataFromParams = SpyneChannelRoute.getDataFromParams.bind(this)
+    this.getRouteCount = SpyneChannelRoute.getRouteCount.bind(this)
+    this.getExtraPayloadParams = SpyneChannelRoute.getExtraPayloadParams.bind(this)
+    this.bindStaticMethodsWithConfigData()
   }
 
-  bindStaticMethodsWithConfigData(){
-    const curriedGetRoute = curryN(3, SpyneChannelRoute.getRouteStrFromParams);
+  bindStaticMethodsWithConfigData() {
+    const curriedGetRoute = curryN(3, SpyneChannelRoute.getRouteStrFromParams)
     this.getRouteStrFromParams = curriedGetRoute(__, this.routeConfigJson,
-        this.routeConfigJson.type);
+      this.routeConfigJson.type)
   }
-
 }

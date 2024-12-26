@@ -1,6 +1,6 @@
 
 module.exports = {
-  "extends": "semistandard",
+  "extends": "standard",
 
   "globals": {
     "requestAnimationFrame" : true
@@ -19,7 +19,8 @@ module.exports = {
       "named": "never",
       "asyncArrow": "never"
     }],
-
+    'no-new': 'off',
+    'camelcase': 'off',
     "no-unused-vars": ["error", { "caughtErrors": "none", "args": "none" }],
     "arrow-spacing": ["error", { "before": true, "after": true }],
     "no-return-assign": ["error", "except-parens"],

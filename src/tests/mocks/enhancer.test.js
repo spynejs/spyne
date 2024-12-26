@@ -1,9 +1,9 @@
-import { SpyneTrait } from '../../spyne/utils/spyne-trait';
+import { SpyneTrait } from '../../spyne/utils/spyne-trait'
 
 export class Enhancer extends SpyneTrait {
   constructor(context) {
-    super(context, 'get');
-    this.name = 'TEST';
+    super(context, 'get')
+    this.name = 'TEST'
   }
 
   getTestDupeMethod1() {
@@ -11,10 +11,10 @@ export class Enhancer extends SpyneTrait {
   }
 
   getMethodConstructor() {
-    return this.constructor.name;
+    return this.constructor.name
   }
 
   static getStaticFnConstructor() {
-    return this.constructor.name;
+    return this.constructor.name
   }
 }

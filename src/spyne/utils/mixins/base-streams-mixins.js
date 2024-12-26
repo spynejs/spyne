@@ -1,17 +1,17 @@
-import { ViewStreamPayload } from '../../views/view-stream-payload';
+import { ViewStreamPayload } from '../../views/view-stream-payload'
 
 export function baseStreamsMixins() {
   return {
     testFunc: function(str) {
-      console.log('stream mixin is ', str);
+      console.log('stream mixin is ', str)
     },
     sendRoutePayload: function(obs, data) {
-      /**TODO: ADD A CHECK FOR END ROUTE AND TRANSFORM TO EMPTY*/
-      return new ViewStreamPayload('CHANNEL_ROUTE', obs, data, 'subscribe');
+      /** TODO: ADD A CHECK FOR END ROUTE AND TRANSFORM TO EMPTY */
+      return new ViewStreamPayload('CHANNEL_ROUTE', obs, data, 'subscribe')
     },
     sendUIPayload: function(obs, data) {
-      return new ViewStreamPayload('CHANNEL_UI', obs, data, 'subscribe');
-    },
+      return new ViewStreamPayload('CHANNEL_UI', obs, data, 'subscribe')
+    }
     /*
     sendInfoToChannel: function(channelName, payload) {
       const getProp = str => prop(str, this.props);
@@ -28,13 +28,13 @@ export function baseStreamsMixins() {
         'subscribe');
     },
     */
-/*    sendLifeStreamPayload: function(obs, data) {
+    /*    sendLifeStreamPayload: function(obs, data) {
       return new ViewStreamPayload('LIFESTREAM', obs, data, 'subscribe');
     },
 
     createLifeStreamPayload: function(STEP, data = {}, type = 'parent') {
       let viewId = `${this.props.name}: ${this.props.vsid}`;
       return new LifestreamPayload('LIFESTREAM', STEP, type, viewId, data).data;
-    }*/
-  };
+    } */
+  }
 }

@@ -1,39 +1,49 @@
+const webpackConfigs = require('./webpack.config');
 
-const webpackConfig = require("./webpack.config");
-webpackConfig.mode = 'none';
-webpackConfig.watch = true;
-webpackConfig.entry = undefined;
-webpackConfig.output = undefined;
+// Since webpack.config.js exports an array [esmConfig, umdConfig],
+// we'll grab the second one (UMD) to use in Karma.
+const [esmConfig, umdConfig] = webpackConfigs || [];
 
-const fileGlob =  './src/tests/index.test.js';
+// Make a shallow clone of the UMD config so we can tweak it for Karma:
+const karmaWebpackConfig = {
+  ...umdConfig,
 
+  // Force a "neutral" mode so Webpack doesn't minify or do env-specific optimizations
+  mode: 'none',
 
-module.exports = function(config) {
+  // Karma manages watching/rebuilding on its own, so we typically disable watch from Webpack
+  watch: false,
 
+  // Remove the library entry/output so that Karma can inline test files
+  entry: undefined,
+  output: undefined
+};
+karmaWebpackConfig.externals = [];
+// Optionally inject any test-specific loaders/rules, e.g. coverage instrumentation:
+karmaWebpackConfig.module.rules.push({
+  test: /\.js$/,
+  exclude: /node_modules/,
+  // If you use Babel or another coverage tool, you can add it here
+  // For example:
+  // use: {
+  //   loader: 'babel-loader',
+  //   options: {
+  //     plugins: ['istanbul'] // coverage plugin
+  //   }
+  // }
+});
+
+module.exports = function (config) {
+  // If you need Travis CI logic:
   if (process.env.TRAVIS) {
-    config.browsers = ['Chrome_travis_ci'];
+    config.browsers = ['ChromeHeadlessNoSandbox'];
   }
 
-
-  webpackConfig.module.rules.push(
-      {
-       test: /(\.js)$/,
-       exclude: /(node_modules)/
-       }
-  );
-
-
   config.set({
-
-    // base path that will be used to resolve all patterns (eg. files, exclude)
+    // Base path that will be used to resolve all patterns (eg. files, exclude)
     basePath: '',
 
-
-    output:{
-
-    },
-
-    // available frameworks: https://npmjs.org/browse/keyword/karma-adapter
+    // Test frameworks
     frameworks: ['webpack', 'mocha', 'chai'],
 
     plugins: [
@@ -44,90 +54,70 @@ module.exports = function(config) {
       'karma-chrome-launcher'
     ],
 
-
+    // List of files / patterns to load in the browser
     files: [
-      {pattern: './node_modules/ramda/dist/ramda.min.js', watched:false},
-      { pattern: './node_modules/rxjs/**/*.js', included:false,    watched: false },
+      // External deps you might need:
+      { pattern: './node_modules/ramda/dist/ramda.min.js', watched: false },
+      { pattern: './node_modules/rxjs/**/*.js', included: false, watched: false },
 
-      {pattern: './src/tests/index.test.js', watched: true},
-      {pattern: './src/tests/spyne-app.test.js', watched: true},
-      {pattern: './src/tests/spyne-plugin.test.js', watched: true},
-      {pattern: './src/tests/channels/*.test.js', watched: true},
-
-      {pattern: './src/tests/utils/*.test.js', watched: true},
-      {pattern: './src/tests/views/*.test.js', watched: true}
+      // Your test files:
+      { pattern: './src/tests/index.test.js', watched: true },
+      { pattern: './src/tests/spyne-app.test.js', watched: true },
+      { pattern: './src/tests/package-json.spec.test.js', watched: true },
+      { pattern: './src/tests/spyne-plugin.test.js', watched: true },
+      { pattern: './src/tests/channels/*.test.js', watched: true },
+      { pattern: './src/tests/utils/*.test.js', watched: true },
+      { pattern: './src/tests/views/*.test.js', watched: true }
     ],
 
-
-    exclude: [
-
-    ],
-
-
-    // preprocess matching files before serving them to the browser
-    // available preprocessors: https://npmjs.org/browse/keyword/karma-preprocessor
+    // Preprocessors so that the files are processed by Webpack + coverage
     preprocessors: {
-     './src/tests/*.test.js' : ['webpack', 'coverage'],
-      './src/tests/channels/*.test.js' : ['webpack', 'coverage'],
-      './src/tests/utils/*.test.js' : ['webpack', 'coverage'],
-      './src/tests/views/*.test.js' : ['webpack', 'coverage']
+      './src/tests/*.test.js': ['webpack', 'coverage'],
+      './src/tests/channels/*.test.js': ['webpack', 'coverage'],
+      './src/tests/utils/*.test.js': ['webpack', 'coverage'],
+      './src/tests/views/*.test.js': ['webpack', 'coverage']
     },
 
-    webpack: webpackConfig,
+    // Use our customized Webpack config
+    webpack: karmaWebpackConfig,
 
-    webpackMiddleware: {noInfo: true},
+    // Quiet the Webpack output in the Karma logs
+    webpackMiddleware: { noInfo: true },
 
-
-    // test results reporter to use
-    // possible values: 'dots', 'progress'
-    // available reporters: https://npmjs.org/browse/keyword/karma-reporter
+    // Report results with coverage
     reporters: ['coverage'],
 
     coverageReporter: {
       reporters: [
-        // generates ./coverage/lcov.info
-        {type:'lcovonly', subdir: '.'},
-        // generates ./coverage/coverage-final.json
-        {type:'json', subdir: '.'},
+        { type: 'lcovonly', subdir: '.' }, // ./coverage/lcov.info
+        { type: 'json', subdir: '.' }      // ./coverage/coverage-final.json
       ]
     },
 
-    // web server port
     port: 9876,
-
-
-    // enable / disable colors in the output (reporters and logs)
     colors: true,
-
-
-    // level of logging
-    // possible values: config.LOG_DISABLE || config.LOG_ERROR || config.LOG_WARN || config.LOG_INFO || config.LOG_DEBUG
     logLevel: config.LOG_DEBUG,
 
-
-    // enable / disable watching file and executing tests whenever any file changes
+    // autoWatch: if true, re-run tests on file changes
     autoWatch: true,
+
+    // For file-watching inside containers or certain OS environments
     usePolling: true,
 
     customLaunchers: {
-       ChromeHeadlessNoSandbox: {
-       base: 'ChromeHeadless',
-       flags: ['--no-sandbox']
-     }
-
+      ChromeHeadlessNoSandbox: {
+        base: 'ChromeHeadless',
+        flags: ['--no-sandbox']
+      }
     },
 
-
-    // start these browsers
-    // available browser launchers: https://npmjs.org/browse/keyword/karma-launcher
+    // Browsers to start (choose your launcher)
     browsers: ['Chrome'],
 
-    // Continuous Integration mode
-    // if true, Karma captures browsers, runs the tests and exits
+    // If true, Karma runs tests once and exits
     singleRun: true,
 
     // Concurrency level
-    // how many browser should be started simultaneous
     concurrency: Infinity
-  })
-}
+  });
+};

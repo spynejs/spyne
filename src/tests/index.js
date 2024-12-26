@@ -1,4 +1,3 @@
-
 // let getGlobalObj = constants.getGlobalObj;
 
 // import {CDN}  from "../app/app-contants";
@@ -9,19 +8,19 @@
 
 function maybeFirst(array) {
   if (array && array.length) {
-    return array[0];
+    return array[0]
   }
 }
 
-var assert = require('assert');
+const assert = require('assert')
 
 describe('maybeFirst', function() {
   it('returns the first element of an array', function() {
-    var result = maybeFirst([1, 2, 3]);
+    const result = maybeFirst([1, 2, 3])
 
-    assert.equal(result, 1, 'maybeFirst([1, 2, 3]) is 1');
-  });
-});
+    assert.equal(result, 1, 'maybeFirst([1, 2, 3]) is 1')
+  })
+})
 
 /*
 

@@ -1,9 +1,10 @@
-import { baseStreamsMixins } from '../utils/mixins/base-streams-mixins';
-import { convertDomStringMapToObj } from '../utils/frp-tools';
-import {SpyneAppProperties} from '../utils/spyne-app-properties';
-import { fromEvent } from 'rxjs';
-import { map } from 'rxjs/operators';
-import {clone, omit} from 'ramda';
+import { baseStreamsMixins } from '../utils/mixins/base-streams-mixins'
+import { convertDomStringMapToObj } from '../utils/frp-tools'
+import { SpyneAppProperties } from '../utils/spyne-app-properties'
+import { fromEvent } from 'rxjs'
+import { map } from 'rxjs/operators'
+import { clone, omit } from 'ramda'
+const isDevMode = SpyneAppProperties.debug === true
 
 export class ViewStreamBroadcaster {
   /**
@@ -17,99 +18,102 @@ export class ViewStreamBroadcaster {
    */
 
   constructor(props, broadcastFn) {
-    this.addMixins();
-    this.props = props;
-    this.broadcastFn = broadcastFn;
-    this.broadcaster(this.broadcastFn);
+    this.addMixins()
+    this.props = props
+    this.broadcastFn = broadcastFn
+    this.broadcaster(this.broadcastFn)
   }
 
   addDblClickEvt(q) {
-    let dblclick$ = fromEvent(q, 'dblclick');
+    const dblclick$ = fromEvent(q, 'dblclick')
     // console.log('ADDING DBL CLICK ', q);
-    let stream$ = dblclick$.pipe(
+    const stream$ = dblclick$.pipe(
       map(p => {
-        let data = clone(p);
+        const data = clone(p)
         // ADD DOUBLECLICK TO UI EVENTS
-        data['typeOverRide'] = 'dblclick';
-        return data;
-      }));
-    return stream$;
+        data.typeOverRide = 'dblclick'
+        return data
+      }))
+    return stream$
   }
 
   //  ==================================================================
   // BROADCAST BUTTON EVENTS
   //  ==================================================================
   broadcast(args) {
+    if (args.length <= 0 && isDevMode === true) {
+      console.warn(`Spyne Warning: The nested array in ${this.props.name}.broadcastEvents appears to be empty --> vsid:${this.props.vsid}!`)
+      return
+    }
     // payloads to send, based on either the array or the elements dataMap
-    let channelPayloads = {
-      'UI': this.sendUIPayload,
-      'ROUTE': this.sendRoutePayload
-    };
+    const channelPayloads = {
+      UI: this.sendUIPayload,
+      ROUTE: this.sendRoutePayload
+    }
     // spread operator to select variables from arrays
-    let [selector, event, local] = args;
+    const [selector, event, local] = args
     // btn query
-    let channel; // hoist channel and later check if chnl exists
-    let query = this.props.el.querySelectorAll(selector);
+    let channel // hoist channel and later check if chnl exists
+    let query = this.props.el.querySelectorAll(selector)
 
     if (query.length <= 0) {
-      let el = this.props.el;
+      const el = this.props.el
       const checkParentEls = (element) => {
         if (element === el) {
-          query = [element];
+          query = [element]
         }
-      };
+      }
 
       const pluckElFromParent = () => {
-        let elParent = el.parentElement !== null ? el.parentElement : document;
-        let elSelected = elParent.querySelectorAll(selector);
-        elSelected.forEach = Array.prototype.forEach;
-        elSelected.forEach(checkParentEls);
-      };
+        const elParent = el.parentElement !== null ? el.parentElement : document
+        const elSelected = elParent.querySelectorAll(selector)
+        elSelected.forEach = Array.prototype.forEach
+        elSelected.forEach(checkParentEls)
+      }
 
-      pluckElFromParent();
+      pluckElFromParent()
     }
 
-    let isLocalEvent = local !== undefined;
-    let addObservable = (q) => {
+    const isLocalEvent = local !== undefined
+    const addObservable = (q) => {
       // the  btn observable
-      let observable = event !== 'dblClick'
+      const observable = event !== 'dblClick'
         ? fromEvent(q, event, { preventDefault: () => true })
-        : this.addDblClickEvt(q);
+        : this.addDblClickEvt(q)
       // select channel and data values from either the array or the element's dom Map
-      channel = q.dataset.channel;// ifNilThenUpdate(chnl, q.dataset.channel);
-      let data = {};// convertDomStringMapToObj(q.dataset);
-      data['payload'] = convertDomStringMapToObj(q.dataset);
-      data.payload = omit(['channel'], data.payload);
-      data['channel'] = channel;
+      channel = q.dataset.channel// ifNilThenUpdate(chnl, q.dataset.channel);
+      const data = {}// convertDomStringMapToObj(q.dataset);
+      data.payload = convertDomStringMapToObj(q.dataset)
+      data.payload = omit(['channel'], data.payload)
+      data.channel = channel
       // payload needs vsid# to pass verification
 
-      data['srcElement'] = {};// pick(['vsid','viewName'], data);
-      data.srcElement['id'] = this.props.id;
-      data.srcElement['vsid'] = this.props.vsid;
-      data.srcElement['isLocalEvent'] = isLocalEvent;
-      //data.srcElement['viewName'] = this.props.name;
-      data.srcElement['srcEvent'] = event;
-      data.srcElement['el'] = q;
+      data.srcElement = {}// pick(['vsid','viewName'], data);
+      data.srcElement.id = this.props.id
+      data.srcElement.vsid = this.props.vsid
+      data.srcElement.isLocalEvent = isLocalEvent
+      // data.srcElement['viewName'] = this.props.name;
+      data.srcElement.srcEvent = event
+      data.srcElement.el = q
       // select the correct payload
-      let channelPayload = channel !== undefined ? channelPayloads[channel] : channelPayloads['UI'];
+      const channelPayload = channel !== undefined ? channelPayloads[channel] : channelPayloads.UI
       // run payload
-      channelPayload(observable, data);
-    };
-    let isDevMode = SpyneAppProperties.debug === true;
-    let queryIsNil = query === undefined || query.length <= 0;
+      channelPayload(observable, data)
+    }
+    const queryIsNil = query === undefined || query.length <= 0
     if (queryIsNil === true && isDevMode === true) {
-      console.warn(`Spyne Warning: The item ${selector}, does not appear to exist in ${this.props.name} --> vsid:${this.props.vsid}!`);
+      console.warn(`Spyne Warning: The item ${selector}, does not appear to exist in ${this.props.name} --> vsid:${this.props.vsid}!`)
 
       // addObservable(query, event);
     } else {
-      query.forEach = Array.prototype.forEach;
-      query.forEach(addObservable);
+      query.forEach = Array.prototype.forEach
+      query.forEach(addObservable)
     }
   }
 
   broadcaster(arrFn) {
-    let broadcastArr = arrFn();
-    broadcastArr.forEach(args => this.broadcast(args));
+    const broadcastArr = arrFn()
+    broadcastArr.forEach(args => this.broadcast(args))
   }
 
   //  =================================================================
@@ -117,8 +121,8 @@ export class ViewStreamBroadcaster {
     //  ==================================
     // BASE STREAM MIXINS
     //  ==================================
-    let streamMixins = baseStreamsMixins();
-    this.sendUIPayload = streamMixins.sendUIPayload;
-    this.sendRoutePayload = streamMixins.sendRoutePayload;
+    const streamMixins = baseStreamsMixins()
+    this.sendUIPayload = streamMixins.sendUIPayload
+    this.sendRoutePayload = streamMixins.sendRoutePayload
   }
 }

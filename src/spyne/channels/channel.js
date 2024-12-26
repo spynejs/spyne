@@ -1,10 +1,9 @@
-import { registeredStreamNames } from './channels-config';
-import { ChannelPayload } from './channel-payload-class';
-import {SpyneAppProperties} from '../utils/spyne-app-properties';
-import {RouteChannelUpdater} from '../utils/route-channel-updater';
-import { ReplaySubject, Subject } from 'rxjs';
-import {filter} from 'rxjs/operators';
-import { map } from 'rxjs/operators';
+import { registeredStreamNames } from './channels-config'
+import { ChannelPayload } from './channel-payload-class'
+import { SpyneAppProperties } from '../utils/spyne-app-properties'
+import { RouteChannelUpdater } from '../utils/route-channel-updater'
+import { ReplaySubject, Subject } from 'rxjs'
+import { filter, map } from 'rxjs/operators'
 import {
   ifElse,
   identity,
@@ -22,8 +21,8 @@ import {
   equals,
   prop,
   propEq
-} from 'ramda';
-const rMap = require('ramda').map;
+  , map as rMap
+} from 'ramda'
 
 export class Channel {
   /**
@@ -68,37 +67,37 @@ export class Channel {
    *
    */
   constructor(CHANNEL_NAME, props = {}) {
-    this.addRegisteredActions.bind(this);
-    this.createChannelActionsObj(CHANNEL_NAME, props.extendedActionsArr);
-    props.name = CHANNEL_NAME;
-    props.defaultActions = props.data!==undefined ? [`${props.name}_EVENT`] : [];
-    this.props = props;
-    this.props.isRegistered = false;
-    this.props.isProxy = this.props.isProxy === undefined ? false : this.props.isProxy;
-    const defaultCachedPayloadBool = this.props['data']!==undefined;
-    this.props.sendCachedPayload = this.props.sendCachedPayload === undefined ? defaultCachedPayloadBool : this.props.sendCachedPayload;
-    this.sendPayloadToRouteChannel = new RouteChannelUpdater(this);
-    this.createChannelActionMethods();
-    this.streamsController = SpyneAppProperties.channelsMap;
-    let observer$ = this.getMainObserver();
-    this.checkForPersistentDataMode = Channel.checkForPersistentDataMode.bind(this);
-    this.observer$ = this.props['observer'] = observer$;
-    let dispatcherStream$ = this.streamsController.getStream('DISPATCHER');
+    this.addRegisteredActions.bind(this)
+    this.createChannelActionsObj(CHANNEL_NAME, props.extendedActionsArr)
+    props.name = CHANNEL_NAME
+    props.defaultActions = props.data !== undefined ? [`${props.name}_EVENT`] : []
+    this.props = props
+    this.props.isRegistered = false
+    this.props.isProxy = this.props.isProxy === undefined ? false : this.props.isProxy
+    const defaultCachedPayloadBool = this.props.data !== undefined
+    this.props.sendCachedPayload = this.props.sendCachedPayload === undefined ? defaultCachedPayloadBool : this.props.sendCachedPayload
+    this.sendPayloadToRouteChannel = new RouteChannelUpdater(this)
+    this.createChannelActionMethods()
+    this.streamsController = SpyneAppProperties.channelsMap
+    const observer$ = this.getMainObserver()
+    this.checkForPersistentDataMode = Channel.checkForPersistentDataMode.bind(this)
+    this.observer$ = this.props.observer = observer$
+    const dispatcherStream$ = this.streamsController.getStream('DISPATCHER')
     const payloadPredByChannelName = propEq(props.name, 'name')
-    dispatcherStream$.pipe(filter(payloadPredByChannelName)).subscribe((val) => this.onReceivedObservable(val));
+    dispatcherStream$.pipe(filter(payloadPredByChannelName)).subscribe((val) => this.onReceivedObservable(val))
   }
 
   getMainObserver() {
-    if (this.streamsController === undefined){
+    if (this.streamsController === undefined) {
       console.warn(`Spyne Warning: The following channel, ${this.props.name}, appears to be registered before Spyne has been initialized.`)
     }
 
-    let proxyExists = this.streamsController.testStream(this.props.name);
+    const proxyExists = this.streamsController.testStream(this.props.name)
 
     if (proxyExists === true) {
-      return this.streamsController.getProxySubject(this.props.name, this.props.sendCachedPayload);
+      return this.streamsController.getProxySubject(this.props.name, this.props.sendCachedPayload)
     } else {
-      return this.props.sendCachedPayload === true ? new ReplaySubject(1) : new Subject();
+      return this.props.sendCachedPayload === true ? new ReplaySubject(1) : new Subject()
     }
   }
 
@@ -116,22 +115,21 @@ export class Channel {
    * <p>This method is empty and is called as soon as the Channel has been registered.</p>
    * <p>Tasks such as subscribing to other channels, and sending initial payloads can be added here.</p>
    */
-  onRegistered(props=this.props){
-      if(props.data!==undefined){
-        const action = Object.keys(this.channelActions)[0];
-          //console.log("CHANNELS ACTIONS IS ",this.channelActions);
-        //Object(this.channelActions).keys[0];
-        this.sendChannelPayload(action, props.data);
-      }
-
+  onRegistered(props = this.props) {
+    if (props.data !== undefined) {
+      const action = Object.keys(this.channelActions)[0]
+      // console.log("CHANNELS ACTIONS IS ",this.channelActions);
+      // Object(this.channelActions).keys[0];
+      this.sendChannelPayload(action, props.data)
+    }
   }
 
   get isProxy() {
-    return this.props.isProxy;
+    return this.props.isProxy
   }
 
   get channelName() {
-    return this.props.name;
+    return this.props.name
   }
 
   /**
@@ -140,99 +138,99 @@ export class Channel {
    * returns the source observable for the channel
    */
   get observer() {
-    return this.observer$;
+    return this.observer$
   }
 
-  checkForTraits(){
-    const addTraits = (traits)=>{
-      if (traits.constructor.name!=='Array'){
-        traits = [traits];
+  checkForTraits() {
+    const addTraits = (traits) => {
+      if (traits.constructor.name !== 'Array') {
+        traits = [traits]
       }
-      const addTrait=(TraitClass)=>{
-        return new TraitClass(this);
-      };
+      const addTrait = (TraitClass) => {
+        return new TraitClass(this)
+      }
 
-      traits.forEach(addTrait);
-    };
+      traits.forEach(addTrait)
+    }
 
-    if (this.props.traits!==undefined){
-      addTraits(this.props.traits);
+    if (this.props.traits !== undefined) {
+      addTraits(this.props.traits)
     }
   }
 
   // DO NOT OVERRIDE THIS METHOD
   initializeStream() {
-    this.checkForTraits();
-    this.onChannelInitialized();
-    this.checkForPersistentDataMode();
-    this.onRegistered();
-    this.props.isRegistered = true;
-
-
+    this.checkForTraits()
+    this.onChannelInitialized()
+    this.checkForPersistentDataMode()
+    this.onRegistered()
+    this.props.isRegistered = true
   }
 
-  static checkForPersistentDataMode(props=this.props, actionsObj=this.channelActions){
-    const actionsObjIsEmpty = isEmpty(actionsObj);
-    const dataIsAdded = prop('data', props) !== undefined;
-    const autoSetToCachedPayload = actionsObjIsEmpty === true && dataIsAdded === true;
-    const setDefaultActionsObj = ()=>{
-      const {name} = props;
-      const actionStr = `${name}_EVENT`;
+  static checkForPersistentDataMode(props = this.props, actionsObj = this.channelActions) {
+    const actionsObjIsEmpty = isEmpty(actionsObj)
+    const dataIsAdded = prop('data', props) !== undefined
+    const autoSetToCachedPayload = actionsObjIsEmpty === true && dataIsAdded === true
+    const setDefaultActionsObj = () => {
+      const { name } = props
+      const actionStr = `${name}_EVENT`
       return {
         [actionStr] : actionStr
       }
     }
 
-    if (autoSetToCachedPayload){
-      props.sendCachedPayload = true;
-      actionsObj = setDefaultActionsObj();
+    if (autoSetToCachedPayload) {
+      props.sendCachedPayload = true
+      actionsObj = setDefaultActionsObj()
 
-      if (this.channelActions!==undefined){
-        this.channelActions = actionsObj;
+      if (this.channelActions !== undefined) {
+        this.channelActions = actionsObj
       }
     }
 
-
-    //console.log("PROPS IS ",{actionsObjIsEmpty, dataIsAdded, props, actionsObj}, this.channelActions)
-    return {props, actionsObj};
+    // console.log("PROPS IS ",{actionsObjIsEmpty, dataIsAdded, props, actionsObj}, this.channelActions)
+    return { props, actionsObj }
   }
 
   setTrace(bool) {
   }
 
-  createChannelActionsObj(name, extendedActionsArr=[]) {
-    const getActionVal = ifElse(is(String), identity, head);
-    let mainArr = extendedActionsArr.concat(this.addRegisteredActions(name));
-    let arr = rMap(getActionVal,mainArr);
-    const converter = str => objOf(str, str);
-    let obj = mergeAll(chain(converter, arr));
-    this.channelActions = obj;
+  createChannelActionsObj(name, extendedActionsArr = []) {
+    const getActionVal = ifElse(is(String), identity, head)
+    const mainArr = extendedActionsArr.concat(this.addRegisteredActions(name))
+    const arr = rMap(getActionVal, mainArr)
+    const converter = str => objOf(str, str)
+    const obj = mergeAll(chain(converter, arr))
+    this.channelActions = obj
   }
 
   createChannelActionMethods() {
-    const defaultFn = 'onViewStreamInfo';
-    const getActionVal = ifElse(is(String), identity, head);
-    const getCustomMethod = val => {
-      const methodStr = view(lensIndex(1), val);
-      const hasMethod = typeof (this[methodStr]) === 'function';
-      if (hasMethod === true) {
-        this[methodStr].bind(this);
-      } else {
-        console.warn(`"${this.props.name}", REQUIRES THE FOLLOWING METHOD ${methodStr} FOR ACTION, ${val[0]}`);
+    const defaultFn = 'onViewStreamInfo'
+    const getActionVal = ifElse(is(String), identity, head)
+    const delayCheckIfTraitMethodHasBeenAdded = (methodStr, val) => {
+      const delayer = () => {
+        if (typeof this[methodStr] !== 'function') {
+          console.warn(`"${this.props.name}", REQUIRES THE FOLLOWING METHOD ${methodStr} FOR ACTION, ${val[0]}`)
+        }
       }
+      window.setTimeout(delayer, 100)
+    }
 
-      return methodStr;
-    };
+    const getCustomMethod = val => {
+      const methodStr = view(lensIndex(1), val)
+      delayCheckIfTraitMethodHasBeenAdded(methodStr, val)
+      return methodStr
+    }
 
-    const getArrMethod =  ifElse(is(String), always(defaultFn), getCustomMethod);
+    const getArrMethod =  ifElse(is(String), always(defaultFn), getCustomMethod)
 
     const createObj = val => {
-      let key = getActionVal(val);
-      let method =  getArrMethod(val);
-      return [key, method];
-    };
+      const key = getActionVal(val)
+      const method =  getArrMethod(val)
+      return [key, method]
+    }
 
-    this.channelActionMethods = fromPairs(rMap(createObj, this.addRegisteredActions()));
+    this.channelActionMethods = fromPairs(rMap(createObj, this.addRegisteredActions()))
 
     // console.log('the channel action methods ',this.channelActionMethods);
   }
@@ -260,49 +258,51 @@ export class Channel {
    */
   addRegisteredActions() {
     let arr = []
-    if (path(['props','data'], this)){
-      arr = [`${this.props.name}_EVENT`];
+    if (path(['props', 'data'], this)) {
+      arr = [`${this.props.name}_EVENT`]
     }
-    return arr;
+    return arr
   }
 
   onReceivedObservable(obj) {
-    this.onIncomingObservable(obj);
+    this.onIncomingObservable(obj)
   }
 
   getActionMethodForObservable(obj) {
-    obj.unpacked=true;
-    const defaultFn = this.onViewStreamInfo.bind(this);
+    obj.unpacked = true
+    const defaultFn = this.onViewStreamInfo.bind(this)
 
-    let methodStr = path(['data', 'action'], obj);
-    const methodVal = prop(methodStr, this.channelActionMethods);
+    const methodStr = path(['data', 'action'], obj)
+    const methodVal = prop(methodStr, this.channelActionMethods)
 
-    let fn = defaultFn;
+    let fn = defaultFn
 
     if (methodVal !== undefined && methodVal !== 'onViewStreamInfo') {
-      const methodExists = typeof (this[methodVal]) === 'function';
+      const methodExists = typeof (this[methodVal]) === 'function'
       if (methodExists === true) {
-        fn = this[methodVal].bind(this);
+        fn = this[methodVal].bind(this)
       }
     }
 
-    return fn;
+    return fn
   }
 
   onIncomingObservable(obj) {
-    let eqsName = equals(obj.name, this.props.name);
-    let {action, payload, srcElement} = obj.data;
-    //console.log("INCOMING ",{action, payload, srcElement}, {obj});
-    const mergeProps = (d) => mergeAll([d, { action: prop('action', d) }, prop('payload', d), prop('srcElement', d)]);
-    let dataObj = obsVal => ({
+    const eqsName = equals(obj.name, this.props.name)
+    const { action, payload, srcElement } = obj.data
+    // console.log("INCOMING ",{action, payload, srcElement}, {obj});
+    const mergeProps = (d) => mergeAll([d, { action: prop('action', d) }, prop('payload', d), prop('srcElement', d)])
+    const dataObj = obsVal => ({
       clone: () => mergeProps(obj.data),
-      action, payload, srcElement,
+      action,
+      payload,
+      srcElement,
       event: obsVal
-    });
-    let onSuccess = (obj) => obj.observable.pipe(map(dataObj))
-    .subscribe(this.getActionMethodForObservable(obj));
-    let onError = () => {};
-    return eqsName === true ? onSuccess(obj) : onError();
+    })
+    const onSuccess = (obj) => obj.observable.pipe(map(dataObj))
+      .subscribe(this.getActionMethodForObservable(obj))
+    const onError = () => {}
+    return eqsName === true ? onSuccess(obj) : onError()
   }
 
   /**
@@ -326,7 +326,6 @@ export class Channel {
    */
   onViewStreamInfo(obj) {
   }
-
 
   /**
    *
@@ -357,14 +356,13 @@ export class Channel {
   sendChannelPayload(action, payload, srcElement = {}, event = {}, obs$ = this.observer$) {
     // MAKES ALL CHANNEL BASE AND DATA STREAMS CONSISTENT
 
-
-    let channelPayloadItem = new ChannelPayload(this.props.name, action, payload, srcElement, event);
+    const channelPayloadItem = new ChannelPayload(this.props.name, action, payload, srcElement, event)
     // console.log("CHANNEL STREEM ITEM ",channelPayloadItem);
 
-   // const onNextFrame = ()=>obs$.next(channelPayloadItem);
-    //requestAnimationFrame(onNextFrame)
+    // const onNextFrame = ()=>obs$.next(channelPayloadItem);
+    // requestAnimationFrame(onNextFrame)
 
-    obs$.next(channelPayloadItem);
+    obs$.next(channelPayloadItem)
   }
 
   /**
@@ -374,7 +372,7 @@ export class Channel {
    * <p>Knowledge of rxjs is not required to subscribe to and parse Channel data.</p>
    * <p>But accessing the rxjs Subject gives developers the ability to use all of the available rxjs mapping and observable tools.</p>
    *
-   * @param {String} CHANNEL_NAME The registered name of the requested channel.
+   * @param {String} channelName The registered name of the requested channel.
    * @returns
    * The source rxjs Subject of the requested channel.
    * @example
@@ -384,31 +382,25 @@ export class Channel {
    *
    *
    */
-  getChannel(CHANNEL_NAME, payloadFilter) {
-    let isValidChannel = c => registeredStreamNames().includes(c);
-    let error = c => console.warn(
-        `channel name ${c} is not within ${registeredStreamNames}`);
-    let startSubscribe = (c) => {
-      let obs$ = this.streamsController.getStream(c).observer;
-      if (payloadFilter!==undefined){
-        return obs$.pipe(filter(payloadFilter));
+  getChannel(channelName, payloadFilter) {
+    const isValidChannel = c => registeredStreamNames().includes(c)
+    const error = c => console.warn(
+        `channel name ${c} is not within ${registeredStreamNames}`)
+    const startSubscribe = (c) => {
+      const obs$ = this.streamsController.getStream(c).observer
+      if (payloadFilter !== undefined) {
+        return obs$.pipe(filter(payloadFilter))
       }
 
-      return obs$;
-    };
-    let fn = ifElse(isValidChannel, startSubscribe, error);
-    return fn(CHANNEL_NAME);
-  }
-
-
-  static checkForNotTrackFlag(props={}){
-    if (props.doNotTrack === true){
-      SpyneAppProperties.doNotTrackChannel(props.channelName);
+      return obs$
     }
-
-
+    const fn = ifElse(isValidChannel, startSubscribe, error)
+    return fn(channelName)
   }
 
-
-
+  static checkForNotTrackFlag(props = {}) {
+    if (props.doNotTrack === true) {
+      SpyneAppProperties.doNotTrackChannel(props.channelName)
+    }
+  }
 }

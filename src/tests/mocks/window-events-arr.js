@@ -518,4 +518,4 @@ const windowEventsArr = [
   'ValueChange',
   'notification',
   'notification'
-];
+]

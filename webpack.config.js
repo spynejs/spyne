@@ -1,79 +1,88 @@
+// webpack.config.js
 const path = require('path');
 const webpack = require('webpack');
-const PACKAGE = require('./package');
-const version = PACKAGE.version;
-const getEnv = ()=>{
-  const npmCommand = process.env.npm_lifecycle_script;
-  return String(npmCommand).replace(/^(webpack.*--env)(\s)*(\w+)(.*)$/gm, "$3");
-}
-const env = getEnv();
-
-const libraryName = 'spyne';
-let moduleRulesArr = [];
-let devToolValue = 'eval-source-map';
-let outputFile;
-let externalsArr =[];
+const ESLintPlugin = require('eslint-webpack-plugin');
 const WebpackRxjsExternals = require('webpack-rxjs-externals');
-const loaderOptionsPlugin = new webpack.LoaderOptionsPlugin({ options: {
-    test: /(\.js)$/,
-    loader: 'eslint-loader',
-    exclude: [/node_modules/,/(src\/tests)/],
-    options: {
-      fix: true
-    }
-  }
-});
+const pkg = require('./package.json');
 
-let bannerPlugin = new webpack.BannerPlugin({
-    banner: `spynejs ${version}\nhttps://sypnejs.org\n(c) 2017-present Frank Batista`,
-    entryOnly:true
-})
-
-
-
-let spynePlugins = [loaderOptionsPlugin];
-
-if (env === 'build') {
-  outputFile = libraryName + '.min.js';
-  devToolValue = false;
-  externalsArr = [
-    WebpackRxjsExternals(),
-    {ramda : {
-        commonjs: 'ramda',
-        commonjs2: 'ramda',
-        amd: 'ramda',
-        root: 'R'
-      }}
-  ];
-} else if(env === 'dev') {
-  outputFile = libraryName + '.js';
-}
-
-
-const config = {
-  entry: path.join(__dirname, '/src/spyne/spyne.js'),
-  devtool: false,
-
-  externals: externalsArr,
-
-  module: {
-    rules: moduleRulesArr
-  },
-  resolve: {
-    modules: [path.resolve('./node_modules')],
-    extensions: ['.json', '.js']
-  },
-  plugins: spynePlugins
-};
-
-if (env!==undefined){
-  config['output'] = {
-    path: path.join(__dirname, '/lib'),
-        filename: outputFile,
-        library: 'spyne',
-        libraryTarget:  'umd',
-        umdNamedDefine: true
+// We'll define a base config to share options:
+function baseConfig(mode) {
+  return {
+    mode,
+    devtool: mode === 'production' ? false : 'inline-source-map',
+    externals: [
+      WebpackRxjsExternals(),
+      {
+        ramda: {
+          commonjs: 'ramda',
+          commonjs2: 'ramda',
+          amd: 'ramda',
+          root: 'R'
+        }
+      }
+    ],
+    module: {
+      rules: [
+        // Add Babel or other loaders here if needed
+        // {
+        //   test: /\.js$/,
+        //   exclude: /node_modules/,
+        //   use: 'babel-loader'
+        // }
+      ]
+    },
+    resolve: {
+      extensions: ['.js'],
+      modules: [path.resolve(__dirname, 'node_modules'), 'node_modules']
+    },
+    plugins: [
+      // Modern replacement for eslint-loader
+      new ESLintPlugin({
+        fix: true,
+        extensions: ['js'],
+        exclude: ['node_modules']
+      }),
+      new webpack.BannerPlugin({
+        banner: `spynejs ${pkg.version}\nhttps://spynejs.org\n(c) 2017-present Frank Batista`,
+        entryOnly: true
+      })
+    ]
   };
 }
 
-module.exports = config;
+// ESM Build:
+const esmConfig = {
+  ...baseConfig(process.env.NODE_ENV || 'development'),
+
+  entry: './src/spyne/spyne.js',
+
+  // Enable module output
+  experiments: {
+    outputModule: true
+  },
+  output: {
+    path: path.resolve(__dirname, 'lib'),
+    filename: 'spyne.esm.js',
+    library: {
+      type: 'module'
+    }
+  }
+};
+
+// UMD Build:
+const umdConfig = {
+  ...baseConfig(process.env.NODE_ENV || 'development'),
+
+  entry: './src/spyne/spyne.js',
+
+  output: {
+    path: path.resolve(__dirname, 'lib'),
+    filename: 'spyne.umd.js',
+    library: 'spyne',
+    libraryTarget: 'umd',
+    umdNamedDefine: true
+  }
+};
+
+// Export both configs in an array
+module.exports = [esmConfig, umdConfig];

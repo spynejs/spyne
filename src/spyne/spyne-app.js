@@ -1,9 +1,11 @@
-import {ChannelsMap} from './channels/channels-map';
-import {ViewStream} from './views/view-stream';
-import {SpyneAppProperties} from './utils/spyne-app-properties';
-import {deepMerge} from './utils/deep-merge';
-const _channels = new ChannelsMap();
-const version = '0.19.1';
+import { ChannelsMap } from './channels/channels-map'
+import { ViewStream } from './views/view-stream'
+import { SpyneUtilsChannelRoute } from './utils/spyne-utils-channel-route'
+import { SpyneAppProperties } from './utils/spyne-app-properties'
+import { sanitizeHTMLConfigure } from './utils/sanitize-html'
+
+const _channels = new ChannelsMap()
+const version = '0.20.0'
 
 class SpyneApplication {
   /**
@@ -30,18 +32,17 @@ class SpyneApplication {
   constructor() {
     this.version = version
 
-    //console.log('spyne app created')
-
-
-  }
-  get channels(){
-    return _channels;
+    // console.log('spyne app created')
   }
 
-  init(config = {}, testMode=false) {
-    //this.channels = new ChannelsMap();
+  get channels() {
+    return _channels
+  }
+
+  init(config = {}, testMode = false) {
+    // this.channels = new ChannelsMap();
     /*!
-     * Spyne 0.19.1
+     * Spyne 0.20.0
      * https://spynejs.org
      *
      * @license Copyright 2017-2021, Frank Batista, Relevant Context, LLC. All rights reserved.
@@ -53,6 +54,8 @@ class SpyneApplication {
     /* eslint-disable */
 
 
+
+
     if(SpyneAppProperties.initialized === true){
       if (testMode){
         return 'The Spyne Application has already been initialized!';
@@ -62,19 +65,26 @@ class SpyneApplication {
       return
     }
 
-
+    //const imgPath = IMG_PATH || undefined;
+    const imgPath = (typeof IMG_PATH !== 'undefined') ? IMG_PATH : undefined;
     let defaultConfig = {
       scrollLock: false,
       scrollLockX: 31,
       scrollLockY: 0,
-      debug: true,
+      debug: false,
+      strict: false,
+      baseHref: undefined,
+      IMG_PATH: imgPath,
+      pluginMethods:{
+
+      },
       plugins:{
 
       },
       tmp: {},
       channels: {
         WINDOW: {
-          mediqQueries: {
+          mediaQueries: {
 
           },
           events: [],
@@ -82,6 +92,7 @@ class SpyneApplication {
           listenForOrientation: true,
           listenForScroll: false,
           listenForMouseWheel: false,
+          listenForWheel: false,
           debounceMSTimeForResize: 200,
           debounceMSTimeForScroll: 150
         },
@@ -101,11 +112,12 @@ class SpyneApplication {
       }
     };
     if (config !== undefined) {
-       config = SpyneAppProperties.initialize(defaultConfig, config, _channels);
+      const routeUtils = SpyneUtilsChannelRoute;
+       config = SpyneAppProperties.initialize(defaultConfig, config, _channels, routeUtils);
+       //console.log("SPYNE APP PROPS ",SpyneAppProperties);
       //window.Spyne = this;
       //window.Spyne['config'] = deepMerge(defaultConfig, config)
     }
-
     this.pluginsFn = SpyneAppProperties.getPluginsMethodObj(config['pluginMethods']);
     this.getChannelActions = (str) => _channels.getChannelActions(str);
     this.registerChannel = (val) => _channels.registerStream(val);
@@ -120,6 +132,7 @@ class SpyneApplication {
        window.Spyne = {version};
     }
 
+    sanitizeHTMLConfigure(SpyneAppProperties.config);
 
   }
 

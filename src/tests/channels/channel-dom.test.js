@@ -1,28 +1,28 @@
-import { SpyneChannelWindow } from '../../spyne/channels/spyne-channel-window';
-import { SpyneConfigData } from '../mocks/utils-data';
+import { SpyneChannelWindow } from '../../spyne/channels/spyne-channel-window'
+import { SpyneConfigData } from '../mocks/utils-data'
 
-const domData = SpyneConfigData.channels.WINDOW;
+const domData = SpyneConfigData.channels.WINDOW
 
 describe('channel dom tests', () => {
   describe('channel outputs', () => {
     it('create observable of all queries', () => {
-      return true;
-    });
+      return true
+    })
 
     it('mediq query output', () => {
-      return true;
+      return true
       // expect(a).to.equal(true);
-    });
+    })
 
     it('touch device orientation output', () => {
-      return true;
-    });
+      return true
+    })
 
     it('scroll output', () => {
-      return true;
-    });
+      return true
+    })
     it('resize window output', () => {
-      return true;
-    });
-  });
-});
+      return true
+    })
+  })
+})

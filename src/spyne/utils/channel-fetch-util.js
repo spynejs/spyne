@@ -1,6 +1,6 @@
-import { from } from 'rxjs';
-import { flatMap, map, publish, tap } from 'rxjs/operators';
-import {compose, prop, defaultTo, over, lensProp, has, propEq, when, propIs, allPass, assoc, pick, mergeDeepRight} from 'ramda';
+import { from } from 'rxjs'
+import { flatMap, map, publish, tap } from 'rxjs/operators'
+import { compose, prop, defaultTo, over, lensProp, has, propEq, when, propIs, allPass, assoc, pick, mergeDeepRight } from 'ramda'
 export class ChannelFetchUtil {
   /**
    * @module ChannelFetchUtil
@@ -46,115 +46,132 @@ export class ChannelFetchUtil {
    *
    */
 
-
   constructor(options, subscriber, testMode, CHANNEL_NAME) {
+    const testSubscriber = (p) => console.log('FETCH RETURNED ', p)
 
-    const testSubscriber = (p) => console.log('FETCH RETURNED ', p);
+    this._mapFn = ChannelFetchUtil.setMapFn(options)
+    this._url = ChannelFetchUtil.setUrl(options)
+    this._responseType = ChannelFetchUtil.setResponseType(options)
+    this._serverOptions = ChannelFetchUtil.setServerOptions(options)
+    this._subscriber = subscriber !== undefined ? subscriber : testSubscriber
+    this.debug = options.debug !== undefined ? options.debug : false
+    this.channelName = CHANNEL_NAME
 
-    this._mapFn = ChannelFetchUtil.setMapFn(options);
-    this._url = ChannelFetchUtil.setUrl(options);
-    this._responseType = ChannelFetchUtil.setResponseType(options);
-    this._serverOptions = ChannelFetchUtil.setServerOptions(options);
-    this._subscriber = subscriber !== undefined ? subscriber : testSubscriber;
-    this.debug = options.debug !== undefined ? options.debug : false;
-    this.channelName = CHANNEL_NAME;
-
-    let fetchProps = {
+    const fetchProps = {
       mapFn: this.mapFn,
       url: this.url,
       serverOptions: this.serverOptions,
       responseType: this.responseType,
       debug: this.debug
-    };
+    }
     if (testMode !== true) {
-      ChannelFetchUtil.startWindowFetch(fetchProps, this._subscriber, this.channelName);
+      ChannelFetchUtil.startWindowFetch(fetchProps, this._subscriber, this.channelName)
     }
   }
 
   static startWindowFetch(props, subscriber, channelName) {
-    let { mapFn, url, serverOptions, responseType, debug } = props;
-    const tapLogDebug = p => console.log('DEBUG FETCH :', p, {url, serverOptions, responseType, channelName});
-    const tapLog = debug === true ? tapLogDebug : () => {};
+    const { mapFn, url, serverOptions, responseType, debug } = props
+    const tapLogDebug = p => console.log('DEBUG FETCH :', p, { url, serverOptions, responseType, channelName })
+    const tapLog = debug === true ? tapLogDebug : () => {}
 
-    const mapWrapper = (mapMethod)=>{
-      const metadata = {channelName, url, responseType, serverOptions}
+    const mapWrapper = (mapMethod) => {
+      const metadata = { channelName, url, responseType, serverOptions }
 
-      return (data)=>{
-        return mapMethod(data, metadata);
+      return (data) => {
+        return mapMethod(data, metadata)
       }
-
     }
 
-    let response$ = from(window.fetch(url, serverOptions))
-    .pipe(tap(tapLog), flatMap(r => from(r[responseType]())),
+    const response$ = from(window.fetch(url, serverOptions))
+      .pipe(tap(tapLog), flatMap(r => from(r[responseType]())),
         map(mapWrapper(mapFn)),
-        publish());
+        publish())
 
-    response$.connect();
+    response$.connect()
 
-    response$.subscribe(subscriber);
+    response$.subscribe(subscriber)
   }
 
   static setMapFn(opts) {
-    const getFn = compose(defaultTo((p) => p), prop('mapFn'));
-    return getFn(opts);
+    const getFn = compose(defaultTo((p) => p), prop('mapFn'))
+    return getFn(opts)
   }
 
   static setUrl(opts) {
-    let url = prop('url', opts);
+    const url = prop('url', opts)
     if (url === undefined) {
-      console.warn(`SPYNE WARNING: URL is undefined for data channel`);
+      console.warn('SPYNE WARNING: URL is undefined for data channel')
     }
-    return url;
+    return url
   }
 
   static setResponseType(opts) {
-    return defaultTo('json', prop('responseType', opts));
+    return defaultTo('json', prop('responseType', opts))
   }
 
   get mapFn() {
-    return this._mapFn;
+    return this._mapFn
   }
 
   get url() {
-    return this._url;
+    return this._url
   }
 
   get serverOptions() {
-    return this._serverOptions;
+    return this._serverOptions
   }
 
   get responseType() {
-    return this._responseType;
+    return this._responseType
   }
 
   static stringifyBodyIfItExists(obj) {
-    const convertToJSON = when(propIs(Object, 'body'), compose(over(lensProp('body'), JSON.stringify)));
+    const convertToJSON = when(propIs(Object, 'body'), compose(over(lensProp('body'), JSON.stringify)))
 
-    return convertToJSON(obj);
+    return convertToJSON(obj)
   }
 
   static updateMethodWhenBodyExists(opts) {
-    const hasBody = has('body');
-    const methodIsGet = propEq('GET', 'method');
-    const pred = allPass([hasBody, methodIsGet]);
-    return when(pred, assoc('method', 'POST'))(opts);
+    const hasBody = has('body')
+    const methodIsGet = propEq('GET', 'method')
+    const pred = allPass([hasBody, methodIsGet])
+    return when(pred, assoc('method', 'POST'))(opts)
   }
 
   static setServerOptions(opts) {
-    let options = pick(['header', 'body', 'mode', 'method'], opts);
-    let mergedOptions = mergeDeepRight(ChannelFetchUtil.baseOptions(), options);
-    mergedOptions = ChannelFetchUtil.updateMethodWhenBodyExists(mergedOptions);
-    mergedOptions = ChannelFetchUtil.stringifyBodyIfItExists(mergedOptions);
-    return mergedOptions;
+    const options = pick([
+      'method',
+      'headers',
+      'body',
+      'mode',
+      'credentials',
+      'cache',
+      'redirect',
+      'referrer',
+      'referrerPolicy',
+      'integrity',
+      'keepalive'
+    ], opts)
+    let mergedOptions = mergeDeepRight(ChannelFetchUtil.baseOptions(), options)
+    mergedOptions = ChannelFetchUtil.updateMethodWhenBodyExists(mergedOptions)
+    mergedOptions = ChannelFetchUtil.stringifyBodyIfItExists(mergedOptions)
+    return mergedOptions
   }
 
   static baseOptions() {
     return {
-      method: 'GET',
-      headers: {
-        "Accept": "application/json, text/plain, */*"
-      }
-    };
+      method: 'GET', // Default method
+      headers: new Headers({
+        Accept: 'application/json, text/plain, */*'
+      }),
+      mode: 'cors', // Default mode
+      credentials: 'same-origin', // Default credentials policy
+      cache: 'default', // Default cache policy
+      redirect: 'follow', // Default redirect policy
+      referrer: 'client', // Default referrer policy
+      referrerPolicy: 'no-referrer-when-downgrade', // Default referrer policy
+      integrity: '', // Default integrity
+      keepalive: false // Default keepalive
+    }
   }
 }

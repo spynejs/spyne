@@ -10,9 +10,9 @@ import {
   defaultTo,
   prop,
   is
-} from 'ramda';
-import {SpyneAppProperties} from '../utils/spyne-app-properties';
-import {safeClone} from '../utils/safe-clone';
+} from 'ramda'
+import { SpyneAppProperties } from '../utils/spyne-app-properties'
+import { safeClone } from '../utils/safe-clone'
 
 export class ChannelPayload {
   /**
@@ -36,17 +36,17 @@ export class ChannelPayload {
    * @returns Validated ChannelPayload json object
    */
   constructor(channelName, action, payload, srcElement, event, timeLabel) {
-    let channel = channelName;
-    //payload = ChannelPayload.deepFreeze(payload);
+    const channel = channelName
+    // payload = ChannelPayload.deepFreeze(payload);
 
-    if(timeLabel){
-      console.time(timeLabel);
+    if (timeLabel) {
+      console.time(timeLabel)
     }
 
-    let channelPayloadItemObj = { channelName, action, srcElement, event };
-   // Object.defineProperty(channelPayloadItemObj, 'payload', {get: () => clone(payload)});
-    const frozenPayload = ChannelPayload.deepFreeze(payload);
-    channelPayloadItemObj['payload'] = frozenPayload;
+    const channelPayloadItemObj = { channelName, action, srcElement, event }
+    // Object.defineProperty(channelPayloadItemObj, 'payload', {get: () => clone(payload)});
+    const frozenPayload = ChannelPayload.deepFreeze(payload)
+    channelPayloadItemObj.payload = frozenPayload
     /**
      * This is a convenience method that helps with destructuring by merging all properties.
      *
@@ -60,71 +60,63 @@ export class ChannelPayload {
      *
      */
 
-
-
-    if (SpyneAppProperties.debug === true){
-      if (Object.prototype.hasOwnProperty.call(payload, 'payload')){
-        let payloadStr = JSON.stringify(payload);
-        console.warn(`Spyne Warning: the following payload contains a nested payload property which may create conflicts: Action: ${action}, ${payloadStr}`);
+    if (SpyneAppProperties.debug === true) {
+      if (Object.prototype.hasOwnProperty.call(payload, 'payload')) {
+        const payloadStr = JSON.stringify(payload)
+        console.warn(`Spyne Warning: the following payload contains a nested payload property which may create conflicts: Action: ${action}, ${payloadStr}`)
       }
 
-      const channelActionsArr = SpyneAppProperties.getChannelActions(channel);
+      const channelActionsArr = SpyneAppProperties.getChannelActions(channel)
 
-      ChannelPayload.validateAction(action, channel, channelActionsArr);
-
-
+      ChannelPayload.validateAction(action, channel, channelActionsArr)
     }
 
-
-
     channelPayloadItemObj.clone = () => mergeAll([
-        {payload:safeClone(channelPayloadItemObj.payload)},
+      { payload:safeClone(channelPayloadItemObj.payload) },
       channelPayloadItemObj.payload,
-        { channel: clone(channel) },
-        { event: clone(event) },
-        {srcElement: srcElement},
-                clone(channelPayloadItemObj.srcElement), {
-        action: clone(channelPayloadItemObj.action) }
-         ]);
-
-
+      { channel: clone(channel) },
+      { event: clone(event) },
+      { srcElement },
+      clone(channelPayloadItemObj.srcElement), { action: clone(channelPayloadItemObj.action) }
+    ])
 
     const channelPayloadItemObjProps = {
       $dir: {
         get: () => channelPayloadItemObj._dir,
-        set: (val) => channelPayloadItemObj._dir=val
+        set: (val) => {
+          channelPayloadItemObj._dir = val
+          return val
+        }
       }
     }
 
-
-
     if (channel === 'CHANNEL_ROUTE') {
-      //channelPayloadItemObj['location'] = ChannelPayload.getLocationData();
-      channelPayloadItemObjProps['location'] = {
-        get: ()=>ChannelPayload.getLocationData()
+      // channelPayloadItemObj['location'] = ChannelPayload.getLocationData();
+      channelPayloadItemObjProps.location = {
+        get: () => ChannelPayload.getLocationData()
       }
-     /* channelPayloadItemObjProps['routeData'] = {
+      /* channelPayloadItemObjProps['routeData'] = {
         get: ()=>prop('routeData', frozenPayload)
       }
 */
     }
 
-    channelPayloadItemObj._dir = undefined;
+    channelPayloadItemObj._dir = undefined
 
     Object.defineProperties(channelPayloadItemObj, channelPayloadItemObjProps)
 
-    if(timeLabel){
-      console.timeEnd(timeLabel);
+    if (timeLabel) {
+      console.timeEnd(timeLabel)
     }
-    return channelPayloadItemObj;
+    return channelPayloadItemObj
   }
 
   static validateAction(action, channel, arr) {
-    let isInArr = includes(action, arr);
+    const isInArr = includes(action, arr)
     if (isInArr === false && SpyneAppProperties.initialized === true) {
-      console.warn(`warning: Action: '${action}' is not registered within the ${channel} channel!`);
+      console.warn(`warning: Action: '${action}' is not registered within the ${channel} channel!`)
     }
-    return isInArr;
+    return isInArr
   }
 
   static getLocationData() {
@@ -137,8 +129,8 @@ export class ChannelPayload {
       'port',
       'pathname',
       'search',
-      'hash'];
-    return pickAll(locationParamsArr, window.location);
+      'hash']
+    return pickAll(locationParamsArr, window.location)
   }
 
   static getStreamItem() {
@@ -146,43 +138,38 @@ export class ChannelPayload {
   }
 
   static deepClone(o) {
-    const isArr = is(Array);
-    const isObj = is(Object);
-    const isIter = ob => isArr(ob)===false && isObj(ob)===true;
-    const isIterable = isIter(o);
-    return isIterable ? compose(fromPairs, toPairs, clone)(o) : clone(o);
-
+    const isArr = is(Array)
+    const isObj = is(Object)
+    const isIter = ob => isArr(ob) === false && isObj(ob) === true
+    const isIterable = isIter(o)
+    return isIterable ? compose(fromPairs, toPairs, clone)(o) : clone(o)
   }
 
-
-
   static deepFreeze(o) {
-    //return o;
-    //return Object.freeze(o);
-    const elIsDomElement = compose(lte(0), defaultTo(-1), prop('nodeType'));
+    // return o;
+    // return Object.freeze(o);
+    const elIsDomElement = compose(lte(0), defaultTo(-1), prop('nodeType'))
 
     try {
-      Object.freeze(o);
+      Object.freeze(o)
       Object.getOwnPropertyNames(o).forEach(function(prop) {
-        if (Object.prototype.hasOwnProperty.call(o,prop)
-            && elIsDomElement(o[prop]) === false
-            && o[prop] !== null
-            && (typeof o[prop] === "object" || typeof o[prop] === "function")
-            && !Object.isFrozen(o[prop])) {
-          ChannelPayload.deepFreeze(o[prop]);
+        if (Object.prototype.hasOwnProperty.call(o, prop) &&
+            elIsDomElement(o[prop]) === false &&
+            o[prop] !== null &&
+            (typeof o[prop] === 'object' || typeof o[prop] === 'function') &&
+            !Object.isFrozen(o[prop])) {
+          ChannelPayload.deepFreeze(o[prop])
         }
-      });
-
-    } catch(e){
-       //console.log("FREEZE ERR ",{o,e});
-      return o;
-
+      })
+    } catch (e) {
+      // console.log("FREEZE ERR ",{o,e});
+      return o
     }
 
-    return o;
+    return o
   }
 
   static getMouseEventKeys() {
-    return ['altKey', 'bubbles', 'cancelBubble', 'cancelable', 'clientX', 'clientY', 'composed', 'ctrlKey', 'currentTarget', 'defaultPrevented', 'detail', 'eventPhase', 'fromElement', 'isTrusted', 'layerX', 'layerY', 'metaKey', 'movementX', 'movementY', 'offsetX', 'offsetY', 'pageX', 'pageY', 'path', 'relatedTarget', 'returnValue', 'screenX', 'screenY', 'shiftKey', 'sourceCapabilities', 'srcElement', 'target', 'timeStamp', 'toElement', 'type', 'view', 'which', 'x', 'y'];
+    return ['altKey', 'bubbles', 'cancelBubble', 'cancelable', 'clientX', 'clientY', 'composed', 'ctrlKey', 'currentTarget', 'defaultPrevented', 'detail', 'eventPhase', 'fromElement', 'isTrusted', 'layerX', 'layerY', 'metaKey', 'movementX', 'movementY', 'offsetX', 'offsetY', 'pageX', 'pageY', 'path', 'relatedTarget', 'returnValue', 'screenX', 'screenY', 'shiftKey', 'sourceCapabilities', 'srcElement', 'target', 'timeStamp', 'toElement', 'type', 'view', 'which', 'x', 'y']
   }
 }

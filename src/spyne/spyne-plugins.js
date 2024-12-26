@@ -1,117 +1,102 @@
-import {SpyneApp, DomElement, SpyneAppProperties} from './spyne';
-import {is, clone, pathSatisfies} from 'ramda';
+import { DomElement } from './views/dom-element'
+import { SpyneAppProperties } from './utils/spyne-app-properties'
+import { is, clone, pathSatisfies } from 'ramda'
 export class SpynePlugin {
+  constructor(props = {}) {
+    let { name, config, parentEl } = props
+    this.props = props
 
-  constructor(props={}) {
-    let {name, config, parentEl} = props;
-    this.props = props;
-
-
-    if (config===undefined){
-      config = clone(props);
+    if (config === undefined) {
+      config = clone(props)
     }
 
-    this.name = name || 'empty';
-    this.props.name = name;
-    config = SpynePlugin.mergeDefaultConfig(config, this.defaultConfig());
-    this.props.parentEl = parentEl || SpynePlugin.createParentEl();
-    SpynePlugin.getSpyneApp(name, config);
+    this.name = name || 'empty'
+    this.props.name = name
+    config = SpynePlugin.mergeDefaultConfig(config, this.defaultConfig())
+    this.props.parentEl = parentEl || SpynePlugin.createParentEl()
+    SpynePlugin.getSpyneApp(name, config)
 
-    if (this.props.traits!==undefined){
-      this.addTraits(this.props.traits);
+    if (this.props.traits !== undefined) {
+      this.addTraits(this.props.traits)
     }
 
-    this.onBeforeRegistered();
-    this.onRegistered();
-    this.onRender();
+    this.onBeforeRegistered()
+    this.onRegistered()
+    this.onRender()
   }
 
-  static mergeDefaultConfig(config={}, defaultConfig=this.defaultConfig()){
-    return Object.assign(defaultConfig, config);
+  static mergeDefaultConfig(config = {}, defaultConfig = this.defaultConfig()) {
+    return Object.assign(defaultConfig, config)
   }
 
-  static getSpyneApp(name, config){
-    if(SpyneAppProperties.initialized===false){
-
-      console.warn(`Spyne Warning: Unable to install plugin, ${name}! SpyneApp has not been initialized!`);
-       //SpyneApp.init()
-    } else{
-      SpyneAppProperties.addPluginConfig(name, config);
+  static getSpyneApp(name, config) {
+    if (SpyneAppProperties.initialized === false) {
+      console.warn(`Spyne Warning: Unable to install plugin, ${name}! SpyneApp has not been initialized!`)
+      // SpyneApp.init()
+    } else {
+      SpyneAppProperties.addPluginConfig(name, config)
     }
-
   }
 
+  static updateSpyneConfig(spyneApp, pluginName, pluginConfig) {
+    const pathExists = pathSatisfies(is(Object), ['config', 'plugins', pluginName])(spyneApp)
 
-  static updateSpyneConfig(spyneApp, pluginName, pluginConfig){
-    const pathExists = pathSatisfies(is(Object), ['config', 'plugins', pluginName])(spyneApp);
-
-    if (pathExists===true){
-      if (spyneApp.config.debug===true) {
+    if (pathExists === true) {
+      if (spyneApp.config.debug === true) {
         console.warn(`Spyne Warning: The plugin, ${pluginName}, already exists`)
       }
-       return false;
+      return false
     }
-    spyneApp.config.plugins[pluginName] = pluginConfig;
-    return spyneApp.config.plugins[pluginName];
+    spyneApp.config.plugins[pluginName] = pluginConfig
+    return spyneApp.config.plugins[pluginName]
   }
 
-  static createParentEl(el){
-
-    const createPluginParentEl = ()=>{
+  static createParentEl(el) {
+    const createPluginParentEl = () => {
       const pluginEl = document.getElementById('spyne-plugins')
 
-      const createPluginEl = ()=>{
+      const createPluginEl = () => {
         const pluginEl = new DomElement({
           id: 'spyne-plugins'
-        });
-        document.body.appendChild(pluginEl.render());
+        })
+        document.body.appendChild(pluginEl.render())
         const el = document.getElementById('spyne-plugins')
-        el.style.cssText="position:absolute; top:0;left:0;width:100%;height:100%;min-height:100vh;z-index:1000000; pointer-events:none";
-        return el;
+        el.style.cssText = 'position:absolute; top:0;left:0;width:100%;height:100%;min-height:100vh;z-index:1000000; pointer-events:none'
+        return el
       }
-      return pluginEl || createPluginEl();
+      return pluginEl || createPluginEl()
     }
 
-    return el || createPluginParentEl();
+    return el || createPluginParentEl()
   }
 
-  addTraits(traits){
-    if (traits.constructor.name!=='Array'){
-      traits = [traits];
+  addTraits(traits) {
+    if (traits.constructor.name !== 'Array') {
+      traits = [traits]
     }
-    const addTrait=(TraitClass)=>{
-      return new TraitClass(this);
-    };
+    const addTrait = (TraitClass) => {
+      return new TraitClass(this)
+    }
 
-    traits.forEach(addTrait);
-
+    traits.forEach(addTrait)
   }
 
-  onBeforeRegistered(){
-    this.props.pluginName = this.props.name;
-    this.props.config = SpyneAppProperties.getPluginConfigByPluginName(this.props.pluginName);
+  onBeforeRegistered() {
+    this.props.pluginName = this.props.name
+    this.props.config = SpyneAppProperties.getPluginConfigByPluginName(this.props.pluginName)
   }
 
-  defaultConfig(){
-
+  defaultConfig() {
     return {
 
-
     }
+  }
+
+  onRegistered() {
 
   }
 
-  onRegistered(){
-
-
-  }
-
-  onRender(){
-
+  onRender() {
 
   }
-
-
-
 }
-

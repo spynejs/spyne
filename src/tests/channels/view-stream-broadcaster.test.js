@@ -3,15 +3,15 @@ import {
   SpyneConfigData,
   RouteDataForTests,
   windowLocationData
-} from '../mocks/utils-data';
-chai.use(require('chai-dom'));
+} from '../mocks/utils-data'
+chai.use(require('chai-dom'))
 
-const ObjtoStr = JSON.stringify;
+const ObjtoStr = JSON.stringify
 
-const routeConfig = SpyneConfigData.channels.ROUTE;
+const routeConfig = SpyneConfigData.channels.ROUTE
 
 describe('ViewStreamBroadcaster', () => {
   it('should placeholder', () => {
-    return true;
-  });
-});
+    return true
+  })
+})

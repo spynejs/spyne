@@ -2,9 +2,9 @@ const SpyneConfigData = {
 
   channels: {
     WINDOW: {
-      mediqQueries: {
-        'test' : '(max-width: 500px)',
-        'newTest' : '(max-width: 800px)'
+      mediaQueries: {
+        test : '(max-width: 500px)',
+        newTest : '(max-width: 800px)'
       },
       listenForResize: true,
       listenForOrientation: true,
@@ -19,41 +19,41 @@ const SpyneConfigData = {
       isHash: false,
       isHidden: true,
       routes: {
-        'routePath': {
-          'routeName': 'pageId',
-          'home': '',
+        routePath: {
+          routeName: 'pageId',
+          home: '',
           'page-one': {
-            'routePath': {
-              'routeName': 'imageNum',
-              "work" : {
-                'routePath': {
-                  'routeName': 'author',
-                  'hemingway': 'hemingway'
+            routePath: {
+              routeName: 'imageNum',
+              work : {
+                routePath: {
+                  routeName: 'author',
+                  hemingway: 'hemingway'
                 }
-                },
-              'routePath': {
-                'routeName': 'author',
-                'hemingway': 'hemingway'
+              },
+              routePath: {
+                routeName: 'author',
+                hemingway: 'hemingway'
               }
             }
           },
           'page-one-up': {
-            'routePath': {
-              'routeName': 'imageNum',
-              'routePath': {
-                'routeName': 'pixels'
+            routePath: {
+              routeName: 'imageNum',
+              routePath: {
+                routeName: 'pixels'
               }
             }
           },
           'page-two': {
-            'routePath': {
-              'routeName': 'photogNum'
+            routePath: {
+              routeName: 'photogNum'
             }
           },
           'page-.*': {
-            'routePath': {
-              'routeName': 'randomNum',
-              "thirty-two" : "32"
+            routePath: {
+              routeName: 'randomNum',
+              'thirty-two' : '32'
             }
           }
         }
@@ -63,35 +63,35 @@ const SpyneConfigData = {
     }
   }
 
-};
+}
 
 const routeConfigWithRegexOverride = {
-  'type': 'slash',
-  'isHash': false,
-  'isHidden': false,
-  'routes': {
-    'routePath': {
-      '404': '.*',
-      'routeName': 'pageId',
-      'home': '^$|index.html',
-      'about': 'about',
-      'guide': {
-        'routePath': {
-          'routeName': 'section',
+  type: 'slash',
+  isHash: false,
+  isHidden: false,
+  routes: {
+    routePath: {
+      404: '.*',
+      routeName: 'pageId',
+      home: '^$|index.html',
+      about: 'about',
+      guide: {
+        routePath: {
+          routeName: 'section',
           'overview|reference': {
-            'routePath': {
-              'routeName': 'menuItem'
+            routePath: {
+              routeName: 'menuItem'
             }
           }
         }
       }
     }
   },
-  'regexTokens': {
+  regexTokens: {
     '^$|index.html': ''
   },
-  'routeNamesArr' : ['pageId', 'section', 'menuItem'],
-  'paramsArr': [
+  routeNamesArr : ['pageId', 'section', 'menuItem'],
+  paramsArr: [
     '.*',
     'pageId',
     '^$|index.html',
@@ -99,16 +99,16 @@ const routeConfigWithRegexOverride = {
     'section',
     'menuItem'
   ]
-};
+}
 
 const RouteDataForTests = {
 
   multiple: {
 
     data: {
-      'pageId': 'page-one',
-      'imageNum': '2',
-      'author': 'ubalu'
+      pageId: 'page-one',
+      imageNum: '2',
+      author: 'ubalu'
     },
     arr: '[{"pageId":"page-one"},{"imageNum":"2"},{"author":"ubalu"}]',
     slash: 'page-one/2/ubalu',
@@ -119,8 +119,8 @@ const RouteDataForTests = {
   multipleRegex: {
 
     data: {
-      'pageId': 'page-three',
-      'randomNum': '2'
+      pageId: 'page-three',
+      randomNum: '2'
     },
     arr: '[{"pageId":"page-three"},{"randomNum":"2"}]',
     slash: 'page-three/2',
@@ -132,7 +132,7 @@ const RouteDataForTests = {
   multipleRegexComplex: {
 
     data: {
-      'pageId': 'work'
+      pageId: 'work'
     },
     arr: '[{"pageId":"work"},{"randomNum":"2"}]',
     slash: 'photos/2',
@@ -141,13 +141,12 @@ const RouteDataForTests = {
 
   },
 
-
   multipleWrong: {
 
     data: {
-      'pageId': 'page-four',
-      'imageNum': '2',
-      'author': 'ubalu'
+      pageId: 'page-four',
+      imageNum: '2',
+      author: 'ubalu'
     },
     arr: '[{"pageId":"page-one"},{"imageNum":"2"},{"author":"ubalu"}]',
     slash: 'page-one/2/ubalu',
@@ -159,7 +158,7 @@ const RouteDataForTests = {
   singleBasic: {
 
     data: {
-      'pageId': 'page-two'
+      pageId: 'page-two'
     },
     arr: '[{"pageId":"page-two"}]',
     slash: 'page-two',
@@ -171,8 +170,8 @@ const RouteDataForTests = {
   single: {
 
     data: {
-      'pageId': 'page-two',
-      'imageNum': '2'
+      pageId: 'page-two',
+      imageNum: '2'
     },
     arr: '[{"pageId":"page-two"}]',
     slash: 'page-two',
@@ -183,7 +182,7 @@ const RouteDataForTests = {
   home: {
 
     data: {
-      'pageId': 'home'
+      pageId: 'home'
     },
     arr: [],
     slash: '',
@@ -202,34 +201,34 @@ const RouteDataForTests = {
 
   }
 
-};
+}
 
 const payloadDataForUrlUtils = {
-  'pageId': 'home',
-  'pageIdValue': '',
-  'section': '',
-  'menuItem': ''
-};
+  pageId: 'home',
+  pageIdValue: '',
+  section: '',
+  menuItem: ''
+}
 
 const urlUtilsArr = [
   {
-    'pageId': '^$|index.html'
+    pageId: '^$|index.html'
   }
-];
+]
 
 const ViewStreamHashMethodsObj = {
-  'DISPOSING':     () => {},
-  'DISPOSE':     () => {},
-  'RENDERED':     () => {},
-  'RENDERED_AND_ATTACHED_TO_WINDOW':     () => {},
-  'RENDERED_AND_ATTACHED_TO_PARENT':     () => {},
-  'READY_FOR_GC':     () => {},
-  'NOTHING':     () => {},
-  'CHANNEL_ROUTE_CHANGE_EVENT':    () => {},
-  'UI_EVENT_BLUR':     () => {},
+  DISPOSING:     () => {},
+  DISPOSE:     () => {},
+  RENDERED:     () => {},
+  RENDERED_AND_ATTACHED_TO_WINDOW:     () => {},
+  RENDERED_AND_ATTACHED_TO_PARENT:     () => {},
+  READY_FOR_GC:     () => {},
+  NOTHING:     () => {},
+  CHANNEL_ROUTE_CHANGE_EVENT:    () => {},
+  UI_EVENT_BLUR:     () => {},
   'UI_EVENT_.*':     () => {},
-  'UI_EVENT_CLICK':     () => {},
-  'UI_EVENT_DBLCLICK': () => {}
-};
+  UI_EVENT_CLICK:     () => {},
+  UI_EVENT_DBLCLICK: () => {}
+}
 
-export { SpyneConfigData, RouteDataForTests, ViewStreamHashMethodsObj, routeConfigWithRegexOverride, payloadDataForUrlUtils, urlUtilsArr };
+export { SpyneConfigData, RouteDataForTests, ViewStreamHashMethodsObj, routeConfigWithRegexOverride, payloadDataForUrlUtils, urlUtilsArr }

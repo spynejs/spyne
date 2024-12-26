@@ -2,18 +2,18 @@
 const Rx = require('rxjs');
 import {SpyneTrait} from '../../spyne/utils/view-stream-enhancer';
 */
-import { Enhancer } from '../mocks/enhancer.test';
+import { Enhancer } from '../mocks/enhancer.test'
 class MyClass {
   constructor() {
     this.props = {
       vsid: 1234234
-    };
-    this.loadEnhancer();
+    }
+    this.loadEnhancer()
   }
 
   loadEnhancer() {
-    this.enhancer = new Enhancer(this);
-   // this.enhancer.initAutoBinder();
+    this.enhancer = new Enhancer(this)
+    // this.enhancer.initAutoBinder();
   }
 
   testMethods() {
@@ -24,16 +24,16 @@ class MyClass {
 }
 
 describe('SpyneTrait Tests', () => {
-  let theClass = new MyClass();
+  const theClass = new MyClass()
 
   describe('should add enhancer methods to a class instance object', () => {
     // let methodScope = theClass.getMethodConstructor();
     // expect(methodScope).to.equal(theClass.constructor.name);
-    return true;
-  });
+    return true
+  })
   describe('should add enhancer static methods to a class instance object', () => {
     // let methodScope = theClass.getStaticFnConstructor();
     // expect(methodScope).to.equal(theClass.constructor.name);
-    return true;
-  });
-});
+    return true
+  })
+})

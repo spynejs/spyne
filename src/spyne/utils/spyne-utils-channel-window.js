@@ -1,6 +1,6 @@
-import { fromEventPattern } from 'rxjs';
-import { map } from 'rxjs/operators';
-import {mapObjIndexed} from 'ramda';
+import { fromEventPattern } from 'rxjs'
+import { map } from 'rxjs/operators'
+import { mapObjIndexed } from 'ramda'
 
 export class SpyneUtilsChannelWindow {
   /**
@@ -15,69 +15,69 @@ export class SpyneUtilsChannelWindow {
    */
   constructor() {
     this.createDomObservableFromEvent = SpyneUtilsChannelWindow.createDomObservableFromEvent.bind(
-      this);
+      this)
   }
 
-  static createDomObservableFromEvent(eventName, mapFn, isPassive = true, element=window) {
-    let addHandler = handler => element.addEventListener(eventName, handler,
-      { passive: isPassive });
-    let removeHandler = () => { element[eventName] = (p) => p; };
-    mapFn = mapFn === undefined ? (p) => p : mapFn;
-    return fromEventPattern(addHandler, removeHandler).pipe(map(mapFn));
+  static createDomObservableFromEvent(eventName, mapFn, isPassive = true, element = window) {
+    const addHandler = handler => element.addEventListener(eventName, handler,
+      { passive: isPassive })
+    const removeHandler = () => { element[eventName] = (p) => p }
+    mapFn = mapFn === undefined ? (p) => p : mapFn
+    return fromEventPattern(addHandler, removeHandler).pipe(map(mapFn))
   }
 
   // MEDIA QUERIES
   static createMediaQuery(str) {
-    const mq = window.matchMedia(str);
-    this.checkIfValidMediaQuery(mq, str);
-    return mq !== false ? mq : false;
+    const mq = window.matchMedia(str)
+    this.checkIfValidMediaQuery(mq, str)
+    return mq !== false ? mq : false
   }
 
   static checkIfValidMediaQuery(mq, str) {
-    const noSpaces = str => str.replace(/\s+/gm, '');
-    const isValidBool = mq.matches!==undefined  && noSpaces(mq.media).indexOf(noSpaces(str))>=0;
-    const warnMsg = str => console.warn(`Spyne Info: the following query string, "${str}", has been optimized to "${mq.media}" by the browser and may not be a valid Media Query item!`);
+    const noSpaces = str => str.replace(/\s+/gm, '')
+    const isValidBool = mq.matches !== undefined && noSpaces(mq.media).indexOf(noSpaces(str)) >= 0
+    const warnMsg = str => console.warn(`Spyne Info: the following query string, "${str}", has been optimized to "${mq.media}" by the browser and may not be a valid Media Query item!`)
     if (isValidBool === false) {
-      warnMsg(str);
+      warnMsg(str)
     }
-    return isValidBool;
+    return isValidBool
   }
 
   static createMediaQueryHandler(query, key) {
-    let keyFn = key => p => {
-      p['mediaQueryName'] = key;
-      return p;
-    };
+    const keyFn = key => p => {
+      p.mediaQueryName = key
+      return p
+    }
 
-    let mapKey = keyFn(key);
+    const mapKey = keyFn(key)
 
-    let handlers = (q) => {
+    const handlers = (q) => {
       return {
-        addHandler: (handler) => { q.addListener(handler); },
-        removeHandler: (handler) => { q.onchange = () => {}; }
-      };
-    };
-    let mediaQueryHandler = handlers(query);
+        addHandler: (handler) => { q.addListener(handler) },
+        removeHandler: (handler) => { q.onchange = () => {} }
+      }
+    }
+    const mediaQueryHandler = handlers(query)
     /* eslint-disable new-cap */
     return new fromEventPattern(
       mediaQueryHandler.addHandler,
       mediaQueryHandler.removeHandler)
-      .pipe(map(mapKey));
+      .pipe(map(mapKey))
   }
 
   static createMergedObsFromObj(config) {
-    let mediaQueriesObj = config.mediaQueries || config.mediqQueries;
-    let arr = [];
+    const mediaQueriesObj = config.mediaQueries || config.mediaQueries
+    const arr = []
 
     const loopQueries = (val, key, obj) => {
-      let mq = SpyneUtilsChannelWindow.createMediaQuery(val);
-      if (mq!==false) {
-        arr.push(SpyneUtilsChannelWindow.createMediaQueryHandler(mq, key));
+      const mq = SpyneUtilsChannelWindow.createMediaQuery(val)
+      if (mq !== false) {
+        arr.push(SpyneUtilsChannelWindow.createMediaQueryHandler(mq, key))
       }
-       return arr;
-    };
+      return arr
+    }
 
-    mapObjIndexed(loopQueries, mediaQueriesObj);
-    return arr;
+    mapObjIndexed(loopQueries, mediaQueriesObj)
+    return arr
   }
 }

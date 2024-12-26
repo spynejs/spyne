@@ -1,6 +1,6 @@
-import { Channel } from './channel';
-import { ChannelFetchUtil } from '../utils/channel-fetch-util';
-import {path, pick, mergeDeepRight, all, allPass, either, values, defaultTo, reject, compose, isNil} from 'ramda';
+import { Channel } from './channel'
+import { ChannelFetchUtil } from '../utils/channel-fetch-util'
+import { path, pick, mergeDeepRight, all, allPass, either, values, defaultTo, reject, compose, isNil } from 'ramda'
 
 export class ChannelFetch extends Channel {
   /**
@@ -46,91 +46,87 @@ export class ChannelFetch extends Channel {
    *
    */
 
-
   constructor(name, props = {}) {
-
     // ALLOW FOR GENERIC MAP PROPERTY
 
-    ChannelFetch.validateMapMethod(props, name);
+    ChannelFetch.validateMapMethod(props, name)
 
-    if (props.map!==undefined){
-
-      props.mapFn = props.map;
+    if (props.map !== undefined) {
+      props.mapFn = props.map
     }
     props.extendedActionsArr = [
       `${name}_DATA_EVENT`,
       [`${name}_UPDATE_DATA_EVENT`, 'onFetchUpdate']
-    ];
-    props.sendCachedPayload = true;
-    super(name, props);
+    ]
+    props.sendCachedPayload = true
+    super(name, props)
   }
 
-  static validateMapMethod(props, name, testMode=false){
-    const isNotEmpty = arr=>arr.length>=1
-    const isNotFunction = val => typeof(val)!=='function';
+  static validateMapMethod(props, name, testMode = false) {
+    const isNotEmpty = arr => arr.length >= 1
+    const isNotFunction = val => typeof (val) !== 'function'
     const isUndefinedOrWrongType = either(isNil, isNotFunction)
-    const isUndefined = all(isUndefinedOrWrongType);
+    const isUndefined = all(isUndefinedOrWrongType)
     const isNotUndefinedAndIsNotEmpty = allPass([isUndefined, isNotEmpty])
-    const mapMethodIsInvalid = compose(isNotUndefinedAndIsNotEmpty,values, pick(['map', 'mapFn']))(props)
+    const mapMethodIsInvalid = compose(isNotUndefinedAndIsNotEmpty, values, pick(['map', 'mapFn']))(props)
 
-    if (mapMethodIsInvalid){
-      if(testMode===false) {
-        console.warn(`Spyne Warning: The map method for ChannelFetch, ${name}, appears to be invalid`);
+    if (mapMethodIsInvalid) {
+      if (testMode === false) {
+        console.warn(`Spyne Warning: The map method for ChannelFetch, ${name}, appears to be invalid`)
       }
-      return false;
+      return false
     }
 
-    return true;
-
+    return true
   }
 
   onRegistered() {
-    this.startFetch();
+    this.startFetch()
   }
 
   addRegisteredActions(name) {
-    let arr = [
+    const arr = [
       'CHANNEL_DATA_EVENT',
       ['CHANNEL_UPDATE_DATA_EVENT', 'onFetchUpdate']
-    ];
+    ]
 
-    let extendedArr = compose(defaultTo([]), path(['props', 'extendedActionsArr']));
-    return arr.concat(extendedArr(this));
+    const extendedArr = compose(defaultTo([]), path(['props', 'extendedActionsArr']))
+    return arr.concat(extendedArr(this))
   }
 
   startFetch(options = {}, subscriber = this.onFetchReturned.bind(this)) {
-    let fetchProps = this.consolidateAllFetchProps(options);
-    return new ChannelFetchUtil(fetchProps, subscriber, false, this.props.name);
+    const fetchProps = this.consolidateAllFetchProps(options)
+    return new ChannelFetchUtil(fetchProps, subscriber, false, this.props.name)
   }
 
   onFetchUpdate(evt) {
-    let propsOptions = this.getPropsForFetch(evt);
-    this.startFetch(propsOptions);
+    const propsOptions = this.getPropsForFetch(evt)
+    this.startFetch(propsOptions)
   }
 
   onFetchReturned(streamItem) {
-    return this.createChannelPayloadItem(streamItem);
+    return this.createChannelPayloadItem(streamItem)
   }
 
   createChannelPayloadItem(payload, action = `${this.props.name}_DATA_EVENT`) {
-    const {name, sendCachedPayload, url} = this.props;
-    const srcElement = {name, sendCachedPayload, url};
-    this.sendChannelPayload(action, payload, srcElement);
+    const { name, sendCachedPayload, url } = this.props
+    const srcElement = { name, sendCachedPayload, url }
+    this.sendChannelPayload(action, payload, srcElement)
   }
 
   getPropsForFetch(evt) {
-    let dataObj = path(['viewStreamInfo', 'payload'], evt);
-    return pick(['mapFn', 'url', 'header', 'body', 'mode', 'method', 'responseType', 'debug'], dataObj);
+    const dataObj = path(['viewStreamInfo', 'payload'], evt)
+    return pick(['mapFn', 'url', 'header', 'body', 'mode', 'method', 'responseType', 'debug'], dataObj)
   }
 
   consolidateAllFetchProps(options, props = this.props) {
-    let propsOptions = pick(['mapFn', 'url', 'header', 'body', 'mode', 'method', 'responseType', 'debug'], props);
-    const mergeOptions = (o1, o2) => mergeDeepRight(o1, o2);
-    const filterOutUndefined = reject(isNil);
-    return compose(filterOutUndefined, mergeOptions)(propsOptions, options);
+    const propsOptions = pick(['mapFn', 'url', 'header', 'body', 'mode', 'method', 'responseType', 'debug'], props)
+    const mergeOptions = (o1, o2) => mergeDeepRight(o1, o2)
+    const filterOutUndefined = reject(isNil)
+    return compose(filterOutUndefined, mergeOptions)(propsOptions, options)
   }
 
   get observer() {
-    return this.observer$;
+    return this.observer$
   }
 }

@@ -1,17 +1,30 @@
+# .travis.yml
+dist: jammy            # or focal, etc.
 language: node_js
-cache:
-  directories:
-    - ~/.npm
-services:
-  - xvfb
-notifications:
-  email: false
+
 node_js:
-  - '14'
-before_script:
-  - npm prune
+  - '16'
+  - '18'
+  - node               # 'node' is the latest stable version
+
+services:
+  - xvfb               # If you need a browser environment
+
+cache:
+  npm: true
+
+before_install:
+  - npm install -g npm@latest
+
+install:
+  - npm ci
+
 script:
   - npm run test:single
+
+notifications:
+  email: false
+
 branches:
   only:
-    - master
+    - main             # Only build on 'main' branch

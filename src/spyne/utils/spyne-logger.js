@@ -1,18 +1,11 @@
-class SpyneLoggerClass{
-
+class SpyneLoggerClass {
   constructor(props) {
-
-    this._warnings = [];
+    this._warnings = []
   }
 
-  static warn(){
-
-
+  static warn() {
 
   }
-
-
-
 }
 
-export let SpyneLogger = new SpyneLoggerClass();
+export const SpyneLogger = new SpyneLoggerClass()

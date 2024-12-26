@@ -1,4 +1,7 @@
-const { expect, assert } = require('chai')
+const {
+  expect,
+  assert
+} = require('chai')
 
 describe('root test', () => {
   it('should run shell tests', () => {

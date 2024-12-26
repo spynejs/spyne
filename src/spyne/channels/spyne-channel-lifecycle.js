@@ -1,4 +1,4 @@
-import { Channel } from './channel';
+import { Channel } from './channel'
 
 export class SpyneChannelLifecycle extends Channel {
   /**
@@ -18,28 +18,28 @@ export class SpyneChannelLifecycle extends Channel {
    */
 
   constructor(props = {}) {
-    super('CHANNEL_LIFECYCLE', props);
+    super('CHANNEL_LIFECYCLE', props)
   }
 
   addRegisteredActions() {
     return [
       'CHANNEL_LIFECYCLE_RENDERED_EVENT',
       'CHANNEL_LIFECYCLE_DISPOSED_EVENT'
-    ];
+    ]
   }
 
   onViewStreamInfo(obj) {
-    let {action, srcElement} = obj;
-    let payload = srcElement;
-    payload['action'] = action;
-    this.onSendEvent(action, payload);
+    const { action, srcElement } = obj
+    const payload = srcElement
+    payload.action = action
+    this.onSendEvent(action, payload)
   }
 
   onSendEvent(actionStr, payload = {}) {
-    const action = this.channelActions[actionStr];
-    const srcElement = {};
-    const event = undefined;
-    const delayStream = () => this.sendChannelPayload(action, payload, srcElement, event);
-    window.setTimeout(delayStream, 0);
+    const action = this.channelActions[actionStr]
+    const srcElement = {}
+    const event = undefined
+    const delayStream = () => this.sendChannelPayload(action, payload, srcElement, event)
+    window.setTimeout(delayStream, 0)
   }
 }

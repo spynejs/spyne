@@ -1,35 +1,29 @@
-import {ViewStream} from '../views/view-stream';
-import {curry} from 'ramda';
-export class RouteChannelUpdater{
+import { ViewStream } from '../views/view-stream'
+import { curry } from 'ramda'
+export class RouteChannelUpdater {
+  constructor(cxt) {
+    const name = String(cxt.props.name)
+    const id = `${name}_ROUTE_UPDATER`
 
-  constructor(cxt){
-    let name = String(cxt.props.name);
-    let id = `${name}_ROUTE_UPDATER`;
-
-    const sendRouteChannelUpdate = curry(RouteChannelUpdater.createTemporaryViewStreamObj);
-    return sendRouteChannelUpdate({id,name});
+    const sendRouteChannelUpdate = curry(RouteChannelUpdater.createTemporaryViewStreamObj)
+    return sendRouteChannelUpdate({ id, name })
   }
 
+  static createTemporaryViewStreamObj(props, data) {
+    const { name, id }  = props
+    const payload = data
+    const vs = new ViewStream({
+      id, name, data
+    })
 
-  static createTemporaryViewStreamObj(props, data){
-    let {name, id}  = props;
-    let payload = data;
-    let vs = new ViewStream({
-        id, name, data
-    });
+    vs.onRendered = () => {
+      vs.sendInfoToChannel('CHANNEL_ROUTE', payload)
+    }
 
-    vs.onRendered = ()=>{
-      vs.sendInfoToChannel('CHANNEL_ROUTE', payload);
-    };
+    vs.afterBroadcastEvents = () => {
+      vs.disposeViewStream()
+    }
 
-    vs.afterBroadcastEvents = ()=>{
-      vs.disposeViewStream();
-    };
-
-    vs.appendToNull();
-
+    vs.appendToNull()
   }
-
-
-
 }
