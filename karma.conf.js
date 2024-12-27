@@ -85,7 +85,7 @@ module.exports = function (config) {
     webpackMiddleware: { noInfo: true },
 
     // Report results with coverage
-    reporters: ['coverage'],
+    reporters: ['progress', 'coverage'],
 
     coverageReporter: {
       reporters: [

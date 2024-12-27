@@ -1,20 +1,20 @@
 # .travis.yml
-dist: jammy            # or focal, etc.
+dist: jammy
 language: node_js
 
 node_js:
   - '16'
   - '18'
-  - node               # 'node' is the latest stable version
+  # Removed 'node' to avoid testing the very latest (which may require npm >= 11)
 
 services:
-  - xvfb               # If you need a browser environment
+  - xvfb  # If you need a browser environment
 
 cache:
   npm: true
 
-before_install:
-  - npm install -g npm@latest
+# before_install:
+#   - npm install -g npm@latest  # Removed or commented out to avoid engine mismatch
 
 install:
   - npm ci
@@ -27,4 +27,4 @@ notifications:
 
 branches:
   only:
-    - main             # Only build on 'main' branch
+    - main

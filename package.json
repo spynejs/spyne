@@ -1,6 +1,6 @@
 {
   "name": "spyne",
-  "version": "0.20.0",
+  "version": "0.20.1",
   "description": "Reactive Real-DOM Framework for Advanced Javascript applications",
   "sideEffects": true,
   "main": "./lib/spyne.umd.js",
@@ -12,7 +12,6 @@
     },
     "./lib/*": "./lib/*.js"
   },
-
   "scripts": {
     "eslint-fix-dry": "eslint 'src/spyne/**' --fix-dry-run",
     "eslint-fix": "eslint --fix 'src/spyne/**'",
@@ -26,14 +25,15 @@
     "stats": "webpack --profile --json --optimize-minimize --mode production --env build > stats.json",
     "docs": "jsdoc --readme README.md -d docs -c docs/jsdoc.config.json -r",
     "esdocs": "esdoc -d esdocs -c esdocs/esdoc.config.json -r",
-    "test": "karma start --browsers Chrome",
+    "test": "karma start karma.conf.js",
+    "test:single": "karma start karma.conf.js --single-run",
     "watch:test": "npm test -- --auto-watch --no-single-run",
     "test:mocha": "mocha tests",
     "lint": "eslint 'src/spyne/**' --fix"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/spynejs/spyne.git"
+    "url": "git+https://github.com/spynejs/spyne.git"
   },
   "keywords": [
     "reactive",
@@ -44,7 +44,7 @@
     "Single-Page-Application Framework"
   ],
   "author": "Frank Batista",
-  "license": "UNLICENSED",
+  "license": "LGPL",
   "devDependencies": {
     "@rollup/plugin-commonjs": "^28.0.2",
     "@rollup/plugin-json": "^6.1.0",

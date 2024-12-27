@@ -5,7 +5,7 @@ import { SpyneAppProperties } from './utils/spyne-app-properties'
 import { sanitizeHTMLConfigure } from './utils/sanitize-html'
 
 const _channels = new ChannelsMap()
-const version = '0.20.0'
+const version = '0.20.1'
 
 class SpyneApplication {
   /**
@@ -42,7 +42,7 @@ class SpyneApplication {
   init(config = {}, testMode = false) {
     // this.channels = new ChannelsMap();
     /*!
-     * Spyne 0.20.0
+     * Spyne 0.20.1
      * https://spynejs.org
      *
      * @license Copyright 2017-2021, Frank Batista, Relevant Context, LLC. All rights reserved.
