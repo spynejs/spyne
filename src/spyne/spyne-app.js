@@ -5,7 +5,7 @@ import { SpyneAppProperties } from './utils/spyne-app-properties'
 import { sanitizeHTMLConfigure } from './utils/sanitize-html'
 
 const _channels = new ChannelsMap()
-const version = '0.20.1'
+const version = '0.20.2'
 
 class SpyneApplication {
   /**
@@ -42,7 +42,7 @@ class SpyneApplication {
   init(config = {}, testMode = false) {
     // this.channels = new ChannelsMap();
     /*!
-     * Spyne 0.20.1
+     * Spyne 0.20.2
      * https://spynejs.org
      *
      * @license Copyright 2017-2021, Frank Batista, Relevant Context, LLC. All rights reserved.
@@ -121,6 +121,7 @@ class SpyneApplication {
     this.pluginsFn = SpyneAppProperties.getPluginsMethodObj(config['pluginMethods']);
     this.getChannelActions = (str) => _channels.getChannelActions(str);
     this.registerChannel = (val) => _channels.registerStream(val);
+    this.registerPlugin = (pluginInstance) => SpyneAppProperties.registerPlugin(pluginInstance);
     this.registerDataChannel = (obs$) => _channels.registerStream(obs$);
     this.listChannels = () => Array.from(_channels.map.keys());
     let nullHolder = new ViewStream({ id:'spyne-null-views' });

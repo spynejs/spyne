@@ -12,7 +12,7 @@ const karmaWebpackConfig = {
   mode: 'none',
 
   // Karma manages watching/rebuilding on its own, so we typically disable watch from Webpack
-  watch: false,
+  watch: true,
 
   // Remove the library entry/output so that Karma can inline test files
   entry: undefined,
@@ -101,9 +101,6 @@ module.exports = function (config) {
     // autoWatch: if true, re-run tests on file changes
     autoWatch: true,
 
-    // For file-watching inside containers or certain OS environments
-    usePolling: true,
-
     customLaunchers: {
       ChromeHeadlessNoSandbox: {
         base: 'ChromeHeadless',
@@ -115,7 +112,7 @@ module.exports = function (config) {
     browsers: ['Chrome'],
 
     // If true, Karma runs tests once and exits
-    singleRun: true,
+    singleRun: false,
 
     // Concurrency level
     concurrency: Infinity

@@ -61,6 +61,7 @@ class SpyneAppPropertiesClass {
     this.getChannelActions = _channels.getChannelActions.bind(_channels)
     this.listRegisteredChannels = _channels.listRegisteredChannels.bind(_channels)
     _initialized = true
+    this._initialized = _initialized
     this.setChannelsMap()
     if (config?.baseHref) {
       this.setHeadBaseHref(config.baseHref)
@@ -176,6 +177,16 @@ class SpyneAppPropertiesClass {
   registerProxyReviver(name, method) {
     _proxiesMap.set(name, method)
     // console.log("REGISTERD PROXY REVIVER",_proxiesMap, _proxiesMap.get(name));
+  }
+
+  // This is the new method you add
+  registerPlugin(pluginInstance) {
+    if (!this._initialized) {
+      console.warn('SpyneApp is not initialized yet. Plugin will not be fully registered.')
+    }
+    // console.log("INSTANCE ",this, pluginInstance)
+
+    pluginInstance.register(this)
   }
 
   getProxyReviver(proxyName) {
