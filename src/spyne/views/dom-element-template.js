@@ -140,8 +140,6 @@ export class DomElementTemplate {
     this.isProxyData = data.__cms__isProxy === true
     this.testMode = opts?.testMode
 
-    
-
     const checkForArrayData = () => {
       if (is(Array, data) === true) {
         data = { spyneData:data }
@@ -179,8 +177,6 @@ export class DomElementTemplate {
   static isPrimitiveTag(str) {
     return /({{\.\*?}})/.test(str)
   }
-
-  
 
   // FIND CORRECT NESTED DATA
   static getNestedDataReducer(data = {}, param = '') {
