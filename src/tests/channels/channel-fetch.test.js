@@ -1,5 +1,7 @@
+//const { expect, assert } = require('chai')
+//const { ChannelFetch } = require('../../spyne/channels/channel-fetch-class')
 const { expect, assert } = require('chai')
-const { ChannelFetch } = require('../../spyne/channels/channel-fetch-class')
+import { ChannelFetch } from '../../spyne/spyne';
 
 describe('should test ChannelFetch', () => {
   const mapFn = (p) => {
@@ -43,7 +45,12 @@ describe('should test ChannelFetch', () => {
     const noMapMethodAdded = ChannelFetch.validateMapMethod(props, channelName)
     // console.log('map methods not added and is valid ',{noMapMethodAdded})
     expect(noMapMethodAdded).to.be.true
+
+
+
+
   })
+
 
   it('should return false for map of wrong type', () => {
     const map = 4

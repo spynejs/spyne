@@ -1,6 +1,6 @@
 {
   "name": "spyne",
-  "version": "0.20.2",
+  "version": "0.20.4",
   "description": "Reactive Real-DOM Framework for Advanced Javascript applications",
   "sideEffects": true,
   "main": "./lib/spyne.esm.js",
@@ -19,7 +19,6 @@
     "report-coverage": "nyc report --reporter=text-lcov > coverage.lcov && codecov",
     "commit": "git-cz",
     "start": "webpack-dev-server --hot",
-    "prepare": "husky",
     "build": "webpack --config webpack.config.js --mode production",
     "build:esm": "rollup --config rollup.config.js",
     "dev": "webpack --config webpack.config.js --mode development",
@@ -30,7 +29,8 @@
     "test:single": "karma start karma.conf.js --single-run",
     "watch:test": "npm test -- --auto-watch --no-single-run",
     "test:mocha": "mocha tests",
-    "lint": "eslint 'src/spyne/**' --fix"
+    "lint": "eslint 'src/spyne/**' --fix",
+    "prepare": "husky"
   },
   "repository": {
     "type": "git",
@@ -50,10 +50,12 @@
     "@rollup/plugin-commonjs": "^28.0.2",
     "@rollup/plugin-json": "^6.1.0",
     "@rollup/plugin-node-resolve": "^16.0.0",
+    "@rollup/plugin-replace": "^6.0.2",
     "chai": "^4.3.9",
     "chai-dom": "^1.11.0",
     "clean-webpack-plugin": "^4.0.0",
     "css-loader": "^6.8.1",
+    "dotenv": "^16.4.7",
     "eslint": "^8.50.0",
     "eslint-config-semistandard": "^17.0.0",
     "eslint-config-standard": "^17.1.0",
@@ -67,6 +69,7 @@
     "karma-chrome-launcher": "^3.2.0",
     "karma-coverage": "^2.2.1",
     "karma-mocha": "^2.0.1",
+    "karma-rollup-preprocessor": "^7.0.8",
     "karma-webpack": "^5.0.1",
     "mocha": "^10.7.3",
     "rollup": "^2.79.2",
@@ -77,11 +80,7 @@
     "webpack-dev-server": "^5.1.0",
     "webpack-rxjs-externals": "^2.0.0"
   },
-  "config": {
-    "ghooks": {
-      "pre-commit": "npm run test"
-    }
-  },
+  "config": {},
   "dependencies": {
     "dompurify": "^3.1.6",
     "ramda": "^0.30.1",

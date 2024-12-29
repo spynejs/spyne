@@ -4,7 +4,7 @@ const { SpyneApp } = require('../spyne/spyne-app')
 describe('should run spyne app tests', () => {
   before(() => {
 
-    // SpyneApp.init();
+     SpyneApp.init();
 
   })
 

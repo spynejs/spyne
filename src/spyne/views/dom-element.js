@@ -25,7 +25,7 @@ class DomElement {
    *
    */
 
-  constructor(props = {}) {
+  constructor(props = {}, testMode = false) {
     const checkDefault = (dflt, val) => defaultTo(dflt)(val)
 
     props.tagName = checkDefault('div', props.tagName)
@@ -34,6 +34,7 @@ class DomElement {
     props.attrs = this.updateAttrs(props.attributes)
 
     props.fragment = document.createDocumentFragment()
+    this.testMode = testMode
     this.props = props
 
     this.addMixins()
@@ -77,7 +78,7 @@ class DomElement {
     const addTmpl = (template) => {
       let data = this.getProp('data')
       data = is(Object, data) ? data : {}
-      const frag = new DomElementTemplate(template, data).renderDocFrag()
+      const frag = new DomElementTemplate(template, data, { testMode: this?.testMode }).renderDocFrag()
       const fragIsString = is(String, frag)
       fragIsString ? el.innerHTML = frag : el.appendChild(frag)
       return el

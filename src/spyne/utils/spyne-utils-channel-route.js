@@ -78,15 +78,15 @@ export class SpyneUtilsChannelRoute {
   }
 
   static flattenConfigObject(obj) {
-    const go = obj_ => chain(([k, v]) => {
-      if (Object.prototype.toString.call(v) === '[object Object]') {
+    const go = (obj_) => chain(([k, v]) => {
+      if (typeof v === 'object' && v !== null && !Array.isArray(v)) {
         return map(([k_, v_]) => [`${k}.${k_}`, v_], go(v))
       } else {
         return [[k, v]]
       }
     }, toPairs(obj_))
 
-    // console.log("FLATTEN: ",values(fromPairs(go(obj))));
+    // console.log("FLATTEN: ", values(fromPairs(go(obj))));
     return values(fromPairs(go(obj)))
   }
 

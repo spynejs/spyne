@@ -19,7 +19,7 @@ describe('DomElRendering', () => {
   it('DomElement Template show render data value', () => {
     const data = { cat:'meow' }
     const template = '<h1>The cat says {{cat}}'
-    const domEl = new DomElement({ data, template })
+    const domEl = new DomElement({ data, template }, true)
     const render = domEl.render()
     expect(render.innerText).to.equal('The cat says meow')
   })
@@ -31,7 +31,7 @@ describe('DomElRendering', () => {
       }
     }
     const template = '<h1>The dog says {{#dog}}{{sound}}{{/dog}}'
-    const domEl = new DomElement({ data, template })
+    const domEl = new DomElement({ data, template }, true)
     const render = domEl.render()
     expect(render.innerText).to.equal('The dog says woof')
   })
@@ -43,7 +43,7 @@ describe('DomElRendering', () => {
       }
     }
     const template = '<article>{{#dog}}<h1>The dog says {{sound}}</h1>{{/dog}}</article>'
-    const domEl = new DomElement({ data, template })
+    const domEl = new DomElement({ data, template }, true)
     const render = domEl.render()
     expect(render.innerText).to.equal('')
   })
@@ -62,7 +62,7 @@ describe('DomElRendering', () => {
       ]
     }
     const template = '<article>{{#animals}}<h1>The {{name}} says {{sound}}</h1>{{/animals}}</article>'
-    const domEl = new DomElement({ data, template })
+    const domEl = new DomElement({ data, template }, true)
     const render = domEl.render()
     const renderStr = render.querySelectorAll('h1')[1].innerText
     expect(renderStr).to.equal('The cat says meow')

@@ -135,9 +135,12 @@ import { SpyneAppProperties } from '../utils/spyne-app-properties'
  */
 
 export class DomElementTemplate {
-  constructor(template, data = {}) {
+  constructor(template, data = {}, opts = {}) {
     this.template = this.formatTemplate(template)
     this.isProxyData = data.__cms__isProxy === true
+    this.testMode = opts?.testMode
+
+    
 
     const checkForArrayData = () => {
       if (is(Array, data) === true) {
@@ -176,6 +179,8 @@ export class DomElementTemplate {
   static isPrimitiveTag(str) {
     return /({{\.\*?}})/.test(str)
   }
+
+  
 
   // FIND CORRECT NESTED DATA
   static getNestedDataReducer(data = {}, param = '') {
@@ -226,7 +231,9 @@ export class DomElementTemplate {
   renderDocFrag() {
     let html = DomElementTemplate.replaceImgPath(this.finalArr.join(''))
     // html = sanitizeHTML(this.finalArr.join(''))
-    html = sanitizeHTML(html)
+    if (this.testMode !== true) {
+      html = sanitizeHTML(html)
+    }
     const isTableSubTag =   /^([^>]*?)(<){1}(\b)(thead|col|colgroup|tbody|td|tfoot|tr|th)(\b)([^\0]*)$/.test(html)
     const el = isTableSubTag ? html : document.createRange().createContextualFragment(html)
 

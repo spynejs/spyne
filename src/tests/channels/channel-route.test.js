@@ -6,8 +6,7 @@ import { ChannelPayloadRouteData, ChannelPayloadRouteDataRegexOverride } from '.
 import {
   SpyneConfigData,
   RouteDataForTests,
-  routeConfigWithRegexOverride,
-  windowLocationData
+  routeConfigWithRegexOverride
 } from '../mocks/utils-data'
 import { SpyneChannelRoute } from '../../spyne/channels/spyne-channel-route'
 const R = require('ramda')

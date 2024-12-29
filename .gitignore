@@ -12,3 +12,4 @@ coverage/*
 lib
 !lib/spyne*.js
 dist/
+.env

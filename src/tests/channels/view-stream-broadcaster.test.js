@@ -1,8 +1,7 @@
 // const assert = require('assert');
 import {
   SpyneConfigData,
-  RouteDataForTests,
-  windowLocationData
+  RouteDataForTests
 } from '../mocks/utils-data'
 chai.use(require('chai-dom'))
 

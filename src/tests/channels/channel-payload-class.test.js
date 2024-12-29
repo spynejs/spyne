@@ -1,10 +1,10 @@
 import { SpyneApp, Channel } from '../../spyne/spyne'
 import { ChannelPayload } from '../../spyne/channels/channel-payload-class'
 import { ChannelPayloadToTestFilters } from '../mocks/channel-payload-data'
-import { ChannelPayloadFilter } from '../../spyne/utils/channel-payload-filter'
+//import { ChannelPayloadFilter } from '../../spyne/utils/channel-payload-filter'
 const { expect, assert } = require('chai')
 const MSFData = require('../mocks/msf-user-data.json')
-const MSFDataSmall = require('../mocks/msf-user-data-small.json')
+//const MSFDataSmall = require('../mocks/msf-user-data-small.json')
 const R = require('ramda')
 
 describe('should test Channel Payload Class', () => {

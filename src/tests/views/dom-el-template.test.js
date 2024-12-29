@@ -20,7 +20,7 @@ describe('DomElTemplate', () => {
   it('DomElementTemplate show render data value', () => {
     const data = { cat:'meow' }
     const template = '<h1>The cat says {{cat}}'
-    const domElTmpl = new DomElementTemplate(template, data)
+    const domElTmpl = new DomElementTemplate(template, data, {testMode:true})
     const render = domElTmpl.renderDocFrag()
     // console.log("RENDER IS ",render.firstElementChild);
     expect(render.firstElementChild.innerText).to.equal('The cat says meow')
@@ -33,7 +33,7 @@ describe('DomElTemplate', () => {
       }
     }
     const template = '<h1>The dog says {{#dog}}{{sound}}{{/dog}}</h1>'
-    const domElTemplate = new DomElementTemplate(template, data)
+    const domElTemplate =new DomElementTemplate(template, data, {testMode:true})
     const render = domElTemplate.renderDocFrag()
     expect(render.firstElementChild.innerText).to.equal('The dog says woof')
   })
@@ -45,14 +45,14 @@ describe('DomElTemplate', () => {
       }
     }
     const template = '<article>{{#dog}}<h1>The dog says {{sound}}</h1>{{/dog}}</article>'
-    const domElTemplate = new DomElementTemplate(template, data)
+    const domElTemplate =new DomElementTemplate(template, data, {testMode:true})
     const render = domElTemplate.renderDocFrag()
     expect(render.firstElementChild.innerText).to.equal('')
   })
   it('DomElementTemplate Template should render 0 as non-empty', () => {
     const data = { scriptNum:0, eventType:'scriptContent', tabName:'MyTab' }
     const template = '<button data-event-type="{{eventType}}" data-script-num="{{scriptNum}}" >{{scriptNum}}</button>'
-    const domElTemplate = new DomElementTemplate(template, data)
+    const domElTemplate =new DomElementTemplate(template, data, {testMode:true})
     const render = domElTemplate.renderDocFrag()
     expect(render.firstElementChild.innerText).to.equal('0')
   })
@@ -63,7 +63,7 @@ describe('DomElTemplate', () => {
       }
     }
     const template = '<article><h1>The dog says {{test.sound}}</h1></article>'
-    const domElTemplate = new DomElementTemplate(template, data)
+    const domElTemplate =new DomElementTemplate(template, data, {testMode:true})
     const render = domElTemplate.renderDocFrag()
     expect(render.firstElementChild.innerText).to.equal('The dog says ')
   })
@@ -74,7 +74,7 @@ describe('DomElTemplate', () => {
       }
     }
     const template = '<article><h1>The dog says {{asdf}}</h1></article>'
-    const domElTemplate = new DomElementTemplate(template, data)
+    const domElTemplate =new DomElementTemplate(template, data, {testMode:true})
     const render = domElTemplate.renderDocFrag()
     expect(render.firstElementChild.innerText).to.equal('The dog says ')
   })
@@ -92,7 +92,7 @@ describe('DomElTemplate', () => {
       ]
     }
     const template = '<article>{{#animals}}<h1>The {{name}} says {{sound}}</h1>{{/animals}}</article>'
-    const domElTemplate = new DomElementTemplate(template, data)
+    const domElTemplate =new DomElementTemplate(template, data, {testMode:true})
     const render = domElTemplate.renderDocFrag()
     const renderStr = render.firstElementChild.querySelectorAll('h1')[1].innerText
     expect(renderStr).to.equal('The cat says meow')
@@ -105,7 +105,7 @@ describe('DomElTemplate', () => {
       { name: 'john' }
     ]
     const template = '<ul>{{#}}<li>Welcome, {{name}}.</li>{{/}}</ul>'
-    const domElTemplate = new DomElementTemplate(template, data)
+    const domElTemplate =new DomElementTemplate(template, data, {testMode:true})
     const render = domElTemplate.renderDocFrag()
     const lastItemTxt = render.firstElementChild.querySelectorAll('li')[2].innerText
     expect(lastItemTxt).to.equal('Welcome, john.')
@@ -119,7 +119,7 @@ describe('DomElTemplate', () => {
     ]
     const template = '<ul>{{#}}<li>Welcome, {{name}}. and hobbies are {{hobbies}} </li>{{/}}</ul>'
     // let template = "<ul>{{#}}<li>Welcome, {{name}}. <ol>{{#hobbies}}<li>{{.}}</li><{{/hobbies}}/ol></li>{{/}}</ul>";
-    const domElTemplate = new DomElementTemplate(template, data)
+    const domElTemplate =new DomElementTemplate(template, data, {testMode:true})
     const render = domElTemplate.renderDocFrag()
 
     const lastItemTxt = render.firstElementChild.querySelectorAll('li')[2].innerText
@@ -136,7 +136,7 @@ describe('DomElTemplate', () => {
     ]
     const template = '<ul><li>Welcome, {{name}}. Your hobbies are {{#hobbies}}{{.}}, {{/hobbies}}and favorite foods are {{#favFoods}}<span>{{.}}, </span>{{/favFoods}} </li></ul>'
     data = data[0]
-    const domElTemplate = new DomElementTemplate(template, data)
+    const domElTemplate =new DomElementTemplate(template, data, {testMode:true})
     const render = domElTemplate.renderDocFrag()
     const favFoodInnerText = render.firstElementChild.querySelectorAll('span')[0].innerText
     expect(favFoodInnerText).to.equal('hummus, ')
@@ -150,7 +150,7 @@ describe('DomElTemplate', () => {
     ]
     const template = '<ul><li>Welcome, {{name}}. Your hobbies are {{#hobbies}}{{.}}, {{/hobbies}}and your {{#details}}hair is {{hair}} and your eyes are {{eyes}} {{/details}}and favorite foods are {{#favFoods}}<span>{{.}}, </span>{{/favFoods}} </li></ul>'
     data = data[0]
-    const domElTemplate = new DomElementTemplate(template, data)
+    const domElTemplate =new DomElementTemplate(template, data, {testMode:true})
     const render = domElTemplate.renderDocFrag()
     const favFoodInnerText = render.firstElementChild
 
@@ -168,7 +168,7 @@ describe('DomElTemplate', () => {
     }
     const template = '<ul>{{#users}}<li>Welcome, {{name}}. and details are {{details.age}} and degree is {{details.education.degree}} </li>{{/users}}</ul>'
     // let template = "<ul>{{#}}<li>Welcome, {{name}}. <ol>{{#hobbies}}<li>{{.}}</li><{{/hobbies}}/ol></li>{{/}}</ul>";
-    const domElTemplate = new DomElementTemplate(template, data)
+    const domElTemplate =new DomElementTemplate(template, data, {testMode:true})
     const render = domElTemplate.renderDocFrag()
 
     // console.log("render nested array of objs ",render.firstElementChild);
@@ -188,7 +188,7 @@ describe('DomElTemplate', () => {
     data = data.users[0]
     const template = '<ul><li>Welcome, {{name}}. and age is {{details.age}} and graduated from {{details.education.school}} </li></ul>'
     // let template = "<ul>{{#}}<li>Welcome, {{name}}. <ol>{{#hobbies}}<li>{{.}}</li><{{/hobbies}}/ol></li>{{/}}</ul>";
-    const domElTemplate = new DomElementTemplate(template, data)
+    const domElTemplate =new DomElementTemplate(template, data, {testMode:true})
     const render = domElTemplate.renderDocFrag()
 
     // console.log("render nested obj ",render.firstElementChild);
@@ -206,7 +206,7 @@ describe('DomElTemplate', () => {
 
     const template = '<li>{{article.1}}</li>'
     const data = { article }
-    const domElTemplate = new DomElementTemplate(template, data)
+    const domElTemplate =new DomElementTemplate(template, data, {testMode:true})
 
     const result = domElTemplate.renderToString()
 

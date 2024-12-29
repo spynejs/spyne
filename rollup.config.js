@@ -12,7 +12,7 @@ export default {
     sourcemap: true
   },
   // If you want to keep certain libraries external, define them here:
-  external: ['ramda', 'rxjs'],
+  external: ['ramda', 'rxjs', 'dompurify'],
   plugins: [
     // Allows Rollup to resolve packages from node_modules
     resolve(),

@@ -1,13 +1,15 @@
-import { Channel, SpyneAppProperties } from '../../spyne/spyne'
+import { Channel, SpyneAppProperties, SpyneApp } from '../../spyne/spyne'
+
 const { expect, assert } = require('chai')
-const { SpyneApp } = require('../../spyne/spyne-app')
 
 describe('should test channel instance', () => {
+
   const channelName = 'CHANNEL_MYTEST_CHANNEL'
-  SpyneApp.registerChannel(new Channel(channelName))
 
   before(function() {
+    SpyneApp.init({debug:true});
 
+    SpyneApp.registerChannel(new Channel(channelName))
   })
 
   it('registered channel should exist', () => {

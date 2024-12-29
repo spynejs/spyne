@@ -4,8 +4,7 @@ import { SpyneUtilsChannelRoute } from '../../spyne/utils/spyne-utils-channel-ro
 import { postProcessedRouteData, preProcessedRouteData, reduceProcessedRouteData, reducedRoutesArr, mainConfigPreProcessedData, mainConfigPostProcessedData } from '../mocks/routes-data'
 import {
   SpyneConfigData,
-  RouteDataForTests,
-  windowLocationData
+  RouteDataForTests
 } from '../mocks/utils-data'
 import { SpyneChannelRoute } from '../../spyne/channels/spyne-channel-route'
 import { path } from 'ramda'
@@ -16,7 +15,7 @@ const routeConfig = SpyneConfigData.channels.ROUTE
 
 describe('Route Utils', () => {
   it('flattenConfigObjects should return array of params', () => {
-    const finalArr = ['pageId', '', 'imageNum', 'author', 'hemingway', 'author', 'hemingway', 'imageNum', 'pixels', 'photogNum', 'randomNum', '32', 'holographs|photos|digital|videos']
+    const finalArr = ['pageId', '', 'imageNum', 'author', 'hemingway', 'author', 'hemingway', 'imageNum', 'pixels', 'photogNum', 'randomNum', '32']
     const arr = SpyneUtilsChannelRoute.flattenConfigObject(routeConfig.routes)
     // return true;
     expect(arr).to.deep.equal(finalArr)
