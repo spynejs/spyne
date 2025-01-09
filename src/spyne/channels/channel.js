@@ -2,8 +2,8 @@ import { registeredStreamNames } from './channels-config'
 import { ChannelPayload } from './channel-payload-class'
 import { SpyneAppProperties } from '../utils/spyne-app-properties'
 import { RouteChannelUpdater } from '../utils/route-channel-updater'
-import { ReplaySubject, Subject } from 'rxjs'
-import { filter, map } from 'rxjs/operators'
+import { ReplaySubject, Subject, forkJoin, combineLatest } from 'rxjs'
+import { filter, map, take } from 'rxjs/operators'
 import {
   ifElse,
   identity,
@@ -396,6 +396,46 @@ export class Channel {
     }
     const fn = ifElse(isValidChannel, startSubscribe, error)
     return fn(channelName)
+  }
+
+  /**
+   * Merge Channels is a convenience method to forkJoin Channel.observer$
+   *
+   * */
+
+  mergeChannels(channelsOrNames, persistent = false) {
+    // 1) Convert strings to Observables
+    const channelObservables = channelsOrNames.map(item => {
+      if (typeof item === 'string') {
+        const chan$ = this.getChannel(item)
+        return persistent ? chan$ : chan$.pipe(take(1))
+      } else {
+        // Already an Observable
+        return persistent ? item : item.pipe(take(1))
+      }
+    })
+
+    // 2) Decide which RxJS operator
+    const combiningOperator = persistent
+      ? combineLatest
+      : forkJoin
+
+    // 3) Combine them into an array emission
+    const combined$ = combiningOperator(channelObservables)
+
+    // 4) Map the array [result1, result2, ...] => { CHANNEL_1: result1, CHANNEL_2: result2, ... }
+    return combined$.pipe(
+      map((arr) => {
+        // Build an object keyed by the channel name (or index if you prefer).
+        const resultObj = {}
+        channelsOrNames.forEach((item, idx) => {
+          // item might be a string or Observable
+          const channelName = (typeof item === 'string') ? item : `channel_${idx}`
+          resultObj[channelName] = arr[idx]
+        })
+        return resultObj
+      })
+    )
   }
 
   static checkForNotTrackFlag(props = {}) {

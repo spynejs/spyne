@@ -96,7 +96,18 @@ export class ViewStreamBroadcaster {
       data.srcElement.srcEvent = event
       data.srcElement.el = q
       // select the correct payload
-      const channelPayload = channel !== undefined ? channelPayloads[channel] : channelPayloads.UI
+
+      function getValidChannel(ch) {
+        if (ch === 'ROUTE' || ch === 'CHANNEL_ROUTE') {
+          return 'ROUTE'
+        }
+        if (ch !== 'UI' && ch !== 'CHANNEL_UI' && ch !== undefined) {
+          console.warn(`SpyneJS warning: The channel, ${ch}, is not allowed here, only "UI" or "ROUTE" are valid channels, defaulting to CHANNEL_UI`)
+        }
+        return 'UI'
+      }
+
+      const channelPayload = channelPayloads[getValidChannel(channel)]
       // run payload
       channelPayload(observable, data)
     }

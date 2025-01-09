@@ -14,6 +14,7 @@ import {
   where,
   defaultTo,
   mergeAll,
+  F,
   omit,
   flatten,
   any,
@@ -30,6 +31,11 @@ const isNonEmptyStr = allPass([is(String), isNotEmpty])
 const isNonEmptyArr = allPass([is(Array), isNotEmpty])
 const isObjectFn = compose(allPass([isNotArr, is(Object)]))
 const isNonEmptyObjectFn = compose(allPass([isNotEmpty, isNotArr, is(Object)]))
+
+const isString  = (val) => is(String, val)
+const isBoolean = (val) => is(Boolean, val)
+const isNumber  = (val) => is(Number, val)
+const isArrayFn = (val) => is(Array, val)
 
 export class ChannelPayloadFilter {
   /**
@@ -160,7 +166,18 @@ export class ChannelPayloadFilter {
         return str === compareStr
       }
       const checkToConvertToFn = (val, key, obj) => {
-        const fnVal = is(String, val) === true ? createCurryComparator(val) : val
+        let fnVal = F
+        if (isString(val) || isBoolean(val) || isNumber(val)) {
+          fnVal = createCurryComparator(val)
+        } else if (typeof val === 'function') {
+          return val
+        } else if (isArrayFn(val) || isObjectFn(val)) {
+          console.warn(
+              `ChannelPayloadFilter: Property "${val}" is an array/object, which is not allowed. ` +
+              'This property will always return false.'
+          )
+          return fnVal
+        }
         return fnVal
       }
       filterJson = rMap(checkToConvertToFn, filterJson)

@@ -5,7 +5,7 @@ import { SpyneAppProperties } from './utils/spyne-app-properties'
 import { sanitizeHTMLConfigure } from './utils/sanitize-html'
 
 const _channels = new ChannelsMap()
-const version = '0.20.4'
+const version = '0.20.5'
 
 class SpyneApplication {
   /**
@@ -42,15 +42,20 @@ class SpyneApplication {
   init(config = {}, testMode = false) {
     // this.channels = new ChannelsMap();
     /*!
-     * Spyne 0.20.4
+     * Spyne 0.20.5
      * https://spynejs.org
      *
-     * @license Copyright 2017-2021, Frank Batista, Relevant Context, LLC. All rights reserved.
-     * Spyne is licensed under the GNU Lesser General Public License v3.0
+     * @license
+     * Copyright 2017-2025, Frank Batista,
+     * Relevant Context, LLC. All rights reserved.
      *
-     * @author: Frank Batista,
-     * @email:  frbatista.nyc@gmail.com
-    */
+     * Licensed under the GNU Lesser General Public License v3.0 (the "License");
+     * You may not use this file except in compliance with the License.
+     * A copy of the License is located in the project root, or at:
+     * https://www.gnu.org/licenses/lgpl-3.0.html
+     *
+     * This notice may not be removed or altered from any distribution.
+     */
     /* eslint-disable */
 
 
