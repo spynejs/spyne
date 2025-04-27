@@ -1,7 +1,7 @@
-import { Channel } from './channel'
-import { SpyneUtilsChannelRouteUrl } from '../utils/spyne-utils-channel-route-url'
-import { SpyneUtilsChannelRoute } from '../utils/spyne-utils-channel-route'
-import { SpyneAppProperties } from '../utils/spyne-app-properties'
+import { Channel } from './channel.js'
+import { SpyneUtilsChannelRouteUrl } from '../utils/spyne-utils-channel-route-url.js'
+import { SpyneUtilsChannelRoute } from '../utils/spyne-utils-channel-route.js'
+import { SpyneAppProperties } from '../utils/spyne-app-properties.js'
 import { ReplaySubject, merge } from 'rxjs'
 import { map } from 'rxjs/operators'
 
@@ -184,6 +184,9 @@ export class SpyneChannelRoute extends Channel {
     const routeConfig = this.getRouteConfig()
     const action = 'CHANNEL_ROUTE_CONFIG_UPDATED_EVENT'
 
+    // reverse because routeDatasetsArr turns out that way
+    routeConfig.navLinks = [...routeConfig?.routeDatasetsArr]
+
     this.routeConfigJson = routeConfig
     this.bindStaticMethodsWithConfigData()
 
@@ -237,7 +240,23 @@ export class SpyneChannelRoute extends Channel {
     }
     // ===============================================================
     if (actn === 'CHANNEL_ROUTE_DEEPLINK_EVENT') {
-      payload.linksData = prop('routeDatasetsArr', config)
+      payload.navLinks = prop('routeDatasetsArr', config)
+      // payload.linksData = payload.navLinks
+      // SpyneAppProperties.linksData = payload.navLinks
+
+      // define an alias property using Object.defineProperty
+      Object.defineProperty(payload, 'linksData', {
+        get() {
+          console.warn('get links data is deprecated in ROUTE DEEPLINK DATA, use navLinks')
+          return this.navLinks
+        },
+        set(value) {
+          console.warn('set links data is deprecated in ROUTE DEEPLINK DATA, use navLinks')
+
+          // this.navLinks = value;
+        },
+        enumerable: true
+      })
     }
     const keywordArrs = this.compareRouteKeywords.compare(payload.routeData, payload.paths)
     payload = rMerge(payload, keywordArrs)
@@ -335,7 +354,25 @@ export class SpyneChannelRoute extends Channel {
   }
 
   onViewStreamInfo(pl) {
-    const action = this.channelActions.CHANNEL_ROUTE_CHANGE_EVENT
+    const action = pl.action ?? this.channelActions.CHANNEL_ROUTE_CHANGE_EVENT
+
+    function domStringMapToObject(domStringMap) {
+      const obj = {}
+      for (const key in domStringMap) {
+        // Check if it’s a direct property (though dataset rarely has anything on the prototype):
+        if (Object.prototype.hasOwnProperty.call(domStringMap, key)) {
+          obj[key] = domStringMap[key]
+        }
+      }
+      return obj
+    }
+
+    if (pl?.srcElement?.el?.dataset) {
+      pl.payload = domStringMapToObject(pl?.srcElement?.el?.dataset) ?? pl.payload
+    }
+
+    // console.log('ROUTE CHANNEL VSI ', { pl })
+
     SpyneChannelRoute.checkForEventMethods(pl)
     pl = this.checkForEndRoute(pl)
     let payload = this.getDataFromParams(pl)

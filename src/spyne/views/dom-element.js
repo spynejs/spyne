@@ -1,6 +1,6 @@
-import { baseCoreMixins } from '../utils/mixins/base-core-mixins'
-import { DomElementTemplate } from './dom-element-template'
-import { deepMerge } from '../utils/deep-merge'
+import { baseCoreMixins } from '../utils/mixins/base-core-mixins.js'
+import { DomElementTemplate } from './dom-element-template.js'
+import { deepMerge } from '../utils/deep-merge.js'
 import { is, defaultTo, pick, mapObjIndexed, forEachObjIndexed, pipe } from 'ramda'
 
 class DomElement {

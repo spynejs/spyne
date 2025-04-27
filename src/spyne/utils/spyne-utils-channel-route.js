@@ -1,6 +1,6 @@
 import { fromEventPattern } from 'rxjs'
 import { last, flatten, clone, pick, prop, pickAll, path, equals, compose, keys, filter, propEq, uniq, map, __, chain, is, includes, fromPairs, reject, mergeDeepRight, mergeRight, test, toPairs, values } from 'ramda'
-import { SpyneUtilsChannelRouteUrl } from './spyne-utils-channel-route-url'
+import { SpyneUtilsChannelRouteUrl } from './spyne-utils-channel-route-url.js'
 
 export class SpyneUtilsChannelRoute {
   constructor() {

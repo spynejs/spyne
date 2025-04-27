@@ -1,5 +1,5 @@
 import { head, compose, reject, split, isEmpty, lte, defaultTo, prop } from 'ramda'
-import { SpyneAppProperties } from '../utils/spyne-app-properties'
+import { SpyneAppProperties } from '../utils/spyne-app-properties.js'
 
 function generateSpyneSelectorId(el) {
   const num = () => Math.random().toString(36).replace(/\d/gm, '').substring(1, 8)

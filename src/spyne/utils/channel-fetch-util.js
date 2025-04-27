@@ -82,6 +82,8 @@ export class ChannelFetchUtil {
       }
     }
 
+    // console.log('SERVER OPTIONS ', { props, serverOptions })
+
     const response$ = from(window.fetch(url, serverOptions))
       .pipe(tap(tapLog), flatMap(r => from(r[responseType]())),
         map(mapWrapper(mapFn)),

@@ -1,9 +1,10 @@
-import { registeredStreamNames } from './channels-config'
-import { ChannelPayload } from './channel-payload-class'
-import { SpyneAppProperties } from '../utils/spyne-app-properties'
-import { RouteChannelUpdater } from '../utils/route-channel-updater'
-import { ReplaySubject, Subject, forkJoin, combineLatest } from 'rxjs'
-import { filter, map, take } from 'rxjs/operators'
+import { registeredStreamNames } from './channels-config.js'
+import { ChannelPayload } from './channel-payload-class.js'
+import { SpyneAppProperties } from '../utils/spyne-app-properties.js'
+import { RouteChannelUpdater } from '../utils/route-channel-updater.js'
+
+import { ReplaySubject, Subject, forkJoin, EMPTY } from 'rxjs'
+import { filter, map, take, combineLatestWith } from 'rxjs/operators'
 import {
   ifElse,
   identity,
@@ -69,22 +70,45 @@ export class Channel {
   constructor(CHANNEL_NAME, props = {}) {
     this.addRegisteredActions.bind(this)
     this.createChannelActionsObj(CHANNEL_NAME, props.extendedActionsArr)
+
+    // Basic props setup
     props.name = CHANNEL_NAME
     props.defaultActions = props.data !== undefined ? [`${props.name}_EVENT`] : []
     this.props = props
+
     this.props.isRegistered = false
-    this.props.isProxy = this.props.isProxy === undefined ? false : this.props.isProxy
+    this.props.isProxy =
+      this.props.isProxy === undefined ? false : this.props.isProxy
+
+    // Determine a default from presence of props.data
     const defaultCachedPayloadBool = this.props.data !== undefined
-    this.props.sendCachedPayload = this.props.sendCachedPayload === undefined ? defaultCachedPayloadBool : this.props.sendCachedPayload
+
+    // If props.replay is defined, override sendCachedPayload with it.
+    // Otherwise, use the existing sendCachedPayload property or default.
+    if (typeof this.props.replay !== 'undefined') {
+      this.props.sendCachedPayload = this.props.replay
+    } else {
+      this.props.sendCachedPayload =
+        this.props.sendCachedPayload === undefined
+          ? defaultCachedPayloadBool
+          : this.props.sendCachedPayload
+    }
+
     this.sendPayloadToRouteChannel = new RouteChannelUpdater(this)
     this.createChannelActionMethods()
+
+    // Set up streams
     this.streamsController = SpyneAppProperties.channelsMap
     const observer$ = this.getMainObserver()
     this.checkForPersistentDataMode = Channel.checkForPersistentDataMode.bind(this)
     this.observer$ = this.props.observer = observer$
+
+    // Subscribe to DISPATCHER
     const dispatcherStream$ = this.streamsController.getStream('DISPATCHER')
     const payloadPredByChannelName = propEq(props.name, 'name')
-    dispatcherStream$.pipe(filter(payloadPredByChannelName)).subscribe((val) => this.onReceivedObservable(val))
+    dispatcherStream$
+      .pipe(filter(payloadPredByChannelName))
+      .subscribe((val) => this.onReceivedObservable(val))
   }
 
   getMainObserver() {
@@ -324,7 +348,7 @@ export class Channel {
    *
    *
    */
-  onViewStreamInfo(obj) {
+  onViewStreamInfo(obs) {
   }
 
   /**
@@ -403,37 +427,40 @@ export class Channel {
    *
    * */
 
-  mergeChannels(channelsOrNames, persistent = false) {
-    // 1) Convert strings to Observables
-    const channelObservables = channelsOrNames.map(item => {
+  mergeChannels(channelsArr, emitOnce = true) {
+    // 1) Normalize inputs to Observables
+    const channelObservables = channelsArr.map(item => {
       if (typeof item === 'string') {
         const chan$ = this.getChannel(item)
-        return persistent ? chan$ : chan$.pipe(take(1))
-      } else {
-        // Already an Observable
-        return persistent ? item : item.pipe(take(1))
+        return emitOnce ? chan$.pipe(take(1)) : chan$
       }
+      return emitOnce ? item.pipe(take(1)) : item
     })
 
-    // 2) Decide which RxJS operator
-    const combiningOperator = persistent
-      ? combineLatest
-      : forkJoin
+    // 2) Combine them
+    let combined$
+    if (emitOnce) { // one‑shot: snapshot then complete
+      combined$ = forkJoin(channelObservables)
+    } else { // live updates: combineLatestWith
+      if (channelObservables.length === 0) {
+        combined$ = EMPTY
+      } else if (channelObservables.length === 1) {
+        combined$ = channelObservables[0]
+      } else {
+        const [first$, ...rest$] = channelObservables
+        combined$ = first$.pipe(combineLatestWith(...rest$))
+      }
+    }
 
-    // 3) Combine them into an array emission
-    const combined$ = combiningOperator(channelObservables)
-
-    // 4) Map the array [result1, result2, ...] => { CHANNEL_1: result1, CHANNEL_2: result2, ... }
+    // 3) Map array → keyed object
     return combined$.pipe(
-      map((arr) => {
-        // Build an object keyed by the channel name (or index if you prefer).
-        const resultObj = {}
-        channelsOrNames.forEach((item, idx) => {
-          // item might be a string or Observable
-          const channelName = (typeof item === 'string') ? item : `channel_${idx}`
-          resultObj[channelName] = arr[idx]
+      map(resultsArr => {
+        const obj = {}
+        channelsArr.forEach((item, idx) => {
+          const key = typeof item === 'string' ? item : `channel_${idx}`
+          obj[key] = resultsArr[idx]
         })
-        return resultObj
+        return obj
       })
     )
   }

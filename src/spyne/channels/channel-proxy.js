@@ -1,8 +1,8 @@
-import { Channel } from './channel'
-import { SpyneAppProperties } from '../utils/spyne-app-properties'
+import { Channel } from './channel.js'
+import { SpyneAppProperties } from '../utils/spyne-app-properties.js'
 import { Subject, ReplaySubject, merge } from 'rxjs'
 import { includes } from 'ramda'
-import { delayCall } from '../utils/frp-tools'
+import { delayCall } from '../utils/frp-tools.js'
 
 export class ChannelProxy extends Channel {
   /**

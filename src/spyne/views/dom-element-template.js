@@ -1,6 +1,6 @@
 import { includes, __, ifElse, path, prop, reject, is, isNil, isEmpty } from 'ramda'
-import sanitizeHTML from '../utils/sanitize-html'
-import { SpyneAppProperties } from '../utils/spyne-app-properties'
+import sanitizeHTML from '../utils/sanitize-html.js'
+import { SpyneAppProperties } from '../utils/spyne-app-properties.js'
 
 /**
  * @module DomElTemplate
@@ -348,6 +348,9 @@ export class DomElementTemplate {
     if (elData.length === undefined) {
       elData = [elData]
     }
+
+    // convert to array if is string
+    elData = Array.isArray(elData) ? elData : [elData]
 
     return elData.map(mapStringData).join('')
   }

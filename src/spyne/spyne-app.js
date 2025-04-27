@@ -1,11 +1,11 @@
-import { ChannelsMap } from './channels/channels-map'
-import { ViewStream } from './views/view-stream'
-import { SpyneUtilsChannelRoute } from './utils/spyne-utils-channel-route'
-import { SpyneAppProperties } from './utils/spyne-app-properties'
-import { sanitizeHTMLConfigure } from './utils/sanitize-html'
+import { ChannelsMap } from './channels/channels-map.js'
+import { ViewStream } from './views/view-stream.js'
+import { SpyneUtilsChannelRoute } from './utils/spyne-utils-channel-route.js'
+import { SpyneAppProperties } from './utils/spyne-app-properties.js'
+import { sanitizeHTMLConfigure } from './utils/sanitize-html.js'
 
 const _channels = new ChannelsMap()
-const version = '0.20.5'
+const version = '0.20.7'
 
 class SpyneApplication {
   /**
@@ -42,7 +42,7 @@ class SpyneApplication {
   init(config = {}, testMode = false) {
     // this.channels = new ChannelsMap();
     /*!
-     * Spyne 0.20.5
+     * Spyne 0.20.7
      * https://spynejs.org
      *
      * @license
@@ -87,6 +87,8 @@ class SpyneApplication {
 
       },
       tmp: {},
+      ephemeralProps: {},
+      tmpProps: {},
       channels: {
         WINDOW: {
           mediaQueries: {

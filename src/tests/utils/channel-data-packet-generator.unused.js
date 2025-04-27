@@ -1,4 +1,4 @@
-import { ChannelPayloadToTestFilters } from '../mocks/channel-payload-data'
+import { ChannelPayloadToTestFilters } from '../mocks/channel-payload-data.js'
 import { ChannelDataPacketGenerator } from '../../spyne/utils/channel-data-packet-generator'
 import { ChannelDataPacket } from '../../spyne/utils/channel-data-packet'
 const { expect, assert } = require('chai')

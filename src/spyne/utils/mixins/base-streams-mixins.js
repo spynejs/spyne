@@ -1,4 +1,4 @@
-import { ViewStreamPayload } from '../../views/view-stream-payload'
+import { ViewStreamPayload } from '../../views/view-stream-payload.js'
 
 export function baseStreamsMixins() {
   return {

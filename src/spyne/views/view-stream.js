@@ -1,18 +1,18 @@
-import { baseCoreMixins } from '../utils/mixins/base-core-mixins'
-import { SpyneAppProperties } from '../utils/spyne-app-properties'
-import { deepMerge } from '../utils/deep-merge'
-import { safeClone } from '../utils/safe-clone'
+import { baseCoreMixins } from '../utils/mixins/base-core-mixins.js'
+import { SpyneAppProperties } from '../utils/spyne-app-properties.js'
+import { deepMerge } from '../utils/deep-merge.js'
+import { safeClone } from '../utils/safe-clone.js'
 import {
   findStrOrRegexMatchStr,
   getConstructorName
-} from '../utils/frp-tools'
-import { ViewStreamElement } from './view-stream-element'
-import { registeredStreamNames } from '../channels/channels-config'
-import { ViewStreamBroadcaster } from './view-stream-broadcaster'
-import { ViewStreamPayload } from './view-stream-payload'
-import { ChannelPayloadFilter } from '../utils/channel-payload-filter'
-import { ViewStreamObservable } from '../utils/viewstream-observables'
-import { ViewStreamSelector } from './view-stream-selector'
+} from '../utils/frp-tools.js'
+import { ViewStreamElement } from './view-stream-element.js'
+import { registeredStreamNames } from '../channels/channels-config.js'
+import { ViewStreamBroadcaster } from './view-stream-broadcaster.js'
+import { ViewStreamPayload } from './view-stream-payload.js'
+import { ChannelPayloadFilter } from '../utils/channel-payload-filter.js'
+import { ViewStreamObservable } from '../utils/viewstream-observables.js'
+import { ViewStreamSelector } from './view-stream-selector.js'
 import { Subject, of } from 'rxjs'
 import { mergeMap, map, takeWhile, filter, tap, skip, finalize } from 'rxjs/operators'
 import {
@@ -99,9 +99,9 @@ export class ViewStream {
     this.loadAllMethods()
     this.props.action = 'LOADED'
     this.sink$ = new Subject()
+    this.props.elIsAlreadyRenderedBool = this.elAlreadyExistsFn(this.props)
     const ViewClass = this.props.viewClass
-    this.view = new ViewClass(this.sink$, {}, this.props.vsid,
-      this.props.id)// new this.props.viewClass(this.sink$);
+    this.view = new ViewClass(this.sink$, { el:this.props.el }, this.props.vsid, this.props.id)// new this.props.viewClass(this.sink$);
     this.sourceStreams = this.view.sourceStreams
     this._rawSource$ = this.view.getSourceStream()
     this._rawSource$.viewName = this.props.name
@@ -216,12 +216,14 @@ export class ViewStream {
 
   //  =====================================================================
 
-  checkIfElementAlreadyExists() {
+  elAlreadyExistsFn(props) {
     const elIsDomElement = compose(lte(0), defaultTo(-1), prop('nodeType'))
     const elIsRendered = el => document.body.contains(el)
-    const elIsReadyBool = propSatisfies(
-      allPass([elIsRendered, elIsDomElement]), 'el')
-    if (elIsReadyBool(this.props)) {
+    return propSatisfies(allPass([elIsRendered, elIsDomElement]), 'el')(props)
+  }
+
+  checkIfElementAlreadyExists() {
+    if (this.props.elIsAlreadyRenderedBool === true) {
       this.updatePropsToMatchEl()
       this.postRender()
     } else if (this.props.el === null) {
@@ -972,6 +974,8 @@ export class ViewStream {
     }
     if (Array.isArray(this?.props?.channels)) {
       this?.props?.channels?.forEach(addChannel)
+    } else if (Array.isArray(this?.props?.channel)) {
+      console.warn('props.channel is not a ViewStream property. Do you mean props.channels?')
     }
   }
 

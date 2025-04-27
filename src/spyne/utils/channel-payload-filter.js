@@ -23,7 +23,7 @@ import {
   , map as rMap
 } from 'ramda'
 
-import { SpyneAppProperties } from './spyne-app-properties'
+import { SpyneAppProperties } from './spyne-app-properties.js'
 
 const isNotArr = compose(not, is(Array))
 const isNotEmpty = compose(not, isEmpty)

@@ -1,7 +1,7 @@
-import { DomElement } from './dom-element'
-import { fadein, fadeout } from '../utils/viewstream-animations'
-import { ViewStreamObservable } from '../utils/viewstream-observables'
-import { deepMerge } from '../utils/deep-merge'
+import { DomElement } from './dom-element.js'
+import { fadein, fadeout } from '../utils/viewstream-animations.js'
+import { ViewStreamObservable } from '../utils/viewstream-observables.js'
+import { deepMerge } from '../utils/deep-merge.js'
 import { Subject, bindCallback } from 'rxjs'
 import { filter, isNil, pick, props, defaultTo } from 'ramda'
 
@@ -23,6 +23,7 @@ export class ViewStreamElement {
     this.addMixins()
     this._state = 'INIT'
     this.vsid = vsid
+    this.el = viewProps.el
     this.vsName = vsName
     this.defaults = {
       debug:false,
@@ -152,6 +153,10 @@ export class ViewStreamElement {
   }
 
   combineDomItems(d) {
+    if (this.el !== undefined) {
+      return
+    }
+
     const container =  isNil(d.query) ? d.node : d.query
     const prepend = (node, item) => node.insertBefore(item, node.firstChild)
     const append = (node, item) => node.appendChild(item)
@@ -195,7 +200,7 @@ export class ViewStreamElement {
     this.combineDomItems(d)
     return {
       action: 'VS_SPAWNED_AND_ATTACHED_TO_PARENT',
-      el: this.domItem.el,
+      el: this.el || this.domItem.el,
       $dir: this.$dirs.PI
     }
   }
@@ -208,7 +213,7 @@ export class ViewStreamElement {
 
   onRender(d) {
     const getEl = (data) => this.renderDomItem(data)
-    const el =  getEl(props(['tagName', 'domAttributes', 'data', 'template'], d))
+    const el = this.el || getEl(props(['tagName', 'domAttributes', 'data', 'template'], d))
     return {
       action: 'VS_SPAWNED',
       el,
@@ -231,7 +236,7 @@ export class ViewStreamElement {
     this.combineDomItems(d.attachData)
     return {
       action: 'VS_SPAWNED_AND_ATTACHED_TO_DOM',
-      el:     d.attachData.el.el,
+      el:   this.el || d.attachData.el.el,
       $dir: this.$dirs.CI
     }
   }

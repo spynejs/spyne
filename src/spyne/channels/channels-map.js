@@ -1,10 +1,10 @@
-import { SpyneChannelRoute } from './spyne-channel-route'
-import { SpyneChannelUI } from './spyne-channel-ui'
-import { SpyneChannelWindow } from './spyne-channel-window'
-import { SpyneChannelLifecycle } from './spyne-channel-lifecycle'
+import { SpyneChannelRoute } from './spyne-channel-route.js'
+import { SpyneChannelUI } from './spyne-channel-ui.js'
+import { SpyneChannelWindow } from './spyne-channel-window.js'
+import { SpyneChannelLifecycle } from './spyne-channel-lifecycle.js'
 
 import { Subject } from 'rxjs'
-import { ChannelProxy } from './channel-proxy'
+import { ChannelProxy } from './channel-proxy.js'
 import { propEq, pluck, prop, filter, pathEq, reject, compose, join, map as rMap } from 'ramda'
 
 const _map = new Map()

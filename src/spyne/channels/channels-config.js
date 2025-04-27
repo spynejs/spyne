@@ -1,4 +1,4 @@
-import { SpyneAppProperties } from '../utils/spyne-app-properties'
+import { SpyneAppProperties } from '../utils/spyne-app-properties.js'
 import { compose, path, is } from 'ramda'
 import { Observable, Subject } from 'rxjs'
 

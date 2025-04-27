@@ -1,5 +1,5 @@
-import { DomElement } from './views/dom-element'
-import { SpyneAppProperties } from './utils/spyne-app-properties'
+import { DomElement } from './views/dom-element.js'
+import { SpyneAppProperties } from './utils/spyne-app-properties.js'
 import { is, clone, pathSatisfies } from 'ramda'
 let _spyneAppProps = SpyneAppProperties
 export class SpynePlugin {
@@ -123,6 +123,21 @@ export class SpynePlugin {
   onBeforeRegistered() {
     // this.props.pluginName = this.props.name
     // this.props.config = _spyneAppProps.getPluginConfigByPluginName(this.props.pluginName)
+    this.checkForRequiredWindowEvent()
+  }
+
+  checkForRequiredWindowEvent() {
+    const requiredEvents = this.props.requiredEvents ?? []
+    const windowConfig = SpyneAppProperties.getChannelConfig('WINDOW')
+
+    const missingEvents = requiredEvents.filter(evt => !windowConfig.events.includes(evt))
+
+    // If any are missing, log a single warning listing them
+    if (missingEvents.length > 0) {
+      console.warn(
+          `plugin "${this.props.name}" requires the following config.WINDOW.events, --> ${missingEvents.join(', ')} <--`
+      )
+    }
   }
 
   defaultConfig() {

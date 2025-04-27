@@ -1,4 +1,4 @@
-import { Channel } from './channel'
+import { Channel } from './channel.js'
 
 export class SpyneChannelLifecycle extends Channel {
   /**

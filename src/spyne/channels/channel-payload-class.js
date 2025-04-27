@@ -11,8 +11,8 @@ import {
   prop,
   is
 } from 'ramda'
-import { SpyneAppProperties } from '../utils/spyne-app-properties'
-import { safeClone } from '../utils/safe-clone'
+import { SpyneAppProperties } from '../utils/spyne-app-properties.js'
+import { safeClone } from '../utils/safe-clone.js'
 
 export class ChannelPayload {
   /**

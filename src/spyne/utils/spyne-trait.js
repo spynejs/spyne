@@ -1,4 +1,4 @@
-import { getAllMethodNames } from './frp-tools'
+import { getAllMethodNames } from './frp-tools.js'
 import { reject, curryN, __, map } from 'ramda'
 
 export class SpyneTrait {

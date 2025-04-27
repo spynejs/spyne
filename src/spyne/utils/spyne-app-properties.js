@@ -1,16 +1,24 @@
-// import { SpyneUtilsChannelRoute } from './spyne-utils-channel-route'
-import { SpynePluginsMethods } from './spyne-plugins-methods'
-import { deepMerge } from './deep-merge'
-import { path } from 'ramda'
+import { SpyneUtilsChannelRoute } from './spyne-utils-channel-route.js'
+import { SpynePluginsMethods } from './spyne-plugins-methods.js'
+import { deepMerge } from './deep-merge.js'
 
 let _config
 let _channels
 let _channelsMap
 let _initialized
 let _debug = true
+const _excludeChannelsFromConsole = []
+/* eslint-disable */
+let _linksData
+let _navLinks
 let _IMG_PATH
 const _doNotTrackChannelsArr = []
 const _proxiesMap = new Map()
+
+function random6Chars() {
+  // For simplicity: slice(2, 8) gets 6 random chars from the substring
+  return Math.random().toString(36).slice(2, 8);
+}
 
 const _spynePluginMethods = new SpynePluginsMethods()
 
@@ -95,13 +103,31 @@ class SpyneAppPropertiesClass {
     _channelsMap = { getStream, testStream, getProxySubject }
   }
 
-  setProp(key, val) {
-    _config.tmp[key] = val
+  setProp(key, val, isTemp = false) {
+    if (isTemp) {
+      _config.ephemeralProps[key] = val;
+      return val;
+    } else {
+      _config.tmpProps[key] = val;
+    }
+    return  key;
   }
 
   getProp(key) {
-    return path(['tmp', key], _config)
+    if (_config.ephemeralProps.hasOwnProperty(key)) {
+      const tempVal = _config.ephemeralProps[key];
+      delete _config.ephemeralProps[key];
+      return tempVal;
+    }
+    return _config?.tmpProps?.[key];
   }
+
+  createTempProp(value) {
+    const key = random6Chars();
+    this.setProp(key, value, true); // isTemp = true
+    return key;
+  }
+
 
   setChannelConfig(channelName, config) {
     _config.channels[channelName] = config
@@ -199,6 +225,46 @@ class SpyneAppPropertiesClass {
 
   get IMG_PATH() {
     return _IMG_PATH
+  }
+
+  get excludeChannelsFromConsole() {
+    return _excludeChannelsFromConsole
+  }
+
+  // Setter for _excludeChannelsFromConsole
+  set excludeChannelsFromConsole(value) {
+    if (typeof value === 'string') {
+      // Push a single string into the array if not already present
+      if (!_excludeChannelsFromConsole.includes(value)) {
+        _excludeChannelsFromConsole.push(value)
+      }
+    } else if (Array.isArray(value)) {
+      // Merge an array into the existing array, avoiding duplicates
+      value.forEach(item => {
+        if (typeof item === 'string' && !_excludeChannelsFromConsole.includes(item)) {
+          _excludeChannelsFromConsole.push(item)
+        }
+      })
+    } else {
+      console.warn('Invalid value provided to excludeChannelsFromConsole. Only strings or arrays are allowed.')
+    }
+  }
+
+  get linksData() {
+    console.warn('get links data in SpyneAppProperties is deprecated, use navLinks')
+    return _navLinks
+  }
+
+  set linksData(arr) {
+    console.warn('set links data in SpyneAppProperties is deprecated, use navLinks')
+  }
+
+  get navLinks() {
+    return _navLinks
+  }
+
+  set navLinks(arr) {
+    _navLinks = arr
   }
 
   tempGetChannelsInstance() {

@@ -1,5 +1,5 @@
 import { clone, compose, fromPairs, is, path, toPairs } from 'ramda'
-import { SpyneAppProperties } from './spyne-app-properties'
+import { SpyneAppProperties } from './spyne-app-properties.js'
 
 const getPropType = (prp) => {
   let type = typeof prp
