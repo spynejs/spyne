@@ -15,6 +15,6 @@ describe('package.json export import statement', () => {
 
 (isPublic ? describe : describe.skip)('license should be LGPL', () => {
   it('should have LGPL as license', () => {
-    expect(pkg.license).to.equal('LGPL');
+    expect(pkg.license).to.equal('LGPL-3.0');
   });
 });

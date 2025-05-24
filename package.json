@@ -1,6 +1,6 @@
 {
   "name": "spyne",
-  "version": "0.20.7",
+  "version": "0.20.8",
   "description": "Reactive Real-DOM Framework for Advanced Javascript applications",
   "sideEffects": true,
   "main": "./lib/spyne.esm.js",
@@ -44,8 +44,8 @@
     "JavaScript Framework",
     "Single-Page-Application Framework"
   ],
-  "author": "Frank Batista",
-  "license": "LGPL",
+  "license": "LGPL-3.0",
+  "author": "Frank Batista <frank@spynejs.com> (Relevant Context, Inc.)",
   "devDependencies": {
     "@rollup/plugin-commonjs": "^28.0.2",
     "@rollup/plugin-json": "^6.1.0",
