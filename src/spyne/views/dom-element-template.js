@@ -311,6 +311,7 @@ export class DomElementTemplate {
     }
 
     const parseString = (item, str, index, origIndex) => {
+      item = item.replace(/\$/g, '$$$$') // $ → $$
       return str.replace(DomElementTemplate.swapParamsForTagsRE(), item)
     }
 

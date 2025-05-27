@@ -3,6 +3,78 @@ import { ScriptTemplate, StringTemplate, starWarsData } from '../mocks/template-
 import { DomElement } from '../../spyne/views/dom-element'
 
 chai.use(require('chai-dom'))
+describe('DomElementTemplate should safely render special strings', () => {
+
+
+
+  const testCases = [
+    {
+      ref: 'dollarDigit',
+      label: 'should properly add $ sign before a number',
+      val: 'Currently raising $1.5M'
+    },
+    {
+      ref: 'dollarAmp',
+      label: 'should preserve $& which refers to full match in replace',
+      val: 'Matched value was: $&'
+    },
+    {
+      ref: 'dollarBacktick',
+      label: 'should preserve $` which refers to text before match in replace',
+      val: 'Before the match: $`'
+    },
+    {
+      ref: 'dollarSingleQuote',
+      label: 'should preserve $\' which refers to text after match in replace',
+      val: "After the match: $\'"
+    },
+    {
+      ref: 'backslashPath',
+      label: 'should preserve file path backslashes',
+      val: 'User path: C:\\Users\\Frank\\Documents'
+    },
+    {
+      ref: 'curlyBraces',
+      label: 'should preserve double curly brace templates in string',
+      val: 'This is not a template: {{user.name}}'
+    },
+    {
+      ref: 'scriptTag',
+      label: 'should render inline script tags safely (if allowed)',
+      val: 'Click here: <script>alert("XSS")</script>'
+    },
+    {
+      ref: 'richContentWithDot',
+      label: 'should allow rich content with template syntax inside',
+      val: 'Hello <b>{{.}}</b>, welcome back.'
+    },
+    {
+      ref: 'unicodeCurrency',
+      label: 'should preserve Unicode and currency characters',
+      val: 'Price is €100 or ¥12000'
+    }
+  ];
+
+  testCases.forEach(({ label, val, ref }) => {
+    it(`${ref}: ${label}`, () => {
+      const data = { val, arr: [val] };
+
+      const template = '<h1>I am {{val}}'
+      const domElTmpl = new DomElementTemplate(template, data, { testMode: true });
+      const render = domElTmpl.renderDocFrag();
+
+      const templateArr = '<h1>{{#arr}}{{.*}}{{/arr}}</h1>'
+      const domElTmpArr = new DomElementTemplate(templateArr, data, { testMode: true });
+      const renderArr = domElTmpArr.renderDocFrag();
+
+      //console.log("RENDER: ", render.firstElementChild.innerText," RENDERARR: ", renderArr.firstElementChild.innerText);
+
+      expect(render.firstElementChild.innerHTML).to.include(val.replace(/\n/g, ''));
+      expect(renderArr.firstElementChild.innerHTML).to.include(val.replace(/\n/g, ''));
+    });
+  });
+
+});
 
 describe('DomElTemplate', () => {
   it('template renderer exists', () => {
