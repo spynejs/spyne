@@ -1,6 +1,8 @@
 import { from } from 'rxjs'
 import { flatMap, map, publish, tap } from 'rxjs/operators'
 import { compose, prop, defaultTo, over, lensProp, has, propEq, when, propIs, allPass, assoc, pick, mergeDeepRight } from 'ramda'
+import sanitizeData, { setSanitizeDataForceStrict } from './sanitize-data.js'
+
 export class ChannelFetchUtil {
   /**
    * @module ChannelFetchUtil
@@ -47,6 +49,8 @@ export class ChannelFetchUtil {
    */
 
   constructor(options, subscriber, testMode, CHANNEL_NAME) {
+    setSanitizeDataForceStrict(true)
+
     const testSubscriber = (p) => console.log('FETCH RETURNED ', p)
 
     this._mapFn = ChannelFetchUtil.setMapFn(options)
@@ -78,7 +82,27 @@ export class ChannelFetchUtil {
       const metadata = { channelName, url, responseType, serverOptions }
 
       return (data) => {
-        return mapMethod(data, metadata)
+        const disableSanitize = props?.disableSanitize === true
+
+        if (disableSanitize) {
+          const env = (typeof process !== 'undefined' && process.env && process.env.NODE_ENV)
+            ? process.env.NODE_ENV
+            : 'development'
+
+          const msg = `SPYNE SECURITY WARNING — Sanitization disabled for fetch from ${url}. Data will enter the reactive stream unsanitized. Only use disableSanitize=true for trusted or controlled sources.`
+
+          if (env === 'production') {
+            throw new Error(`SpyneJS security policy violation: disableSanitize=true is not allowed in production (${url}).`)
+          } else {
+            console.warn(
+              `%c${msg}`,
+              'color:#f33;font-weight:bold;'
+            )
+          }
+        }
+
+        const sanitizedData = disableSanitize ? data : sanitizeData(data)
+        return mapMethod(sanitizedData, metadata)
       }
     }
 

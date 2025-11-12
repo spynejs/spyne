@@ -3,9 +3,10 @@ import { ViewStream } from './views/view-stream.js'
 import { SpyneUtilsChannelRoute } from './utils/spyne-utils-channel-route.js'
 import { SpyneAppProperties } from './utils/spyne-app-properties.js'
 import { sanitizeHTMLConfigure } from './utils/sanitize-html.js'
+import { sanitizeDataConfigure } from './utils/sanitize-data.js'
 
 const _channels = new ChannelsMap()
-const version = '0.20.9'
+const version = '0.20.12'
 
 class SpyneApplication {
   /**
@@ -42,7 +43,7 @@ class SpyneApplication {
   init(config = {}, testMode = false) {
     // this.channels = new ChannelsMap();
     /*!
-     * Spyne 0.20.9
+     * Spyne 0.20.12
      * https://spynejs.org
      *
      * @license
@@ -141,6 +142,7 @@ class SpyneApplication {
     }
 
     sanitizeHTMLConfigure(SpyneAppProperties.config);
+    sanitizeDataConfigure(SpyneAppProperties.config)
 
   }
 

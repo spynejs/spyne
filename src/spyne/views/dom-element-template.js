@@ -140,6 +140,17 @@ export class DomElementTemplate {
     this.isProxyData = data.__cms__isProxy === true
     this.testMode = opts?.testMode
 
+    /*
+    if (this.isProxyData === true) {
+      console.log('PROXY IS ', data.__cms__rootData)
+      this.template = DomElementTemplate.formatTemplateForProxyData(this.template)
+    }
+*/
+
+    if (SpyneAppProperties.enableCMSProxies && this.isProxyData === true) {
+      this.template = SpyneAppProperties.formatTemplateForProxyData(this.template)
+    }
+
     const checkForArrayData = () => {
       if (is(Array, data) === true) {
         data = { spyneData:data }

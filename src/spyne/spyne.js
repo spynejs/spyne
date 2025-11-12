@@ -17,6 +17,7 @@ import { deepMerge } from './utils/deep-merge.js'
 import { safeClone } from './utils/safe-clone.js'
 import { SpyneAppProperties } from './utils/spyne-app-properties.js'
 import { SpyneApp } from './spyne-app.js'
+import sanitizeData, { sanitizeEventTarget } from './utils/sanitize-data.js'
 
 export {
   ViewStreamElement,
@@ -37,5 +38,7 @@ export {
   SpyneAppProperties,
   SpynePlugin,
   deepMerge,
-  safeClone
+  safeClone,
+  sanitizeData,
+  sanitizeEventTarget
 }

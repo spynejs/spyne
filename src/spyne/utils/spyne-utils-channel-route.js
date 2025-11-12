@@ -93,6 +93,20 @@ export class SpyneUtilsChannelRoute {
   static addRouteDatasets(channelRouteObj) {
     // channelRouteObj.type='query';
 
+    function removeUndefined(arr) {
+      return arr.map(obj => {
+        for (const key in obj) {
+          if (key === undefined || key === 'undefined' || obj[key] === undefined) {
+            delete obj[key]
+          } else if (obj[key] && typeof obj[key] === 'object' && !Array.isArray(obj[key])) {
+            // recurse if nested object
+            obj[key] = removeUndefined([obj[key]])[0]
+          }
+        }
+        return obj
+      })
+    }
+
     const { type, isHash } = channelRouteObj
 
     // create href and check to see if need to convert to hash href links
@@ -163,10 +177,11 @@ export class SpyneUtilsChannelRoute {
     }
 
     const reducedArr = createInitialValFn([], channelRouteObj.routes)
-    const routeDatasetsArr = flatten(reducedArr)
+    let routeDatasetsArr = flatten(reducedArr)
+    routeDatasetsArr = removeUndefined(routeDatasetsArr)
 
     const getNavProps = (datasetsArr) => {
-      const exclude = reject(includes(__, ['title', 'href', 'navLevel']))
+      const exclude = reject(includes(__, ['title', 'href', 'navLevel', 'undefined']))
       const getMainKeys = compose(uniq, exclude, flatten, map(keys))
       return getMainKeys(datasetsArr)
     }

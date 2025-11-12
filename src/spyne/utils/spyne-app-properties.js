@@ -7,6 +7,7 @@ let _channels
 let _channelsMap
 let _initialized
 let _debug = true
+let _enableCMSProxies = false
 const _excludeChannelsFromConsole = []
 /* eslint-disable */
 let _linksData
@@ -266,6 +267,72 @@ class SpyneAppPropertiesClass {
   set navLinks(arr) {
     _navLinks = arr
   }
+
+  get enableCMSProxies(){
+    return _enableCMSProxies
+  }
+
+  set enableCMSProxies(bool=true){
+    _enableCMSProxies = Boolean(bool);
+  }
+
+  setCMSProxyMethod(fn){
+   // this.formatTemplateForProxyData = fn;
+    this.enableCMSProxies = true;
+  }
+
+  // SpyneJS Enterprise Code Start
+   formatTemplateForProxyData(tmpl) {
+    const isPrimitiveTag = str => /({{\.\*?}})/.test(str);
+
+    const reLines2 = /(({{(?!loopNum|loopIndex))(.*?)(}}))/gm
+    const reStr = '(?<=>)(.*?)(({{)(.*)(}}))'
+
+    const reLines1 =  new RegExp(reStr, 'gm')
+
+    const formatCmsParam = (str) => {
+      const isArrPrimitive = isPrimitiveTag(str)
+
+      const getKeyAndDataId = (s) => {
+        const re = /({{)([\w_]+(\.))*?(\w+)(}})/gm // this is old, will be deprecated.
+        const reNestedData = /^\{\{([^}]+?)\.[^.}]+}}$/gm
+
+        let dataId = '__cms__dataId'
+        const key = isArrPrimitive ? '{{loopIndex}}' : String(s).replace(re, '$4')
+        if (/(\w\.)/.test(s)) {
+          dataId = String(s).replace(reNestedData, '$1.') + dataId
+        }
+        return { key, dataId }
+      }
+
+      const { key, dataId } = getKeyAndDataId(str)
+
+      let prefix = `<spyne-cms-item data-cms-id="{{${dataId}}}" data-cms-key="${key}"`
+
+      // IF AN ARRAY PRIMITIVE CHECK FOR ORIGINAL ARRAY POSITION
+      if (isArrPrimitive) {
+        prefix += ' data-cms-orig-key="{{origKey}}"'
+      }
+
+      // CREATE PROXY TAG
+      const suffix = '</spyne-cms-item>'
+      const param =  isArrPrimitive ? '{{spyneLoopKey}}' : str
+      return `${prefix}><spyne-cms-item-hitbox></spyne-cms-item-hitbox><spyne-cms-item-text>${param}</spyne-cms-item-text>${suffix}`
+    }
+
+    const reSwapTags = (str, m1, m2, m3) => {
+      return formatCmsParam(str)
+    }
+
+    const reMethod = (str, m1, m2, m3, m4) => {
+      const m2Updated = String(m2).replace(reLines2, reSwapTags)
+      return `${m1}${m2Updated}`
+    }
+
+    return String(tmpl).replace(reLines1, reMethod)
+  }
+  // SpyneJS Enterprise Code End
+
 
   tempGetChannelsInstance() {
 

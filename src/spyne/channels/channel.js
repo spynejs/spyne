@@ -412,6 +412,12 @@ export class Channel {
         `channel name ${c} is not within ${registeredStreamNames}`)
     const startSubscribe = (c) => {
       const obs$ = this.streamsController.getStream(c).observer
+      if (obs$.source) {
+        obs$.source.channelName = channelName
+      } else {
+        obs$.channelName = channelName
+      }
+
       if (payloadFilter !== undefined) {
         return obs$.pipe(filter(payloadFilter))
       }
@@ -453,11 +459,14 @@ export class Channel {
     }
 
     // 3) Map array → keyed object
+    // return combined$;
     return combined$.pipe(
       map(resultsArr => {
         const obj = {}
         channelsArr.forEach((item, idx) => {
-          const key = typeof item === 'string' ? item : `channel_${idx}`
+          const iterKey = typeof item === 'string' ? item : `channel_${idx}`
+          const cnKey = item?.source?.channelName || item?.source?.source?.channelName
+          const key = cnKey || iterKey
           obj[key] = resultsArr[idx]
         })
         return obj

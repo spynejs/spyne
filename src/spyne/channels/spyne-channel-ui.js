@@ -2,6 +2,7 @@ import { Channel } from './channel.js'
 import { Observable } from 'rxjs'
 import { map } from 'rxjs/operators'
 import { equals, path, compose, prop, filter, replace, lensProp, over, omit, test, keys, either, toUpper } from 'ramda'
+import { sanitizeEventTarget } from '../utils/sanitize-data.js'
 
 export class SpyneChannelUI extends Channel {
   /**
@@ -334,6 +335,7 @@ export class SpyneChannelUI extends Channel {
     const { payload, srcElement } = obs
 
     const event = obs.event
+    sanitizeEventTarget(event?.target)
     // const payload = domStringMapToObject(srcElement?.el?.dataset) ?? obs.payload
     this.sendChannelPayload(action, payload, srcElement, event)
   }
