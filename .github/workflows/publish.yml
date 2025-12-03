@@ -19,7 +19,8 @@ jobs:
         with:
           node-version: 22
           registry-url: 'https://registry.npmjs.org'
-          always-auth: false   # <-- IMPORTANT
+          always-auth: false
+          auth-token: ''          # <-- THE FIX
 
       - name: Remove auto-generated npmrc
         run: |
