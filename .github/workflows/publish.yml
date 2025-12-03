@@ -6,7 +6,7 @@ on:
 
 permissions:
   contents: read
-  id-token: write   # REQUIRED for trusted publishing
+  id-token: write   # REQUIRED
 
 jobs:
   publish:
@@ -19,9 +19,18 @@ jobs:
         with:
           node-version: 22
           registry-url: 'https://registry.npmjs.org'
+          always-auth: false   # <-- IMPORTANT
 
-      - name: Install dependencies
+      - name: Remove auto-generated npmrc
+        run: |
+          rm -f ~/.npmrc || true
+          rm -f /home/runner/work/_temp/.npmrc || true
+
+      - name: Install deps
         run: npm ci
 
-      - name: Publish package
+      - name: Build (if needed)
+        run: npm run build || true
+
+      - name: Publish
         run: npm publish --provenance
