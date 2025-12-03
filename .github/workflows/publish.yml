@@ -1,37 +1,38 @@
-name: Publish to npm
+name: Publish Package
 
 on:
   release:
-    types: [published]
+    types: [published]   # publishes when you publish a GitHub Release
 
 permissions:
+  id-token: write         # REQUIRED for OIDC
   contents: read
-  id-token: write   # REQUIRED
 
 jobs:
   publish:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v4
+      # 1. Checkout your repo
+      - uses: actions/checkout@v5
 
-      - uses: actions/setup-node@v4
+      # 2. Setup Node.js (v5 = better OIDC behavior)
+      # IMPORTANT: Do NOT set registry-url or token
+      - uses: actions/setup-node@v5
         with:
-          node-version: 22
-          registry-url: 'https://registry.npmjs.org'
-          always-auth: false
-          auth-token: ''          # <-- THE FIX
+          node-version: '22'
 
-      - name: Remove auto-generated npmrc
-        run: |
-          rm -f ~/.npmrc || true
-          rm -f /home/runner/work/_temp/.npmrc || true
+      # 3. Ensure npm >= 11.5.1 (latest is simplest)
+      - name: Update npm to latest
+        run: npm install -g npm@latest
 
-      - name: Install deps
-        run: npm ci
+      # 5. Install dependencies
+      - run: npm ci
 
-      - name: Build (if needed)
-        run: npm run build || true
+      # 6. Build Spyne
+      - run: npm run build --if-present
 
-      - name: Publish
-        run: npm publish --provenance
+      # 7. Publish using OIDC (NO TOKEN)
+      # For trusted publishing, npm auto-detects OIDC and provenance.
+      - name: Publish to npm
+        run: npm publish
