@@ -2,10 +2,10 @@ name: Publish Package
 
 on:
   release:
-    types: [published]   # publishes when you publish a GitHub Release
+    types: [published]   # Publishes when you publish a GitHub Release
 
 permissions:
-  id-token: write         # REQUIRED for OIDC
+  id-token: write        # REQUIRED for npm trusted publishing (OIDC)
   contents: read
 
 jobs:
@@ -13,26 +13,35 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # 1. Checkout your repo
+      # 1. Checkout repo
       - uses: actions/checkout@v5
 
-      # 2. Setup Node.js (v5 = better OIDC behavior)
-      # IMPORTANT: Do NOT set registry-url or token
+      # 2. Setup Node (OIDC-safe)
+      # IMPORTANT: Do NOT set registry-url or npm token
       - uses: actions/setup-node@v5
         with:
           node-version: '22'
 
-      # 3. Ensure npm >= 11.5.1 (latest is simplest)
+      # 3. Ensure modern npm (OIDC + provenance support)
       - name: Update npm to latest
         run: npm install -g npm@latest
 
-      # 5. Install dependencies
-      - run: npm ci
+      # 4. Install dependencies
+      - name: Install dependencies
+        run: npm ci
 
-      # 6. Build Spyne
-      - run: npm run build --if-present
+      # 5. Build UMD (Webpack)
+      - name: Build UMD
+        run: npm run build
 
-      # 7. Publish using OIDC (NO TOKEN)
-      # For trusted publishing, npm auto-detects OIDC and provenance.
+      # 6. Build ESM (Rollup)
+      - name: Build ESM
+        run: npm run build:esm
+
+      # 7. Verify build artifacts exist
+      - name: Verify dist
+        run: npm run verify:dist
+
+      # 8. Publish to npm using GitHub trusted publishing
       - name: Publish to npm
-        run: npm publish
+        run: npm publish --provenance
