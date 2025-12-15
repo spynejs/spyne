@@ -1,6 +1,6 @@
 {
   "name": "spyne",
-  "version": "0.20.18",
+  "version": "0.20.19",
   "description": "Reactive Real-DOM Framework for Advanced Javascript applications",
   "sideEffects": true,
   "main": "./lib/spyne.esm.js",
@@ -24,12 +24,13 @@
     "dev": "webpack --config webpack.config.js --mode development",
     "stats": "webpack --profile --json --optimize-minimize --mode production --env build > stats.json",
     "docs": "jsdoc --readme README.md -d docs -c docs/jsdoc.config.json -r",
-    "esdocs": "esdoc -d esdocs -c esdocs/esdoc.config.json -r",
+    "esdocs": "esdoc   -d esdocs -c esdocs/esdoc.config.json -r",
     "test": "karma start karma.conf.js",
     "test:single": "karma start karma.conf.js --single-run",
     "watch:test": "npm test -- --auto-watch --no-single-run",
     "test:mocha": "mocha tests",
     "lint": "eslint 'src/spyne/**' --fix",
+    "verify:dist": "test -f lib/spyne.esm.js && test -f lib/spyne.umd.js",
     "prepare": "husky"
   },
   "repository": {
