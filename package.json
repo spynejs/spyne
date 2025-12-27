@@ -1,6 +1,6 @@
 {
   "name": "spyne",
-  "version": "0.20.19",
+  "version": "0.21.1",
   "description": "Reactive Real-DOM Framework for Advanced Javascript applications",
   "sideEffects": true,
   "main": "./lib/spyne.esm.js",

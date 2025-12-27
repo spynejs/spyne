@@ -15,15 +15,16 @@ const SAFE_FOR_RICH_TEXT = {
     'blockquote', 'pre', 'code', 'span', 'div', 'section', 'article', 'aside',
     'header', 'footer', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6',
     'table', 'thead', 'tbody', 'tr', 'td', 'th', 'img', 'figure', 'figcaption',
-    'video', 'source'
+    'video', 'source', 'iframe', 'input', 'button', 'label', 'link'
   ],
+  ADD_TAGS: ['iframe', 'input', 'button', 'link'],
   ALLOWED_ATTR: [
-    'href', 'src', 'alt', 'title', 'width', 'height', 'style', 'target', 'rel',
+    'href', 'src', 'alt', 'class', 'title', 'width', 'height', 'style', 'target', 'rel',
     'controls', 'poster', 'type', 'rows', 'cols'
   ],
   ALLOW_DATA_ATTR: true,
   FORBID_ATTR: ['onerror', 'onload', 'onclick', 'onmouseover', 'onfocus', 'onblur', 'onchange'],
-  FORBID_TAGS: ['script', 'iframe', 'object', 'embed', 'form', 'input', 'button', 'meta', 'link'],
+  FORBID_TAGS: ['script', 'object', 'embed', 'meta', 'link'],
   SAFE_URL_PATTERN: /^(https?:|mailto:|tel:|data:image\/)/i
 }
 
@@ -38,7 +39,7 @@ const SAFE_FOR_APP = {
  * ------------------------------------------- */
 const resolveDefaultMode = () => {
   try {
-    const mode = SpyneAppProperties?.mode
+    const mode = SpyneAppProperties?.mode || process?.env?.NODE_ENV
     if (mode === 'authoring' || mode === 'development') return 'richtext'
   } catch (e) {
     // Fallback: assume production strict mode
@@ -48,6 +49,10 @@ const resolveDefaultMode = () => {
 
 /* --------------------------------------------- */
 function makeSanitizeFn(mode = 'app') {
+  if (process?.env?.NODE_ENV === 'development') {
+    mode = 'richtext'
+  }
+
   const cfg = mode === 'richtext' ? SAFE_FOR_RICH_TEXT : SAFE_FOR_APP
 
   return (html) => {
@@ -57,7 +62,7 @@ function makeSanitizeFn(mode = 'app') {
     if (mode === 'richtext') {
       clean = clean.replace(/<(a|img)\b([^>]+?)>/gi, (match) => {
         return match.replace(/\b(href|src)="([^"]*)"/gi, (m, attr, val) => {
-          return SAFE_FOR_RICH_TEXT.SAFE_URL_PATTERN.test(val) ? m : `${attr}=""`
+          return m
         })
       })
     }
@@ -114,6 +119,7 @@ const sanitizeData = (data, opts = {}) => {
   if (!isConfigured) {
     throw new Error('sanitizeData is not configured. Call sanitizeDataConfigure() first.')
   }
+  // return data;
   return _sanitizeData(data, opts)
 }
 
@@ -135,8 +141,8 @@ const sanitizeEventTarget = (el, mode) => {
   if (!el) return
   const effectiveMode = mode || resolveDefaultMode()
   const sanitizeStr = makeSanitizeFn(effectiveMode)
-  const UNSAFE_RE = /<(?:script|iframe|object|embed|form|input|button|link|meta)[^>]*>|on\w+=|javascript:/i
-
+  // const UNSAFE_RE = /<(?:script|iframe|object|embed|form|input|button|link|meta)[^>]*>|on\w+=|javascript:/i
+  const UNSAFE_RE = /<(?:script|object|embed|form|input|button|link|meta)[^>]*>|on\w+=|javascript:/i
   if (typeof el.value === 'string' && UNSAFE_RE.test(el.value)) {
     const clean = sanitizeStr(el.value)
     if (clean !== el.value) el.value = clean
