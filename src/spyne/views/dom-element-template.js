@@ -8,8 +8,10 @@ export class DomElementTemplate {
     this.isProxyData = data.__cms__isProxy === true
     this.testMode = opts?.testMode
 
-    if (this.isProxyData === true && SpyneAppProperties.enableCMSProxies) {
-      this.template = SpyneAppProperties.formatTemplateForProxyData(this.template)
+    if (this.isProxyData === true) {
+      if (SpyneAppProperties.enableCMSProxies === true) {
+        this.template = SpyneAppProperties.formatTemplateForProxyData(this.template)
+      }
     }
 
     const checkForArrayData = () => {
