@@ -1,4 +1,5 @@
 import { SpyneUtilsChannelRoute } from './spyne-utils-channel-route.js'
+import { SpyneUtilsChannelRouteUrl } from './spyne-utils-channel-route-url.js'
 import { SpynePluginsMethods } from './spyne-plugins-methods.js'
 import { deepMerge } from './deep-merge.js'
 
@@ -270,6 +271,12 @@ class SpyneAppPropertiesClass {
 
   get enableCMSProxies(){
     return _enableCMSProxies
+  }
+
+  getHrefFromData(routeProps={}){
+
+    return SpyneUtilsChannelRouteUrl.convertParamsToRoute(routeProps);
+
   }
 
   set enableCMSProxies(bool=true){

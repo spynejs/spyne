@@ -247,7 +247,7 @@ export class SpyneChannelRoute extends Channel {
       // define an alias property using Object.defineProperty
       Object.defineProperty(payload, 'linksData', {
         get() {
-          console.warn('get links data is deprecated in ROUTE DEEPLINK DATA, use navLinks')
+          // console.warn('get links data is deprecated in ROUTE DEEPLINK DATA, use navLinks')
           return this.navLinks
         },
         set(value) {
