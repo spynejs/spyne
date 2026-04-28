@@ -10,7 +10,7 @@ module.exports = function (config) {
 
 module.exports = function (config) {
 
-  if (process.env.TRAVIS) {
+  if (process.env.TRAVIS || process.env.GITHUB_ACTIONS || process.env.CI) {
     config.browsers = ['ChromeHeadlessNoSandbox'];
   }
 
