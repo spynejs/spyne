@@ -18,11 +18,12 @@ jobs:
         uses: actions/checkout@v5
 
       # 2. Setup Node
-      # Do not set registry-url or NODE_AUTH_TOKEN when using npm trusted publishing
+      # Do not set NODE_AUTH_TOKEN when using npm trusted publishing
       - name: Setup Node
         uses: actions/setup-node@v5
         with:
           node-version: '22'
+          registry-url: 'https://registry.npmjs.org'
 
       # 3. Enable Corepack and install dependencies
       - name: Enable Corepack and install dependencies
