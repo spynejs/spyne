@@ -2,10 +2,10 @@ name: Publish Package
 
 on:
   release:
-    types: [published]   # Publishes when you publish a GitHub Release
+    types: [published] # Publishes when you publish a GitHub Release
 
 permissions:
-  id-token: write        # REQUIRED for npm trusted publishing (OIDC)
+  id-token: write # Required for npm trusted publishing / OIDC
   contents: read
 
 jobs:
@@ -14,31 +14,42 @@ jobs:
 
     steps:
       # 1. Checkout repo
-      - uses: actions/checkout@v5
+      - name: Checkout repo
+        uses: actions/checkout@v5
 
-      # 2. Setup Node (OIDC-safe)
-      # IMPORTANT: Do NOT set registry-url or npm token
-      - uses: actions/setup-node@v5
+      # 2. Setup Node
+      # Do not set registry-url or NODE_AUTH_TOKEN when using npm trusted publishing
+      - name: Setup Node
+        uses: actions/setup-node@v5
         with:
           node-version: '22'
-          registry-url: 'https://registry.npmjs.org'
 
-      # 4. Install dependencies
+      # 3. Ensure modern npm with trusted publishing / provenance support
+      - name: Update npm to latest
+        run: npm install -g npm@latest
+
+      # 4. Confirm versions for debugging
+      - name: Confirm Node and npm versions
+        run: |
+          node --version
+          npm --version
+
+      # 5. Install dependencies
       - name: Install dependencies
         run: npm ci
 
-      # 5. Build UMD (Webpack)
+      # 6. Build UMD
       - name: Build UMD
         run: npm run build
 
-      # 6. Build ESM (Rollup)
+      # 7. Build ESM
       - name: Build ESM
         run: npm run build:esm
 
-      # 7. Verify build artifacts exist
+      # 8. Verify build artifacts exist
       - name: Verify dist
         run: npm run verify:dist
 
-      # 8. Publish to npm using GitHub trusted publishing
+      # 9. Publish to npm using GitHub trusted publishing
       - name: Publish to npm
         run: npm publish --provenance
