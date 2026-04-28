@@ -22,10 +22,6 @@ jobs:
         with:
           node-version: '22'
 
-      # 3. Ensure modern npm (OIDC + provenance support)
-      - name: Update npm
-        run: npm install -g npm@11
-
       # 4. Install dependencies
       - name: Install dependencies
         run: npm ci
