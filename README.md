@@ -2,9 +2,7 @@
 
 [![NPM version](https://img.shields.io/npm/v/spyne.svg?longCache=true&style=flat-square)](https://www.npmjs.com/package/spyne)
 [![GitHub license](https://img.shields.io/github/license/spynejs/spyne.svg?longCache=true&style=flat-square)](https://github.com/spynejs/spyne/blob/master/LICENSE)
-![Publish Package](https://github.com/spynejs/spyne/actions/workflows/publish.yml/badge.svg)
-
-
+![Tests](https://github.com/spynejs/spyne/actions/workflows/tests.yml/badge.svg?branch=main)
 SpyneJS is a full frontend framework for building modular, scalable web applications — structured for collaborative development between developers and AI assistants.
 
 It uses real DOM rendering, observable behavior streams, and pure, reusable logic to create applications that are easy to read, reason about, and extend.
