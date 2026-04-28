@@ -233,7 +233,7 @@ export class ChannelPayloadFilter {
     // LOOP THROUGH NODES IN querySelectorAll()
     const mapNodeArrWithEl = (sel) => {
       // convert nodelist to array of els
-      const nodeArr = flatten(document.querySelectorAll(sel))
+      const nodeArr = Array.from(document.querySelectorAll(sel))
       // els array to boolean array
       return rMap(compareEls, nodeArr)
     }

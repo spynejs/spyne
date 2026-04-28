@@ -11,7 +11,7 @@ let forceStrict = false // legacy compatibility toggle
  * ------------------------------------------- */
 const SAFE_FOR_RICH_TEXT = {
   ALLOWED_TAGS: [
-    'a', 'b', 'i', 'em', 'strong', 'u', 'p', 'br', 'ul', 'ol', 'li',
+    'a', 'b', 'i', 'em', 'strong', 'u', 'p', 'br', 'ul', 'dl', 'dt', 'dd', 'ol', 'li', 'hr',
     'blockquote', 'pre', 'code', 'span', 'div', 'section', 'article', 'aside',
     'header', 'footer', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6',
     'table', 'thead', 'tbody', 'tr', 'td', 'th', 'img', 'figure', 'figcaption',
@@ -24,7 +24,7 @@ const SAFE_FOR_RICH_TEXT = {
   ],
   ALLOW_DATA_ATTR: true,
   FORBID_ATTR: ['onerror', 'onload', 'onclick', 'onmouseover', 'onfocus', 'onblur', 'onchange'],
-  FORBID_TAGS: ['script', 'object', 'embed', 'meta', 'link'],
+  FORBID_TAGS: ['script', 'object', 'embed', 'meta'],
   SAFE_URL_PATTERN: /^(https?:|mailto:|tel:|data:image\/)/i
 }
 

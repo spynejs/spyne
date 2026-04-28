@@ -253,7 +253,7 @@ function ViewStreamSelector(cxt, sel) {
    * @param {String|HTMLElement} elSel The selector for the element.
    * @desc Sets the class active HTMLElement from a NodeList.
    */
-  selector.setActiveItem = (c, elSel) => {
+  selector.setActiveItem2 = (c, elSel) => {
     const arr = getNodeListArray(cxt, sel)
     const currentEl = typeof (elSel) === 'string' ? getElOrList(cxt, elSel) : elSel
     const toggleBool = item => item.isEqualNode(currentEl) ? item.classList.add(c) : item.classList.remove(c)
@@ -263,6 +263,33 @@ function ViewStreamSelector(cxt, sel) {
       // console.log("SEL IS ",elSel,c);
       console.warn(`Spyne Warning: The selector, ${elSel}, does not appear to be a valid item in setActiveItem: ${c}`)
     }
+    return this
+  }
+
+  selector.setActiveItem = (c, elSel) => {
+    const arr = getNodeListArray(cxt, sel)
+    const currentEl = typeof elSel === 'string'
+      ? getElOrList(cxt, elSel)
+      : elSel
+
+    arr.forEach(item => item.classList.remove(c))
+
+    if (isNodeElement(currentEl) === true) {
+      const matchingEl = Array.from(arr).find(item => item === currentEl)
+
+      if (matchingEl) {
+        matchingEl.classList.add(c)
+      } else if (isDevMode() === true) {
+        console.warn(
+          `Spyne Warning: The selector, ${elSel}, is valid but does not match any item in setActiveItem: ${c}`
+        )
+      }
+    } else if (isDevMode() === true) {
+      console.warn(
+        `Spyne Warning: The selector, ${elSel}, does not appear to be a valid item in setActiveItem: ${c}`
+      )
+    }
+
     return this
   }
 
