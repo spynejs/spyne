@@ -41,7 +41,7 @@ class SpyneApplication {
   init(config = {}, testMode = false) {
     // this.channels = new ChannelsMap();
     /*!
-     * Spyne 0.22.3
+     * Spyne 0.22.4
      * https://spynejs.org
      *
      * @license

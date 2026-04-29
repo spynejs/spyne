@@ -54,7 +54,7 @@ export class DomElementTemplate {
       if (SpyneAppProperties.enableCMSProxies === true) {
         this.template = SpyneAppProperties.formatTemplateForProxyData(this.template)
       } else {
-        this.template = DomElementTemplate.formatTemplateForProxyData(this.template)
+        console.warn('You need to be logged in to use the CMS Tools.')
       }
     }
 
