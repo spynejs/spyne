@@ -51,10 +51,12 @@ export class DomElementTemplate {
     this.template = DomElementTemplate.normalizeTripleBrackets(this.template)
 
     if (this.isProxyData === true) {
-      if (SpyneAppProperties.enableCMSProxies === true) {
-        this.template = SpyneAppProperties.formatTemplateForProxyData(this.template)
-      } else {
-        this.template = DomElementTemplate.formatTemplateForProxyData(this.template)
+      const proxyFormatter = SpyneAppProperties.enableCMSProxies === true
+        ? SpyneAppProperties.formatTemplateForProxyData
+        : DomElementTemplate.formatTemplateForProxyData
+
+      if (typeof proxyFormatter === 'function') {
+        this.template = proxyFormatter(this.template)
       }
     }
 
