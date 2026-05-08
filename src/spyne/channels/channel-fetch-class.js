@@ -46,7 +46,7 @@ export class ChannelFetch extends Channel {
    *
    */
 
-  constructor(name, props = {}) {
+  constructor(name, props = { disableSanitize:false }) {
     // ALLOW FOR GENERIC MAP PROPERTY
 
     ChannelFetch.validateMapMethod(props, name)
@@ -123,7 +123,7 @@ export class ChannelFetch extends Channel {
   }
 
   consolidateAllFetchProps(options, props = this.props) {
-    const propsOptions = pick(['mapFn', 'url', 'header', 'body', 'mode', 'method', 'responseType', 'debug'], props)
+    const propsOptions = pick(['mapFn', 'url', 'header', 'body', 'mode', 'disableSanitize', 'method', 'responseType', 'debug'], props)
     const mergeOptions = (o1, o2) => mergeDeepRight(o1, o2)
     const filterOutUndefined = reject(isNil)
     return compose(filterOutUndefined, mergeOptions)(propsOptions, options)

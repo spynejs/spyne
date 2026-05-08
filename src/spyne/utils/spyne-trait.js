@@ -1,5 +1,6 @@
 import { getAllMethodNames } from './frp-tools.js'
 import { reject, curryN, __, map } from 'ramda'
+import { SpyneAppProperties } from './spyne-app-properties.js'
 
 export class SpyneTrait {
   /**
@@ -44,7 +45,9 @@ export class SpyneTrait {
   }
 
   checkForMalformedMethods(methodsArr) {
-    if (this.prefix === '') {
+    const isDebugMode = SpyneAppProperties?.debug || false
+
+    if (this.prefix === '' && isDebugMode) {
       console.warn(`SPYNE WARNING: The following SpyneTrait ${this.constructor.name} needs a prefix`)
       return
     }
@@ -53,7 +56,7 @@ export class SpyneTrait {
     const hasPrefix = (str) => str.indexOf(this.prefix) === 0
 
     const malformedMethodsArr = reject(hasPrefix, methodsArr)
-    if (malformedMethodsArr.length >= 1) {
+    if (malformedMethodsArr.length >= 1 && isDebugMode) {
       const warningStr = `Spyne Warning: The following method(s) in ${this.constructor.name} require the prefix, "${this.prefix}": [${malformedMethodsArr.join(', ')}];`
       console.warn(warningStr)
     }

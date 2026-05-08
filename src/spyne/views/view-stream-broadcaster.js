@@ -85,6 +85,10 @@ export class ViewStreamBroadcaster {
       const data = {}// convertDomStringMapToObj(q.dataset);
       data.payload = convertDomStringMapToObj(q.dataset)
       data.payload = omit(['channel'], data.payload)
+      if (data.channel === 'ROUTE') {
+        data.payload.endPreventDefault = true
+      }
+
       data.channel = channel
       // payload needs vsid# to pass verification
 

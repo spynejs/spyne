@@ -59,6 +59,7 @@ export class ChannelFetchUtil {
     this._serverOptions = ChannelFetchUtil.setServerOptions(options)
     this._subscriber = subscriber !== undefined ? subscriber : testSubscriber
     this.debug = options.debug !== undefined ? options.debug : false
+    this.disableSanitize = options?.disableSanitize
     this.channelName = CHANNEL_NAME
 
     const fetchProps = {
@@ -66,6 +67,7 @@ export class ChannelFetchUtil {
       url: this.url,
       serverOptions: this.serverOptions,
       responseType: this.responseType,
+      disableSanitize: this.disableSanitize,
       debug: this.debug
     }
     if (testMode !== true) {
@@ -82,8 +84,8 @@ export class ChannelFetchUtil {
       const metadata = { channelName, url, responseType, serverOptions }
 
       return (data) => {
-        const disableSanitize = props?.disableSanitize === true
-
+        const disableSanitize =  props?.disableSanitize === true
+        /*
         if (disableSanitize) {
           const env = (typeof process !== 'undefined' && process.env && process.env.NODE_ENV)
             ? process.env.NODE_ENV
@@ -100,6 +102,7 @@ export class ChannelFetchUtil {
             )
           }
         }
+*/
 
         const sanitizedData = disableSanitize ? data : sanitizeData(data)
         return mapMethod(sanitizedData, metadata)
