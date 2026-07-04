@@ -49,9 +49,11 @@ describe('ChannelFetchUtil Tests', () => {
 
   describe('stringify body method', () => {
     it('should convert body object to string', () => {
-      let bodyStr = ChannelFetchUtil.stringifyBodyIfItExists(propsPost)
-      bodyStr = R.omit(['mapFn'], bodyStr)
+      const result = ChannelFetchUtil.stringifyBodyIfItExists(propsPost)
+      const bodyStr = R.omit(['mapFn', 'headers'], result)
+
       expect(bodyStr).to.deep.equal(propsStringified)
+      expect(result.headers.get('Content-Type')).to.equal('application/json')
     })
 
     it('should not parse body when its a string', () => {
@@ -125,6 +127,46 @@ describe('ChannelFetchUtil Tests', () => {
 
     it('should return default mapFn', () => {
       expect(channelFetchUtil.mapFn).to.be.a('function')
+    })
+  })
+
+  describe('conformed fetch error payload', () => {
+    const metadata = {
+      channelName: 'CHANNEL_MY_FETCHED_DATA',
+      url,
+      responseType: 'json'
+    }
+
+    it('should conform an http error into a flat payload with the discriminator flag', () => {
+      const httpError = ChannelFetchUtil.createFetchError({
+        errorType: 'FETCH_HTTP_ERROR',
+        message: 'Fetch request failed with status 404 Not Found',
+        metadata: { ...metadata, status: 404, statusText: 'Not Found', ok: false },
+        rawBody: '{"error":"not found"}'
+      })
+
+      const errorPayload = ChannelFetchUtil.createFetchErrorPayload(httpError, metadata)
+
+      expect(errorPayload.isChannelFetchError).to.be.true
+      expect(errorPayload.isError).to.be.true
+      expect(errorPayload.errorType).to.equal('FETCH_HTTP_ERROR')
+      expect(errorPayload.status).to.equal(404)
+      expect(errorPayload.statusText).to.equal('Not Found')
+      expect(errorPayload.url).to.equal(url)
+      expect(errorPayload.channelName).to.equal('CHANNEL_MY_FETCHED_DATA')
+      expect(errorPayload.rawBodyPreview).to.equal('{"error":"not found"}')
+    })
+
+    it('should conform a network error using fallback metadata and error type', () => {
+      const networkError = new TypeError('Failed to fetch')
+
+      const errorPayload = ChannelFetchUtil.createFetchErrorPayload(networkError, metadata)
+
+      expect(errorPayload.isChannelFetchError).to.be.true
+      expect(errorPayload.errorType).to.equal('FETCH_UNKNOWN_ERROR')
+      expect(errorPayload.message).to.equal('Failed to fetch')
+      expect(errorPayload.url).to.equal(url)
+      expect(errorPayload.status).to.be.undefined
     })
   })
 })

@@ -1,6 +1,7 @@
 import { baseCoreMixins } from '../utils/mixins/base-core-mixins.js'
 import { DomElementTemplate } from './dom-element-template.js'
 import { deepMerge } from '../utils/deep-merge.js'
+import { sanitizeAttribute, applyIframeHardening } from '../utils/sanitize-data.js'
 import { is, defaultTo, pick, mapObjIndexed, forEachObjIndexed, pipe } from 'ramda'
 
 class DomElement {
@@ -53,15 +54,33 @@ class DomElement {
   }
 
   setElAttrs(el, params) {
+    const testMode = this.testMode === true
     const addAttributes = (val, key) => {
       const addToDataset = (val, key) => { el.dataset[key] = val }
       if (key === 'dataset') {
+        // Dataset values are inert text and are the framework's payload
+        // surface; they are applied as-is.
         forEachObjIndexed(addToDataset, val)
-      } else {
-        el.setAttribute(key, val)
+        return
       }
+
+      if (testMode !== true) {
+        const { allowed, value } = sanitizeAttribute(key, val, el.tagName)
+        if (allowed !== true) {
+          console.warn(`SPYNE WARNING: The attribute "${key}" was removed during sanitization.`, el)
+          return
+        }
+        val = value
+      }
+
+      el.setAttribute(key, val)
     }
     this.getProp('attrs').forEach(addAttributes)
+
+    if (testMode !== true) {
+      applyIframeHardening(el)
+    }
+
     return el
   }
 

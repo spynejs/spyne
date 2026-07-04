@@ -46,6 +46,16 @@ class SpyneAppPropertiesClass {
   }
 
   /**
+   * The application's sanitization mode, set via config.mode in SpyneApp.init.
+   * 'app' (default) is the strict production posture; 'richtext' (aliases:
+   * 'authoring', 'development') is the permissive posture for CMS and
+   * authoring tools.
+   */
+  get mode() {
+    return _config?.mode !== undefined ? _config.mode : 'app'
+  }
+
+  /**
    * This is mostly used for debugging purposes
    *
    * @example
@@ -105,29 +115,48 @@ class SpyneAppPropertiesClass {
     _channelsMap = { getStream, testStream, getProxySubject }
   }
 
+// ──────────────────────────────────────────────────────────────────────────
+// FIXED: durable setProp/getProp + isolated ephemeral (read-once) tier
+//
+// Contract after fix:
+//   setProp(key, val)            → durable. Persists for the app lifespan.
+//                                   Returns val.
+//   setProp(key, val, true)      → ephemeral. Read-once via getProp. Returns val.
+//   createTempProp(val)          → ephemeral with generated key. Returns the key.
+//   getProp(key)                 → returns durable value if present;
+//                                   otherwise returns ephemeral value ONCE,
+//                                   then deletes it. The two tiers cannot
+//                                   shadow each other.
+// ──────────────────────────────────────────────────────────────────────────
+
   setProp(key, val, isTemp = false) {
     if (isTemp) {
       _config.ephemeralProps[key] = val;
-      return val;
     } else {
       _config.tmpProps[key] = val;
     }
-    return  key;
+    return val;                       // FIX 2: both tiers return the stored value
   }
 
   getProp(key) {
-    if (_config.ephemeralProps.hasOwnProperty(key)) {
+    // FIX 1+3: durable tier resolves FIRST and independently. A durable value
+    // can never be shadowed or consumed by a same-named ephemeral key.
+    if (_config?.tmpProps && Object.prototype.hasOwnProperty.call(_config.tmpProps, key)) {
+      return _config.tmpProps[key];
+    }
+    // Ephemeral tier: read-once. Only reached when no durable value exists.
+    if (_config?.ephemeralProps && Object.prototype.hasOwnProperty.call(_config.ephemeralProps, key)) {
       const tempVal = _config.ephemeralProps[key];
       delete _config.ephemeralProps[key];
       return tempVal;
     }
-    return _config?.tmpProps?.[key];
+    return undefined;
   }
 
   createTempProp(value) {
     const key = random6Chars();
-    this.setProp(key, value, true); // isTemp = true
-    return key;
+    this.setProp(key, value, true);   // isTemp = true
+    return key;                       // returns key (correct — caller needs it to read back)
   }
 
 

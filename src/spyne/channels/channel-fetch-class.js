@@ -17,11 +17,13 @@ export class ChannelFetch extends Channel {
    * <li>Requires a url property at instantiation.</li>
    * <li>The response data is published as a ChannelPayload.</li>
    * <li>The action for the returned ChannelFetch data is always in the following format, "CHANNEL_NAME_RESPONSE_EVENT"</li>
+   * <li>Fetch failures (network errors, non-OK HTTP statuses, unparseable responses) are published as a conformed error ChannelPayload with the action format, "CHANNEL_NAME_ERROR_EVENT"</li>
+   * <li>The error payload contains filterable properties such as errorType, status, statusText, url and message.</li>
    * <li>The default request type is a GET request that returns a JSON object.</li>
    * <li>However, any type of request and return type can be configured by using the body property when creating the instance.</li>
-   * <li>The mapFn gives access to the returned response and can be use to parse the data before it is published to other Channels and ViewStream instances.</li>
+   * <li>The mapFn gives access to the returned response and can be use to parse the data before it is published to other Channels and ViewStream instances. The mapFn is not called for error payloads.</li>
    * <li>Channel Fetch will send the last response to future subscribers, and will not make further http(s) requests unless directed to do  so.</li>
-   * <li>Data can be Fetched again, by sending a "CHANNEL_NAME_UPDATE_RESPONSE_EVENT" action from a ViewStream's sendInfoToChannel method.</li>
+   * <li>Data can be Fetched again, by sending a "CHANNEL_NAME_REQUEST_EVENT" action from a ViewStream's sendInfoToChannel method.</li>
    * </ul>
    *
    * @constructor
@@ -35,7 +37,7 @@ export class ChannelFetch extends Channel {
    *
    * @example
    * TITLE["<h4>A ViewStream Instance Sending A Fetch Update Request</h4>"]
-   * const action = "CHANNEL_FETCHCHANNEL_NAME_UPDATE_RESPONSE_EVENT";
+   * const action = "CHANNEL_FETCHCHANNEL_NAME_REQUEST_EVENT";
    * const url = "//site.com/json/";
    * const body = {
    *     method: "POST"
@@ -56,6 +58,7 @@ export class ChannelFetch extends Channel {
     }
     props.extendedActionsArr = [
       `${name}_RESPONSE_EVENT`,
+      `${name}_ERROR_EVENT`,
       [`${name}_REQUEST_EVENT`, 'onFetchUpdate']
     ]
     props.sendCachedPayload = true
@@ -89,6 +92,7 @@ export class ChannelFetch extends Channel {
   addRegisteredActions(name) {
     const arr = [
       'CHANNEL_RESPONSE_EVENT',
+      'CHANNEL_ERROR_EVENT',
       ['CHANNEL_UPDATE_RESPONSE_EVENT', 'onFetchUpdate'],
       ['CHANNEL_FETCH_REQUEST_EVENT', 'onFetchUpdate']
     ]
@@ -108,7 +112,12 @@ export class ChannelFetch extends Channel {
   }
 
   onFetchReturned(streamItem) {
-    return this.createChannelPayloadItem(streamItem)
+    const isFetchError = streamItem?.isChannelFetchError === true
+    const action = isFetchError
+      ? `${this.props.name}_ERROR_EVENT`
+      : `${this.props.name}_RESPONSE_EVENT`
+
+    return this.createChannelPayloadItem(streamItem, action)
   }
 
   createChannelPayloadItem(payload, action = `${this.props.name}_RESPONSE_EVENT`) {
@@ -118,7 +127,7 @@ export class ChannelFetch extends Channel {
   }
 
   getPropsForFetch(evt) {
-    const dataObj = path(['viewStreamInfo', 'payload'], evt)
+    const dataObj = evt?.payload ?? evt?.viewStreamInfo?.payload ?? {}
     return pick(['mapFn', 'url', 'header', 'body', 'mode', 'method', 'responseType', 'debug'], dataObj)
   }
 

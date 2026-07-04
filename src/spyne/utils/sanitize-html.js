@@ -3,6 +3,18 @@ import DOMPurify from 'dompurify'
 let _sanitizeHTML
 let isConfigured = false
 
+/**
+ * Configures the template-layer sanitizer.
+ *
+ * Sanitization is always on. The three-level posture:
+ *
+ *   mode: 'app' (default)   — DOMPurify with its standard allowlist
+ *   mode: 'richtext'        — additionally admits iframe/link (+ sandbox attr)
+ *                             so CMS/authoring content survives templates
+ *   strict: true            — additionally registers a Trusted Types 'default'
+ *                             policy so DOM sinks route through sanitization
+ *   disableSanitize: true   — the only full passthrough; logs a security warning
+ */
 const sanitizeHTMLConfigure = (config = {}) => {
   if (isConfigured) {
     console.warn('sanitizeHTML is already configured. Reconfiguration is not allowed.')
@@ -10,20 +22,41 @@ const sanitizeHTMLConfigure = (config = {}) => {
   }
 
   const {
-    strict = true,
+    strict = false,
+    mode = 'app',
+    disableSanitize = false,
     allowTargetAttr = true,
-    addNoopener = true
+    addNoopener = true,
+    debug = false,
+    iframes = {}
   } = config
 
-  if (!strict) {
+  if (disableSanitize === true) {
+    console.warn('SPYNE SECURITY WARNING: All HTML sanitization is DISABLED via config.disableSanitize. Do not use this setting in production.')
     _sanitizeHTML = (html) => html
     isConfigured = true
     return
   }
 
+  const isRichtext = ['richtext', 'authoring', 'development'].includes(mode)
+
+  // Iframe admission follows config.iframes.allow when set; otherwise
+  // the mode default (richtext yes, app no). The DOMPurify hook added by
+  // sanitize-data enforces src origin and sandbox policy on whatever
+  // is admitted here.
+  const allowIframe = iframes.allow !== undefined ? iframes.allow === true : isRichtext
+
   const domPurifyConfig = {
     RETURN_TRUSTED_TYPE: false,
-    ADD_ATTR: allowTargetAttr ? ['target'] : []
+    ADD_TAGS: [
+      ...(allowIframe ? ['iframe'] : []),
+      ...(isRichtext ? ['link'] : [])
+    ],
+    ADD_ATTR: [
+      ...(allowTargetAttr ? ['target'] : []),
+      ...(allowIframe ? ['sandbox'] : [])
+    ],
+    ...(allowIframe !== true && isRichtext ? { FORBID_TAGS: ['iframe'] } : {})
   }
 
   const sanitizeWithPolicy = (html) => DOMPurify.sanitize(html, domPurifyConfig)
@@ -63,14 +96,22 @@ const sanitizeHTMLConfigure = (config = {}) => {
     })
   }
 
-  if (window.trustedTypes) {
-    const policy = window.trustedTypes.createPolicy('default', {
-      createHTML: (toEscape) => sanitizeWithPolicy(toEscape)
-    })
+  _sanitizeHTML = sanitizeWithPolicy
 
-    _sanitizeHTML = (html) => policy.createHTML(html)
-  } else {
-    _sanitizeHTML = (html) => sanitizeWithPolicy(html)
+  if (strict === true && window.trustedTypes) {
+    try {
+      const policy = window.trustedTypes.createPolicy('default', {
+        createHTML: (toEscape) => sanitizeWithPolicy(toEscape)
+      })
+
+      _sanitizeHTML = (html) => policy.createHTML(html)
+
+      if (debug === true) {
+        console.log('SPYNE: Trusted Types default policy registered. Note that browser enforcement additionally requires the CSP header: require-trusted-types-for \'script\'.')
+      }
+    } catch (err) {
+      console.warn('SPYNE WARNING: A Trusted Types "default" policy already exists on this page. Falling back to direct sanitization.', err)
+    }
   }
 
   isConfigured = true

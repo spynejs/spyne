@@ -234,6 +234,11 @@ export class DomElementTemplate {
   renderToString() {
     let html = this.finalArr.join('')
     html = DomElementTemplate.replaceImgPath(html)
+    if (this.testMode !== true) {
+      // String(...) unwraps TrustedHTML when strict mode is active,
+      // keeping this method's string contract.
+      html = String(sanitizeHTML(html))
+    }
     window.setTimeout(this.removeThis, 2)
     return html
   }

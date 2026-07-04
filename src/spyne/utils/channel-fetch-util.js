@@ -1,65 +1,43 @@
-import { from } from 'rxjs'
-import { flatMap, map, publish, tap } from 'rxjs/operators'
-import { compose, prop, defaultTo, over, lensProp, has, propEq, when, propIs, allPass, assoc, pick, mergeDeepRight } from 'ramda'
-import sanitizeData, { setSanitizeDataForceStrict } from './sanitize-data.js'
+import { from, of } from 'rxjs'
+import { catchError, map, mergeMap, share, tap } from 'rxjs/operators'
+import { compose, prop, defaultTo, pick, mergeDeepRight } from 'ramda'
+import sanitizeData from './sanitize-data.js'
 
 export class ChannelFetchUtil {
   /**
    * @module ChannelFetchUtil
    * @type util
    *
-   *
    * @desc
-   * This is the core object used for ChannelFetch. This utility wraps the javascript fetch api into an observable.
+   * This is the core object used for ChannelFetch. This utility wraps the JavaScript
+   * fetch API into an observable.
    *
    * @constructor
    * @param {Object} options Properties used to create the fetch request
-   * @param {function} subscriber A method assigned to listen to the result
-   * @param {Boolean} testMode Controls the initializtion for unit tests
+   * @param {Function} subscriber A method assigned to listen to the result
+   * @param {Boolean} testMode Controls initialization for unit tests
+   * @param {String} CHANNEL_NAME The name of the channel using this fetch util
    *
-   * @property {Object} options.url - = undefined; The url used for the request
-   * @property {Object} options.serverOptions - = undefined; The properties, header, body, mode, method, for the request
-   * @property {Object} options.mapFn - = undefined; A method that can be used to parse the data before it's returned
-   * @property {Object} options.responseType - = 'json'; Default is json
-   * @property {Object} options.debug - = false; will trace the fetch response to the console befor the observable completes
-   * @property {Function} Subscriber - = undefined; the method that will be called when the fetch is complete.
-   * @property {Boolean} testMode - = false; Used for unit testing.
+   * @property {String} options.url - The URL used for the request
+   * @property {Object} options.serverOptions - The properties for the request
+   * @property {Function} options.mapFn - A method that can parse the data before it is returned
+   * @property {String} options.responseType - Default is json
+   * @property {Boolean} options.debug - Logs fetch response details before observable completes
+   * @property {Boolean} options.disableSanitize - Allows trusted fetch data to skip sanitization
    *
-   * @returns The fetched response parsed by the set parameters.
-   *
-   *
-   * @example
-   * TITLE['<h4>Using ChannelFetchUtil to Retrieve an Image</h4>']
-   *
-   *   const url = "/static/images/myimage.jpg";
-   *   const responseType = "blob";
-   *   const onImgBlobReturned = (blob)=>{
-   *        let blobUrl = URL.createObjectURL(blob);
-   *        this.appendView(
-   *            new ViewStream({
-   *              tagName: 'img',
-   *              src: blobUrl,
-   *              width:300
-   *            })
-   *           )}
-   *
-   *   new ChannelFetchUtil({url, responseType}, onImgBlobReturned);
-   *
-   *
+   * @returns The fetched response parsed by the configured parameters.
    */
 
-  constructor(options, subscriber, testMode, CHANNEL_NAME) {
-    setSanitizeDataForceStrict(true)
-
-    const testSubscriber = (p) => console.log('FETCH RETURNED ', p)
+  constructor(options = {}, subscriber, testMode, CHANNEL_NAME) {
+    const testSubscriber = p => console.log('FETCH RETURNED ', p)
 
     this._mapFn = ChannelFetchUtil.setMapFn(options)
     this._url = ChannelFetchUtil.setUrl(options)
     this._responseType = ChannelFetchUtil.setResponseType(options)
     this._serverOptions = ChannelFetchUtil.setServerOptions(options)
     this._subscriber = subscriber !== undefined ? subscriber : testSubscriber
-    this.debug = options.debug !== undefined ? options.debug : false
-    this.disableSanitize = options?.disableSanitize
+    this.debug = options?.debug === true
+    this.disableSanitize = options?.disableSanitize === true
     this.channelName = CHANNEL_NAME
 
     const fetchProps = {
@@ -70,6 +48,7 @@ export class ChannelFetchUtil {
       disableSanitize: this.disableSanitize,
       debug: this.debug
     }
+
     if (testMode !== true) {
       ChannelFetchUtil.startWindowFetch(fetchProps, this._subscriber, this.channelName)
     }
@@ -77,60 +56,189 @@ export class ChannelFetchUtil {
 
   static startWindowFetch(props, subscriber, channelName) {
     const { mapFn, url, serverOptions, responseType, debug } = props
-    const tapLogDebug = p => console.log('DEBUG FETCH :', p, { url, serverOptions, responseType, channelName })
-    const tapLog = debug === true ? tapLogDebug : () => {}
 
-    const mapWrapper = (mapMethod) => {
-      const metadata = { channelName, url, responseType, serverOptions }
-
-      return (data) => {
-        const disableSanitize =  props?.disableSanitize === true
-        /*
-        if (disableSanitize) {
-          const env = (typeof process !== 'undefined' && process.env && process.env.NODE_ENV)
-            ? process.env.NODE_ENV
-            : 'development'
-
-          const msg = `SPYNE SECURITY WARNING — Sanitization disabled for fetch from ${url}. Data will enter the reactive stream unsanitized. Only use disableSanitize=true for trusted or controlled sources.`
-
-          if (env === 'production') {
-            throw new Error(`SpyneJS security policy violation: disableSanitize=true is not allowed in production (${url}).`)
-          } else {
-            console.warn(
-              `%c${msg}`,
-              'color:#f33;font-weight:bold;'
-            )
-          }
-        }
-*/
-
-        const sanitizedData = disableSanitize ? data : sanitizeData(data)
-        return mapMethod(sanitizedData, metadata)
-      }
+    const metadata = {
+      channelName,
+      url,
+      responseType,
+      serverOptions
     }
 
-    // console.log('SERVER OPTIONS ', { props, serverOptions })
+    const tapLogDebug = p => {
+      console.log('DEBUG FETCH :', p, metadata)
+    }
 
-    const response$ = from(window.fetch(url, serverOptions))
-      .pipe(tap(tapLog), flatMap(r => from(r[responseType]())),
-        map(mapWrapper(mapFn)),
-        publish())
+    const tapLog = debug === true ? tap(tapLogDebug) : tap(() => {})
 
-    response$.connect()
+    const mapWrapper = mapMethod => data => {
+      const disableSanitize = props?.disableSanitize === true
+
+      // Fetched data is remote and untrusted: always sanitize in 'app' mode,
+      // regardless of the application's authoring/richtext posture.
+      const sanitizedData = disableSanitize ? data : sanitizeData(data, { mode: 'app' })
+
+      return mapMethod(sanitizedData, metadata)
+    }
+
+    const response$ = from(window.fetch(url, serverOptions)).pipe(
+      mergeMap(response =>
+        from(ChannelFetchUtil.parseResponse(response, metadata))
+      ),
+
+      tapLog,
+
+      map(mapWrapper(mapFn)),
+
+      catchError(error =>
+        of(ChannelFetchUtil.createFetchErrorPayload(error, metadata))
+      ),
+
+      share()
+    )
 
     response$.subscribe(subscriber)
   }
 
+  static async parseResponse(response, metadata) {
+    const { responseType } = metadata
+
+    const status = response.status
+    const statusText = response.statusText
+    const contentType = response.headers?.get?.('content-type') || ''
+
+    const responseMetadata = {
+      ...metadata,
+      status,
+      statusText,
+      contentType,
+      ok: response.ok
+    }
+
+    if (response.ok !== true) {
+      const rawBody = await ChannelFetchUtil.safeReadText(response)
+
+      throw ChannelFetchUtil.createFetchError({
+        errorType: 'FETCH_HTTP_ERROR',
+        message: `Fetch request failed with status ${status} ${statusText}`,
+        metadata: responseMetadata,
+        rawBody
+      })
+    }
+
+    if (responseType === 'json') {
+      return ChannelFetchUtil.parseJsonResponse(response, responseMetadata)
+    }
+
+    if (responseType === 'text') {
+      return response.text()
+    }
+
+    if (responseType === 'blob') {
+      return response.blob()
+    }
+
+    if (responseType === 'arrayBuffer') {
+      return response.arrayBuffer()
+    }
+
+    if (responseType === 'formData') {
+      return response.formData()
+    }
+
+    throw ChannelFetchUtil.createFetchError({
+      errorType: 'FETCH_UNSUPPORTED_RESPONSE_TYPE',
+      message: `Unsupported fetch responseType "${responseType}"`,
+      metadata: responseMetadata
+    })
+  }
+
+  static async parseJsonResponse(response, metadata) {
+    const rawBody = await response.text()
+    const trimmedBody = rawBody.trim()
+
+    if (trimmedBody === '') {
+      return null
+    }
+
+    try {
+      return JSON.parse(trimmedBody)
+    } catch (error) {
+      throw ChannelFetchUtil.createFetchError({
+        errorType: 'FETCH_RESPONSE_PARSE_ERROR',
+        message: 'Expected JSON but could not parse response body.',
+        metadata,
+        rawBody,
+        originalError: error
+      })
+    }
+  }
+
+  static createFetchError({ errorType, message, metadata, rawBody = '', originalError }) {
+    const error = new Error(message)
+
+    error.isChannelFetchError = true
+    error.errorType = errorType
+    error.metadata = metadata
+    error.rawBody = rawBody
+    error.originalError = originalError
+
+    return error
+  }
+
+  static createFetchErrorPayload(error, metadata) {
+    const fetchMetadata = error?.metadata || metadata || {}
+
+    return {
+      isChannelFetchError: true,
+      isError: true,
+      error: true,
+      errorType: error?.errorType || 'FETCH_UNKNOWN_ERROR',
+      message: error?.message || 'Unknown ChannelFetchUtil error',
+
+      channelName: fetchMetadata.channelName,
+      url: fetchMetadata.url,
+      responseType: fetchMetadata.responseType,
+      status: fetchMetadata.status,
+      statusText: fetchMetadata.statusText,
+      contentType: fetchMetadata.contentType,
+      ok: fetchMetadata.ok,
+
+      rawBodyPreview: ChannelFetchUtil.truncateBody(error?.rawBody),
+
+      originalErrorMessage: error?.originalError?.message
+    }
+  }
+
+  static truncateBody(body = '', maxLength = 500) {
+    if (typeof body !== 'string') {
+      return ''
+    }
+
+    return body.length > maxLength
+      ? `${body.slice(0, maxLength)}...`
+      : body
+  }
+
+  static async safeReadText(response) {
+    try {
+      return await response.text()
+    } catch (error) {
+      return ''
+    }
+  }
+
   static setMapFn(opts) {
-    const getFn = compose(defaultTo((p) => p), prop('mapFn'))
+    const getFn = compose(defaultTo(p => p), prop('mapFn'))
     return getFn(opts)
   }
 
   static setUrl(opts) {
     const url = prop('url', opts)
+
     if (url === undefined) {
       console.warn('SPYNE WARNING: URL is undefined for data channel')
     }
+
     return url
   }
 
@@ -155,16 +263,47 @@ export class ChannelFetchUtil {
   }
 
   static stringifyBodyIfItExists(obj) {
-    const convertToJSON = when(propIs(Object, 'body'), compose(over(lensProp('body'), JSON.stringify)))
+    const body = obj?.body
 
-    return convertToJSON(obj)
+    const shouldStringifyBody =
+      body !== null &&
+      typeof body === 'object' &&
+      body.constructor === Object
+
+    if (shouldStringifyBody !== true) {
+      return obj
+    }
+
+    const headers = new Headers(obj.headers || {})
+
+    if (headers.has('Content-Type') !== true) {
+      headers.set('Content-Type', 'application/json')
+    }
+
+    return {
+      ...obj,
+      headers,
+      body: JSON.stringify(body)
+    }
   }
 
   static updateMethodWhenBodyExists(opts) {
-    const hasBody = has('body')
-    const methodIsGet = propEq('GET', 'method')
-    const pred = allPass([hasBody, methodIsGet])
-    return when(pred, assoc('method', 'POST'))(opts)
+    const hasBody = opts?.body !== undefined
+    const method = opts?.method || 'GET'
+
+    if (hasBody && method.toUpperCase() === 'GET') {
+      console.warn(
+        'SPYNE WARNING: Fetch body was provided with method GET. Changing method to POST.',
+        opts
+      )
+
+      return {
+        ...opts,
+        method: 'POST'
+      }
+    }
+
+    return opts
   }
 
   static setServerOptions(opts) {
@@ -181,26 +320,30 @@ export class ChannelFetchUtil {
       'integrity',
       'keepalive'
     ], opts)
+
     let mergedOptions = mergeDeepRight(ChannelFetchUtil.baseOptions(), options)
+
     mergedOptions = ChannelFetchUtil.updateMethodWhenBodyExists(mergedOptions)
     mergedOptions = ChannelFetchUtil.stringifyBodyIfItExists(mergedOptions)
+
     return mergedOptions
   }
 
   static baseOptions() {
     return {
-      method: 'GET', // Default method
+      method: 'GET',
+
       headers: new Headers({
         Accept: 'application/json, text/plain, */*'
       }),
-      mode: 'cors', // Default mode
-      credentials: 'same-origin', // Default credentials policy
-      cache: 'default', // Default cache policy
-      redirect: 'follow', // Default redirect policy
-      referrer: 'client', // Default referrer policy
-      referrerPolicy: 'no-referrer-when-downgrade', // Default referrer policy
-      integrity: '', // Default integrity
-      keepalive: false // Default keepalive
+
+      mode: 'cors',
+      credentials: 'same-origin',
+      cache: 'default',
+      redirect: 'follow',
+      referrerPolicy: 'no-referrer-when-downgrade',
+      integrity: '',
+      keepalive: false
     }
   }
 }
