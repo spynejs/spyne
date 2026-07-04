@@ -1,3 +1,8 @@
+// Silence SpyneJS developer-hint warnings across all test bundles.
+// Expected-failure cases (invalid selectors, blocked URIs, policy removals)
+// would otherwise flood the karma reporter. Security warnings still print.
+window.SPYNE_SUPPRESS_WARNINGS = true
+
 import { SpyneApp } from '../spyne/spyne'
 
 // import {AppView} from "../app/app-view";

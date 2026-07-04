@@ -1,4 +1,5 @@
 import { baseCoreMixins } from '../utils/mixins/base-core-mixins.js'
+import { spyneWarn } from '../utils/spyne-warn.js'
 import { DomElementTemplate } from './dom-element-template.js'
 import { deepMerge } from '../utils/deep-merge.js'
 import { sanitizeAttribute, applyIframeHardening } from '../utils/sanitize-data.js'
@@ -67,7 +68,7 @@ class DomElement {
       if (testMode !== true) {
         const { allowed, value } = sanitizeAttribute(key, val, el.tagName)
         if (allowed !== true) {
-          console.warn(`SPYNE WARNING: The attribute "${key}" was removed during sanitization.`, el)
+          spyneWarn(`SPYNE WARNING: The attribute "${key}" was removed during sanitization.`, el)
           return
         }
         val = value

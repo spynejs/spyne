@@ -1,5 +1,6 @@
 // src/utils/sanitize-data.js
 import DOMPurify from 'dompurify'
+import { spyneWarn } from './spyne-warn.js'
 import { SpyneAppProperties } from './spyne-app-properties.js'
 
 let _sanitizeData
@@ -24,6 +25,56 @@ const normalizeUriForCheck = (val) => String(val).replace(/[\u0000-\u0020]/g, ''
 const isSafeUri = (val) => SAFE_URI_REGEXP.test(normalizeUriForCheck(val))
 
 /* ---------------------------------------------
+ * Custom elements
+ *
+ * The framework's own custom elements (spyne-*) are first-party output —
+ * the CMS proxy wraps editable content in <spyne-cms-item> etc. — and are
+ * admitted in every mode. They are inert without their defining plugin
+ * and the attribute check below only admits data-* on them.
+ *
+ * Additional elements register via allowCustomElements() (additive only;
+ * names must contain a hyphen per the custom-element spec, so built-in
+ * tags like script or iframe can never be admitted through this path)
+ * or via config.customElements at SpyneApp.init.
+ * ------------------------------------------- */
+const SPYNE_CUSTOM_ELEMENT_RE = /^spyne-[a-z][a-z0-9-]*$/i
+
+const allowedCustomElementPatterns = []
+
+const allowCustomElements = (elements = []) => {
+  const arr = Array.isArray(elements) ? elements : [elements]
+
+  arr.forEach((entry) => {
+    if (entry instanceof RegExp) {
+      allowedCustomElementPatterns.push(entry)
+      return
+    }
+
+    const name = String(entry).toLowerCase()
+    if (/^[a-z][a-z0-9]*-[a-z0-9-]+$/.test(name) !== true) {
+      spyneWarn(`SPYNE WARNING: "${entry}" is not a valid custom element name (a hyphen is required) and was not added to the sanitizer allowlist.`)
+      return
+    }
+
+    allowedCustomElementPatterns.push(name)
+  })
+}
+
+const customElementTagCheck = (tagName) => {
+  if (SPYNE_CUSTOM_ELEMENT_RE.test(tagName)) return true
+
+  return allowedCustomElementPatterns.some(p =>
+    p instanceof RegExp ? p.test(tagName) : p === tagName
+  )
+}
+
+const CUSTOM_ELEMENT_HANDLING = {
+  tagNameCheck: customElementTagCheck,
+  attributeNameCheck: /^data-[a-z0-9-]+$/i,
+  allowCustomizedBuiltInElements: false
+}
+
+/* ---------------------------------------------
  * Mode configurations
  * ------------------------------------------- */
 const SAFE_FOR_RICH_TEXT = {
@@ -42,14 +93,16 @@ const SAFE_FOR_RICH_TEXT = {
   ALLOW_DATA_ATTR: true,
   FORBID_ATTR: ['onerror', 'onload', 'onclick', 'onmouseover', 'onfocus', 'onblur', 'onchange'],
   FORBID_TAGS: ['script', 'object', 'embed', 'meta'],
-  ALLOWED_URI_REGEXP: SAFE_URI_REGEXP
+  ALLOWED_URI_REGEXP: SAFE_URI_REGEXP,
+  CUSTOM_ELEMENT_HANDLING
 }
 
 const SAFE_FOR_APP = {
   FORBID_TAGS: ['script', 'iframe', 'object', 'embed', 'form', 'input', 'button', 'link', 'meta'],
   FORBID_ATTR: ['onerror', 'onload', 'onclick', 'onmouseover', 'onfocus', 'onblur', 'onchange'],
   ALLOW_DATA_ATTR: false,
-  ALLOWED_URI_REGEXP: SAFE_URI_REGEXP
+  ALLOWED_URI_REGEXP: SAFE_URI_REGEXP,
+  CUSTOM_ELEMENT_HANDLING
 }
 
 /* ---------------------------------------------
@@ -136,7 +189,7 @@ const addIframeHardeningHook = () => {
 
     const src = node.getAttribute('src') || ''
     if (src !== '' && isAllowedIframeSrc(src) !== true) {
-      console.warn(`SPYNE WARNING: iframe src "${src}" was removed by the iframe policy (same-origin, https, or an allowed origin is required).`)
+      spyneWarn(`SPYNE WARNING: iframe src "${src}" was removed by the iframe policy (same-origin, https, or an allowed origin is required).`)
       node.removeAttribute('src')
     }
 
@@ -209,13 +262,17 @@ function makeSanitizeFn(mode = 'app') {
  * ------------------------------------------- */
 const sanitizeDataConfigure = (config = {}) => {
   if (isConfigured) {
-    console.warn('sanitizeData is already configured. Reconfiguration is not allowed.')
+    spyneWarn('sanitizeData is already configured. Reconfiguration is not allowed.')
     return
   }
 
-  const { strict = false, disableSanitize = false, iframes } = config
+  const { strict = false, disableSanitize = false, iframes, customElements } = config
 
   globalDisable = disableSanitize === true
+
+  if (customElements !== undefined) {
+    allowCustomElements(customElements)
+  }
 
   if (iframes && typeof iframes === 'object') {
     configuredIframePolicy = resolveIframePolicy(iframes)
@@ -376,7 +433,7 @@ const sanitizeEventTarget = (el, mode) => {
  * config.mode at SpyneApp.init. Retained for backward compatibility.
  * ------------------------------------------- */
 const setSanitizeDataForceStrict = (bool = true) => {
-  console.warn('SPYNE DEPRECATION: setSanitizeDataForceStrict is deprecated. Pass { mode: "app" } to sanitizeData, or set config.mode in SpyneApp.init.')
+  spyneWarn('SPYNE DEPRECATION: setSanitizeDataForceStrict is deprecated. Pass { mode: "app" } to sanitizeData, or set config.mode in SpyneApp.init.')
   forceStrict = !!bool
 }
 
@@ -386,6 +443,8 @@ export {
   sanitizeDataForce,
   sanitizeAttribute,
   applyIframeHardening,
+  allowCustomElements,
+  CUSTOM_ELEMENT_HANDLING as customElementHandling,
   sanitizeEventTarget,
   setSanitizeDataForceStrict
 }

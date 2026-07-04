@@ -1,4 +1,6 @@
 import DOMPurify from 'dompurify'
+import { spyneWarn } from './spyne-warn.js'
+import { customElementHandling } from './sanitize-data.js'
 
 let _sanitizeHTML
 let isConfigured = false
@@ -17,7 +19,7 @@ let isConfigured = false
  */
 const sanitizeHTMLConfigure = (config = {}) => {
   if (isConfigured) {
-    console.warn('sanitizeHTML is already configured. Reconfiguration is not allowed.')
+    spyneWarn('sanitizeHTML is already configured. Reconfiguration is not allowed.')
     return
   }
 
@@ -56,6 +58,10 @@ const sanitizeHTMLConfigure = (config = {}) => {
       ...(allowTargetAttr ? ['target'] : []),
       ...(allowIframe ? ['sandbox'] : [])
     ],
+    // Admits the framework's spyne-* elements (CMS proxy wrappers) and any
+    // elements registered via allowCustomElements/config.customElements.
+    // The tag check is a closure, so late plugin registration is honored.
+    CUSTOM_ELEMENT_HANDLING: customElementHandling,
     ...(allowIframe !== true && isRichtext ? { FORBID_TAGS: ['iframe'] } : {})
   }
 
@@ -110,7 +116,7 @@ const sanitizeHTMLConfigure = (config = {}) => {
         console.log('SPYNE: Trusted Types default policy registered. Note that browser enforcement additionally requires the CSP header: require-trusted-types-for \'script\'.')
       }
     } catch (err) {
-      console.warn('SPYNE WARNING: A Trusted Types "default" policy already exists on this page. Falling back to direct sanitization.', err)
+      spyneWarn('SPYNE WARNING: A Trusted Types "default" policy already exists on this page. Falling back to direct sanitization.', err)
     }
   }
 

@@ -2,6 +2,7 @@ import { from, of } from 'rxjs'
 import { catchError, map, mergeMap, share, tap } from 'rxjs/operators'
 import { compose, prop, defaultTo, pick, mergeDeepRight } from 'ramda'
 import sanitizeData from './sanitize-data.js'
+import { spyneWarn } from './spyne-warn.js'
 
 export class ChannelFetchUtil {
   /**
@@ -236,7 +237,7 @@ export class ChannelFetchUtil {
     const url = prop('url', opts)
 
     if (url === undefined) {
-      console.warn('SPYNE WARNING: URL is undefined for data channel')
+      spyneWarn('SPYNE WARNING: URL is undefined for data channel')
     }
 
     return url
@@ -292,7 +293,7 @@ export class ChannelFetchUtil {
     const method = opts?.method || 'GET'
 
     if (hasBody && method.toUpperCase() === 'GET') {
-      console.warn(
+      spyneWarn(
         'SPYNE WARNING: Fetch body was provided with method GET. Changing method to POST.',
         opts
       )

@@ -1,6 +1,6 @@
 const { expect } = require('chai')
 import { SpyneApp, SpyneAppProperties } from '../../spyne/spyne'
-import sanitizeData, { sanitizeAttribute } from '../../spyne/utils/sanitize-data'
+import sanitizeData, { sanitizeAttribute, allowCustomElements } from '../../spyne/utils/sanitize-data'
 import sanitizeHTML from '../../spyne/utils/sanitize-html'
 import { DomElement } from '../../spyne/views/dom-element'
 import { DomElementTemplate } from '../../spyne/views/dom-element-template'
@@ -265,6 +265,70 @@ describe('sanitization security', () => {
       }).render()
 
       expect(el.dataset.pageId).to.equal('page-1')
+    })
+  })
+
+  describe('CMS wrappers and custom elements', () => {
+    const cmsMarkup = '<spyne-cms-item data-cms-id="post.title" data-cms-key="title">' +
+      '<spyne-cms-item-hitbox></spyne-cms-item-hitbox>' +
+      '<spyne-cms-item-text>Hello</spyne-cms-item-text>' +
+      '</spyne-cms-item>'
+
+    it('should keep spyne-* CMS wrappers and data-cms attributes in app mode', () => {
+      const clean = sanitizeData(cmsMarkup, { mode: 'app' })
+
+      expect(clean).to.include('<spyne-cms-item')
+      expect(clean).to.include('data-cms-key="title"')
+      expect(clean).to.include('<spyne-cms-item-hitbox')
+      expect(clean).to.include('<spyne-cms-item-text>Hello</spyne-cms-item-text>')
+    })
+
+    it('should keep spyne-* CMS wrappers in richtext mode', () => {
+      const clean = sanitizeData(cmsMarkup, { mode: 'richtext' })
+
+      expect(clean).to.include('<spyne-cms-item')
+      expect(clean).to.include('data-cms-id="post.title"')
+    })
+
+    it('should keep spyne-* CMS wrappers at the template layer', () => {
+      const clean = String(sanitizeHTML(cmsMarkup))
+
+      expect(clean).to.include('<spyne-cms-item')
+      expect(clean).to.include('<spyne-cms-item-text>Hello</spyne-cms-item-text>')
+    })
+
+    it('should still sanitize content inside CMS wrappers', () => {
+      const dirty = '<spyne-cms-item data-cms-key="body">' +
+        '<spyne-cms-item-text><script>bad()</script><b>ok</b></spyne-cms-item-text>' +
+        '</spyne-cms-item>'
+      const clean = sanitizeData(dirty, { mode: 'app' })
+
+      expect(clean).to.include('<spyne-cms-item')
+      expect(clean).to.not.include('<script')
+      expect(clean).to.include('<b>ok</b>')
+    })
+
+    it('should not allow event-handler attributes on CMS wrappers', () => {
+      const dirty = '<spyne-cms-item onclick="evil()" data-cms-key="x">y</spyne-cms-item>'
+      const clean = sanitizeData(dirty, { mode: 'app' })
+
+      expect(clean).to.include('<spyne-cms-item')
+      expect(clean).to.not.include('onclick')
+    })
+
+    it('should admit elements registered via allowCustomElements', () => {
+      allowCustomElements(['my-widget'])
+      const clean = sanitizeData('<my-widget data-config="a">w</my-widget>', { mode: 'app' })
+
+      expect(clean).to.include('<my-widget')
+      expect(clean).to.include('data-config="a"')
+    })
+
+    it('should reject invalid custom element names', () => {
+      allowCustomElements(['script', 'iframe', 'div'])
+      const clean = sanitizeData('<script>bad()</script>', { mode: 'app' })
+
+      expect(clean).to.not.include('<script')
     })
   })
 

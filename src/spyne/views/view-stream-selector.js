@@ -1,4 +1,5 @@
 import { head, compose, reject, split, isEmpty, lte, defaultTo, prop } from 'ramda'
+import { spyneWarn } from '../utils/spyne-warn.js'
 import { SpyneAppProperties } from '../utils/spyne-app-properties.js'
 
 function generateSpyneSelectorId(el) {
@@ -32,7 +33,7 @@ function testSelectors(cxt, sel, verboseBool) {
   const elIsDomElement = compose(lte(0), defaultTo(-1), prop('nodeType'))
 
   if (el !== null && elIsDomElement(el) === false) {
-    console.warn(`Spyne Warning: the el object is not a valid single element, ${el}`)
+    spyneWarn(`Spyne Warning: the el object is not a valid single element, ${el}`)
     return
   }
 
@@ -48,7 +49,7 @@ function testSelectors(cxt, sel, verboseBool) {
 
     const isValidSelectorBool = isValidSelector(sel)
     if (verboseBool === true && isDevMode() === true && isValidSelectorBool === false) {
-      console.warn(`Spyne Warning: the selector, ${sel} does not exist in this el, ${cxt}`)
+      spyneWarn(`Spyne Warning: the selector, ${sel} does not exist in this el, ${cxt}`)
     }
   }
 }
@@ -127,8 +128,6 @@ function ViewStreamSelector(cxt, sel) {
    */
   selector.forEach = (fn) => Array.from(getNodeListArray(cxt, sel)).map(fn)
 
-  selector.getNodeListArray = () => getNodeListArray(cxt, sel)
-
   /**
    *
    * Adds the class to the Element or to the NodeList.
@@ -142,7 +141,7 @@ function ViewStreamSelector(cxt, sel) {
     const arr = getNodeListArray(cxt, sel)
     const addClass = item => item.classList.add(c)
     arr.forEach(addClass)
-    return this
+    return selector
   }
 
   /**
@@ -156,7 +155,7 @@ function ViewStreamSelector(cxt, sel) {
       item.classList.remove(c)
     }
     arr.forEach(removeClass)
-    return this
+    return selector
   }
 
   /**
@@ -181,7 +180,7 @@ function ViewStreamSelector(cxt, sel) {
       classStrArr.forEach(adder)
     }
     arr.forEach(setTheClass)
-    return this
+    return selector
   }
 
   selector.unmount = () => {
@@ -205,23 +204,25 @@ function ViewStreamSelector(cxt, sel) {
       bool ? item.classList.add(c) : item.classList.remove(c)
     }
     arr.forEach(toggleClass)
-    return this
+    return selector
   }
 
   selector.toggle = (c, bool) => {
     selector.toggleClass(c, bool)
-    return this
+    return selector
   }
 
   /**
-   * Attaches html to the Selector's element
+   * Attaches html to the Selector's element (the first match when the
+   * selector matches multiple elements).
    * @param htmlElement
    */
   selector.appendChild = (htmlElement) => {
-    if (selector.el.length !== 0) {
-      selector.el.appendChild(htmlElement)
+    const el = selector.el
+    if (el !== null) {
+      el.appendChild(htmlElement)
     } else {
-      console.warn(`Spyne Warning: The selector, ${sel} does not appear to be valid!`)
+      spyneWarn(`Spyne Warning: The selector, ${sel} does not appear to be valid!`)
     }
 
     return selector.el
@@ -244,7 +245,7 @@ function ViewStreamSelector(cxt, sel) {
       arr.forEach(addClass)
     }
     requestAnimationFrame(delayAddClass)
-    // window.setTimeout(delayAddClass, 1);
+    return selector
   }
 
   /**
@@ -253,19 +254,6 @@ function ViewStreamSelector(cxt, sel) {
    * @param {String|HTMLElement} elSel The selector for the element.
    * @desc Sets the class active HTMLElement from a NodeList.
    */
-  selector.setActiveItem2 = (c, elSel) => {
-    const arr = getNodeListArray(cxt, sel)
-    const currentEl = typeof (elSel) === 'string' ? getElOrList(cxt, elSel) : elSel
-    const toggleBool = item => item.isEqualNode(currentEl) ? item.classList.add(c) : item.classList.remove(c)
-    if (isNodeElement(currentEl) === true) {
-      arr.forEach(toggleBool)
-    } else if (isDevMode() === true) {
-      // console.log("SEL IS ",elSel,c);
-      console.warn(`Spyne Warning: The selector, ${elSel}, does not appear to be a valid item in setActiveItem: ${c}`)
-    }
-    return this
-  }
-
   selector.setActiveItem = (c, elSel) => {
     const arr = getNodeListArray(cxt, sel)
     const currentEl = typeof elSel === 'string'
@@ -280,17 +268,17 @@ function ViewStreamSelector(cxt, sel) {
       if (matchingEl) {
         matchingEl.classList.add(c)
       } else if (isDevMode() === true) {
-        console.warn(
+        spyneWarn(
           `Spyne Warning: The selector, ${elSel}, is valid but does not match any item in setActiveItem: ${c}`
         )
       }
     } else if (isDevMode() === true) {
-      console.warn(
+      spyneWarn(
         `Spyne Warning: The selector, ${elSel}, does not appear to be a valid item in setActiveItem: ${c}`
       )
     }
 
-    return this
+    return selector
   }
 
   /**
@@ -298,10 +286,24 @@ function ViewStreamSelector(cxt, sel) {
    * @function el
    *
    * @desc
-   * getter for the selector
+   * getter that always resolves to a single element: the matched element,
+   * or the first item when the selector matches multiple elements (a
+   * warning is logged in debug mode).
    *
    * @returns
-   * The a single element or a NodeList from the selector
+   * An HTMLElement, or null when the selector matches nothing
+   * (mirroring querySelector)
+   */
+
+  /**
+   *
+   * @function els
+   *
+   * @desc
+   * getter that always resolves to an Array of the matched elements.
+   *
+   * @returns
+   * An Array of HTMLElements; empty when the selector matches nothing
    */
 
   /**
@@ -312,7 +314,7 @@ function ViewStreamSelector(cxt, sel) {
    * Determines the length of the NodeList
    *
    * @returns
-   * The length of the selector as a NodeList
+   * The number of elements matched by the selector
    */
 
   /**
@@ -326,24 +328,27 @@ function ViewStreamSelector(cxt, sel) {
    * Boolean
    */
 
-  Object.defineProperty(selector, 'el', { get: () => getElOrList(cxt, sel, true) })
-  Object.defineProperty(selector, 'els', { get: () => getNodeListArray(cxt, sel) })
-  Object.defineProperty(selector, 'len', { get: () => getNodeListArray(cxt, sel, false).length })
-  Object.defineProperty(selector, 'exists', { get: () => getNodeListArray(cxt, sel, false).length >= 1 })
-  Object.defineProperty(selector, 'exist', { get: () => getNodeListArray(cxt, sel, false).length >= 1 })
-  Object.defineProperty(selector, 'nodeList', { get: () => getNodeListArray(cxt, sel) })
-  Object.defineProperty(selector, 'arr', {
+  const getElsArray = (verboseBool = true) => Array.from(getNodeListArray(cxt, sel, verboseBool))
+
+  Object.defineProperty(selector, 'el', {
     get: () => {
-      const el = getElOrList(cxt, sel, true)
-      if (el === undefined) {
-        return []
-      } else if (el.length === undefined) {
-        return [el]
-      } else {
-        return Array.from(el)
+      const list = getElsArray()
+      if (list.length > 1 && isDevMode() === true) {
+        spyneWarn(`Spyne Warning: el$("${sel !== undefined ? sel : cxt}").el matched ${list.length} elements; returning the first. Use .els for the full list.`)
       }
+      return list.length >= 1 ? list[0] : null
     }
   })
+  Object.defineProperty(selector, 'els', { get: () => getElsArray() })
+  Object.defineProperty(selector, 'arr', { get: () => getElsArray() })
+
+  // Undocumented. Retains the pre-0.24 polymorphic el contract — a single
+  // element, a NodeList, or an empty NodeList depending on match count —
+  // to assist in debugging and migrating older SpyneJS apps.
+  Object.defineProperty(selector, 'elLegacy', { get: () => getElOrList(cxt, sel, true) })
+  Object.defineProperty(selector, 'len', { get: () => getNodeListArray(cxt, sel, false).length })
+  Object.defineProperty(selector, 'length', { get: () => getNodeListArray(cxt, sel, false).length })
+  Object.defineProperty(selector, 'exists', { get: () => getNodeListArray(cxt, sel, false).length >= 1 })
 
   Object.defineProperty(selector, 'inline', { set: (val) => setInlineCss(val, cxt, sel), get: () => selector })
   Object.defineProperty(selector, 'inlineCss', { set: (val) => setInlineCss(val, cxt, sel), get: () => selector })

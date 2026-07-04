@@ -41,14 +41,14 @@ describe('Dom Item Selector', () => {
     const el = document.querySelector('ul#my-list')
     const el$ =   ViewStreamSelector('ul#my-list')
     const liList = el$('li')
-    expect(liList.el.length).to.eq(5)
+    expect(liList.els.length).to.eq(5)
   })
   it('should add class to li', () => {
     const el = document.querySelector('ul#my-list')
     const el$ =   ViewStreamSelector('ul#my-list')
     const liList = el$('li')
     liList.addClass('foo')
-    const hasFooClassBool = liList.el[0].classList.contains('foo')
+    const hasFooClassBool = liList.els[0].classList.contains('foo')
     expect(hasFooClassBool).to.eq(true)
   })
 
@@ -57,7 +57,7 @@ describe('Dom Item Selector', () => {
     const el$ =   ViewStreamSelector('ul#my-list')
     const liList = el$('li')
     liList.removeClass('has-svg')
-    const hasSvgClassBool = liList.el[0].classList.contains('has-svg')
+    const hasSvgClassBool = liList.els[0].classList.contains('has-svg')
     expect(hasSvgClassBool).to.eq(false)
   })
 
@@ -66,8 +66,8 @@ describe('Dom Item Selector', () => {
     const el$ =   ViewStreamSelector('ul#my-list')
     const liList = el$('li')
     liList.setClass('foo bar')
-    // console.log('liList ',liList.el[0].className)
-    const isFooBarClassBool = liList.el[0].className === 'foo bar'
+    // console.log('liList ',liList.els[0].className)
+    const isFooBarClassBool = liList.els[0].className === 'foo bar'
     expect(isFooBarClassBool).to.eq(true)
   })
 
@@ -76,7 +76,7 @@ describe('Dom Item Selector', () => {
     const el$ =   ViewStreamSelector('ul#my-list')
     const liList = el$('li')
     liList.inlineCss = 'background:orange;'
-    const backgroundSetBool = liList.el[0].style.getPropertyValue('background') === 'orange'
+    const backgroundSetBool = liList.els[0].style.getPropertyValue('background') === 'orange'
     expect(backgroundSetBool).to.eq(true)
   })
 
@@ -85,7 +85,7 @@ describe('Dom Item Selector', () => {
     const el$ =   ViewStreamSelector('ul#my-list')
     const liList = el$('li')
     liList.toggleClass('foo', true)
-    const hasFooClassBool = liList.el[0].classList.contains('foo')
+    const hasFooClassBool = liList.els[0].classList.contains('foo')
     expect(hasFooClassBool).to.eq(true)
   })
 
