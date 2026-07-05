@@ -201,6 +201,117 @@ const addIframeHardeningHook = () => {
 }
 
 /* ---------------------------------------------
+ * Anchor policy
+ *
+ * Configured via config.anchors at SpyneApp.init:
+ *   allowTarget    — true (default) admits target on dynamic anchors in
+ *                    every mode; the hook validates values and forces
+ *                    noopener. false strips target everywhere.
+ *   addNoopener    — true (default) forces rel="noopener noreferrer"
+ *                    onto target="_blank" anchors.
+ *   allowedDomains — [] (any destination the URI scheme policy allows) |
+ *                    ['https://github.com', ...] restricts cross-origin
+ *                    hrefs to the listed origins. Same-origin, relative,
+ *                    mailto: and tel: hrefs are always allowed.
+ *
+ * A per-call override can be passed as opts.anchors to sanitizeData.
+ * The legacy top-level allowTargetAttr and addNoopener config keys are
+ * honored as fallbacks.
+ * ------------------------------------------- */
+// target accepts any browsing-context name; these are the keywords that
+// stay in the same context and therefore carry no opener risk.
+const SAME_CONTEXT_TARGETS = ['_self', '_parent', '_top']
+
+let configuredAnchorPolicy = { allowTarget: true, addNoopener: true, allowedDomains: [] }
+let activeAnchorPolicy = configuredAnchorPolicy
+
+const resolveAnchorPolicy = (override) => {
+  if (!override) return configuredAnchorPolicy
+  return {
+    allowTarget: override.allowTarget !== undefined ? override.allowTarget === true : configuredAnchorPolicy.allowTarget,
+    addNoopener: override.addNoopener !== undefined ? override.addNoopener === true : configuredAnchorPolicy.addNoopener,
+    allowedDomains: override.allowedDomains !== undefined ? override.allowedDomains : configuredAnchorPolicy.allowedDomains
+  }
+}
+
+const isAllowedAnchorHref = (href, policy = activeAnchorPolicy) => {
+  const normalized = normalizeUriForCheck(href)
+
+  // mailto: and tel: are not domains and always pass.
+  if (/^(mailto|tel):/i.test(normalized)) return true
+
+  let resolved
+  try {
+    resolved = new URL(normalized, window.location.href)
+  } catch (e) {
+    return false
+  }
+
+  // Same-origin links (including relative hrefs) are never restricted.
+  if (resolved.origin === window.location.origin && resolved.origin !== 'null') {
+    return true
+  }
+
+  if (/^https?:$/.test(resolved.protocol) !== true) return false
+
+  const domains = policy.allowedDomains
+  if (!Array.isArray(domains) || domains.length === 0) return true
+
+  return domains.some(d => {
+    try {
+      return new URL(d).origin === resolved.origin
+    } catch (e) {
+      return false
+    }
+  })
+}
+
+const forceNoopenerRel = (el) => {
+  const currentRel = el.getAttribute('rel') || ''
+  const relSet = new Set(currentRel.split(/\s+/).filter(Boolean))
+
+  relSet.add('noopener')
+  relSet.add('noreferrer')
+
+  el.setAttribute('rel', Array.from(relSet).join(' '))
+}
+
+let anchorHookAdded = false
+const addAnchorHardeningHook = () => {
+  if (anchorHookAdded) return
+  anchorHookAdded = true
+
+  DOMPurify.addHook('afterSanitizeAttributes', (node) => {
+    if (!node || typeof node.getAttribute !== 'function') return
+    if (node.tagName !== 'A') return
+
+    const policy = activeAnchorPolicy
+    const href = node.getAttribute('href')
+
+    if (href && policy.allowedDomains.length > 0 && isAllowedAnchorHref(href, policy) !== true) {
+      spyneWarn(`SPYNE WARNING: anchor href "${href}" was removed by the anchor policy (same-origin or an allowed domain is required).`)
+      node.removeAttribute('href')
+    }
+
+    const target = node.getAttribute('target')
+    if (!target) return
+
+    // target without an href serves no purpose.
+    if (policy.allowTarget !== true || !node.getAttribute('href')) {
+      node.removeAttribute('target')
+      return
+    }
+
+    // Any browsing-context name is valid; _blank and named windows both
+    // hand the opened page an opener reference, so noopener applies to
+    // every target except the same-context keywords.
+    if (SAME_CONTEXT_TARGETS.includes(target) !== true && policy.addNoopener === true) {
+      forceNoopenerRel(node)
+    }
+  })
+}
+
+/* ---------------------------------------------
  * Determine sanitization mode
  *
  * Explicit config always wins; the build environment is only a
@@ -239,13 +350,27 @@ const buildModeConfig = (mode) => {
     }
   }
 
-  if (mode === 'app' && allowIframe === true) {
-    return {
-      ...base,
-      FORBID_TAGS: base.FORBID_TAGS.filter(t => t !== 'iframe'),
-      ADD_TAGS: ['iframe'],
-      ADD_ATTR: ['sandbox']
+  if (mode === 'app') {
+    const cfg = { ...base }
+    const addAttr = []
+
+    if (allowIframe === true) {
+      cfg.FORBID_TAGS = base.FORBID_TAGS.filter(t => t !== 'iframe')
+      cfg.ADD_TAGS = ['iframe']
+      addAttr.push('sandbox')
     }
+
+    // DOMPurify strips target by default; re-admit it (with rel) so the
+    // anchor hook can validate values and force noopener instead.
+    if (activeAnchorPolicy.allowTarget === true) {
+      addAttr.push('target', 'rel')
+    }
+
+    if (addAttr.length > 0) {
+      cfg.ADD_ATTR = addAttr
+    }
+
+    return cfg
   }
 
   return base
@@ -266,7 +391,7 @@ const sanitizeDataConfigure = (config = {}) => {
     return
   }
 
-  const { strict = false, disableSanitize = false, iframes, customElements } = config
+  const { strict = false, disableSanitize = false, iframes, customElements, anchors, allowTargetAttr, addNoopener } = config
 
   globalDisable = disableSanitize === true
 
@@ -279,10 +404,20 @@ const sanitizeDataConfigure = (config = {}) => {
     activeIframePolicy = configuredIframePolicy
   }
 
+  // config.anchors wins; the legacy top-level allowTargetAttr/addNoopener
+  // keys are honored as fallbacks.
+  configuredAnchorPolicy = resolveAnchorPolicy({
+    allowTarget: anchors?.allowTarget !== undefined ? anchors.allowTarget : allowTargetAttr,
+    addNoopener: anchors?.addNoopener !== undefined ? anchors.addNoopener : addNoopener,
+    allowedDomains: anchors?.allowedDomains
+  })
+  activeAnchorPolicy = configuredAnchorPolicy
+
   if (globalDisable) {
     console.warn('SPYNE SECURITY WARNING: All data sanitization is DISABLED via config.disableSanitize. Do not use this setting in production.')
   } else {
     addIframeHardeningHook()
+    addAnchorHardeningHook()
   }
 
   const processFactory = (mode) => {
@@ -302,19 +437,21 @@ const sanitizeDataConfigure = (config = {}) => {
   }
 
   _sanitizeData = (data, opts = {}) => {
-    const { disableSanitize: callDisable = false, mode, iframes: iframesOverride } = opts
+    const { disableSanitize: callDisable = false, mode, iframes: iframesOverride, anchors: anchorsOverride } = opts
     if (globalDisable || callDisable) return data
 
     const legacyStrict = forceStrict || strict
     const effectiveMode = mode || (legacyStrict ? 'app' : resolveDefaultMode())
 
-    // Sanitization is synchronous, so the per-call iframe policy can be
-    // scoped with a swap-and-restore around the processing pass.
+    // Sanitization is synchronous, so the per-call iframe and anchor
+    // policies can be scoped with a swap-and-restore around the pass.
     activeIframePolicy = resolveIframePolicy(iframesOverride)
+    activeAnchorPolicy = resolveAnchorPolicy(anchorsOverride)
     try {
       return processFactory(effectiveMode)(data)
     } finally {
       activeIframePolicy = configuredIframePolicy
+      activeAnchorPolicy = configuredAnchorPolicy
     }
   }
 
@@ -387,6 +524,16 @@ const sanitizeAttribute = (key, value, tagName) => {
     return { allowed: isAllowedIframeSrc(value, configuredIframePolicy), value }
   }
 
+  // Anchor href follows the anchor policy: safe scheme, plus the
+  // configured domain allowlist for cross-origin destinations.
+  if (tag === 'A' && k === 'href') {
+    if (isSafeUri(value) !== true) return { allowed: false, value }
+    if (configuredAnchorPolicy.allowedDomains.length > 0 && isAllowedAnchorHref(value, configuredAnchorPolicy) !== true) {
+      return { allowed: false, value }
+    }
+    return { allowed: true, value }
+  }
+
   if (URL_ATTRS.includes(k) && isSafeUri(value) !== true) {
     return { allowed: false, value }
   }
@@ -395,16 +542,31 @@ const sanitizeAttribute = (key, value, tagName) => {
 }
 
 /**
- * Applies the configured iframe sandbox policy to an element created
+ * Applies the configured iframe and anchor policies to an element created
  * through the attribute channel (DomElement), mirroring the DOMPurify
- * hook that guards parsed HTML.
+ * hooks that guard parsed HTML.
  */
-const applyIframeHardening = (el) => {
-  if (globalDisable || !el || el.tagName !== 'IFRAME') return el
+const applyElementHardening = (el) => {
+  if (globalDisable || !el) return el
 
-  const { sandbox } = configuredIframePolicy
-  if (sandbox !== false && el.hasAttribute('sandbox') !== true) {
-    el.setAttribute('sandbox', sandbox)
+  if (el.tagName === 'IFRAME') {
+    const { sandbox } = configuredIframePolicy
+    if (sandbox !== false && el.hasAttribute('sandbox') !== true) {
+      el.setAttribute('sandbox', sandbox)
+    }
+  }
+
+  if (el.tagName === 'A') {
+    const policy = configuredAnchorPolicy
+    const target = el.getAttribute('target')
+
+    if (target) {
+      if (policy.allowTarget !== true || !el.getAttribute('href')) {
+        el.removeAttribute('target')
+      } else if (SAME_CONTEXT_TARGETS.includes(target) !== true && policy.addNoopener === true) {
+        forceNoopenerRel(el)
+      }
+    }
   }
 
   return el
@@ -442,7 +604,7 @@ export {
   sanitizeData,
   sanitizeDataForce,
   sanitizeAttribute,
-  applyIframeHardening,
+  applyElementHardening,
   allowCustomElements,
   CUSTOM_ELEMENT_HANDLING as customElementHandling,
   sanitizeEventTarget,

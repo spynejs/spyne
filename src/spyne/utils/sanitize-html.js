@@ -28,9 +28,9 @@ const sanitizeHTMLConfigure = (config = {}) => {
     mode = 'app',
     disableSanitize = false,
     allowTargetAttr = true,
-    addNoopener = true,
     debug = false,
-    iframes = {}
+    iframes = {},
+    anchors = {}
   } = config
 
   if (disableSanitize === true) {
@@ -48,6 +48,12 @@ const sanitizeHTMLConfigure = (config = {}) => {
   // is admitted here.
   const allowIframe = iframes.allow !== undefined ? iframes.allow === true : isRichtext
 
+  // config.anchors.allowTarget wins; the legacy top-level allowTargetAttr
+  // key is honored as a fallback. Target values and noopener enforcement
+  // are handled by the anchor hook registered in sanitize-data, which
+  // applies to this layer's sanitization as well.
+  const allowTarget = anchors.allowTarget !== undefined ? anchors.allowTarget === true : allowTargetAttr === true
+
   const domPurifyConfig = {
     RETURN_TRUSTED_TYPE: false,
     ADD_TAGS: [
@@ -55,7 +61,7 @@ const sanitizeHTMLConfigure = (config = {}) => {
       ...(isRichtext ? ['link'] : [])
     ],
     ADD_ATTR: [
-      ...(allowTargetAttr ? ['target'] : []),
+      ...(allowTarget ? ['target', 'rel'] : []),
       ...(allowIframe ? ['sandbox'] : [])
     ],
     // Admits the framework's spyne-* elements (CMS proxy wrappers) and any
@@ -66,41 +72,6 @@ const sanitizeHTMLConfigure = (config = {}) => {
   }
 
   const sanitizeWithPolicy = (html) => DOMPurify.sanitize(html, domPurifyConfig)
-
-  if (allowTargetAttr) {
-    DOMPurify.addHook('afterSanitizeAttributes', (node) => {
-      if (!node || typeof node.getAttribute !== 'function') return
-      if (node.tagName !== 'A') return
-
-      const href = node.getAttribute('href')
-      const target = node.getAttribute('target')
-
-      // remove target on anchors without href
-      if (!href && target) {
-        node.removeAttribute('target')
-        return
-      }
-
-      if (!target) return
-
-      const validTargets = ['_blank', '_self', '_parent', '_top']
-      if (!validTargets.includes(target)) {
-        node.removeAttribute('target')
-        return
-      }
-
-      if (target === '_blank' && addNoopener) {
-        const currentRel = node.getAttribute('rel') || ''
-        const relParts = currentRel.split(/\s+/).filter(Boolean)
-        const relSet = new Set(relParts)
-
-        relSet.add('noopener')
-        relSet.add('noreferrer')
-
-        node.setAttribute('rel', Array.from(relSet).join(' '))
-      }
-    })
-  }
 
   _sanitizeHTML = sanitizeWithPolicy
 

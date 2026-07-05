@@ -268,6 +268,94 @@ describe('sanitization security', () => {
     })
   })
 
+  describe('anchor policy', () => {
+    it('should keep target in app mode and force noopener on _blank', () => {
+      const clean = sanitizeData('<a href="https://example.com" target="_blank">x</a>', { mode: 'app' })
+
+      expect(clean).to.include('target="_blank"')
+      expect(clean).to.include('noopener')
+      expect(clean).to.include('noreferrer')
+    })
+
+    it('should preserve existing rel values when forcing noopener', () => {
+      const clean = sanitizeData('<a href="https://example.com" target="_blank" rel="external">x</a>', { mode: 'richtext' })
+
+      expect(clean).to.include('external')
+      expect(clean).to.include('noopener')
+    })
+
+    it('should keep named-window targets and force noopener on them', () => {
+      // target="blank" (no underscore) is a legal named browsing context
+      // and the most common real-world form; it carries the same opener
+      // risk as _blank and gets the same mitigation.
+      const clean = sanitizeData('<a href="https://rxjs.dev/api/index/function/fromEvent" target="blank">fromEvent</a>', { mode: 'app' })
+
+      expect(clean).to.include('target="blank"')
+      expect(clean).to.include('noopener')
+      expect(clean).to.include('noreferrer')
+    })
+
+    it('should not add noopener to same-context targets', () => {
+      const clean = sanitizeData('<a href="https://example.com" target="_self">x</a>', { mode: 'app' })
+
+      expect(clean).to.include('target="_self"')
+      expect(clean).to.not.include('noopener')
+    })
+
+    it('should remove target from anchors without an href', () => {
+      const clean = sanitizeData('<a target="_blank">x</a>', { mode: 'app' })
+
+      expect(clean).to.not.include('target=')
+    })
+
+    it('should strip target everywhere with allowTarget false', () => {
+      const clean = sanitizeData('<a href="https://example.com" target="_blank">x</a>', {
+        mode: 'richtext',
+        anchors: { allowTarget: false }
+      })
+
+      expect(clean).to.not.include('target=')
+    })
+
+    it('should enforce allowedDomains on cross-origin hrefs', () => {
+      const opts = { mode: 'app', anchors: { allowedDomains: ['https://github.com'] } }
+
+      const allowed = sanitizeData('<a href="https://github.com/spynejs">x</a>', opts)
+      const blocked = sanitizeData('<a href="https://evil.example.com/page">x</a>', opts)
+
+      expect(allowed).to.include('href="https://github.com/spynejs"')
+      expect(blocked).to.not.include('href=')
+    })
+
+    it('should always allow same-origin, relative, mailto and tel hrefs despite allowedDomains', () => {
+      const opts = { mode: 'app', anchors: { allowedDomains: ['https://github.com'] } }
+
+      expect(sanitizeData('<a href="/local/page">x</a>', opts)).to.include('href="/local/page"')
+      expect(sanitizeData('<a href="mailto:a@b.com">x</a>', opts)).to.include('href="mailto:a@b.com"')
+      expect(sanitizeData('<a href="tel:+15551234567">x</a>', opts)).to.include('href="tel:+15551234567"')
+    })
+
+    it('should apply the anchor policy on the DomElement attribute channel', () => {
+      const el = new DomElement({
+        tagName: 'a',
+        attributes: { href: 'https://example.com', target: '_blank' }
+      }).render()
+
+      expect(el.getAttribute('target')).to.equal('_blank')
+      expect(el.getAttribute('rel')).to.include('noopener')
+    })
+
+    it('should keep named-window targets with noopener on the DomElement attribute channel', () => {
+      const el = new DomElement({
+        tagName: 'a',
+        attributes: { href: 'https://example.com', target: 'blank' }
+      }).render()
+
+      expect(el.getAttribute('target')).to.equal('blank')
+      expect(el.getAttribute('rel')).to.include('noopener')
+    })
+  })
+
   describe('CMS wrappers and custom elements', () => {
     const cmsMarkup = '<spyne-cms-item data-cms-id="post.title" data-cms-key="title">' +
       '<spyne-cms-item-hitbox></spyne-cms-item-hitbox>' +

@@ -6,7 +6,7 @@ import { sanitizeHTMLConfigure } from './utils/sanitize-html.js'
 import { sanitizeDataConfigure } from './utils/sanitize-data.js'
 
 const _channels = new ChannelsMap()
-const version = '0.25.0'
+const version = '0.25.1'
 
 class SpyneApplication {
   /**
@@ -41,7 +41,7 @@ class SpyneApplication {
   init(config = {}, testMode = false) {
     // this.channels = new ChannelsMap();
     /*!
-     * Spyne 0.25.0
+     * Spyne 0.25.1
      * https://spynejs.org
      *
      * @license
@@ -77,6 +77,7 @@ class SpyneApplication {
       mode: 'app',
       disableSanitize: false,
       iframes: {},
+      anchors: {},
       customElements: [],
       baseHref: undefined,
       IMG_PATH: imgPath,

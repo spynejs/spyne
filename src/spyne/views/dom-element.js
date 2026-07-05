@@ -2,7 +2,7 @@ import { baseCoreMixins } from '../utils/mixins/base-core-mixins.js'
 import { spyneWarn } from '../utils/spyne-warn.js'
 import { DomElementTemplate } from './dom-element-template.js'
 import { deepMerge } from '../utils/deep-merge.js'
-import { sanitizeAttribute, applyIframeHardening } from '../utils/sanitize-data.js'
+import { sanitizeAttribute, applyElementHardening } from '../utils/sanitize-data.js'
 import { is, defaultTo, pick, mapObjIndexed, forEachObjIndexed, pipe } from 'ramda'
 
 class DomElement {
@@ -79,7 +79,7 @@ class DomElement {
     this.getProp('attrs').forEach(addAttributes)
 
     if (testMode !== true) {
-      applyIframeHardening(el)
+      applyElementHardening(el)
     }
 
     return el
