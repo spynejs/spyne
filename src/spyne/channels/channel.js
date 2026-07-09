@@ -1,5 +1,6 @@
 import { registeredStreamNames } from './channels-config.js'
 import { ChannelPayload } from './channel-payload-class.js'
+import { safeCloneDeep } from '../utils/safe-clone.js'
 import { SpyneAppProperties } from '../utils/spyne-app-properties.js'
 import { RouteChannelUpdater } from '../utils/route-channel-updater.js'
 
@@ -318,6 +319,18 @@ export class Channel {
     const mergeProps = (d) => mergeAll([d, { action: prop('action', d) }, prop('payload', d), prop('srcElement', d)])
     const dataObj = obsVal => ({
       clone: () => mergeProps(obj.data),
+      // proxy-preserving clone — mirrors ChannelPayload.safeClone for
+      // channel-side getChannel subscribers
+      safeClone: () => {
+        const revivedPayload = safeCloneDeep(payload)
+        return mergeAll([
+          { payload: revivedPayload },
+          revivedPayload,
+          { action },
+          { srcElement },
+          { event: obsVal }
+        ])
+      },
       action,
       payload,
       srcElement,

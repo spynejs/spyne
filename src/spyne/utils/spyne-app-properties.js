@@ -9,6 +9,8 @@ let _channelsMap
 let _initialized
 let _debug = true
 let _enableCMSProxies = false
+let _cmsRehydrator
+let _cmsLineageWarner
 const _excludeChannelsFromConsole = []
 /* eslint-disable */
 let _linksData
@@ -248,6 +250,34 @@ class SpyneAppPropertiesClass {
 
   getProxyReviver(proxyName) {
     return _proxiesMap.get(proxyName)
+  }
+
+  /**
+   * Registers the CMS re-hydration hook consulted by DomElementTemplate when
+   * it receives plain (unproxied) data while CMS proxies are enabled. The
+   * hook receives the template data and returns either revived proxy data
+   * for that content or undefined to decline. Implementations must be cheap
+   * for non-CMS data — ideally a single own-property read before bailing.
+   */
+  registerCmsRehydrator(method) {
+    _cmsRehydrator = method
+  }
+
+  get rehydrateCmsData() {
+    return _cmsRehydrator
+  }
+
+  /**
+   * Registers the debug-mode hook DomElementTemplate calls when data renders
+   * unproxied while CMS proxies are enabled and re-hydration declined —
+   * the lineage reporter that turns silent proxy strips into warnings.
+   */
+  registerCmsLineageWarner(method) {
+    _cmsLineageWarner = method
+  }
+
+  get warnUnproxiedCmsData() {
+    return _cmsLineageWarner
   }
 
   getPluginConfigByPluginName(pluginName) {

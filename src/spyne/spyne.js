@@ -14,7 +14,7 @@ import { ChannelPayload } from './channels/channel-payload-class.js'
 import { ChannelPayloadFilter } from './utils/channel-payload-filter.js'
 import { SpynePlugin } from './spyne-plugins.js'
 import { deepMerge } from './utils/deep-merge.js'
-import { safeClone } from './utils/safe-clone.js'
+import { safeClone, safeCloneDeep, safeAugment, safeFilter, safeMap, safeReject } from './utils/safe-clone.js'
 import { SpyneAppProperties } from './utils/spyne-app-properties.js'
 import { SpyneApp } from './spyne-app.js'
 import { setSpyneWarningsDisabled } from './utils/spyne-warn.js'
@@ -40,6 +40,11 @@ export {
   SpynePlugin,
   deepMerge,
   safeClone,
+  safeCloneDeep,
+  safeAugment,
+  safeFilter,
+  safeMap,
+  safeReject,
   sanitizeData,
   sanitizeEventTarget,
   allowCustomElements,

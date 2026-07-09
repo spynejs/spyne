@@ -191,6 +191,32 @@ describe('should test channel payload filters boolean correctness', () => {
 
     return true
   })
+
+  it('should return false for an invalid css selector instead of throwing', () => {
+    const cpFilter = new ChannelPayloadFilter('!!!not-a-selector')
+    const payloadBool = cpFilter(ChannelPayloadToTestFilters)
+    expect(payloadBool).to.be.false
+  })
+
+  it('should not match a structural lookalike of a selector match', () => {
+    // two identical siblings: the selector matches only the first, the
+    // payload el is the second — Element.matches tests the payload el
+    // itself, so the structurally equal non-matching twin must NOT pass
+    const ul = document.createElement('ul')
+    ul.innerHTML = '<li class="twin"><b>same</b></li><li class="twin"><b>same</b></li>'
+    document.body.appendChild(ul)
+    const cpFilter = new ChannelPayloadFilter('li.twin:first-child')
+    const payloadBool = cpFilter({ srcElement: { el: ul.querySelectorAll('li.twin')[1] } })
+    expect(payloadBool).to.be.false
+  })
+
+  it('should match a detached element against its selector', () => {
+    const li = document.createElement('li')
+    li.className = 'detached-item'
+    const cpFilter = new ChannelPayloadFilter('li.detached-item')
+    const payloadBool = cpFilter({ srcElement: { el: li } })
+    expect(payloadBool).to.be.true
+  })
 })
 
 describe('it should test channel payload filter with data packer ', () => {

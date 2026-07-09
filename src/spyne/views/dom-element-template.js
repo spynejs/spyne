@@ -36,6 +36,27 @@ export class DomElementTemplate {
     this.isProxyData = data.__cms__isProxy === true
     this.testMode = opts?.testMode
 
+    // CMS lineage pass — construction-time only, and only in authoring mode.
+    // In production (enableCMSProxies false) this costs one boolean read;
+    // nothing here ever runs inside the substitution loops.
+    if (this.isProxyData === false && SpyneAppProperties.enableCMSProxies === true) {
+      const rehydrated = SpyneAppProperties.rehydrateCmsData?.(data)
+      if (rehydrated !== undefined) {
+        // a stripped clone was re-identified — render with the revived proxy
+        data = rehydrated
+        this.isProxyData = true
+      } else if (DomElementTemplate.templateBindsProxiedChild(data, this.template) === true) {
+        // plain wrapper holding proxied values (e.g. a pageData container),
+        // AND this template actually references one of those proxied children
+        // via a dot-path or loop token — only then is CMS wrapping useful.
+        // Flipping on child presence alone put ~40% of all templates through
+        // the wrap→inflate→sanitize→strip pipeline for zero bindings.
+        this.isProxyData = true
+      } else if (SpyneAppProperties.debug === true) {
+        SpyneAppProperties.warnUnproxiedCmsData?.(data, this.template)
+      }
+    }
+
     // Normalize triple-bracket tags to double-bracket.
     //
     // DomElementTemplate treats {{{key}}} as an alias for {{key}} — both
@@ -103,6 +124,57 @@ export class DomElementTemplate {
 
   static isPrimitiveTag(str) {
     return /({{\.\*?}})/.test(str)
+  }
+
+  /**
+   * Shallow, one-level scan for CMS-proxied values inside a plain container,
+   * bailing on the first hit. Lets wrappers that hold proxied content (a
+   * pageData object, a filtered array of proxied stories) opt in to CMS
+   * template wrapping even though the wrapper itself is not a proxy.
+   * Only ever called in authoring mode (enableCMSProxies true).
+   */
+  /**
+   * Wrapper detection with a binding test: returns true only when data holds
+   * a proxied child under a key that the template actually references via a
+   * dot-path ({{key.prop}}) or loop ({{#key}} / {{#key.path}}) token. A
+   * template that never reaches into the proxied child gains nothing from
+   * CMS wrapping — its own top-level tokens have no dataId to bind — so
+   * flipping it into proxy mode only pays the wrap/sanitize/strip pipeline.
+   */
+  static templateBindsProxiedChild(data, template) {
+    if (data === null || typeof data !== 'object' || typeof template !== 'string') {
+      return false
+    }
+    if (template.indexOf('{{') === -1) {
+      return false
+    }
+    const keys = Object.keys(data)
+    for (let i = 0; i < keys.length; i++) {
+      const key = keys[i]
+      const val = data[key]
+      if (val !== null && typeof val === 'object' && val.__cms__isProxy === true) {
+        if (template.indexOf(`{{${key}.`) !== -1 ||
+            template.indexOf(`{{#${key}}}`) !== -1 ||
+            template.indexOf(`{{#${key}.`) !== -1) {
+          return true
+        }
+      }
+    }
+    return false
+  }
+
+  static hasProxiedChild(data) {
+    if (data === null || typeof data !== 'object') {
+      return false
+    }
+    const values = Object.values(data)
+    for (let i = 0; i < values.length; i++) {
+      const val = values[i]
+      if (val !== null && typeof val === 'object' && val.__cms__isProxy === true) {
+        return true
+      }
+    }
+    return false
   }
 
   /**
@@ -219,8 +291,26 @@ export class DomElementTemplate {
   /**
    * @desc Returns a document fragment generated from the template and any added data.
    */
+  /**
+   * Unwraps <spyne-cms-item> elements whose data-cms-id resolved to an empty
+   * string — tokens that live on a plain wrapper (no __cms__dataId) rather
+   * than on CMS content. Leaves their inner text in place, so the rendered
+   * DOM matches what a non-CMS render would produce. Only runs in authoring
+   * mode (isProxyData true), one pass over the final HTML string.
+   */
+  static stripInertCmsItems(html) {
+    if (html.indexOf('data-cms-id=""') === -1) {
+      return html
+    }
+    const inertRE = /<spyne-cms-item data-cms-id=""[^>]*>[\s\S]*?<spyne-cms-item-text>([\s\S]*?)<\/spyne-cms-item-text>\s*<\/spyne-cms-item>/g
+    return html.replace(inertRE, '$1')
+  }
+
   renderDocFrag() {
     let html = DomElementTemplate.replaceImgPath(this.finalArr.join(''))
+    if (this.isProxyData === true) {
+      html = DomElementTemplate.stripInertCmsItems(html)
+    }
     if (this.testMode !== true) {
       html = sanitizeHTML(html)
     }
@@ -234,6 +324,9 @@ export class DomElementTemplate {
   renderToString() {
     let html = this.finalArr.join('')
     html = DomElementTemplate.replaceImgPath(html)
+    if (this.isProxyData === true) {
+      html = DomElementTemplate.stripInertCmsItems(html)
+    }
     if (this.testMode !== true) {
       // String(...) unwraps TrustedHTML when strict mode is active,
       // keeping this method's string contract.

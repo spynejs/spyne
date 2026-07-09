@@ -16,7 +16,6 @@ import {
   mergeAll,
   F,
   omit,
-  flatten,
   any,
   curry,
   lte
@@ -218,8 +217,11 @@ export class ChannelPayloadFilter {
     const { payload, srcElement, event } = srcPayload || {}
 
     const reduceFindEl = (acc, src) => {
+      if (acc !== undefined) {
+        return acc
+      }
       const el = prop('el', src)
-      if (ChannelPayloadFilter.elIsDomElement(el) && acc === undefined) {
+      if (ChannelPayloadFilter.elIsDomElement(el)) {
         acc = el
       }
       return acc
@@ -227,35 +229,37 @@ export class ChannelPayloadFilter {
 
     const el = [srcElement, payload, prop('srcElement', event), srcPayload].reduce(reduceFindEl, undefined)
 
-    // RETURN BOOLEAN MATCH WITH PAYLOAD EL
-    const compareEls = (elCompare) => elCompare.isEqualNode((el))
+    // CHECK IF PAYLOAD EL EXISTS
+    const elCanMatch = el !== null && typeof el === 'object' && typeof el.matches === 'function'
 
-    // LOOP THROUGH NODES IN querySelectorAll()
-    const mapNodeArrWithEl = (sel) => {
-      // convert nodelist to array of els
-      const nodeArr = Array.from(document.querySelectorAll(sel))
-      // els array to boolean array
-      return rMap(compareEls, nodeArr)
+    // the payload element is tested directly with Element.matches — the same
+    // "is this el one of the selector's elements" answer as the previous
+    // document-wide querySelectorAll walk, without scanning the document on
+    // every dispatch (isEqualNode could also pass a structural lookalike of
+    // a matched node, which was an over-match, not a contract)
+    const elMatches = (sel) => {
+      try {
+        return el.matches(sel)
+      } catch (e) {
+        if (SpyneAppProperties.debug === true) {
+          console.warn(`Spyne Warning: The ChannelPayloadFilter selector, ${sel}, is not a valid css selector!`)
+        }
+        return false
+      }
     }
+
+    const matchesBoolArr = elCanMatch ? rMap(elMatches, arr) : []
 
     if (debugLabel !== undefined) {
-      const nodeArrResultsDebugger = compose(flatten, rMap(mapNodeArrWithEl))(arr)
       const selectorsArr = arr
-      console.log(`%c CHANNEL PAYLOAD FILTER DEBUGGER ["${debugLabel}"] - selectors: `, 'color:orange;', { el, selectorsArr, nodeArrResultsDebugger })
+      console.log(`%c CHANNEL PAYLOAD FILTER DEBUGGER ["${debugLabel}"] - selectors: `, 'color:orange;', { el, selectorsArr, nodeArrResultsDebugger: matchesBoolArr })
     }
 
-    // CHECK IF PAYLOAD EL EXISTS
-    if (typeof (el) !== 'object') {
+    if (elCanMatch === false || isEmpty(matchesBoolArr) === true) {
       return false
     }
 
-    // LOOP THROUGH ALL SELECTORS IN MAIN ARRAY
-    const nodeArrResult = compose(flatten, rMap(mapNodeArrWithEl))(arr)
-    if (isEmpty(nodeArrResult) === true) {
-      return false
-    }
-
-    return any(equals(true), nodeArrResult)
+    return any(equals(true), matchesBoolArr)
   }
 
   static elIsDomElement(o) {

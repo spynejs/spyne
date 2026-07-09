@@ -3,9 +3,11 @@ import { checkIfObjIsNotEmptyOrNil } from '../utils/frp-tools.js'
 import { SpyneAppProperties } from '../utils/spyne-app-properties.js'
 import { SpyneUtilsChannelWindow } from '../utils/spyne-utils-channel-window.js'
 import { merge } from 'rxjs'
-import { map, debounceTime, skipWhile } from 'rxjs/operators'
+import { map, debounceTime, skipWhile, buffer, bufferCount, throttleTime, filter } from 'rxjs/operators'
 import { curry, pick, partialRight, mapObjIndexed, apply, map as rMap } from 'ramda'
 import { deepMerge } from '../utils/deep-merge.js'
+
+const customActionsArr = []
 
 export class SpyneChannelWindow extends Channel {
   /**
@@ -21,6 +23,7 @@ export class SpyneChannelWindow extends Channel {
    * @param {Object} config
    * @property {Object} config - = {}; The config has several options used to listen to window and document events.
    * @property {Array} config.events - = []; Any window and document events can be added here.
+   * @property {Array} config.customEvents - = []; Application CustomEvents to capture. Each entry is either an event name string, or an object with a name property plus ONE rate/batch option: buffer (ms of quiet that closes a batch; emits one payload whose payload.detail is the array of batched details), count (batch every n events), debounce (ms; emits only the latest event), or throttle (ms; emits the leading event per window). Example: ['simple_event', {name: 'spyne_cms_item_connected', buffer: 400}].
    * @property {Object} config.mediaQueries - = {}; Media queries are added as key,value pairs; the key is the name of the boolean for the query, the value is the query itself.
    * @property {Boolean} config.listenForResize - = true; This is default listening for resize event.
    * @property {Boolean} config.listenForOrientation - = true; Listen for horizontal and landscape orientation changes on mobile devices.
@@ -181,12 +184,88 @@ export class SpyneChannelWindow extends Channel {
   getEventsFromConfig(config = this.domChannelConfig) {
     const obs$Arr = config.events
 
+    const customEntries = Array.isArray(config.customEvents)
+      ? config.customEvents.map(SpyneChannelWindow.conformCustomEventConfig).filter(entry => entry !== null)
+      : []
+
+    customEntries.forEach(entry => this.updateChannelActions(entry.name))
+
     const addWindowEventToArr = str => {
       const mapFn = SpyneChannelWindow.createCurriedGenericEvent(str)
       return SpyneUtilsChannelWindow.createDomObservableFromEvent(str, mapFn)
     }
 
-    return rMap(addWindowEventToArr, obs$Arr)
+    const addCustomEventToArr = ({ name, operator, value }) => {
+      const obs$ = addWindowEventToArr(name)
+      return operator === undefined ? obs$ : SpyneChannelWindow.customizeCustomEventObservable(obs$, operator, value)
+    }
+
+    return rMap(addWindowEventToArr, obs$Arr).concat(rMap(addCustomEventToArr, customEntries))
+  }
+
+  /**
+   * Normalizes a config.customEvents entry — an event name string or a
+   * {name, <operator>} object — to {name, operator, value}. Complexity is
+   * capped at one level: a single operator key (buffer, count, debounce or
+   * throttle); when several are set the first in that order wins.
+   */
+  static conformCustomEventConfig(entry) {
+    if (typeof entry === 'string') {
+      return { name: entry, operator: undefined, value: undefined }
+    }
+
+    if (entry !== null && typeof entry === 'object' && typeof entry.name === 'string') {
+      const operatorKeys = ['buffer', 'count', 'debounce', 'throttle']
+      const setKeys = operatorKeys.filter(key => entry[key] !== undefined)
+      const operator = setKeys[0]
+
+      if (setKeys.length > 1 && SpyneAppProperties.debug === true) {
+        console.warn(`Spyne Warning: the customEvent, ${entry.name}, sets multiple operators (${setKeys.join(', ')}); using ${operator}.`)
+      }
+
+      return { name: entry.name, operator, value: operator !== undefined ? entry[operator] : undefined }
+    }
+
+    console.warn(`Spyne Warning: the following config.customEvents entry is not a string or a {name} object and was skipped: ${JSON.stringify(entry)}`)
+    return null
+  }
+
+  /**
+   * Applies the entry's rate/batch operator to the conformed CustomEvent
+   * observable. buffer and count emit ONE batched payload (payload.detail is
+   * the array of each event's detail); debounce and throttle pass single
+   * conformed events through untouched.
+   */
+  static customizeCustomEventObservable(obs$, operator, value) {
+    switch (operator) {
+      case 'buffer':
+        // quiet-gap batching: the batch closes after `value` ms without a new event
+        return obs$.pipe(
+          buffer(obs$.pipe(debounceTime(value))),
+          filter(pArr => pArr.length > 0),
+          map(SpyneChannelWindow.mapBatchedEvents)
+        )
+      case 'count':
+        // fixed-size batching: a partial batch is held until it fills
+        return obs$.pipe(
+          bufferCount(value),
+          map(SpyneChannelWindow.mapBatchedEvents)
+        )
+      case 'debounce':
+        return obs$.pipe(debounceTime(value))
+      case 'throttle':
+        return obs$.pipe(throttleTime(value))
+      default:
+        return obs$
+    }
+  }
+
+  static mapBatchedEvents(pArr) {
+    const last = pArr[pArr.length - 1]
+    const { action, srcElement, event } = last
+    const detail = pArr.map(p => p.event !== undefined && p.event !== null ? p.event.detail : undefined)
+    const payload = { detail, isBatch: true, batchCount: pArr.length }
+    return { action, payload, srcElement, event }
   }
 
   getActiveObservables(config = this.domChannelConfig) {
@@ -245,8 +324,19 @@ export class SpyneChannelWindow extends Channel {
     return obs$.pipe(map(this.getMediaQueryMapFn.bind(this)))
   }
 
+  updateChannelActions(str) {
+    if (typeof str !== 'string') {
+      return
+    }
+    function getWindowAction() {
+      return `CHANNEL_WINDOW_${str.toUpperCase()}_EVENT`
+    }
+    const windowAction = getWindowAction()
+    customActionsArr.push(windowAction)
+  }
+
   addRegisteredActions() {
-    return [
+    const mainActions = [
       'CHANNEL_WINDOW_ABORT_EVENT',
       'CHANNEL_WINDOW_AFTERPRINT_EVENT',
       'CHANNEL_WINDOW_ANIMATIONEND_EVENT',
@@ -334,6 +424,8 @@ export class SpyneChannelWindow extends Channel {
       'CHANNEL_WINDOW_UNLOAD_EVENT',
       'CHANNEL_WINDOW_WHEEL_EVENT'
     ]
+
+    return mainActions.concat(customActionsArr)
   }
 
   onScrollLockEvent(e) {

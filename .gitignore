@@ -13,3 +13,4 @@ lib
 !lib/spyne*.js
 dist/
 .env
+src/tests/views/dom-el-template-hydration.test.js

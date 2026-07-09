@@ -128,14 +128,31 @@ export class SpynePlugin {
 
   checkForRequiredWindowEvent() {
     const requiredEvents = this.props.requiredEvents ?? []
+    const requiredCustomEvents = this.props.requiredCustomEvents ?? []
+
     const windowConfig = SpyneAppProperties.getChannelConfig('WINDOW')
 
     const missingEvents = requiredEvents.filter(evt => !windowConfig.events.includes(evt))
+
+    // entries on BOTH sides can be a name string or a {name, buffer|count|debounce|throttle}
+    // object — hosts declare how the event is conformed, plugins declare the exact
+    // configuration they expect, and matching is by name only
+    const entryName = entry => typeof entry === 'string' ? entry : entry?.name
+    const customEventNames = windowConfig.customEvents.map(entryName)
+    const missingCustomEvents = requiredCustomEvents.filter(evt => !customEventNames.includes(entryName(evt)))
 
     // If any are missing, log a single warning listing them
     if (missingEvents.length > 0) {
       console.warn(
           `plugin "${this.props.name}" requires the following config.WINDOW.events, --> ${missingEvents.join(', ')} <--`
+      )
+    }
+
+    if (missingCustomEvents.length > 0) {
+      // print the exact configuration entry so it can be pasted into the host config
+      const entryAsConfigStr = entry => typeof entry === 'string' ? `'${entry}'` : JSON.stringify(entry)
+      console.warn(
+        `plugin "${this.props.name}" requires the following config.WINDOW.customEvents, --> ${missingCustomEvents.map(entryAsConfigStr).join(', ')} <--`
       )
     }
   }
