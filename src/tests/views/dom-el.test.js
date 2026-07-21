@@ -68,3 +68,76 @@ describe('DomElRendering', () => {
     expect(renderStr).to.equal('The cat says meow')
   })
 })
+
+describe('DomElAdoption', () => {
+  const createAdoptableEl = () => {
+    const el = document.createElement('dd')
+    el.id = 'adopted-test-el'
+    el.className = 'adopted-class'
+    el.dataset.customFlag = 'kept'
+    el.innerHTML = '<label onclickish="fake">inner content</label>'
+    document.body.appendChild(el)
+    return el
+  }
+
+  const removeIfPresent = (el) => {
+    if (el !== undefined && el.isConnected === true) {
+      el.remove()
+    }
+  }
+
+  it('adoption leaves the element byte-identical (no attribute pipeline)', () => {
+    const el = createAdoptableEl()
+    const before = el.outerHTML
+    const domEl = new DomElement({ el })
+    expect(domEl.props.adopted).to.equal(true)
+    expect(el.outerHTML).to.equal(before)
+    removeIfPresent(el)
+  })
+
+  it('render() on adopted element is idempotent and returns the same node', () => {
+    const el = createAdoptableEl()
+    const domEl = new DomElement({ el })
+    const first = domEl.render()
+    const second = domEl.render()
+    expect(first).to.equal(el)
+    expect(second).to.equal(el)
+    removeIfPresent(el)
+  })
+
+  it('unmount() removes the adopted element from the document', () => {
+    const el = createAdoptableEl()
+    const domEl = new DomElement({ el })
+    expect(el.isConnected).to.equal(true)
+    domEl.unmount()
+    expect(el.isConnected).to.equal(false)
+    expect(document.getElementById('adopted-test-el')).to.equal(null)
+  })
+
+  it('second unmount() is a safe no-op', () => {
+    const el = createAdoptableEl()
+    const domEl = new DomElement({ el })
+    domEl.unmount()
+    const secondUnmount = () => domEl.unmount()
+    expect(secondUnmount).to.not.throw()
+  })
+
+  it('add*AndRender mutation calls are inert on adopted elements', () => {
+    const el = createAdoptableEl()
+    const before = el.outerHTML
+    const domEl = new DomElement({ el })
+    domEl.addTemplateAndRender('<h1>{{nope}}</h1>')
+    domEl.addDataAndRender({ nope: 'should not appear' })
+    expect(el.outerHTML).to.equal(before)
+    removeIfPresent(el)
+  })
+
+  it('rendered path regression: render then unmount still removes the element', () => {
+    const domEl = new DomElement({ tagName: 'h2', data: 'rendered path' })
+    const el = domEl.render()
+    document.body.appendChild(el)
+    expect(el.isConnected).to.equal(true)
+    domEl.unmount()
+    expect(el.isConnected).to.equal(false)
+  })
+})

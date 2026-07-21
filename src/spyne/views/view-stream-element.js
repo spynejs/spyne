@@ -3,7 +3,7 @@ import { fadein, fadeout } from '../utils/viewstream-animations.js'
 import { ViewStreamObservable } from '../utils/viewstream-observables.js'
 import { deepMerge } from '../utils/deep-merge.js'
 import { Subject, bindCallback } from 'rxjs'
-import { filter, isNil, pick, props, defaultTo } from 'ramda'
+import { isNil, props, defaultTo } from 'ramda'
 
 export class ViewStreamElement {
   /**
@@ -24,6 +24,11 @@ export class ViewStreamElement {
     this._state = 'INIT'
     this.vsid = vsid
     this.el = viewProps.el
+    if (this.el !== undefined) {
+      // adopted views get a domItem wrapping their element, so the dispose
+      // flow (onGarbageCollect → domItem.unmount) is uniform for all views
+      this.domItem = new DomElement({ el: this.el })
+    }
     this.vsName = vsName
     this.defaults = {
       debug:false,
@@ -61,14 +66,6 @@ export class ViewStreamElement {
       ATTACH_CHILD_TO_SELF           : (p) => this.onAttachChildToSelf(p)
     }
     return deepMerge(defaultHashMethods, extendedHashMethodsObj)
-  }
-
-  createDomItem() {
-    this.props = this.props !== undefined ? this.props : {}
-    const removeIsNil = (val) => val !== undefined
-    const attrs = filter(removeIsNil, pick(['id', 'className'], this.props))
-    const { tagName, data, template } = this.props
-    return new DomElement(tagName, attrs, data, template)
   }
 
   onDisposeCompleted(d) {
@@ -206,6 +203,11 @@ export class ViewStreamElement {
   }
 
   renderDomItem(d) {
+    if (this.el !== undefined) {
+      // adopted views never re-render; misuse (e.g. appendToDom on an
+      // el-bearing view, already warned) must not repoint domItem
+      return this.domItem
+    }
     const [tagName, attributes, data, template] = d
     this.domItem = new DomElement({ tagName, attributes, data, template })
     return this.domItem

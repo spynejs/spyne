@@ -28,6 +28,16 @@ class DomElement {
    */
 
   constructor(props = {}, testMode = false) {
+    // ADOPTION MODE: wrap an existing element. The element is app-authored
+    // DOM — no attribute pipeline, no sanitization pass, no hardening is
+    // reapplied. render() returns the element as-is; unmount() removes it.
+    if (props.el !== undefined) {
+      this.testMode = testMode
+      this.props = { el: props.el, adopted: true }
+      this.addMixins()
+      return
+    }
+
     const checkDefault = (dflt, val) => defaultTo(dflt)(val)
 
     props.tagName = checkDefault('div', props.tagName)
@@ -122,6 +132,12 @@ class DomElement {
   }
 
   execute() {
+    // adopted elements are never (re)rendered — guards every render entry
+    // point (render, renderToHTMLString, updatepropsAndRun)
+    if (this.props.adopted === true) {
+      return
+    }
+
     const el = pipe(
       this.createElement.bind(this),
       this.setElAttrs.bind(this),

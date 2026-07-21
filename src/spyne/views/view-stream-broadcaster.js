@@ -85,9 +85,6 @@ export class ViewStreamBroadcaster {
       const data = {}// convertDomStringMapToObj(q.dataset);
       data.payload = convertDomStringMapToObj(q.dataset)
       data.payload = omit(['channel'], data.payload)
-      if (data.channel === 'ROUTE') {
-        data.payload.endPreventDefault = true
-      }
 
       data.channel = channel
       // payload needs vsid# to pass verification
@@ -109,6 +106,15 @@ export class ViewStreamBroadcaster {
           console.warn(`SpyneJS warning: The channel, ${ch}, is not allowed here, only "UI" or "ROUTE" are valid channels, defaulting to CHANNEL_UI`)
         }
         return 'UI'
+      }
+
+      if (data.channel === 'ROUTE' && data.srcElement.el) {
+        const removeEndPreventDefault = String(data?.srcElement?.el?.dataset?.eventPreventDefault) === 'false'
+        if (removeEndPreventDefault) {
+          delete data.srcElement.el.dataset.eventPreventDefault
+        } else {
+          data.srcElement.el.dataset.eventPreventDefault = 'true'
+        }
       }
 
       const channelPayload = channelPayloads[getValidChannel(channel)]
