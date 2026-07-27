@@ -72,14 +72,25 @@ export class DomElementTemplate {
     this.template = DomElementTemplate.normalizeTripleBrackets(this.template)
 
     if (this.isProxyData === true) {
-      const proxyFormatter = SpyneAppProperties.enableCMSProxies === true
-        ? SpyneAppProperties.formatTemplateForProxyData
-        : DomElementTemplate.formatTemplateForProxyData
+      // prefer the build's own enterprise formatter when present (linked/dev or
+      // enterprise builds) — it is the newest, canonical copy; the
+      // token-delivered (EDET) formatter registered on SpyneAppProperties is
+      // the fallback for public builds where the enterprise block is stripped.
+      // The token is a delivery mechanism, not an override mechanism.
+      const proxyFormatter = typeof DomElementTemplate.formatTemplateForProxyData === 'function'
+        ? DomElementTemplate.formatTemplateForProxyData
+        : SpyneAppProperties.formatTemplateForProxyData
 
       if (typeof proxyFormatter === 'function') {
         this.template = proxyFormatter(this.template)
       }
     }
+
+    // {{%key%}} → {{key}}: the % markers are a CMS opt-out consumed by
+    // formatTemplateForProxyData (which refuses to wrap %-marked tokens);
+    // strip them here so substitution sees a plain token. Runs
+    // unconditionally — non-proxy renders must also resolve {{%key%}}.
+    this.template = DomElementTemplate.stripNoProxyMarkers(this.template)
 
     const checkForArrayData = () => {
       if (is(Array, data) === true) {
@@ -152,7 +163,15 @@ export class DomElementTemplate {
     for (let i = 0; i < keys.length; i++) {
       const key = keys[i]
       const val = data[key]
-      if (val !== null && typeof val === 'object' && val.__cms__isProxy === true) {
+      if (val === null || typeof val !== 'object') {
+        continue
+      }
+      // a proxied child is either a proxied object OR an array holding proxied
+      // items (a list view's rows) — the flag lives on the items, not the array
+      const isProxied = val.__cms__isProxy === true ||
+        (Array.isArray(val) === true && val.some(item =>
+          item !== null && typeof item === 'object' && item.__cms__isProxy === true))
+      if (isProxied === true) {
         if (template.indexOf(`{{${key}.`) !== -1 ||
             template.indexOf(`{{#${key}}}`) !== -1 ||
             template.indexOf(`{{#${key}.`) !== -1) {
@@ -206,6 +225,22 @@ export class DomElementTemplate {
     // brace character. Keeps the captured inner content, strips the
     // outer third brace on each side.
     return template.replace(/\{\{\{([^{}]+?)\}\}\}/g, '{{$1}}')
+  }
+
+  /**
+   * Strips the CMS opt-out markers from {{%key%}} tokens, leaving a plain
+   * {{key}} for substitution. The markers themselves are consumed earlier by
+   * formatTemplateForProxyData, whose formatCmsParam refuses to wrap a
+   * %-marked token — so a proxied value renders as plain text with none of
+   * the <spyne-cms-item> wrap → dataId resolve → strip → sanitize overhead.
+   * Called unconditionally after the proxy-formatter step: non-proxy renders
+   * never run the formatter but must still resolve {{%key%}} tokens.
+   */
+  static stripNoProxyMarkers(template) {
+    if (typeof template !== 'string' || template.indexOf('{{%') === -1) {
+      return template
+    }
+    return template.replace(/\{\{%([^{}%]+?)%\}\}/g, '{{$1}}')
   }
 
   // FIND CORRECT NESTED DATA
