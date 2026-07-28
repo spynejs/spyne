@@ -126,13 +126,18 @@ export class ChannelFetch extends Channel {
     this.sendChannelPayload(action, payload, srcElement)
   }
 
+  // Both header spellings pass through: 'header' is this class's historical
+  // key, 'headers' is the fetch API's (and what the reference documents).
+  // ChannelFetchUtil.normalizeHeaders folds them together downstream. Listing
+  // only one here is what previously made custom headers unreachable — each
+  // boundary dropped the spelling the other one used.
   getPropsForFetch(evt) {
     const dataObj = evt?.payload ?? evt?.viewStreamInfo?.payload ?? {}
-    return pick(['mapFn', 'url', 'header', 'body', 'mode', 'method', 'responseType', 'debug'], dataObj)
+    return pick(['mapFn', 'url', 'header', 'headers', 'body', 'mode', 'method', 'responseType', 'debug'], dataObj)
   }
 
   consolidateAllFetchProps(options, props = this.props) {
-    const propsOptions = pick(['mapFn', 'url', 'header', 'body', 'mode', 'disableSanitize', 'method', 'responseType', 'debug'], props)
+    const propsOptions = pick(['mapFn', 'url', 'header', 'headers', 'body', 'mode', 'disableSanitize', 'method', 'responseType', 'debug'], props)
     const mergeOptions = (o1, o2) => mergeDeepRight(o1, o2)
     const filterOutUndefined = reject(isNil)
     return compose(filterOutUndefined, mergeOptions)(propsOptions, options)

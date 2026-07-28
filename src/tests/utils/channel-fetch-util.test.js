@@ -78,9 +78,27 @@ describe('ChannelFetchUtil Tests', () => {
 
     const channelFetchUtil = new ChannelFetchUtil(p, subscriber, true)
 
+    // Pins the RELATIONSHIP: default props must merge to the base untouched.
+    // Note what it cannot do — baseServerOptions is computed by calling the
+    // same production method under test, so drift in baseOptions() moves the
+    // expectation with it. The literal assertion below covers that gap.
     it('should return correct server option', () => {
       const serverOptions = R.omit(['mapFn'], channelFetchUtil.serverOptions)
       expect(serverOptions).to.deep.equal(baseServerOptions)
+    })
+
+    // Pins the CONTENT, with literal values, because the deep-equal above is
+    // vacuous for headers: a Headers instance exposes no own-enumerable keys,
+    // so chai compares {} to {} and two Headers with entirely different
+    // entries still pass. Read them through .get() to assert anything real.
+    it('should carry the documented default options', () => {
+      const opts = channelFetchUtil.serverOptions
+      expect(opts.method).to.equal('GET')
+      expect(opts.mode).to.equal('cors')
+      expect(opts.credentials).to.equal('same-origin')
+      expect(opts.cache).to.equal('default')
+      expect(opts.redirect).to.equal('follow')
+      expect(opts.headers.get('Accept')).to.equal('application/json, text/plain, */*')
     })
 
     it('should return correct response type', () => {
@@ -167,6 +185,54 @@ describe('ChannelFetchUtil Tests', () => {
       expect(errorPayload.message).to.equal('Failed to fetch')
       expect(errorPayload.url).to.equal(url)
       expect(errorPayload.status).to.be.undefined
+    })
+  })
+
+  // Regression: custom headers used to reach fetch() in NEITHER spelling.
+  // ChannelFetch's allow-lists carried 'header' (singular) while
+  // setServerOptions picked 'headers' (plural), so each boundary dropped the
+  // spelling the other one used. Compounding it, baseOptions().headers is a
+  // Headers instance whose entries are not own-enumerable, so a deep merge
+  // with a plain object silently discarded the Accept default.
+  describe('custom headers reach the request in either spelling', () => {
+    const asPlain = (h) =>
+      h instanceof Headers ? Object.fromEntries(h.entries()) : { ...h }
+    const accept = 'application/json, text/plain, */*'
+
+    it('leaves the base Headers instance untouched when none are authored', () => {
+      const opts = ChannelFetchUtil.setServerOptions({ method: 'GET' })
+      expect(opts.headers instanceof Headers, 'base should pass through as-is').to.be.true
+      expect(opts.headers.get('Accept')).to.equal(accept)
+    })
+
+    it('accepts headers (plural, the fetch spelling)', () => {
+      const opts = ChannelFetchUtil.setServerOptions({ headers: { 'X-Api-Key': 'abc' } })
+      const h = asPlain(opts.headers)
+      expect(h['X-Api-Key']).to.equal('abc')
+      expect(h.accept ?? h.Accept, 'base Accept must survive the merge').to.equal(accept)
+    })
+
+    it('accepts header (singular, the ChannelFetch spelling)', () => {
+      const opts = ChannelFetchUtil.setServerOptions({ header: { 'X-Api-Key': 'def' } })
+      const h = asPlain(opts.headers)
+      expect(h['X-Api-Key']).to.equal('def')
+      expect(h.accept ?? h.Accept, 'base Accept must survive the merge').to.equal(accept)
+    })
+
+    it('accepts a Headers instance', () => {
+      const opts = ChannelFetchUtil.setServerOptions({ headers: new Headers({ 'X-Trace': 'on' }) })
+      expect(asPlain(opts.headers)['x-trace']).to.equal('on')
+    })
+
+    it('lets an authored Content-Type win over the auto-set one', () => {
+      const opts = ChannelFetchUtil.setServerOptions({
+        method: 'POST',
+        header: { 'Content-Type': 'application/vnd.api+json' },
+        body: { a: 1 }
+      })
+      const h = asPlain(opts.headers)
+      expect(h['content-type'] ?? h['Content-Type']).to.equal('application/vnd.api+json')
+      expect(opts.body, 'object body still stringifies').to.equal('{"a":1}')
     })
   })
 })

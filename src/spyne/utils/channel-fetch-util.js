@@ -1,6 +1,6 @@
 import { from, of } from 'rxjs'
 import { catchError, map, mergeMap, share, tap } from 'rxjs/operators'
-import { compose, prop, defaultTo, pick, mergeDeepRight } from 'ramda'
+import { compose, prop, defaultTo, omit, pick, mergeDeepRight } from 'ramda'
 import sanitizeData from './sanitize-data.js'
 import { spyneWarn } from './spyne-warn.js'
 
@@ -307,9 +307,48 @@ export class ChannelFetchUtil {
     return opts
   }
 
+  /**
+   * Folds `header` and `headers` into one plain object, layered over the base
+   * defaults.
+   *
+   * Two spellings exist because ChannelFetch's own allow-lists carry `header`
+   * (singular) while the fetch API — and this class — use `headers`. Both are
+   * accepted here so a header set at either boundary actually reaches the
+   * request; previously `header` was dropped by this method's pick and
+   * `headers` was dropped by ChannelFetch's, so NEITHER spelling ever arrived.
+   *
+   * The merge is done by hand rather than through mergeDeepRight because
+   * baseOptions().headers is a Headers instance, whose entries are not
+   * own-enumerable: deep-merging it with a plain object silently discards the
+   * defaults (the Accept header) and returns a bare object. Normalizing to a
+   * plain object keeps every layer and is a shape fetch() accepts.
+   */
+  static normalizeHeaders(baseHeaders, options) {
+    // Nothing authored: leave the base exactly as it was. Only a caller that
+    // actually supplies headers pays the conversion to a plain object, so the
+    // default path keeps returning the base Headers instance untouched.
+    if (options.header === undefined && options.headers === undefined) {
+      return undefined
+    }
+    const toPlain = (h) => {
+      if (h === undefined || h === null) return {}
+      if (typeof Headers !== 'undefined' && h instanceof Headers) {
+        return Object.fromEntries(h.entries())
+      }
+      return { ...h }
+    }
+    const merged = {
+      ...toPlain(baseHeaders),
+      ...toPlain(options.headers),
+      ...toPlain(options.header)
+    }
+    return Object.keys(merged).length > 0 ? merged : undefined
+  }
+
   static setServerOptions(opts) {
     const options = pick([
       'method',
+      'header',
       'headers',
       'body',
       'mode',
@@ -322,7 +361,15 @@ export class ChannelFetchUtil {
       'keepalive'
     ], opts)
 
-    let mergedOptions = mergeDeepRight(ChannelFetchUtil.baseOptions(), options)
+    const baseOptions = ChannelFetchUtil.baseOptions()
+    const headers = ChannelFetchUtil.normalizeHeaders(baseOptions.headers, options)
+
+    // headers are merged separately (above), so keep both spellings out of the
+    // structural merge and reapply the normalized result.
+    let mergedOptions = mergeDeepRight(baseOptions, omit(['header', 'headers'], options))
+    if (headers !== undefined) {
+      mergedOptions.headers = headers
+    }
 
     mergedOptions = ChannelFetchUtil.updateMethodWhenBodyExists(mergedOptions)
     mergedOptions = ChannelFetchUtil.stringifyBodyIfItExists(mergedOptions)
