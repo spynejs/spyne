@@ -245,7 +245,8 @@ export class SpyneChannelRoute extends Channel {
       // SpyneAppProperties.linksData = payload.navLinks
 
       // define an alias property using Object.defineProperty
-      Object.defineProperty(payload, 'linksData', {
+      // DEPCRECATED
+      /*       Object.defineProperty(payload, 'linksData', {
         get() {
           // console.warn('get links data is deprecated in ROUTE DEEPLINK DATA, use navLinks')
           return this.navLinks
@@ -256,7 +257,7 @@ export class SpyneChannelRoute extends Channel {
           // this.navLinks = value;
         },
         enumerable: true
-      })
+      }) */
     }
     const keywordArrs = this.compareRouteKeywords.compare(payload.routeData, payload.paths)
     payload = rMerge(payload, keywordArrs)

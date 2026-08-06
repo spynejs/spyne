@@ -341,15 +341,68 @@ export class DomElementTemplate {
     return html.replace(inertRE, '$1')
   }
 
+  /**
+   * True when the template's top level is a table sub-tag, which cannot stand
+   * on its own in the DOM. MUST be asked of RAW html: every route into the DOM
+   * from a string — DOMPurify, createContextualFragment, div.innerHTML — parses
+   * in a body context, and the HTML parser discards a <td> or <tr> that no
+   * table encloses. Asked after sanitizing, this can never be true.
+   */
+  static get tableSubTagRE() {
+    return /^([^>]*?)(<){1}(\b)(thead|col|colgroup|tbody|td|tfoot|tr|th)(\b)([^\0]*)$/
+  }
+
+  /**
+   * Sanitizes a table fragment without losing the tags that make it one.
+   *
+   * DOMPurify offers no parse context, so the fragment is surrounded by just
+   * enough table for the parser to keep it, sanitized, and unwrapped again.
+   * Coverage is unchanged — same sanitizeHTML call, same content — the wrapper
+   * only survives the parse.
+   *
+   * The wrapper has to match the tag, and be unwrapped at the depth it was
+   * added, because the parser SUPPLIES the levels a wrapper leaves out —
+   * measured: <tr> inside a bare <table> comes back wrapped in an implicit
+   * <tbody>, and <col> in an implicit <colgroup>. Returning those would nest a
+   * second tbody inside the caller's own. Only thead/tbody/tfoot/colgroup, which
+   * are already a table's direct children, need nothing added.
+   */
+  static sanitizeTableFragment(html) {
+    const tag = /<\s*(thead|colgroup|col|tbody|tfoot|tr|td|th)\b/.exec(html)
+    const wrappers = {
+      td: ['<table><tbody><tr>', '</tr></tbody></table>', 'tr'],
+      th: ['<table><thead><tr>', '</tr></thead></table>', 'tr'],
+      tr: ['<table><tbody>', '</tbody></table>', 'tbody'],
+      col: ['<table><colgroup>', '</colgroup></table>', 'colgroup']
+    }
+    const [open, close, sel] = wrappers[tag !== null ? tag[1] : ''] || ['<table>', '</table>', 'table']
+
+    // <template> is used rather than a div because its contents parse in a mode
+    // that keeps table sub-tags — a div would undo the wrapping immediately.
+    const parser = document.createElement('template')
+    parser.innerHTML = String(sanitizeHTML(`${open}${html}${close}`))
+
+    const unwrapped = parser.content.querySelector(sel)
+    return unwrapped !== null ? unwrapped.innerHTML : ''
+  }
+
   renderDocFrag() {
     let html = DomElementTemplate.replaceImgPath(this.finalArr.join(''))
     if (this.isProxyData === true) {
       html = DomElementTemplate.stripInertCmsItems(html)
     }
+    // Detected BEFORE sanitizing — see tableSubTagRE. A table fragment is
+    // returned as a STRING, for the caller to assign to the real parent
+    // element (DomElement.addTemplate does this), which is what supplies the
+    // parse context the fragment needs.
+    const isTableSubTag = DomElementTemplate.tableSubTagRE.test(html)
+
     if (this.testMode !== true) {
-      html = sanitizeHTML(html)
+      html = isTableSubTag
+        ? DomElementTemplate.sanitizeTableFragment(html)
+        : sanitizeHTML(html)
     }
-    const isTableSubTag = /^([^>]*?)(<){1}(\b)(thead|col|colgroup|tbody|td|tfoot|tr|th)(\b)([^\0]*)$/.test(html)
+
     const el = isTableSubTag ? html : document.createRange().createContextualFragment(html)
 
     window.setTimeout(this.removeThis, 2)
@@ -362,10 +415,14 @@ export class DomElementTemplate {
     if (this.isProxyData === true) {
       html = DomElementTemplate.stripInertCmsItems(html)
     }
+    const isTableSubTag = DomElementTemplate.tableSubTagRE.test(html)
+
     if (this.testMode !== true) {
       // String(...) unwraps TrustedHTML when strict mode is active,
       // keeping this method's string contract.
-      html = String(sanitizeHTML(html))
+      html = isTableSubTag
+        ? DomElementTemplate.sanitizeTableFragment(html)
+        : String(sanitizeHTML(html))
     }
     window.setTimeout(this.removeThis, 2)
     return html
