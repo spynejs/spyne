@@ -70,8 +70,9 @@ export class ChannelPayload {
       }
 
       const channelActionsArr = SpyneAppProperties.getChannelActions(channel)
+      const isCustomEvent = payload?.isCustomEvent === 'true'
 
-      ChannelPayload.validateAction(action, channel, channelActionsArr)
+      ChannelPayload.validateAction(action, channel, channelActionsArr, isCustomEvent)
     }
 
     channelPayloadItemObj.clone = () => {
@@ -147,9 +148,9 @@ export class ChannelPayload {
     return channelPayloadItemObj
   }
 
-  static validateAction(action, channel, arr) {
+  static validateAction(action, channel, arr, isCustomEvent) {
     const isInArr = includes(action, arr)
-    if (isInArr === false && SpyneAppProperties.initialized === true) {
+    if (isInArr === false && SpyneAppProperties.initialized === true && isCustomEvent === false) {
       console.warn(`warning: Action: '${action}' is not registered within the ${channel} channel!`)
     }
     return isInArr

@@ -1,6 +1,6 @@
 {
   "name": "spyne",
-  "version": "0.26.6",
+  "version": "0.26.7",
   "description": "Reactive Real-DOM Framework for Advanced Javascript applications",
   "sideEffects": true,
   "main": "./lib/spyne.esm.js",
@@ -52,6 +52,7 @@
     "@rollup/plugin-node-resolve": "^16.0.0",
     "@rollup/plugin-replace": "^6.0.2",
     "@rollup/plugin-terser": "^1.0.0",
+    "brace-expansion": "^1.1.18",
     "chai": "^4.3.9",
     "chai-dom": "^1.11.0",
     "clean-webpack-plugin": "^4.0.0",
