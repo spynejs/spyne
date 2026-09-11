@@ -50,7 +50,7 @@ Learn about:
 ## License
 
 SpyneJS is licensed under the **GNU Lesser General Public License v3.0 (LGPL-3.0)**  
-© 2017–2025 Relevant Context, Inc.
+© 2017–2026 Relevant Context, Inc.
 
 You may freely use SpyneJS in commercial and open-source projects under the terms of the LGPL-3.0 license. See the [LICENSE](./LICENSE) file for full details.
 
