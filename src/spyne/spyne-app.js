@@ -4,9 +4,10 @@ import { SpyneUtilsChannelRoute } from './utils/spyne-utils-channel-route.js'
 import { SpyneAppProperties } from './utils/spyne-app-properties.js'
 import { sanitizeHTMLConfigure } from './utils/sanitize-html.js'
 import { sanitizeDataConfigure } from './utils/sanitize-data.js'
+import { addPluginsToggleWindowEvents } from './utils/spyne-plugins-toggle.js'
 
 const _channels = new ChannelsMap()
-const version = '0.26.9'
+const version = '0.27.0'
 
 class SpyneApplication {
   /**
@@ -41,7 +42,7 @@ class SpyneApplication {
   init(config = {}, testMode = false) {
     // this.channels = new ChannelsMap();
     /*!
-     * Spyne 0.26.9
+     * Spyne 0.27.0
      * https://spynejs.org
      *
      * @license
@@ -87,6 +88,13 @@ class SpyneApplication {
       plugins:{
 
       },
+      // Turning plugins off, and on again, by a key combination: every plugin but
+      // one whose config, or whose class, has allowDisabling: false. Left
+      // undefined, it is on in a development build and off in a production
+      // build. true: on in production too, for testing. false: off everywhere.
+      allowToggling: undefined,
+      // The key combination that does it.
+      pluginsToggleKeys: 'ctrl+alt+p',
       tmp: {},
       ephemeralProps: {},
       tmpProps: {},
@@ -127,6 +135,11 @@ class SpyneApplication {
       //window.Spyne = this;
       //window.Spyne['config'] = deepMerge(defaultConfig, config)
     }
+    // The plugins' toggle hears its keys on the window channel. While the toggle
+    // is on in this app (allowToggling, above), the window channel is made to
+    // carry them here, before it is started, so that an app does not have to list
+    // them.
+    addPluginsToggleWindowEvents(SpyneAppProperties.config);
     this.pluginsFn = SpyneAppProperties.getPluginsMethodObj(config['pluginMethods']);
     this.getChannelActions = (str) => _channels.getChannelActions(str);
     this.registerChannel = (val) => _channels.registerStream(val);

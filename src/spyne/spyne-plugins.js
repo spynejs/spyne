@@ -1,5 +1,6 @@
 import { DomElement } from './views/dom-element.js'
 import { SpyneAppProperties } from './utils/spyne-app-properties.js'
+import { listenForPluginsToggle, pluginsAreDisabled, notePluginsDisabled } from './utils/spyne-plugins-toggle.js'
 import { is, clone, pathSatisfies } from 'ramda'
 let _spyneAppProps = SpyneAppProperties
 export class SpynePlugin {
@@ -30,6 +31,15 @@ export class SpynePlugin {
    * Now this method will be called when the app decides to register the plugin.
    * This way, the plugin no longer has to import or rely on its own version
    * of SpyneAppProperties. Instead, it is *passed* the authoritative instance.
+   *
+   * A plugin is left unregistered while the plugins are turned off for the tab,
+   * unless it does not allow disabling (allowsDisabling), which a plugin that does
+   * real work for the app says. They are turned off, and on again, by the key
+   * combination in the app's config, `pluginsToggleKeys`. That is so in a
+   * development build, and in a production build only where the app's config has
+   * `allowToggling: true`.
+   *
+   * @returns {Boolean} false where the plugin was not registered
    */
   register(spyneAppProps) {
     // 1. Save a reference to the real SpyneAppProperties
@@ -42,7 +52,21 @@ export class SpynePlugin {
       console.warn(
           `Spyne Warning: SpyneApp has not been initialized yet! Cannot register plugin "${this.name}".`
       )
-      return
+      return false
+    }
+
+    if (this.allowsDisabling() === true) {
+      // The keys are heard on the window channel, whether this plugin is let
+      // through or not, so that the keys that turned the plugins off turn them on
+      // again. Where they are not heard (the toggle is off in this app, as it is
+      // in a production build unless the app says otherwise), a state left in the
+      // tab is not acted on: there would be no way back.
+      const listening = listenForPluginsToggle(_spyneAppProps)
+
+      if (listening === true && pluginsAreDisabled() === true) {
+        notePluginsDisabled(_spyneAppProps.config.pluginsToggleKeys)
+        return false
+      }
     }
 
     this.onBeforeRegistered()
@@ -58,6 +82,26 @@ export class SpynePlugin {
     // 3. If you have other plugin lifecycle methods
     this.onRegistered()
     this.onRender()
+    return true
+  }
+
+  /**
+   * Whether the plugins' toggle may leave this plugin unregistered. It is settled
+   * in this order: `allowDisabling` as the app passed it in the plugin's config;
+   * where that says nothing, `allowDisabling` as the plugin's own class gives it
+   * in defaultConfig(); and where neither says anything, it may. Only `false`
+   * keeps a plugin on.
+   *
+   * A class's defaults are merged under what the app passes, so the second step
+   * matters for a key the app passed with no value: the merge lets that
+   * overwrite the class's default, and this reads the default again.
+   *
+   * @returns {Boolean}
+   */
+  allowsDisabling() {
+    const allowDisabling = this.props.config?.allowDisabling ?? this.defaultConfig()?.allowDisabling
+
+    return allowDisabling !== false
   }
 
   get SpyneAppProperties() {

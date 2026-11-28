@@ -245,7 +245,10 @@ class SpyneAppPropertiesClass {
     }
     // console.log("INSTANCE ",this, pluginInstance)
 
-    pluginInstance.register(this)
+    // false where the plugin was not registered: the app is not initialized, or
+    // the plugin allows disabling and the plugins are turned off for this tab.
+    // A plugin whose own register() answers nothing counts as registered.
+    return pluginInstance.register(this) !== false
   }
 
   getProxyReviver(proxyName) {
